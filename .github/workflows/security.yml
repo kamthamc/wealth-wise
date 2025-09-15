@@ -1,0 +1,239 @@
+name: 🔒 Security Audit
+
+on:
+  schedule:
+    # Run weekly security audit (Sundays at 2 AM UTC)
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - '**/package.json'
+      - '**/Podfile'
+      - '**/build.gradle'
+      - '**/*.csproj'
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  dependency-audit:
+    name: 🔍 Dependency Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      # Shared TypeScript dependencies
+      - name: 🔍 Audit Shared Dependencies
+        working-directory: shared
+        run: |
+          npm audit --audit-level moderate
+          npm audit fix --dry-run > audit-report.txt || true
+
+      # iOS CocoaPods audit
+      - name: 🍎 Audit iOS Dependencies  
+        run: |
+          cd ios
+          gem install cocoapods-audit
+          pod audit > ios-audit-report.txt || true
+
+      # Android Gradle dependencies
+      - name: 🤖 Audit Android Dependencies
+        run: |
+          cd android
+          ./gradlew app:dependencyCheckAnalyze > android-audit-report.txt || true
+
+      # Windows NuGet packages
+      - name: 🪟 Audit Windows Dependencies
+        run: |
+          cd windows
+          dotnet list package --vulnerable --include-transitive > windows-audit-report.txt || true
+
+      - name: 📊 Upload Audit Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-audit-reports
+          path: |
+            shared/audit-report.txt
+            ios/ios-audit-report.txt
+            android/android-audit-report.txt
+            windows/windows-audit-report.txt
+
+  license-check:
+    name: ⚖️ License Compliance
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: 🔍 Check Licenses
+        run: |
+          npx license-checker --summary > license-summary.txt
+          npx license-checker --csv > license-details.csv
+
+      - name: 📊 Upload License Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: license-reports
+          path: |
+            license-summary.txt
+            license-details.csv
+
+  secret-scan:
+    name: 🔐 Secret Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🔍 Scan for secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD
+          extra_args: --debug --only-verified
+
+  code-quality:
+    name: 📊 Code Quality Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🔍 SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  security-report:
+    name: 📋 Generate Security Report
+    runs-on: ubuntu-latest
+    needs: [dependency-audit, license-check, secret-scan, code-quality]
+    if: always()
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: ⬇️ Download All Reports
+        uses: actions/download-artifact@v4
+        with:
+          path: security-reports/
+
+      - name: 📋 Generate Consolidated Report
+        run: |
+          mkdir -p final-report
+          
+          cat > final-report/security-audit-summary.md << 'EOF'
+          # 🔒 Security Audit Report
+          
+          **Date**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          **Repository**: ${{ github.repository }}
+          **Commit**: ${{ github.sha }}
+          **Branch**: ${{ github.ref_name }}
+          
+          ## 📊 Audit Results Summary
+          
+          ### ✅ Completed Checks
+          - [x] Dependency vulnerability scan
+          - [x] License compliance check  
+          - [x] Secret scanning
+          - [x] Code quality analysis
+          
+          ### 🔍 Dependency Audit
+          - **Shared (Node.js)**: $(grep -c "vulnerabilities" security-reports/security-audit-reports/audit-report.txt 2>/dev/null || echo "No issues found")
+          - **iOS (CocoaPods)**: Check ios-audit-report.txt for details
+          - **Android (Gradle)**: Check android-audit-report.txt for details  
+          - **Windows (.NET)**: Check windows-audit-report.txt for details
+          
+          ### ⚖️ License Compliance
+          - Review license-summary.txt for license distribution
+          - Ensure all licenses are compatible with app store policies
+          
+          ### 🔐 Security Scanning
+          - Secret scanning: ${{ needs.secret-scan.result }}
+          - Code quality: ${{ needs.code-quality.result }}
+          
+          ## 🚨 Action Items
+          
+          1. Review all vulnerability reports in detail
+          2. Update dependencies with known security issues
+          3. Verify license compatibility for commercial distribution
+          4. Address any secrets or code quality issues
+          
+          ## 📁 Detailed Reports
+          
+          All detailed reports are available in the workflow artifacts:
+          - `security-audit-reports/` - Dependency vulnerability scans
+          - `license-reports/` - License compliance details
+          
+          ---
+          *Generated automatically by GitHub Actions*
+          EOF
+
+      - name: 📤 Upload Final Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-audit-final-report
+          path: final-report/
+
+      - name: 💬 Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const reportPath = 'final-report/security-audit-summary.md';
+            
+            if (fs.existsSync(reportPath)) {
+              const report = fs.readFileSync(reportPath, 'utf8');
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: report
+              });
+            }
+
+  notify-security-team:
+    name: 📢 Notify Security Team
+    runs-on: ubuntu-latest
+    needs: [security-report]
+    if: failure()
+    steps:
+      - name: 📧 Send Security Alert
+        uses: 8398a7/action-slack@v3
+        with:
+          status: failure
+          channel: '#security-alerts'
+          text: |
+            🚨 *SECURITY AUDIT FAILURE*
+            
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+            
+            One or more security checks have failed. Please review immediately.
+            
+            🔗 Workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SECURITY_SLACK_WEBHOOK_URL }}

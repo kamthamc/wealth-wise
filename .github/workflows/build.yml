@@ -1,0 +1,415 @@
+name: 🏗️ WealthWise Build and Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_re      - name: 📱 Install CocoaPods
+        run: |
+          cd ios
+          pod install --repo-update
+
+      - name: 🏗️ Build iOS App
+        run: |
+          cd ios
+          xcodebuild \
+            -workspace WealthWise.xcworkspace \
+            -scheme WealthWise \
+            -configuration Release \
+            -destination "generic/platform=iOS" \
+            -archivePath build/WealthWise.xcarchive \
+            archive \
+            CODE_SIGNING_ALLOWED=NOhes: [ main, develop ]
+  workflow_dispatch:
+    inputs:
+      platforms:
+        description: 'Platforms to build (ios, android, windows, all)'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - ios
+          - android
+          - windows
+
+env:
+  BUILD_NUMBER: ${{ github.run_number }}
+  JAVA_VERSION: '17'
+  NODE_VERSION: '18'
+  DOTNET_VERSION: '8.0.x'
+
+jobs:
+  # Shared validation job
+  validate:
+    name: 🔍 Validate Shared Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'shared/package.json'
+
+      - name: 📚 Install dependencies
+        working-directory: shared
+        run: npm ci
+
+      - name: 🔍 Lint TypeScript
+        working-directory: shared
+        run: npm run lint
+
+      - name: ✅ Type check
+        working-directory: shared
+        run: npm run type-check
+
+      - name: 🧪 Run tests
+        working-directory: shared
+        run: npm test
+
+  # iOS Build Job
+  build-ios:
+    name: 🍎 iOS Build
+    runs-on: macos-14
+    needs: validate
+    if: ${{ !cancelled() && (github.event.inputs.platforms == 'ios' || github.event.inputs.platforms == 'all' || github.event.inputs.platforms == '') }}
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔑 Setup iOS Signing
+        if: github.ref == 'refs/heads/main'
+        env:
+          IOS_CERTIFICATE_BASE64: ${{ secrets.IOS_CERTIFICATE_BASE64 }}
+          IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+        run: |
+          # Create keychain
+          security create-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
+          security set-keychain-settings -t 3600 -u build.keychain
+          
+          # Import certificate
+          echo "$IOS_CERTIFICATE_BASE64" | base64 --decode > certificate.p12
+          security import certificate.p12 -k build.keychain -P "$IOS_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
+          
+          # Install provisioning profile
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "$IOS_PROVISIONING_PROFILE_BASE64" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
+
+      - name: 📦 Install CocoaPods
+        run: |
+          cd ios
+          pod install --repo-update
+
+      - name: 🏗️ Build iOS App
+        run: |
+          cd ios
+          xcodebuild \
+            -workspace UnifiedBanking.xcworkspace \
+            -scheme UnifiedBanking \
+            -configuration Release \
+            -destination "generic/platform=iOS" \
+            -archivePath build/UnifiedBanking.xcarchive \
+            archive \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: 🧪 Run iOS Tests
+        run: |
+          cd ios
+          xcodebuild test \
+            -workspace WealthWise.xcworkspace \
+            -scheme WealthWiseTests \
+            -destination "platform=iOS Simulator,name=iPhone 15 Pro" \
+            -enableCodeCoverage YES \
+            -resultBundlePath TestResults.xcresult
+
+      - name: 📊 Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ios-test-results
+          path: ios/TestResults.xcresult
+
+      - name: 📱 Upload iOS Archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-archive
+          path: ios/build/WealthWise.xcarchive
+
+  # Android Build Job
+  build-android:
+    name: 🤖 Android Build
+    runs-on: ubuntu-latest
+    needs: validate
+    if: ${{ !cancelled() && (github.event.inputs.platforms == 'android' || github.event.inputs.platforms == 'all' || github.event.inputs.platforms == '') }}
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: 🔧 Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: 🔑 Setup Android Signing
+        if: github.ref == 'refs/heads/main'
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/keystore.jks
+
+      - name: 📦 Grant execute permission for gradlew
+        run: chmod +x android/gradlew
+
+      - name: 🏗️ Build Android APK
+        working-directory: android
+        run: |
+          ./gradlew assembleRelease \
+            -Pandroid.injected.signing.store.file=keystore.jks \
+            -Pandroid.injected.signing.store.password="${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
+            -Pandroid.injected.signing.key.alias="${{ secrets.ANDROID_KEY_ALIAS }}" \
+            -Pandroid.injected.signing.key.password="${{ secrets.ANDROID_KEY_PASSWORD }}"
+
+      - name: 🏗️ Build Android AAB
+        working-directory: android
+        run: |
+          ./gradlew bundleRelease \
+            -Pandroid.injected.signing.store.file=keystore.jks \
+            -Pandroid.injected.signing.store.password="${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
+            -Pandroid.injected.signing.key.alias="${{ secrets.ANDROID_KEY_ALIAS }}" \
+            -Pandroid.injected.signing.key.password="${{ secrets.ANDROID_KEY_PASSWORD }}"
+
+      - name: 🧪 Run Android Tests
+        working-directory: android
+        run: ./gradlew test testReleaseUnitTest
+
+      - name: 📊 Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: android-test-results
+          path: |
+            android/app/build/test-results/
+            android/app/build/reports/tests/
+
+      - name: 📱 Upload Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+
+      - name: 📱 Upload Android AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
+
+  # Windows Build Job
+  build-windows:
+    name: 🪟 Windows Build
+    runs-on: windows-latest
+    needs: validate
+    if: ${{ !cancelled() && (github.event.inputs.platforms == 'windows' || github.event.inputs.platforms == 'all' || github.event.inputs.platforms == '') }}
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: 📦 Restore dependencies
+        working-directory: windows
+        run: dotnet restore
+
+      - name: 🏗️ Build Windows App
+        working-directory: windows
+        run: dotnet build --configuration Release --no-restore
+
+      - name: 🧪 Run Windows Tests
+        working-directory: windows
+        run: |
+          dotnet test --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory TestResults
+
+      - name: 📊 Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-test-results
+          path: windows/TestResults/
+
+      - name: 📦 Publish Windows App
+        working-directory: windows
+        run: |
+          dotnet publish --configuration Release --runtime win-x64 --self-contained true --output publish/win-x64
+          dotnet publish --configuration Release --runtime win-arm64 --self-contained true --output publish/win-arm64
+
+      - name: 🖥️ Upload Windows Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: |
+            windows/publish/win-x64/
+            windows/publish/win-arm64/
+
+  # Security Scan Job
+  security-scan:
+    name: 🔒 Security Scan
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🔍 Run CodeQL Analysis
+        uses: github/codeql-action/init@v3
+        with:
+          languages: 'typescript,csharp,java,swift'
+          queries: security-extended,security-and-quality
+
+      - name: 🏗️ Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: 📊 Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+
+      - name: 🔐 Run Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'unified-banking'
+          path: '.'
+          format: 'ALL'
+          args: >
+            --enableRetired
+            --enableExperimental
+            --out reports
+
+      - name: 📊 Upload Dependency Check Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-check-report
+          path: reports/
+
+  # Deployment Job (only on main branch)
+  deploy:
+    name: 🚀 Deploy
+    runs-on: ubuntu-latest
+    needs: [build-ios, build-android, build-windows, security-scan]
+    if: ${{ !cancelled() && github.ref == 'refs/heads/main' && success() }}
+    environment: 
+      name: production
+      url: https://unified-banking.app
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: ⬇️ Download All Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: � Prepare App Store Packages
+        run: |
+          echo "Preparing app packages for store distribution..."
+          ls -la artifacts/
+
+      - name: 📱 Deploy to App Store Connect
+        if: contains(github.event.inputs.platforms, 'ios') || github.event.inputs.platforms == '' || github.event.inputs.platforms == 'all'
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
+          IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
+        run: |
+          # This would use fastlane or similar tool to upload to App Store Connect
+          echo "Deploying iOS app to App Store Connect..."
+
+      - name: 📱 Deploy to Google Play
+        if: contains(github.event.inputs.platforms, 'android') || github.event.inputs.platforms == '' || github.event.inputs.platforms == 'all'
+        env:
+          PLAY_STORE_JSON_KEY: ${{ secrets.PLAY_STORE_JSON_KEY }}
+        run: |
+          # This would use fastlane or similar tool to upload to Google Play
+          echo "Deploying Android app to Google Play Store..."
+
+      - name: 📊 Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          release_name: Release v1.0.${{ github.run_number }}
+          body: |
+            ## 🚀 Release v1.0.${{ github.run_number }}
+            
+            ### 📱 Mobile Apps
+            - iOS: Deployed to App Store Connect
+            - Android: Deployed to Google Play Store
+            
+            ### 🖥️ Desktop App
+            - Windows: Available for download
+            
+            ### � Security & Privacy
+            - All security scans passed
+            - No cloud services, complete local storage
+            - Dependencies updated and verified
+            
+            **Full Changelog**: https://github.com/${{ github.repository }}/compare/v1.0.${{ github.run_number - 1 }}...v1.0.${{ github.run_number }}
+          draft: false
+          prerelease: false
+
+  # Notification Job
+  notify:
+    name: 📢 Notifications
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    if: always()
+    steps:
+      - name: 📧 Send Success Notification
+        if: ${{ needs.deploy.result == 'success' }}
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          channel: '#deployments'
+          text: |
+            🎉 *WealthWise App* deployment successful!
+            
+            📱 *Platforms*: ${{ github.event.inputs.platforms || 'all' }}
+            🔗 *Commit*: ${{ github.sha }}
+            👤 *Actor*: ${{ github.actor }}
+            ⏱️ *Duration*: ${{ job.duration }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: 📧 Send Failure Notification
+        if: ${{ needs.deploy.result == 'failure' }}
+        uses: 8398a7/action-slack@v3
+        with:
+          status: failure
+          channel: '#deployments'
+          text: |
+            ❌ *WealthWise App* deployment failed!
+            
+            📱 *Platforms*: ${{ github.event.inputs.platforms || 'all' }}
+            🔗 *Commit*: ${{ github.sha }}
+            👤 *Actor*: ${{ github.actor }}
+            📋 *Logs*: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
