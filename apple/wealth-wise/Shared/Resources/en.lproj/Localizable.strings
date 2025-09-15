@@ -1,0 +1,90 @@
+/* App Name and Core Features */
+"app.name" = "WealthWise";
+"app.tagline" = "Smart Personal Finance Management";
+"app.welcome" = "Welcome to WealthWise";
+
+/* Navigation */
+"nav.dashboard" = "Dashboard";
+"nav.portfolio" = "Portfolio";
+"nav.assets" = "Assets";
+"nav.reports" = "Reports";
+"nav.settings" = "Settings";
+
+/* Menu Commands */
+"menu.file.import" = "Import Data...";
+"menu.file.export" = "Export Data...";
+"menu.view.dashboard" = "Dashboard";
+"menu.view.portfolio" = "Portfolio";
+"menu.view.assets" = "Assets";
+"menu.view.reports" = "Reports";
+"menu.tools.security" = "Security Settings...";
+"menu.tools.backup" = "Backup & Restore...";
+
+/* Dashboard */
+"dashboard.title" = "Dashboard";
+"dashboard.net_worth" = "Total Net Worth";
+"dashboard.portfolio_value" = "Portfolio Value";
+"dashboard.real_estate" = "Real Estate";
+"dashboard.cash_deposits" = "Cash & Deposits";
+
+/* Asset Types */
+"asset.stock" = "Stock";
+"asset.mutual_fund" = "Mutual Fund";
+"asset.etf" = "ETF";
+"asset.bond" = "Bond";
+"asset.real_estate" = "Real Estate";
+"asset.commodity" = "Commodity";
+"asset.fixed_deposit" = "Fixed Deposit";
+"asset.cash" = "Cash";
+"asset.chit_fund" = "Chit Fund";
+"asset.cryptocurrency" = "Cryptocurrency";
+
+/* Asset Categories in Sidebar */
+"sidebar.overview" = "Overview";
+"sidebar.assets" = "Assets";
+"sidebar.all_assets" = "All Assets";
+"sidebar.stocks_etfs" = "Stocks & ETFs";
+"sidebar.real_estate" = "Real Estate";
+"sidebar.commodities" = "Commodities";
+"sidebar.fixed_deposits" = "Fixed Deposits";
+"sidebar.cash" = "Cash";
+"sidebar.reports" = "Reports";
+"sidebar.tax_reports" = "Tax Reports";
+"sidebar.performance" = "Performance";
+
+/* Transaction Types */
+"transaction.buy" = "Buy";
+"transaction.sell" = "Sell";
+"transaction.dividend" = "Dividend";
+"transaction.interest" = "Interest";
+"transaction.bonus" = "Bonus";
+"transaction.stock_split" = "Stock Split";
+"transaction.other" = "Other";
+
+/* Placeholder Content */
+"portfolio.description" = "Your investment portfolio will appear here";
+"assets.description" = "All your assets will be listed here";
+"reports.description" = "Financial reports and analytics";
+"settings.description" = "App preferences and configuration";
+
+/* Currency */
+"currency.inr" = "₹";
+"currency.usd" = "$";
+"currency.eur" = "€";
+
+/* Common Actions */
+"action.add" = "Add";
+"action.edit" = "Edit";
+"action.delete" = "Delete";
+"action.save" = "Save";
+"action.cancel" = "Cancel";
+"action.ok" = "OK";
+
+/* Accessibility */
+"accessibility.add_item" = "Add Item";
+"accessibility.dashboard_card" = "%@ card showing %@";
+
+/* Errors */
+"error.general" = "An error occurred";
+"error.data_load" = "Failed to load data";
+"error.data_save" = "Failed to save data";
