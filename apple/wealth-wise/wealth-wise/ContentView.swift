@@ -9,6 +9,16 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
+    var body: some View {
+        #if os(macOS)
+        MacContentView()
+        #else
+        IOSContentView()
+        #endif
+    }
+}
+
+struct IOSContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var items: [Item]
 

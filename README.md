@@ -48,6 +48,7 @@ WealthWise makes personal finance management accessible and intelligent for ever
 
 ### Platforms
 - **iOS 18+**: Swift/SwiftUI, Core Data, Core ML (optional), Keychain Services
+- **macOS 14+ (Sonoma)**: Swift/SwiftUI, SwiftData, Core ML (optional), Keychain Services, native macOS app with menu bar integration
 - **Android 15+**: Kotlin, Jetpack Compose, Room with SQLCipher, ML Kit (optional), Android Keystore
 - **Windows 11**: .NET Core 10, WPF/WinUI, Entity Framework, ML.NET (optional), Windows Credential Manager
 
@@ -65,18 +66,19 @@ WealthWise makes personal finance management accessible and intelligent for ever
 ## 📁 Project Structure
 
 ```
-unified-banking/
+wealth-wise/
 ├── shared/                  # Shared business logic and models
 │   ├── models/             # Data models
 │   ├── services/           # Business logic
 │   └── utils/              # Common utilities
-├── ios/                    # iOS native app
-│   ├── UnifiedBanking.xcodeproj
-│   ├── UnifiedBanking/     # Main app code
-│   ├── Models/             # iOS-specific models
-│   ├── Views/              # SwiftUI views
-│   ├── Services/           # iOS services
-│   └── Resources/          # Assets and resources
+├── apple/                  # Apple platforms (iOS & macOS)
+│   └── wealth-wise/        # Xcode project
+│       ├── wealth-wise.xcodeproj  # Xcode project with multiple targets
+│       ├── wealth-wise/    # iOS app target
+│       ├── macOS/          # macOS app target
+│       ├── Shared/         # Shared Swift code between iOS/macOS
+│       ├── wealth-wiseTests/    # iOS tests
+│       └── wealth-wiseUITests/  # iOS UI tests
 ├── android/                # Android native app
 │   ├── app/                # Main Android app
 │   ├── core/               # Core Android modules
@@ -102,10 +104,28 @@ unified-banking/
 - **Firebase Project**: Set up with Authentication, Firestore, and Storage
 
 ### Development Setup
+
+#### macOS & iOS Development
 1. Clone the repository
-2. Set up Firebase configuration for each platform
-3. Install platform-specific dependencies
-4. Configure development certificates and provisioning profiles
+2. Open `apple/wealth-wise/wealth-wise.xcodeproj` in Xcode 15+
+3. The project contains multiple targets:
+   - **wealth-wise (iOS)**: iOS 18+ target using SwiftUI and SwiftData
+   - **WealthWise macOS**: macOS 14+ target with native menu bar integration
+4. Build and run the appropriate target for your platform
+
+#### Project Structure
+- **Shared/**: Common Swift code shared between iOS and macOS
+  - **Resources/**: Localization files (English, Hindi)
+  - **LocalizationHelpers.swift**: Localization utilities and string constants
+  - **DataModels.swift**: SwiftData models with localized properties
+- **wealth-wise/**: iOS-specific app files
+- **macOS/**: macOS-specific app files with native UI components
+
+### Localization
+The app supports multiple languages:
+- **English (en)**: Default language
+- **Hindi (hi)**: Primary target market (India)
+- Extensible architecture for adding more languages
 
 ### Build Instructions
 Each platform has its own build process detailed in platform-specific README files.
