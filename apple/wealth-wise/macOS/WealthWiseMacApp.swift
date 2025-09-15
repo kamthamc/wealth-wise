@@ -3,9 +3,14 @@ import SwiftData
 
 @main
 struct WealthWiseMacApp: App {
+    @StateObject private var serviceContainer = ServiceContainer.shared
+    
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
+            Asset.self,
+            Portfolio.self,
+            Transaction.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -15,11 +20,21 @@ struct WealthWiseMacApp: App {
             fatalError("Could not create ModelContainer: \(error)")
         }
     }()
+    
+    init() {
+        // Configure services for production
+        #if DEBUG
+        ServiceConfiguration.configureForTesting()
+        #else
+        ServiceConfiguration.configureForProduction()
+        #endif
+    }
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .frame(minWidth: 1000, minHeight: 700)
+                .withServiceContainer(serviceContainer)
         }
         .windowStyle(.titleBar)
         .windowToolbarStyle(.unified)

@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 
+@available(macOS 15.0, *)
 struct MacContentView: View {
     @StateObject private var navigationManager = NavigationManager.shared
     @Environment(\.modelContext) private var modelContext
@@ -10,10 +11,17 @@ struct MacContentView: View {
         NavigationSplitView {
             SidebarView()
                 .navigationSplitViewColumnWidth(min: 250, ideal: 300)
+                .sidebarGlassEffect()
         } detail: {
             DetailView()
         }
         .navigationTitle(L10n.App.name)
+        .background {
+            if GlassEffectHelpers.supportsAdvancedGlassEffects {
+                GlassBackground(style: .window)
+                    .ignoresSafeArea()
+            }
+        }
     }
 }
 
@@ -136,8 +144,7 @@ struct DashboardCard: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(NSColor.controlBackgroundColor))
-        .cornerRadius(8)
+        .cardGlassEffect()
         .accessibilityLabel(L10n.Accessibility.dashboardCard(title, value))
     }
 }
