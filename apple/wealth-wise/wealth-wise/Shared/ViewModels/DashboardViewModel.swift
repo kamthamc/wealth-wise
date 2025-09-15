@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import Combine
+import SwiftData
 
 /// Example view model demonstrating dependency injection usage
 @available(macOS 15.0, iOS 18.0, *)
