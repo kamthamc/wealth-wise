@@ -367,29 +367,31 @@ class MockCalculationService: CalculationServiceProtocol {
 
 @available(macOS 15.0, iOS 18.0, *)
 class MockMarketDataService: MarketDataServiceProtocol {
-    func getCurrentPrice(for symbol: String) async throws -> MarketPrice? {
+    func getCurrentPrice(for symbol: String) async throws -> Price? {
         // Return mock price data
-        return MarketPrice(
+        return Price(
             symbol: symbol,
             value: Decimal(Double.random(in: 100...1000)),
             currency: "INR",
-            lastUpdated: Date()
+            timestamp: Date(),
+            source: "mock"
         )
     }
     
-    func getHistoricalPrices(for symbol: String, from startDate: Date, to endDate: Date) async throws -> [MarketPrice] {
+    func getHistoricalPrices(for symbol: String, from startDate: Date, to endDate: Date) async throws -> [Price] {
         // Return mock historical data
-        var prices: [MarketPrice] = []
+        var prices: [Price] = []
         var currentDate = startDate
         var basePrice = 500.0
         
         while currentDate <= endDate {
             basePrice += Double.random(in: -20...20) // Random price movement
-            prices.append(MarketPrice(
+            prices.append(Price(
                 symbol: symbol,
                 value: Decimal(basePrice),
                 currency: "INR",
-                lastUpdated: currentDate
+                timestamp: currentDate,
+                source: "mock"
             ))
             currentDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate) ?? endDate
         }
@@ -397,16 +399,17 @@ class MockMarketDataService: MarketDataServiceProtocol {
         return prices
     }
     
-    func subscribeToUpdates(for symbols: [String]) async -> AsyncStream<MarketPrice> {
+    func subscribeToUpdates(for symbols: [String]) async -> AsyncStream<Price> {
         return AsyncStream { continuation in
             // Mock real-time updates
             Task {
                 for symbol in symbols {
-                    let price = MarketPrice(
+                    let price = Price(
                         symbol: symbol,
                         value: Decimal(Double.random(in: 100...1000)),
                         currency: "INR",
-                        lastUpdated: Date()
+                        timestamp: Date(),
+                        source: "mock"
                     )
                     continuation.yield(price)
                     try? await Task.sleep(nanoseconds: 1_000_000_000) // 1 second delay

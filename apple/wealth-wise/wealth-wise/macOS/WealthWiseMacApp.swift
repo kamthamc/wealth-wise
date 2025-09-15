@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-@main
+// Alternative macOS-specific app entry point (not used when @main is in wealth_wiseApp.swift)
 struct WealthWiseMacApp: App {
     @StateObject private var serviceContainer = ServiceContainer.shared
     

@@ -227,6 +227,28 @@ protocol CalculationServiceProtocol: AnyObject, Sendable {
     ///   - timeHorizon: Time horizon in days
     /// - Returns: VaR calculation
     func calculateVaR(_ portfolioId: UUID, confidence: Double, timeHorizon: Int) async throws -> VaRResult
+    
+    /// Calculate asset performance metrics
+    /// - Parameters:
+    ///   - assetID: Asset identifier
+    ///   - period: Performance period
+    /// - Returns: Asset performance metrics
+    func calculateAssetPerformance(_ assetID: UUID, period: PerformancePeriod) async throws -> AssetPerformance
+    
+    /// Calculate EMI for loans
+    /// - Parameters:
+    ///   - principal: Principal amount
+    ///   - rate: Annual interest rate
+    ///   - tenure: Tenure in months
+    /// - Returns: EMI calculation result
+    func calculateEMI(principal: Decimal, rate: Decimal, tenure: Int) async throws -> EMICalculation
+    
+    /// Calculate tax based on income and regime
+    /// - Parameters:
+    ///   - income: Annual income
+    ///   - regime: Tax regime (old or new)
+    /// - Returns: Tax calculation result
+    func calculateTax(income: Decimal, regime: TaxRegime) async throws -> TaxCalculation
 }
 
 /// Protocol for notification services
@@ -396,6 +418,48 @@ struct TaxCalculation {
     let longTermGains: Decimal
     let taxableAmount: Decimal
     let taxOwed: Decimal
+    let calculatedAt: Date
+}
+
+struct AssetPerformance {
+    let assetID: UUID
+    let period: PerformancePeriod
+    let return: Double
+    let volatility: Double
+    let sharpeRatio: Double
+    let maxDrawdown: Double
+}
+
+enum PerformancePeriod {
+    case oneMonth, threeMonths, sixMonths, oneYear, threeYears, fiveYears
+}
+
+struct EMICalculation {
+    let principal: Decimal
+    let rate: Decimal
+    let tenure: Int
+    let emi: Decimal
+    let totalInterest: Decimal
+    let totalAmount: Decimal
+}
+
+enum TaxRegime {
+    case old, new
+}
+
+enum SecurityError: Error {
+    case authenticationFailed
+    case biometricsNotAvailable
+    case encryptionError
+    case tokenExpired
+}
+
+struct VaRResult {
+    let portfolioId: UUID
+    let confidence: Double
+    let timeHorizon: Int
+    let valueAtRisk: Decimal
+    let expectedShortfall: Decimal
     let calculatedAt: Date
 }
 
