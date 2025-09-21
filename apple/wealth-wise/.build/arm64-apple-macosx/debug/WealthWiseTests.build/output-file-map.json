@@ -1,0 +1,47 @@
+{
+  "": {
+    "swift-dependencies": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/master.swiftdeps"
+  },
+  "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/wealth-wiseTests/BasicCurrencyTests.swift": {
+    "dependencies": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/BasicCurrencyTests.d",
+    "object": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/BasicCurrencyTests.swift.o",
+    "swiftmodule": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/BasicCurrencyTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/BasicCurrencyTests.swiftdeps",
+    "diagnostics": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/BasicCurrencyTests.dia"
+  },
+  "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/wealth-wiseTests/Currency/CurrencyFormatterTests.swift": {
+    "dependencies": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/CurrencyFormatterTests.d",
+    "object": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/CurrencyFormatterTests.swift.o",
+    "swiftmodule": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/CurrencyFormatterTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/CurrencyFormatterTests.swiftdeps",
+    "diagnostics": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/CurrencyFormatterTests.dia"
+  },
+  "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/wealth-wiseTests/Currency/CurrencyManagerTests.swift": {
+    "dependencies": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/CurrencyManagerTests.d",
+    "object": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/CurrencyManagerTests.swift.o",
+    "swiftmodule": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/CurrencyManagerTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/CurrencyManagerTests.swiftdeps",
+    "diagnostics": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/CurrencyManagerTests.dia"
+  },
+  "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/wealth-wiseTests/Currency/ExchangeRateTests.swift": {
+    "dependencies": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/ExchangeRateTests.d",
+    "object": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/ExchangeRateTests.swift.o",
+    "swiftmodule": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/ExchangeRateTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/ExchangeRateTests.swiftdeps",
+    "diagnostics": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/ExchangeRateTests.dia"
+  },
+  "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/wealth-wiseTests/Currency/SupportedCurrencyTests.swift": {
+    "dependencies": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/SupportedCurrencyTests.d",
+    "object": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/SupportedCurrencyTests.swift.o",
+    "swiftmodule": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/SupportedCurrencyTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/SupportedCurrencyTests.swiftdeps",
+    "diagnostics": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/SupportedCurrencyTests.dia"
+  },
+  "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/wealth-wiseTests/DependencyInjectionExampleTests.swift": {
+    "dependencies": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/DependencyInjectionExampleTests.d",
+    "object": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/DependencyInjectionExampleTests.swift.o",
+    "swiftmodule": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/DependencyInjectionExampleTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/DependencyInjectionExampleTests.swiftdeps",
+    "diagnostics": "/Users/chaitanyakkamatham/Projects/wealth-wise/apple/wealth-wise/.build/arm64-apple-macosx/debug/WealthWiseTests.build/DependencyInjectionExampleTests.dia"
+  }
+}
