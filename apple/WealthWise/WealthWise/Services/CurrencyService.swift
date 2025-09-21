@@ -9,6 +9,7 @@ public protocol CurrencyDataSource {
 }
 
 /// Main service for currency operations
+@MainActor
 public class CurrencyService: ObservableObject {
     
     // MARK: - Published Properties
@@ -16,13 +17,13 @@ public class CurrencyService: ObservableObject {
     @Published public private(set) var lastError: Error?
     
     // MARK: - Private Properties
-    private let currencyManager: CurrencyManagerProtocol
+    private let currencyManager: any CurrencyManagerProtocol
     private let currencyFormatter: CurrencyFormatter
-    private var dataSources: [CurrencyDataSource] = []
+    private var dataSources: [any CurrencyDataSource] = []
     private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Initialization
-    public init(currencyManager: CurrencyManagerProtocol = CurrencyManager.shared,
+    public init(currencyManager: any CurrencyManagerProtocol = CurrencyManager.shared,
                 currencyFormatter: CurrencyFormatter = CurrencyFormatter.shared) {
         self.currencyManager = currencyManager
         self.currencyFormatter = currencyFormatter
@@ -232,15 +233,6 @@ private class MockCurrencyDataSource: CurrencyDataSource {
             .RUB: 1.1,
             .KRW: 16.2
         ]
-        
-        let exchangeRates = mockRates.compactMapValues { rate in
-            ExchangeRate(
-                from: baseCurrency,
-                to: SupportedCurrency(rawValue: "USD")!, // This will be properly mapped
-                rate: rate,
-                source: name
-            )
-        }
         
         // Convert to proper dictionary
         let properRates: [SupportedCurrency: ExchangeRate] = Dictionary(

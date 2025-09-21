@@ -1,0 +1,130 @@
+/* Asset Types */
+"asset.type.stocks" = "Stocks";
+"asset.type.bonds" = "Bonds";
+"asset.type.mutual_funds" = "Mutual Funds";
+"asset.type.etfs" = "ETFs";
+"asset.type.real_estate" = "Real Estate";
+"asset.type.commodities" = "Commodities";
+"asset.type.cryptocurrency" = "Cryptocurrency";
+"asset.type.cash" = "Cash";
+"asset.type.fixed_deposits" = "Fixed Deposits";
+"asset.type.ppf" = "Public Provident Fund";
+"asset.type.epf" = "Employee Provident Fund";
+"asset.type.nsc" = "National Savings Certificate";
+"asset.type.gold_bonds" = "Gold Bonds";
+"asset.type.treasury_bills" = "Treasury Bills";
+"asset.type.corporate_bonds" = "Corporate Bonds";
+"asset.type.international_stocks" = "International Stocks";
+"asset.type.private_business" = "Private Business";
+"asset.type.alternative_investments" = "Alternative Investments";
+"asset.type.insurance" = "Insurance";
+"asset.type.other" = "Other";
+
+/* Currencies */
+"currency.inr" = "Indian Rupee";
+"currency.usd" = "US Dollar";
+"currency.eur" = "Euro";
+"currency.gbp" = "British Pound";
+"currency.jpy" = "Japanese Yen";
+"currency.cad" = "Canadian Dollar";
+"currency.aud" = "Australian Dollar";
+"currency.chf" = "Swiss Franc";
+"currency.cny" = "Chinese Yuan";
+"currency.sgd" = "Singapore Dollar";
+
+/* Countries */
+"country.india" = "India";
+"country.united_states" = "United States";
+"country.united_kingdom" = "United Kingdom";
+"country.canada" = "Canada";
+"country.australia" = "Australia";
+"country.singapore" = "Singapore";
+"country.germany" = "Germany";
+"country.france" = "France";
+"country.japan" = "Japan";
+"country.switzerland" = "Switzerland";
+
+/* General UI */
+"general.loading" = "Loading...";
+"general.error" = "Error";
+"general.cancel" = "Cancel";
+"general.ok" = "OK";
+"general.save" = "Save";
+"general.delete" = "Delete";
+"general.edit" = "Edit";
+"general.add" = "Add";
+"general.remove" = "Remove";
+"general.settings" = "Settings";
+"general.back" = "Back";
+"general.next" = "Next";
+"general.done" = "Done";
+"general.total_value" = "Total Value";
+"general.unrealized_gain" = "Unrealized Gain";
+"general.realized_gain" = "Realized Gain";
+"general.net_worth" = "Net Worth";
+"general.app_name" = "WealthWise";
+"general.currency_system" = "Currency System";
+"general.macos_project_configured" = "✅ macOS Project: Configured";
+"general.swiftui_interface_ready" = "✅ SwiftUI Interface: Ready";
+"general.currency_system_implemented" = "✅ Currency System: Implemented";
+"general.project_build_in_progress" = "⚙️ Project Build: In Progress";
+"general.ready_for_development" = "📱 Ready for Development";
+
+/* Financial Terms */
+"financial.portfolio" = "Portfolio";
+"financial.assets" = "Assets";
+"financial.liabilities" = "Liabilities";
+"financial.investment" = "Investment";
+"financial.returns" = "Returns";
+"financial.risk" = "Risk";
+"financial.allocation" = "Allocation";
+"financial.performance" = "Performance";
+"financial.dividend" = "Dividend";
+"financial.interest" = "Interest";
+"financial.capital_gains" = "Capital Gains";
+"financial.tax_loss_harvesting" = "Tax Loss Harvesting";
+"financial.rebalancing" = "Rebalancing";
+
+/* Error Messages */
+"error.network" = "Network error occurred";
+"error.invalid_data" = "Invalid data";
+"error.authentication" = "Authentication failed";
+"error.permission_denied" = "Permission denied";
+"error.file_not_found" = "File not found";
+"error.unknown" = "An unknown error occurred";
+
+/* Success Messages */
+"success.saved" = "Successfully saved";
+"success.updated" = "Successfully updated";
+"success.deleted" = "Successfully deleted";
+"success.uploaded" = "Successfully uploaded";
+"success.synchronized" = "Successfully synchronized";
+
+/* Asset Categories */
+"category.equity" = "Equity";
+"category.debt" = "Debt";
+"category.hybrid" = "Hybrid";
+"category.international" = "International";
+"category.domestic" = "Domestic";
+"category.liquid" = "Liquid";
+"category.illiquid" = "Illiquid";
+"category.taxable" = "Taxable";
+"category.tax_free" = "Tax Free";
+
+/* Time Periods */
+"time.daily" = "Daily";
+"time.weekly" = "Weekly";
+"time.monthly" = "Monthly";
+"time.quarterly" = "Quarterly";
+"time.yearly" = "Yearly";
+"time.all_time" = "All Time";
+"time.1_year" = "1 Year";
+"time.3_years" = "3 Years";
+"time.5_years" = "5 Years";
+
+/* Number Formats */
+"format.lakh" = "Lakh";
+"format.crore" = "Crore";
+"format.million" = "Million";
+"format.billion" = "Billion";
+"format.thousand" = "Thousand";

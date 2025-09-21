@@ -1,0 +1,130 @@
+/* Asset Types - Hindi */
+"asset.type.stocks" = "शेयर";
+"asset.type.bonds" = "बांड";
+"asset.type.mutual_funds" = "म्यूचुअल फंड";
+"asset.type.etfs" = "ईटीएफ";
+"asset.type.real_estate" = "रियल एस्टेट";
+"asset.type.commodities" = "कमोडिटी";
+"asset.type.cryptocurrency" = "क्रिप्टोकरेंसी";
+"asset.type.cash" = "नकद";
+"asset.type.fixed_deposits" = "सावधि जमा";
+"asset.type.ppf" = "पब्लिक प्रोविडेंट फंड";
+"asset.type.epf" = "कर्मचारी भविष्य निधि";
+"asset.type.nsc" = "राष्ट्रीय बचत प्रमाणपत्र";
+"asset.type.gold_bonds" = "गोल्ड बांड";
+"asset.type.treasury_bills" = "ट्रेजरी बिल";
+"asset.type.corporate_bonds" = "कॉर्पोरेट बांड";
+"asset.type.international_stocks" = "अंतर्राष्ट्रीय शेयर";
+"asset.type.private_business" = "निजी व्यवसाय";
+"asset.type.alternative_investments" = "वैकल्पिक निवेश";
+"asset.type.insurance" = "बीमा";
+"asset.type.other" = "अन्य";
+
+/* Currencies */
+"currency.inr" = "भारतीय रुपया";
+"currency.usd" = "अमेरिकी डॉलर";
+"currency.eur" = "यूरो";
+"currency.gbp" = "ब्रिटिश पाउंड";
+"currency.jpy" = "जापानी येन";
+"currency.cad" = "कैनेडियन डॉलर";
+"currency.aud" = "ऑस्ट्रेलियाई डॉलर";
+"currency.chf" = "स्विस फ्रैंक";
+"currency.cny" = "चीनी युआन";
+"currency.sgd" = "सिंगापुर डॉलर";
+
+/* Countries */
+"country.india" = "भारत";
+"country.united_states" = "संयुक्त राज्य अमेरिका";
+"country.united_kingdom" = "यूनाइटेड किंगडम";
+"country.canada" = "कनाडा";
+"country.australia" = "ऑस्ट्रेलिया";
+"country.singapore" = "सिंगापुर";
+"country.germany" = "जर्मनी";
+"country.france" = "फ्रांस";
+"country.japan" = "जापान";
+"country.switzerland" = "स्विट्जरलैंड";
+
+/* General UI */
+"general.loading" = "लोड हो रहा है...";
+"general.error" = "त्रुटि";
+"general.cancel" = "रद्द करें";
+"general.ok" = "ठीक है";
+"general.save" = "सेव करें";
+"general.delete" = "डिलीट करें";
+"general.edit" = "संपादित करें";
+"general.add" = "जोड़ें";
+"general.remove" = "हटाएं";
+"general.settings" = "सेटिंग्स";
+"general.back" = "वापस";
+"general.next" = "अगला";
+"general.done" = "पूर्ण";
+"general.total_value" = "कुल मूल्य";
+"general.unrealized_gain" = "अवास्तविक लाभ";
+"general.realized_gain" = "वास्तविक लाभ";
+"general.net_worth" = "कुल संपत्ति";
+"general.app_name" = "वेल्थवाइज";
+"general.currency_system" = "करेंसी सिस्टम";
+"general.macos_project_configured" = "✅ macOS प्रोजेक्ट: कॉन्फ़िगर किया गया";
+"general.swiftui_interface_ready" = "✅ SwiftUI इंटरफेस: तैयार";
+"general.currency_system_implemented" = "✅ करेंसी सिस्टम: लागू किया गया";
+"general.project_build_in_progress" = "⚙️ प्रोजेक्ट बिल्ड: प्रगति में";
+"general.ready_for_development" = "📱 डेवलपमेंट के लिए तैयार";
+
+/* Financial Terms */
+"financial.portfolio" = "पोर्टफोलियो";
+"financial.assets" = "संपत्ति";
+"financial.liabilities" = "देनदारियां";
+"financial.investment" = "निवेश";
+"financial.returns" = "रिटर्न";
+"financial.risk" = "जोखिम";
+"financial.allocation" = "आवंटन";
+"financial.performance" = "प्रदर्शन";
+"financial.dividend" = "लाभांश";
+"financial.interest" = "ब्याज";
+"financial.capital_gains" = "पूंजीगत लाभ";
+"financial.tax_loss_harvesting" = "कर हानि संचयन";
+"financial.rebalancing" = "पुनर्संतुलन";
+
+/* Error Messages */
+"error.network" = "नेटवर्क त्रुटि हुई";
+"error.invalid_data" = "अमान्य डेटा";
+"error.authentication" = "प्रमाणीकरण असफल";
+"error.permission_denied" = "अनुमति अस्वीकृत";
+"error.file_not_found" = "फाइल नहीं मिली";
+"error.unknown" = "एक अज्ञात त्रुटि हुई";
+
+/* Success Messages */
+"success.saved" = "सफलतापूर्वक सेव किया गया";
+"success.updated" = "सफलतापूर्वक अपडेट किया गया";
+"success.deleted" = "सफलतापूर्वक डिलीट किया गया";
+"success.uploaded" = "सफलतापूर्वक अपलोड किया गया";
+"success.synchronized" = "सफलतापूर्वक सिंक्रोनाइज़ किया गया";
+
+/* Asset Categories */
+"category.equity" = "इक्विटी";
+"category.debt" = "डेट";
+"category.hybrid" = "हाइब्रिड";
+"category.international" = "अंतर्राष्ट्रीय";
+"category.domestic" = "घरेलू";
+"category.liquid" = "तरल";
+"category.illiquid" = "अतरल";
+"category.taxable" = "कर योग्य";
+"category.tax_free" = "कर मुक्त";
+
+/* Time Periods */
+"time.daily" = "दैनिक";
+"time.weekly" = "साप्ताहिक";
+"time.monthly" = "मासिक";
+"time.quarterly" = "त्रैमासिक";
+"time.yearly" = "वार्षिक";
+"time.all_time" = "सभी समय";
+"time.1_year" = "1 वर्ष";
+"time.3_years" = "3 वर्ष";
+"time.5_years" = "5 वर्ष";
+
+/* Number Formats */
+"format.lakh" = "लाख";
+"format.crore" = "करोड़";
+"format.million" = "मिलियन";
+"format.billion" = "बिलियन";
+"format.thousand" = "हजार";

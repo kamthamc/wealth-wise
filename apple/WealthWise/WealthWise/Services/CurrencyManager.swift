@@ -131,7 +131,8 @@ public class CurrencyManager: ObservableObject, CurrencyManagerProtocol {
         // Set default base currency based on locale
         if baseCurrency == .INR { // Only if not set from cache
             let locale = Locale.current
-            let currencyCode = locale.currencyCode ?? "INR"
+            let currencyCode: String
+            currencyCode = locale.currency?.identifier ?? "INR"
             
             if let currency = SupportedCurrency(rawValue: currencyCode) {
                 baseCurrency = currency

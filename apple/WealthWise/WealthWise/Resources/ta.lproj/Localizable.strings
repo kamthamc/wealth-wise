@@ -1,0 +1,122 @@
+/* Asset Types - Tamil */
+"asset.type.stocks" = "பங்குகள்";
+"asset.type.bonds" = "பத்திரங்கள்";
+"asset.type.mutual_funds" = "மியூச்சுவல் ஃபண்ட்";
+"asset.type.etfs" = "ஈடிஎஃப்";
+"asset.type.real_estate" = "ரியல் எஸ்டேட்";
+"asset.type.commodities" = "பொருட்கள்";
+"asset.type.cryptocurrency" = "கிரிப்டோகரன்சி";
+"asset.type.cash" = "பணம்";
+"asset.type.fixed_deposits" = "நிலையான வைப்பு";
+"asset.type.ppf" = "பொது வருங்கால வைப்பு நிதি";
+"asset.type.epf" = "ஊழியர் வருங்கால வைப்பு நிதி";
+"asset.type.nsc" = "தேசிய சேமிப்பு சான்றிதழ்";
+"asset.type.gold_bonds" = "தங்க பத்திரங்கள்";
+"asset.type.treasury_bills" = "கருவூல பில்கள்";
+"asset.type.corporate_bonds" = "கார்ப்பரேட் பத்திரங்கள்";
+"asset.type.international_stocks" = "சர்வதேச பங்குகள்";
+"asset.type.private_business" = "தனியார் தொழில்";
+"asset.type.alternative_investments" = "மாற்று முதலீடுகள்";
+"asset.type.insurance" = "காப்பீடு";
+"asset.type.other" = "மற்றவை";
+
+/* Currencies - Tamil */
+"currency.inr" = "இந்திய ரூபாய்";
+"currency.usd" = "அமெரிக்க டாலர்";
+"currency.eur" = "யூரோ";
+"currency.gbp" = "பிரிட்டிஷ் பவுண்ட்";
+"currency.jpy" = "ஜாபானிய யென்";
+"currency.cad" = "கனடியன் டாலர்";
+"currency.aud" = "ஆஸ்திரேலியன் டாலர்";
+"currency.chf" = "சுவிஸ் ஃப்ராங்க்";
+"currency.cny" = "சீன யுவான்";
+"currency.sgd" = "சிங்கப்பூர் டாலர்";
+
+/* Countries - Tamil */
+"country.india" = "இந்தியா";
+"country.united_states" = "அமெரிக்கா";
+"country.united_kingdom" = "ஐக்கிய இராச்சியம்";
+"country.canada" = "கனடா";
+"country.australia" = "ஆஸ்திரேலியா";
+"country.singapore" = "சிங்கப்பூர்";
+"country.germany" = "ஜெர்மனி";
+"country.france" = "பிரான்ஸ்";
+"country.japan" = "ஜப்பான்";
+"country.switzerland" = "சுவிட்சர்லாந்து";
+
+/* General UI - Tamil */
+"general.loading" = "ஏற்றுகிறது...";
+"general.error" = "பிழை";
+"general.cancel" = "ரத்து செய்";
+"general.ok" = "சரி";
+"general.save" = "சேமி";
+"general.delete" = "நீக்கு";
+"general.edit" = "திருத்து";
+"general.add" = "சேர்";
+"general.remove" = "அகற்று";
+"general.settings" = "அமைப்புகள்";
+"general.back" = "பின்";
+"general.next" = "அடுத்து";
+"general.done" = "முடிந்தது";
+"general.app_name" = "வெல்த்வைஸ்";
+
+/* Financial Terms - Tamil */
+"financial.portfolio" = "போர்ட்ஃபோலியோ";
+"financial.assets" = "சொத்துகள்";
+"financial.liabilities" = "கடன்கள்";
+"financial.investment" = "முதலீடு";
+"financial.returns" = "வருமானம்";
+"financial.risk" = "ஆபத்து";
+"financial.allocation" = "ஒதுக்கீடு";
+"financial.performance" = "செயல்திறன்";
+"financial.dividend" = "டிவிடென்ட்";
+"financial.interest" = "வட்டி";
+"financial.capital_gains" = "மூலதன ஆதாயம்";
+"financial.net_worth" = "நிகர மதிப்பு";
+"financial.total_value" = "மொத்த மதிப்பு";
+"financial.unrealized_gain" = "அறியப்படாத ஆதாயம்";
+"financial.realized_gain" = "உணரப்பட்ட ஆதாயம்";
+
+/* Error Messages - Tamil */
+"error.network" = "நெட்வொர்க் பிழை ஏற்பட்டது";
+"error.invalid_data" = "தவறான தரவு";
+"error.authentication" = "அங்கீகாரம் தோல்வியடைந்தது";
+"error.permission_denied" = "அனுமति மறுக்கப்பட்டது";
+"error.file_not_found" = "கோப்பு கிடைக்கவில்லை";
+"error.unknown" = "தெரியாத பிழை ஏற்பட்டது";
+
+/* Success Messages - Tamil */
+"success.saved" = "வெற்றிகரமாக சேமிக்கப்பட்டது";
+"success.updated" = "வெற்றிகரமாக புதுப்பிக்கப்பட்டது";
+"success.deleted" = "வெற்றிகரமாக நீக்கப்பட்டது";
+"success.uploaded" = "வெற்றிகரமாக பதிவேற்றப்பட்டது";
+"success.synchronized" = "வெற்றிகரமாக ஒத்திசைக்கப்பட்டது";
+
+/* Time Periods - Tamil */
+"time.daily" = "தினசரி";
+"time.weekly" = "வாராந்திர";
+"time.monthly" = "மாதாந்திர";
+"time.quarterly" = "காலாண்டு";
+"time.yearly" = "வருடாந்திர";
+"time.all_time" = "எல்லா நேரமும்";
+"time.1_year" = "1 வருடம்";
+"time.3_years" = "3 வருடங்கள்";
+"time.5_years" = "5 வருடங்கள்";
+
+/* Number Formats - Tamil */
+"format.lakh" = "லட்சம்";
+"format.crore" = "கோடி";
+"format.million" = "மில்லியன்";
+"format.billion" = "பில்லியன்";
+"format.thousand" = "ஆயிரம்";
+
+/* Asset Categories - Tamil */
+"category.equity" = "ஈக்விட்டி";
+"category.debt" = "கடன்";
+"category.hybrid" = "கலப்பின";
+"category.international" = "சர்வதேச";
+"category.domestic" = "உள்நாட்டு";
+"category.liquid" = "திரவ";
+"category.illiquid" = "திரவமற்ற";
+"category.taxable" = "வரி விதிக்கத்தக்க";
+"category.tax_free" = "வரி இல்லாத";
