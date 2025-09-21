@@ -88,13 +88,6 @@ public enum SupportedCurrency: String, CaseIterable, Codable {
         }
     }
     
-    /// Number of decimal places for currency
-    public var decimalPlaces: Int {
-        switch self {
-        case .JPY, .KRW, .HUF: return 0  // Japanese Yen, Korean Won, and Hungarian Forint don't use decimal places
-        default: return 2
-        }
-    }
     
     /// Major currencies for priority display
     public static var majorCurrencies: [SupportedCurrency] {

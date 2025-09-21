@@ -6,14 +6,12 @@ struct ContentView: View {
             Image(systemName: "dollarsign.circle.fill")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
-            
             Text("WealthWise")
-                .font(.largeTitle)
+                .font(.title)
                 .fontWeight(.bold)
             
-            Text("macOS Personal Finance App")
+            Text("Currency System")
                 .font(.headline)
-                .foregroundColor(.secondary)
             
             // Project status
             VStack(alignment: .leading, spacing: 10) {
