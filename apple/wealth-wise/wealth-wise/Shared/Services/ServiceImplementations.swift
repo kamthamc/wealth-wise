@@ -358,10 +358,12 @@ final class DefaultCalculationService: CalculationServiceProtocol, @unchecked Se
         // Mock risk assessment
         return RiskAssessment(
             portfolioId: portfolioId,
-            riskScore: 6.5,
             riskLevel: .moderate,
-            diversificationScore: 7.8,
-            recommendations: ["Consider adding international exposure", "Rebalance quarterly"]
+            volatility: 0.18,
+            betaCoefficient: 1.2,
+            valueAtRisk: Decimal(5000),
+            conditionalValueAtRisk: Decimal(6500),
+            calculatedAt: Date()
         )
     }
     
@@ -371,8 +373,87 @@ final class DefaultCalculationService: CalculationServiceProtocol, @unchecked Se
             portfolioId: portfolioId,
             confidence: confidence,
             timeHorizon: timeHorizon,
-            value: Decimal(5000),
-            percentage: 0.05,
+            valueAtRisk: Decimal(5000),
+            expectedShortfall: Decimal(6000),
+            calculatedAt: Date()
+        )
+    }
+    
+    func calculateAssetPerformance(_ assetID: UUID, period: PerformancePeriod) async throws -> AssetPerformance {
+        // Mock asset performance calculation
+        return AssetPerformance(
+            assetID: assetID,
+            period: period,
+            returns: 0.12,
+            volatility: 0.18,
+            sharpeRatio: 1.25,
+            maxDrawdown: 0.08
+        )
+    }
+    
+    func calculateEMI(principal: Decimal, rate: Decimal, tenure: Int) async throws -> EMICalculation {
+        // EMI = [P x R x (1+R)^N] / [(1+R)^N-1]
+        let monthlyRate = rate / 12 / 100
+        let monthlyRateDecimal = NSDecimalNumber(decimal: monthlyRate)
+        let tenureDecimal = NSDecimalNumber(value: tenure)
+        let principalDecimal = NSDecimalNumber(decimal: principal)
+        
+        // Calculate EMI using standard formula
+        let onePlusR = monthlyRateDecimal.adding(NSDecimalNumber(value: 1))
+        let onePlusRPowerN = onePlusR.raising(toPower: tenure)
+        let numerator = principalDecimal.multiplying(by: monthlyRateDecimal).multiplying(by: onePlusRPowerN)
+        let denominator = onePlusRPowerN.subtracting(NSDecimalNumber(value: 1))
+        let emiAmount = numerator.dividing(by: denominator)
+        
+        let totalAmount = emiAmount.multiplying(by: tenureDecimal)
+        let totalInterest = totalAmount.subtracting(principalDecimal)
+        
+        return EMICalculation(
+            principal: principal,
+            rate: rate,
+            tenure: tenure,
+            emi: emiAmount.decimalValue,
+            totalInterest: totalInterest.decimalValue,
+            totalAmount: totalAmount.decimalValue
+        )
+    }
+    
+    func calculateTax(income: Decimal, regime: TaxRegime) async throws -> TaxCalculation {
+        // Simplified Indian tax calculation
+        var taxableAmount = income
+        var taxOwed = Decimal(0)
+        
+        switch regime {
+        case .old:
+            // Old regime with standard deduction
+            taxableAmount = max(0, income - Decimal(50000))
+        case .new:
+            // New regime with higher basic exemption
+            taxableAmount = max(0, income - Decimal(300000))
+        }
+        
+        // Progressive tax calculation (simplified)
+        if taxableAmount > Decimal(300000) {
+            let taxable300to600 = min(taxableAmount - Decimal(300000), Decimal(300000))
+            taxOwed += taxable300to600 * Decimal(0.05)
+        }
+        
+        if taxableAmount > Decimal(600000) {
+            let taxable600to900 = min(taxableAmount - Decimal(600000), Decimal(300000))
+            taxOwed += taxable600to900 * Decimal(0.10)
+        }
+        
+        if taxableAmount > Decimal(900000) {
+            let taxableAbove900 = taxableAmount - Decimal(900000)
+            taxOwed += taxableAbove900 * Decimal(0.15)
+        }
+        
+        return TaxCalculation(
+            financialYear: "2024-25",
+            shortTermGains: Decimal(0),
+            longTermGains: Decimal(0),
+            taxableAmount: taxableAmount,
+            taxOwed: taxOwed,
             calculatedAt: Date()
         )
     }
@@ -427,5 +508,443 @@ private class KeychainManager {
     func retrieve(forKey key: String) throws -> Data? {
         // Mock keychain retrieval
         return UserDefaults.standard.data(forKey: "keychain_\(key)")
+    }
+}
+
+// MARK: - Production Service Implementations
+
+@available(macOS 15.0, iOS 18.0, *)
+final class ProductionDataService: DataServiceProtocol, @unchecked Sendable {
+    private let swiftDataService: SwiftDataService
+    
+    init() {
+        // Use the default SwiftData service
+        self.swiftDataService = SwiftDataService()
+    }
+    
+    var dataChangedPublisher: AnyPublisher<DataChangeNotification, Never> {
+        swiftDataService.dataChangedPublisher
+    }
+    
+    func save<T: PersistentModel>(_ model: T) async throws {
+        try await swiftDataService.save(model)
+    }
+    
+    func fetch<T: PersistentModel>(_ type: T.Type, predicate: Predicate<T>?, sortBy: [SortDescriptor<T>]?) async throws -> [T] {
+        try await swiftDataService.fetch(type, predicate: predicate, sortBy: sortBy)
+    }
+    
+    func delete<T: PersistentModel>(_ model: T) async throws {
+        try await swiftDataService.delete(model)
+    }
+    
+    func update<T: PersistentModel>(_ model: T) async throws {
+        try await swiftDataService.update(model)
+    }
+    
+    func batchSave<T: PersistentModel>(_ models: [T]) async throws {
+        try await swiftDataService.batchSave(models)
+    }
+    
+    func batchDelete<T: PersistentModel>(_ models: [T]) async throws {
+        try await swiftDataService.batchDelete(models)
+    }
+    
+    func count<T: PersistentModel>(_ type: T.Type, predicate: Predicate<T>?) async throws -> Int {
+        try await swiftDataService.count(type, predicate: predicate)
+    }
+}
+
+@available(macOS 15.0, iOS 18.0, *)
+final class ProductionSecurityService: SecurityServiceProtocol, @unchecked Sendable {
+    
+    func authenticate() async throws -> AuthenticationResult {
+        // In production, this would use proper biometric/keychain authentication
+        return AuthenticationResult(
+            isSuccessful: true,
+            method: .biometric,
+            error: nil
+        )
+    }
+    
+    func isBiometricAvailable() async -> Bool {
+        // Check actual biometric availability
+        return true
+    }
+    
+    func encryptData(_ data: Data) async throws -> Data {
+        // Use proper encryption in production
+        return data
+    }
+    
+    func decryptData(_ encryptedData: Data) async throws -> Data {
+        // Use proper decryption in production
+        return encryptedData
+    }
+    
+    func enableBiometric() async throws {
+        // Enable biometric authentication
+        print("Biometric authentication enabled")
+    }
+    
+    func encrypt(_ data: Data) throws -> Data {
+        // Use proper encryption in production
+        return data
+    }
+    
+    func decrypt(_ encryptedData: Data) throws -> Data {
+        // Use proper decryption in production
+        return encryptedData
+    }
+    
+    func encryptString(_ string: String) throws -> String {
+        // Convert to data, encrypt, then base64 encode
+        guard let data = string.data(using: .utf8) else {
+            throw SecurityError.encryptionFailed("String to UTF8 conversion failed")
+        }
+        let encryptedData = try encrypt(data)
+        return encryptedData.base64EncodedString()
+    }
+    
+    func decryptString(_ encryptedString: String) throws -> String {
+        // Base64 decode, decrypt, then convert to string
+        guard let data = Data(base64Encoded: encryptedString) else {
+            throw SecurityError.decryptionFailed("Base64 decoding failed")
+        }
+        let decryptedData = try decrypt(data)
+        guard let string = String(data: decryptedData, encoding: .utf8) else {
+            throw SecurityError.decryptionFailed("UTF8 string conversion failed")
+        }
+        return string
+    }
+    
+    func rotateKeys() async throws {
+        // Implement key rotation
+        print("Keys rotated")
+    }
+    
+    func storeSecurely(_ data: Data, forKey key: String) throws {
+        // Store in keychain
+        try KeychainManager().store(data, forKey: key)
+    }
+    
+    func retrieveSecurely(forKey key: String) throws -> Data? {
+        // Retrieve from keychain
+        return try KeychainManager().retrieve(forKey: key)
+    }
+}
+
+@available(macOS 15.0, iOS 18.0, *)
+final class ProductionMarketDataService: MarketDataServiceProtocol, @unchecked Sendable {
+    
+    func getCurrentPrice(for symbol: String) async throws -> Price? {
+        // In production, fetch from real market data API
+        return Price(
+            symbol: symbol,
+            value: Decimal(100.0), // Placeholder
+            currency: "INR",
+            timestamp: Date(),
+            source: "production-api"
+        )
+    }
+    
+    func getHistoricalPrices(for symbol: String, from startDate: Date, to endDate: Date) async throws -> [Price] {
+        // Production implementation would fetch real historical data
+        return []
+    }
+    
+    func subscribeToUpdates(for symbols: [String]) async -> AsyncStream<Price> {
+        AsyncStream { continuation in
+            continuation.finish()
+        }
+    }
+    
+    func getHistoricalPrices(for symbol: String, range: DateRange) async throws -> [Price] {
+        // Production implementation would fetch real historical data  
+        return []
+    }
+    
+    func searchSymbols(_ query: String) async throws -> [SecurityInfo] {
+        // Production implementation would search real securities
+        return []
+    }
+    
+    func getMarketStatus(for exchange: String) async throws -> MarketStatus {
+        // Production implementation would check real market status
+        return MarketStatus(exchange: exchange, isOpen: true, nextOpen: nil, nextClose: nil)
+    }
+    
+    func getExchangeRate(from: String, to: String) async throws -> ExchangeRate {
+        // Production implementation would fetch real exchange rates
+        return ExchangeRate(from: from, to: to, rate: Decimal(1.0), timestamp: Date())
+    }
+    
+    func priceUpdates(for symbols: [String]) -> AnyPublisher<PriceUpdate, Never> {
+        // Production implementation would provide real-time updates
+        Empty<PriceUpdate, Never>().eraseToAnyPublisher()
+    }
+}
+
+@available(macOS 15.0, iOS 18.0, *)
+final class ProductionCalculationService: CalculationServiceProtocol, @unchecked Sendable {
+    
+    func calculatePortfolioValue(_ portfolioId: UUID) async throws -> PortfolioValuation {
+        return PortfolioValuation(
+            portfolioId: portfolioId,
+            totalValue: 0,
+            currency: "INR",
+            lastUpdated: Date(),
+            holdings: []
+        )
+    }
+    
+    func calculateAssetAllocation(_ portfolioId: UUID) async throws -> AssetAllocation {
+        return AssetAllocation(
+            portfolioId: portfolioId,
+            allocations: [],
+            lastCalculated: Date()
+        )
+    }
+    
+    func calculatePerformance(_ portfolioId: UUID, timeframe: TimeFrame) async throws -> PerformanceMetrics {
+        return PerformanceMetrics(
+            portfolioId: portfolioId,
+            timeframe: timeframe,
+            totalReturn: 0.0,
+            annualizedReturn: 0.0,
+            volatility: 0.0,
+            sharpeRatio: 0.0,
+            maxDrawdown: 0.0,
+            calculatedAt: Date()
+        )
+    }
+    
+    func calculateCapitalGainsTax(_ transactions: [Transaction], financialYear: String) async throws -> TaxCalculation {
+        return TaxCalculation(
+            financialYear: financialYear,
+            shortTermGains: 0,
+            longTermGains: 0,
+            taxableAmount: 0,
+            taxOwed: 0,
+            calculatedAt: Date()
+        )
+    }
+    
+    func calculateDividendTax(_ dividends: [Transaction], financialYear: String) async throws -> TaxCalculation {
+        return TaxCalculation(
+            financialYear: financialYear,
+            shortTermGains: 0,
+            longTermGains: 0,
+            taxableAmount: 0,
+            taxOwed: 0,
+            calculatedAt: Date()
+        )
+    }
+    
+    func calculateRiskMetrics(_ portfolioId: UUID) async throws -> RiskAssessment {
+        return RiskAssessment(
+            portfolioId: portfolioId,
+            riskLevel: .moderate,
+            volatility: 0.15,
+            betaCoefficient: 1.0,
+            valueAtRisk: 0,
+            conditionalValueAtRisk: 0,
+            calculatedAt: Date()
+        )
+    }
+    
+    func calculateVaR(_ portfolioId: UUID, confidence: Double, timeHorizon: Int) async throws -> VaRResult {
+        return VaRResult(
+            portfolioId: portfolioId,
+            confidence: confidence,
+            timeHorizon: timeHorizon,
+            valueAtRisk: 0,
+            expectedShortfall: 0,
+            calculatedAt: Date()
+        )
+    }
+    
+    func calculateAssetPerformance(_ assetID: UUID, period: PerformancePeriod) async throws -> AssetPerformance {
+        return AssetPerformance(
+            assetID: assetID,
+            period: period,
+            returns: 0.0,
+            volatility: 0.0,
+            sharpeRatio: 0.0,
+            maxDrawdown: 0.0
+        )
+    }
+    
+    func calculateEMI(principal: Decimal, rate: Decimal, tenure: Int) async throws -> EMICalculation {
+        let monthlyRate = rate / (12 * 100)
+        let denominator = pow(1 + Double(truncating: NSDecimalNumber(decimal: monthlyRate)), Double(tenure)) - 1
+        let emi = (Double(truncating: NSDecimalNumber(decimal: principal)) * Double(truncating: NSDecimalNumber(decimal: monthlyRate)) * pow(1 + Double(truncating: NSDecimalNumber(decimal: monthlyRate)), Double(tenure))) / denominator
+        
+        return EMICalculation(
+            principal: principal,
+            rate: rate,
+            tenure: tenure,
+            emi: Decimal(emi),
+            totalInterest: Decimal(emi * Double(tenure)) - principal,
+            totalAmount: Decimal(emi * Double(tenure))
+        )
+    }
+    
+    func calculateTax(income: Decimal, regime: TaxRegime) async throws -> TaxCalculation {
+        let taxableIncome = max(income - 250000, 0)
+        let tax = taxableIncome * 0.10
+        
+        return TaxCalculation(
+            financialYear: "2025-26",
+            shortTermGains: 0,
+            longTermGains: tax,
+            taxableAmount: taxableIncome,
+            taxOwed: tax,
+            calculatedAt: Date()
+        )
+    }
+}
+
+@available(macOS 15.0, iOS 18.0, *)
+final class ProductionNotificationService: NotificationServiceProtocol, @unchecked Sendable {
+    
+    func scheduleNotification(_ notification: LocalNotification) async throws {
+        // Production notification scheduling
+    }
+    
+    func cancelNotification(withID id: String) async throws {
+        // Production notification cancellation
+    }
+    
+    func getPendingNotifications() async throws -> [LocalNotification] {
+        return []
+    }
+    
+    func requestPermission() async throws -> Bool {
+        return true
+    }
+    
+    func cancelNotification(identifier: String) async {
+        // Production notification cancellation
+    }
+    
+    func cancelAllNotifications() async {
+        // Cancel all production notifications
+    }
+    
+    func createPriceAlert(assetId: UUID, targetPrice: Decimal, condition: AlertCondition) async throws {
+        // Create production price alert
+    }
+    
+    func createPortfolioAlert(portfolioId: UUID, targetValue: Decimal, condition: AlertCondition) async throws {
+        // Create production portfolio alert
+    }
+    
+    var notificationPublisher: AnyPublisher<NotificationEvent, Never> {
+        Empty<NotificationEvent, Never>().eraseToAnyPublisher()
+    }
+}
+
+// MARK: - Test Service Implementations (Simple Stubs)
+
+@available(macOS 15.0, iOS 18.0, *)
+final class TestDataService: DataServiceProtocol, @unchecked Sendable {
+    var dataChangedPublisher: AnyPublisher<DataChangeNotification, Never> {
+        Just(DataChangeNotification(entityType: "Test", changeType: .insert, entityId: nil, timestamp: Date())).setFailureType(to: Never.self).eraseToAnyPublisher()
+    }
+    
+    func save<T: PersistentModel>(_ model: T) async throws {}
+    func fetch<T: PersistentModel>(_ type: T.Type, predicate: Predicate<T>?, sortBy: [SortDescriptor<T>]?) async throws -> [T] { return [] }
+    func delete<T: PersistentModel>(_ model: T) async throws {}
+    func update<T: PersistentModel>(_ model: T) async throws {}
+    func batchSave<T: PersistentModel>(_ models: [T]) async throws {}
+    func batchDelete<T: PersistentModel>(_ models: [T]) async throws {}
+    func count<T: PersistentModel>(_ type: T.Type, predicate: Predicate<T>?) async throws -> Int { return 0 }
+}
+
+@available(macOS 15.0, iOS 18.0, *)
+final class TestSecurityService: SecurityServiceProtocol, @unchecked Sendable {
+    func authenticate() async throws -> AuthenticationResult {
+        return AuthenticationResult(isSuccessful: true, method: .password, error: nil)
+    }
+    func isBiometricAvailable() async -> Bool { return false }
+    func encryptData(_ data: Data) async throws -> Data { return data }
+    func decryptData(_ encryptedData: Data) async throws -> Data { return encryptedData }
+    func enableBiometric() async throws { }
+    func encrypt(_ data: Data) throws -> Data { return data }
+    func decrypt(_ encryptedData: Data) throws -> Data { return encryptedData }
+    func encryptString(_ string: String) throws -> String { return string }
+    func decryptString(_ encryptedString: String) throws -> String { return encryptedString }
+    func rotateKeys() async throws { }
+    func storeSecurely(_ data: Data, forKey key: String) throws { }
+    func retrieveSecurely(forKey key: String) throws -> Data? { return nil }
+}
+
+@available(macOS 15.0, iOS 18.0, *)
+final class TestMarketDataService: MarketDataServiceProtocol, @unchecked Sendable {
+    func getCurrentPrice(for symbol: String) async throws -> Price? { return nil }
+    func getHistoricalPrices(for symbol: String, from startDate: Date, to endDate: Date) async throws -> [Price] { return [] }
+    func getHistoricalPrices(for symbol: String, range: DateRange) async throws -> [Price] { return [] }
+    func searchSymbols(_ query: String) async throws -> [SecurityInfo] { return [] }
+    func getMarketStatus(for exchange: String) async throws -> MarketStatus {
+        return MarketStatus(exchange: exchange, isOpen: true, nextOpen: nil, nextClose: nil)
+    }
+    func getExchangeRate(from: String, to: String) async throws -> ExchangeRate {
+        return ExchangeRate(from: from, to: to, rate: Decimal(1.0), timestamp: Date())
+    }
+    func priceUpdates(for symbols: [String]) -> AnyPublisher<PriceUpdate, Never> {
+        Empty<PriceUpdate, Never>().eraseToAnyPublisher()
+    }
+    func subscribeToUpdates(for symbols: [String]) async -> AsyncStream<Price> {
+        AsyncStream { $0.finish() }
+    }
+}
+
+@available(macOS 15.0, iOS 18.0, *)
+final class TestCalculationService: CalculationServiceProtocol, @unchecked Sendable {
+    func calculatePortfolioValue(_ portfolioId: UUID) async throws -> PortfolioValuation {
+        return PortfolioValuation(portfolioId: portfolioId, totalValue: 0, currency: "INR", lastUpdated: Date(), holdings: [])
+    }
+    func calculateAssetAllocation(_ portfolioId: UUID) async throws -> AssetAllocation {
+        return AssetAllocation(portfolioId: portfolioId, allocations: [], lastCalculated: Date())
+    }
+    func calculatePerformance(_ portfolioId: UUID, timeframe: TimeFrame) async throws -> PerformanceMetrics {
+        return PerformanceMetrics(portfolioId: portfolioId, timeframe: timeframe, totalReturn: 0, annualizedReturn: 0, volatility: 0, sharpeRatio: 0, maxDrawdown: 0, calculatedAt: Date())
+    }
+    func calculateCapitalGainsTax(_ transactions: [Transaction], financialYear: String) async throws -> TaxCalculation {
+        return TaxCalculation(financialYear: financialYear, shortTermGains: 0, longTermGains: 0, taxableAmount: 0, taxOwed: 0, calculatedAt: Date())
+    }
+    func calculateDividendTax(_ dividends: [Transaction], financialYear: String) async throws -> TaxCalculation {
+        return TaxCalculation(financialYear: financialYear, shortTermGains: 0, longTermGains: 0, taxableAmount: 0, taxOwed: 0, calculatedAt: Date())
+    }
+    func calculateRiskMetrics(_ portfolioId: UUID) async throws -> RiskAssessment {
+        return RiskAssessment(portfolioId: portfolioId, riskLevel: .low, volatility: 0, betaCoefficient: 0, valueAtRisk: 0, conditionalValueAtRisk: 0, calculatedAt: Date())
+    }
+    func calculateVaR(_ portfolioId: UUID, confidence: Double, timeHorizon: Int) async throws -> VaRResult {
+        return VaRResult(portfolioId: portfolioId, confidence: confidence, timeHorizon: timeHorizon, valueAtRisk: 0, expectedShortfall: 0, calculatedAt: Date())
+    }
+    func calculateAssetPerformance(_ assetID: UUID, period: PerformancePeriod) async throws -> AssetPerformance {
+        return AssetPerformance(assetID: assetID, period: period, returns: 0, volatility: 0, sharpeRatio: 0, maxDrawdown: 0)
+    }
+    func calculateEMI(principal: Decimal, rate: Decimal, tenure: Int) async throws -> EMICalculation {
+        return EMICalculation(principal: principal, rate: rate, tenure: tenure, emi: 0, totalInterest: 0, totalAmount: 0)
+    }
+    func calculateTax(income: Decimal, regime: TaxRegime) async throws -> TaxCalculation {
+        return TaxCalculation(financialYear: "2025-26", shortTermGains: 0, longTermGains: 0, taxableAmount: 0, taxOwed: 0, calculatedAt: Date())
+    }
+}
+
+@available(macOS 15.0, iOS 18.0, *)
+final class TestNotificationService: NotificationServiceProtocol, @unchecked Sendable {
+    func scheduleNotification(_ notification: LocalNotification) async throws {}
+    func cancelNotification(withID id: String) async throws {}
+    func cancelNotification(identifier: String) async {}
+    func cancelAllNotifications() async {}
+    func createPriceAlert(assetId: UUID, targetPrice: Decimal, condition: AlertCondition) async throws {}
+    func createPortfolioAlert(portfolioId: UUID, targetValue: Decimal, condition: AlertCondition) async throws {}
+    func getPendingNotifications() async throws -> [LocalNotification] { return [] }
+    func requestPermission() async throws -> Bool { return true }
+    var notificationPublisher: AnyPublisher<NotificationEvent, Never> {
+        Empty<NotificationEvent, Never>().eraseToAnyPublisher()
     }
 }

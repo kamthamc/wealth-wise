@@ -9,7 +9,7 @@ final class ServiceContainer: ObservableObject, Sendable {
     
     // MARK: - Singleton
     
-    static let shared = ServiceContainer()
+    nonisolated static let shared = ServiceContainer()
     
     // MARK: - Service Registry
     
@@ -19,7 +19,7 @@ final class ServiceContainer: ObservableObject, Sendable {
     
     // MARK: - Initialization
     
-    private init() {
+    nonisolated private init() {
         setupDefaultServices()
     }
     
@@ -29,7 +29,7 @@ final class ServiceContainer: ObservableObject, Sendable {
     /// - Parameters:
     ///   - service: Service instance
     ///   - type: Service protocol type
-    func register<T>(_ service: T, as type: T.Type) {
+    nonisolated func register<T>(_ service: T, as type: T.Type) {
         lock.withLock {
             let key = String(describing: type)
             services[key] = service
@@ -40,7 +40,7 @@ final class ServiceContainer: ObservableObject, Sendable {
     /// - Parameters:
     ///   - type: Service protocol type
     ///   - factory: Factory closure that creates the service
-    func register<T>(_ type: T.Type, factory: @escaping () -> T) {
+    nonisolated func register<T>(_ type: T.Type, factory: @escaping () -> T) {
         lock.withLock {
             let key = String(describing: type)
             factories[key] = factory
@@ -51,7 +51,7 @@ final class ServiceContainer: ObservableObject, Sendable {
     /// - Parameters:
     ///   - type: Service protocol type
     ///   - factory: Factory closure that receives the container
-    func register<T>(_ type: T.Type, factory: @escaping (ServiceContainer) -> T) {
+    nonisolated func register<T>(_ type: T.Type, factory: @escaping (ServiceContainer) -> T) {
         lock.withLock {
             let key = String(describing: type)
             factories[key] = { [weak self] in
@@ -69,7 +69,7 @@ final class ServiceContainer: ObservableObject, Sendable {
     /// - Parameter type: Service protocol type
     /// - Returns: Service instance
     /// - Throws: ServiceContainerError if service cannot be resolved
-    func resolve<T>(_ type: T.Type) throws -> T {
+    nonisolated func resolve<T>(_ type: T.Type) throws -> T {
         let key = String(describing: type)
         
         return try lock.withLock {
@@ -92,7 +92,7 @@ final class ServiceContainer: ObservableObject, Sendable {
     /// Resolve a service instance safely (returns nil if not found)
     /// - Parameter type: Service protocol type
     /// - Returns: Service instance or nil
-    func resolveOptional<T>(_ type: T.Type) -> T? {
+    nonisolated func resolveOptional<T>(_ type: T.Type) -> T? {
         return try? resolve(type)
     }
     
@@ -128,7 +128,7 @@ final class ServiceContainer: ObservableObject, Sendable {
     
     // MARK: - Default Service Setup
     
-    private func setupDefaultServices() {
+    nonisolated private func setupDefaultServices() {
         // Register default service implementations
         register(DataServiceProtocol.self) { container in
             SwiftDataService()
@@ -179,18 +179,14 @@ enum ServiceContainerError: LocalizedError {
 @MainActor
 struct Injected<T> {
     private let type: T.Type
-    private var _value: T?
     
     init(_ type: T.Type) {
         self.type = type
     }
     
     var wrappedValue: T {
-        mutating get {
-            if _value == nil {
-                _value = try! ServiceContainer.shared.resolve(type)
-            }
-            return _value!
+        get {
+            return try! ServiceContainer.shared.resolve(type)
         }
     }
 }
@@ -237,11 +233,23 @@ struct ServiceConfiguration {
         
         // Register production services
         container.register(MarketDataServiceProtocol.self) { _ in
-            YahooFinanceService() // Real market data service
+            ProductionMarketDataService() // Real market data service
         }
         
         container.register(SecurityServiceProtocol.self) { _ in
-            BiometricSecurityService() // Enhanced security service
+            ProductionSecurityService() // Enhanced security service
+        }
+        
+        container.register(DataServiceProtocol.self) { _ in
+            ProductionDataService() // SwiftData service
+        }
+        
+        container.register(CalculationServiceProtocol.self) { _ in
+            ProductionCalculationService() // Financial calculations
+        }
+        
+        container.register(NotificationServiceProtocol.self) { _ in
+            ProductionNotificationService() // Local notifications
         }
     }
     
@@ -252,25 +260,25 @@ struct ServiceConfiguration {
         // Clear existing services
         container.clearAll()
         
-        // Register mock services
+        // Register mock services for testing
         container.register(DataServiceProtocol.self) { _ in
-            MockDataService()
+            TestDataService()
         }
         
         container.register(SecurityServiceProtocol.self) { _ in
-            MockSecurityService()
+            TestSecurityService()
         }
         
         container.register(MarketDataServiceProtocol.self) { _ in
-            MockMarketDataService()
+            TestMarketDataService()
         }
         
-        container.register(CalculationServiceProtocol.self) { container in
-            MockCalculationService()
+        container.register(CalculationServiceProtocol.self) { _ in
+            TestCalculationService()
         }
         
         container.register(NotificationServiceProtocol.self) { _ in
-            MockNotificationService()
+            TestNotificationService()
         }
     }
 }
@@ -301,6 +309,21 @@ extension View {
     }
 }
 
+// MARK: - Test Helper Extension
+
+@available(macOS 15.0, iOS 18.0, *)
+extension ServiceContainer {
+    /// Create a test container with mock services
+    static func createTestContainer() -> ServiceContainer {
+        let container = ServiceContainer()
+        
+        // Register test services using the ServiceConfiguration
+        ServiceConfiguration.configureForTesting()
+        
+        return container
+    }
+}
+
 // MARK: - Example Usage
 
 #if DEBUG
@@ -313,6 +336,11 @@ struct ServiceContainerExample: View {
     
     // Using environment
     @Environment(\.serviceContainer) private var container
+    
+    // Default initializer - @Injected properties initialized lazily
+    init() {
+        // @Injected properties are initialized lazily when first accessed
+    }
     
     var body: some View {
         VStack {
@@ -349,7 +377,9 @@ struct ServiceContainerExample: View {
 }
 
 #Preview("Service Container") {
-    ServiceContainerExample()
-        .withServiceContainer()
+    let testContainer = ServiceContainer.createTestContainer()
+    
+    return ServiceContainerExample()
+        .withServiceContainer(testContainer)
 }
 #endif

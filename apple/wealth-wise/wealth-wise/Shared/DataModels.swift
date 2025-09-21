@@ -6,8 +6,8 @@ final class Asset {
     var id: UUID
     var name: String
     var type: AssetType
-    var currentValue: Double
-    var purchasePrice: Double?
+    var currentValue: Decimal
+    var purchasePrice: Decimal?
     var purchaseDate: Date?
     var currency: String
     var notes: String?
@@ -17,8 +17,8 @@ final class Asset {
     init(
         name: String,
         type: AssetType,
-        currentValue: Double,
-        purchasePrice: Double? = nil,
+        currentValue: Decimal,
+        purchasePrice: Decimal? = nil,
         purchaseDate: Date? = nil,
         currency: String = "INR",
         notes: String? = nil
@@ -101,19 +101,21 @@ enum AssetType: String, CaseIterable, Codable {
 final class Portfolio {
     var id: UUID
     var name: String
+    var details: String
     var assets: [Asset]
     var createdAt: Date
     var updatedAt: Date
     
-    init(name: String) {
+    init(name: String, details: String = "") {
         self.id = UUID()
         self.name = name
+        self.details = details
         self.assets = []
         self.createdAt = Date()
         self.updatedAt = Date()
     }
     
-    var totalValue: Double {
+    var totalValue: Decimal {
         assets.reduce(0) { $0 + $1.currentValue }
     }
 }
@@ -121,22 +123,26 @@ final class Portfolio {
 @Model
 final class Transaction {
     var id: UUID
-    var assetId: UUID
+    var assetId: UUID?
     var type: TransactionType
-    var amount: Double
-    var quantity: Double?
-    var price: Double?
+    var amount: Decimal
+    var quantity: Decimal?
+    var price: Decimal?
     var date: Date
+    var transactionDescription: String
+    var category: TransactionCategory
     var notes: String?
     var createdAt: Date
     
     init(
-        assetId: UUID,
-        type: TransactionType,
-        amount: Double,
-        quantity: Double? = nil,
-        price: Double? = nil,
+        amount: Decimal,
         date: Date = Date(),
+        transactionDescription: String,
+        category: TransactionCategory,
+        assetId: UUID? = nil,
+        type: TransactionType = .other,
+        quantity: Decimal? = nil,
+        price: Decimal? = nil,
         notes: String? = nil
     ) {
         self.id = UUID()
@@ -146,6 +152,8 @@ final class Transaction {
         self.quantity = quantity
         self.price = price
         self.date = date
+        self.transactionDescription = transactionDescription
+        self.category = category
         self.notes = notes
         self.createdAt = Date()
     }
@@ -176,6 +184,26 @@ enum TransactionType: String, CaseIterable, Codable {
             return NSLocalizedString("transaction.stock_split", comment: "Stock split transaction type")
         case .other:
             return NSLocalizedString("transaction.other", comment: "Other transaction type")
+        }
+    }
+}
+
+enum TransactionCategory: String, CaseIterable, Codable {
+    case income = "income"
+    case expense = "expense"
+    case investment = "investment"
+    case transfer = "transfer"
+    
+    var displayName: String {
+        switch self {
+        case .income:
+            return NSLocalizedString("transaction.category.income", comment: "Income category")
+        case .expense:
+            return NSLocalizedString("transaction.category.expense", comment: "Expense category")
+        case .investment:
+            return NSLocalizedString("transaction.category.investment", comment: "Investment category")
+        case .transfer:
+            return NSLocalizedString("transaction.category.transfer", comment: "Transfer category")
         }
     }
 }
