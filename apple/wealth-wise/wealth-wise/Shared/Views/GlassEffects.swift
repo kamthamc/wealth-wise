@@ -68,12 +68,12 @@ struct GlassEffectModifier: ViewModifier {
             // This should not happen since we require macOS 15+ / iOS 18+
             content
                 .background(
-                    Color(.systemBackground),
+                    Color(NSColor.controlBackgroundColor),
                     in: RoundedRectangle(cornerRadius: 8)
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
-                        .stroke(Color(.systemGray4), lineWidth: 1)
+                        .stroke(Color(NSColor.separatorColor), lineWidth: 1)
                 )
         }
     }

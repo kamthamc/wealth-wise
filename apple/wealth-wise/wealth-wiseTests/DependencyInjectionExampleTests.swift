@@ -176,8 +176,8 @@ class MockDataService: DataServiceProtocol {
     func setupTestData() {
         // Create test portfolios
         portfolios = [
-            Portfolio(name: "Test Portfolio 1", description: "Test portfolio for unit testing"),
-            Portfolio(name: "Test Portfolio 2", description: "Another test portfolio")
+            Portfolio(name: "Test Portfolio 1", details: "Test portfolio for unit testing"),
+            Portfolio(name: "Test Portfolio 2", details: "Another test portfolio")
         ]
         
         // Create test transactions
@@ -185,13 +185,13 @@ class MockDataService: DataServiceProtocol {
             Transaction(
                 amount: 1000.0,
                 date: Date(),
-                description: "Test transaction 1",
+                transactionDescription: "Test transaction 1",
                 category: .income
             ),
             Transaction(
                 amount: -500.0,
                 date: Date().addingTimeInterval(-86400),
-                description: "Test transaction 2",
+                transactionDescription: "Test transaction 2",
                 category: .expense
             )
         ]
@@ -200,22 +200,20 @@ class MockDataService: DataServiceProtocol {
         assets = [
             Asset(
                 name: "Test Stock",
-                type: .equity,
+                type: .stock,
                 currentValue: 5000.0,
-                purchasePrice: 4000.0,
-                quantity: 10
+                purchasePrice: 4000.0
             ),
             Asset(
                 name: "Test Bond",
                 type: .bond,
                 currentValue: 10000.0,
-                purchasePrice: 9500.0,
-                quantity: 1
+                purchasePrice: 9500.0
             )
         ]
     }
     
-    func fetch<T>(_ type: T.Type, predicate: NSPredicate?, sortBy: [SortDescriptor<T>]) async throws -> [T] {
+    func fetch<T: PersistentModel>(_ type: T.Type, predicate: Predicate<T>?, sortBy: [SortDescriptor<T>]?) async throws -> [T] {
         switch type {
         case is Portfolio.Type:
             return portfolios as! [T]
@@ -228,7 +226,7 @@ class MockDataService: DataServiceProtocol {
         }
     }
     
-    func save<T>(_ object: T) async throws {
+    func save<T: PersistentModel>(_ object: T) async throws {
         // Simulate saving object
         switch object {
         case let portfolio as Portfolio:
@@ -250,7 +248,7 @@ class MockDataService: DataServiceProtocol {
         dataChangedPublisher.send(notification)
     }
     
-    func delete<T>(_ object: T) async throws {
+    func delete<T: PersistentModel>(_ object: T) async throws {
         // Simulate deletion
         let notification = DataChangeNotification(
             entityType: String(describing: type(of: object)),
@@ -260,7 +258,29 @@ class MockDataService: DataServiceProtocol {
         dataChangedPublisher.send(notification)
     }
     
-    func count<T>(_ type: T.Type, predicate: NSPredicate?) async throws -> Int {
+    func update<T: PersistentModel>(_ object: T) async throws {
+        // Simulate update
+        let notification = DataChangeNotification(
+            entityType: String(describing: type(of: object)),
+            changeType: .update,
+            objectID: UUID().uuidString
+        )
+        dataChangedPublisher.send(notification)
+    }
+    
+    func batchSave<T: PersistentModel>(_ models: [T]) async throws {
+        for model in models {
+            try await save(model)
+        }
+    }
+    
+    func batchDelete<T: PersistentModel>(_ models: [T]) async throws {
+        for model in models {
+            try await delete(model)
+        }
+    }
+    
+    func count<T: PersistentModel>(_ type: T.Type, predicate: Predicate<T>?) async throws -> Int {
         switch type {
         case is Portfolio.Type:
             return portfolios.count

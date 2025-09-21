@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 import SwiftData
 
 // Alternative macOS-specific app entry point (not used when @main is in wealth_wiseApp.swift)
@@ -126,8 +127,6 @@ class NavigationManager: ObservableObject {
         case reports
         case settings
     }
-    
-    private init() {}
     
     func navigateTo(_ view: AppView) {
         currentView = view
