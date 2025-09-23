@@ -88,6 +88,52 @@ When working with GitHub issues, use these MCP tools:
 7. Create PR → 8. Link to issue → 9. Request review
 ```
 
+## Git Operations Guidelines
+
+### Standard Commit Workflow
+All commits must be signed for security and authenticity:
+
+```bash
+# Stage changes
+git add .
+
+# Create signed commit with comprehensive message
+git commit -S -m "feat: implement feature description
+
+- Detailed implementation point 1
+- Detailed implementation point 2
+- Key technical achievement 3
+
+Fixes #issue-number"
+
+# Push to feature branch
+git push origin feature/branch-name
+```
+
+### Commit Message Standards
+- **Type**: Use conventional commit types (feat, fix, docs, style, refactor, test, chore)
+- **Scope**: Include relevant component/module when applicable
+- **Description**: Clear, concise summary of changes
+- **Body**: Detailed bullet points of key changes and technical details
+- **Footer**: Always include "Fixes #issue-number" for automatic issue closure
+
+### Commit Signing Requirements
+- **All commits must be signed** using GPG keys for security verification
+- Use `-S` flag with git commit to create signed commits
+- Ensure GPG key is properly configured in Git settings
+- Verify commit signatures appear in GitHub with "Verified" badge
+
+### Branch Management
+- Create feature branches with descriptive names: `feature/issue-{number}-{short-description}`
+- Keep branches focused on single features or bug fixes
+- Delete feature branches after successful merge
+
+### Pull Request Integration
+- Link PRs to issues using "Fixes #issue-number" in PR description
+- Include comprehensive technical documentation in PR body
+- Request appropriate reviewers based on code changes
+- Ensure CI/CD pipeline passes before requesting review
+
 ## Feature Implementation Guidelines
 
 ### Financial Data Processing

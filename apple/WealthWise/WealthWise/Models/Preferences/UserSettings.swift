@@ -163,6 +163,35 @@ public final class UserSettings: Codable {
     
     // MARK: - Settings Updates
     
+    /// Update a specific setting using KeyPath and mark as modified
+    public func updateSettings<T>(_ keyPath: WritableKeyPath<UserSettings, T>, value: T) {
+        switch keyPath {
+        case \UserSettings.primaryCurrency:
+            if let currencyValue = value as? SupportedCurrency {
+                primaryCurrency = currencyValue
+            }
+        case \UserSettings.primaryAudience:
+            if let audienceValue = value as? PrimaryAudience {
+                primaryAudience = audienceValue
+            }
+        case \UserSettings.hapticFeedbackEnabled:
+            if let boolValue = value as? Bool {
+                hapticFeedbackEnabled = boolValue
+            }
+        case \UserSettings.biometricAuthEnabled:
+            if let boolValue = value as? Bool {
+                biometricAuthEnabled = boolValue
+            }
+        case \UserSettings.autoLockTimeout:
+            if let timeValue = value as? TimeInterval {
+                autoLockTimeout = timeValue
+            }
+        default:
+            break // Ignore unsupported keypaths
+        }
+        lastModified = Date()
+    }
+    
     /// Update settings and mark as modified
     public func markAsModified() {
         lastModified = Date()
