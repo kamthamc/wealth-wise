@@ -91,3 +91,18 @@ iOSInjectionProject/
 
 # macOS specific
 .DS_Store
+
+# AI/LLM Generated Content and Logs
+logs/
+*.ai-log
+*.llm-output
+.copilot-workspace/
+.github-copilot-cache/
+
+# Cross-Platform Build Artifacts
+build/
+bin/
+obj/
+target/
+out/
+dist/

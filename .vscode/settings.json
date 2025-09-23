@@ -1,0 +1,9 @@
+{
+    "chat.agent.enabled": true,
+    "chat.agent.maxRequests": 100,
+    "chat.useAgentsMdFile": true,
+    "chat.checkpoints.enabled": true,
+    "chat.mcp.autostart": "newAndOutdated",
+    "chat.agent.thinkingStyle": "collapsedPreview",
+    "chat.useFileStorage": true
+}
