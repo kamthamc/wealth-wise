@@ -3,7 +3,7 @@ import SwiftUI
 import Combine
 
 /// Modern localization manager for WealthWise application
-@available(iOS 16.0, macOS 13.0, *)
+@available(iOS 18.6, macOS 15.6, *)
 @MainActor
 public final class LocalizationManager: ObservableObject {
     
@@ -244,11 +244,7 @@ public final class LocalizationManager: ObservableObject {
     private func updateLocaleInfo() {
         currentLocale = .current
         // Use backward compatible approach for RTL detection
-        if #available(macOS 13.0, iOS 16.0, *) {
-            isRTL = Locale.Language(identifier: currentLocale.language.languageCode?.identifier ?? "en").characterDirection == .rightToLeft
-        } else {
-            isRTL = Locale.characterDirection(forLanguage: currentLocale.language.languageCode?.identifier ?? "en") == .rightToLeft
-        }
+        isRTL = Locale.Language(identifier: currentLocale.language.languageCode?.identifier ?? "en").characterDirection == .rightToLeft
     }
     
     private func clearCache() {
@@ -287,7 +283,7 @@ public final class LocalizationManager: ObservableObject {
 
 // MARK: - SwiftUI Integration
 
-@available(iOS 16.0, macOS 13.0, *)
+@available(iOS 18.6, macOS 15.6, watchOS 11.6, *)
 extension Text {
     /// Initialize Text with localized string key
     public init(_ key: LocalizationManager.StringKey) {

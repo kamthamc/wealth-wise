@@ -1,0 +1,14 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build WealthWise (macOS)",
+			"type": "shell",
+			"command": "xcodebuild -workspace apple/WealthWise/WealthWise.xcodeproj/project.xcworkspace -scheme WealthWise -configuration Debug -destination 'platform=macOS' -quiet",
+			"problemMatcher": [
+				"$swiftc"
+			],
+			"group": "build"
+		}
+	]
+}
