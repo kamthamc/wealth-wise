@@ -1,6 +1,6 @@
 ---
 description: 'Universal feature development mode: analyze GitHub issues → create branch → implement → test → PR → merge (works for iOS, Android, Windows)'
-tools: ['semantic_search', 'grep_search', 'read_file', 'create_file', 'replace_string_in_file', 'multi_replace_string_in_file', 'run_in_terminal', 'get_errors', 'mcp_github_list_issues', 'mcp_github_get_issue', 'mcp_github_create_issue', 'mcp_github_add_issue_comment', 'mcp_github_update_issue', 'activate_github_pull_request_management']
+tools: ['edit', 'search', 'runCommands', 'runTasks', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'fetch', 'githubRepo', 'github']
 ---
 
 # Universal Feature Development Mode
@@ -26,6 +26,7 @@ You are in feature development mode. Your objective is to implement complete fea
    - Plan data models, services, and UI components
    - Consider testing strategy and validation approach
    - Estimate implementation complexity
+   - Provide summary of the approach in readable format
 
 ## Phase 2: Environment Setup
 

@@ -223,6 +223,8 @@ extension SupportedCurrency {
             return Locale(identifier: "pt_BR")
           case .MXN:
             return Locale(identifier: "es_MX")
+          case .MYR:
+            return Locale(identifier: "ms_MY")
           case .ZAR:
             return Locale(identifier: "en_ZA")
         }
@@ -235,7 +237,7 @@ extension SupportedCurrency {
             return 0
         case .INR, .USD, .EUR, .GBP, .AUD, .CAD, .CHF, .CNY, .SEK, .NZD, .SGD, .HKD, .NOK, .DKK, .PLN, .CZK, .RUB:
             return 2
-          case .BRL, .MXN, .ZAR:
+          case .BRL, .MXN, .MYR, .ZAR:
             return 2
         case .HUF:
             return 0

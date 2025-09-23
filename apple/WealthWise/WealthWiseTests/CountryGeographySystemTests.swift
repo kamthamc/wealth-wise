@@ -177,20 +177,20 @@ final class CountryGeographySystemTests: XCTestCase {
         XCTAssertEqual(NumberFormatStyle.japanese.displayName, "Japanese (Man/Oku)")
     }
     
-    // MARK: - DateFormatStyle Tests
+    // MARK: - AudienceDateFormatStyle Tests
     
-    func testDateFormatStyleProperties() {
+    func testAudienceDateFormatStyleProperties() {
         // Test all format styles have display names and examples
-        for style in DateFormatStyle.allCases {
+        for style in AudienceDateFormatStyle.allCases {
             XCTAssertFalse(style.displayName.isEmpty)
             XCTAssertFalse(style.rawValue.isEmpty)
             XCTAssertFalse(style.example.isEmpty)
         }
         
         // Test specific styles
-        XCTAssertEqual(DateFormatStyle.ddMMYYYY.displayName, "DD/MM/YYYY")
-        XCTAssertEqual(DateFormatStyle.mmDDYYYY.displayName, "MM/DD/YYYY")
-        XCTAssertEqual(DateFormatStyle.yyyyMMDD.displayName, "YYYY/MM/DD")
+        XCTAssertEqual(AudienceDateFormatStyle.ddMMYYYY.displayName, "DD/MM/YYYY")
+        XCTAssertEqual(AudienceDateFormatStyle.mmDDYYYY.displayName, "MM/DD/YYYY")
+        XCTAssertEqual(AudienceDateFormatStyle.yyyyMMDD.displayName, "YYYY/MM/DD")
     }
     
     // MARK: - CulturalPreferences Tests

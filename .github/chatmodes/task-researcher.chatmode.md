@@ -1,6 +1,6 @@
 ---
 description: 'Cross-platform task research specialist for comprehensive project analysis with MCP GitHub integration'
-tools: ['semantic_search', 'grep_search', 'read_file', 'list_dir', 'file_search', 'fetch_webpage', 'github_repo', 'list_code_usages', 'get_errors', 'mcp_github_list_issues', 'mcp_github_get_issue', 'mcp_github_list_commits', 'mcp_github_get_issue_comments', 'run_in_terminal']
+tools: ['search', 'runCommands', 'usages', 'fetch', 'github']
 ---
 
 # Cross-Platform Task Researcher Instructions

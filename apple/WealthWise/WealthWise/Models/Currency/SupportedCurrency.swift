@@ -25,6 +25,7 @@ public enum SupportedCurrency: String, CaseIterable, Codable {
     case BRL = "BRL"  // Brazilian Real
     case KRW = "KRW"  // South Korean Won
     case MXN = "MXN"  // Mexican Peso
+    case MYR = "MYR"  // Malaysian Ringgit
     case ZAR = "ZAR"  // South African Rand
     
     /// Default currency (Indian Rupee for Indian market focus)
@@ -55,6 +56,7 @@ public enum SupportedCurrency: String, CaseIterable, Codable {
         case .BRL: return "Brazilian Real"
         case .KRW: return "South Korean Won"
         case .MXN: return "Mexican Peso"
+        case .MYR: return "Malaysian Ringgit"
         case .ZAR: return "South African Rand"
         }
     }
@@ -84,6 +86,7 @@ public enum SupportedCurrency: String, CaseIterable, Codable {
         case .BRL: return "R$"
         case .KRW: return "₩"
         case .MXN: return "$"
+        case .MYR: return "RM"
         case .ZAR: return "R"
         }
     }
@@ -124,6 +127,7 @@ public enum SupportedCurrency: String, CaseIterable, Codable {
         case .BRL: return "pt_BR"
         case .KRW: return "ko_KR"
         case .MXN: return "es_MX"
+        case .MYR: return "ms_MY"
         case .ZAR: return "en_ZA"
         }
     }
