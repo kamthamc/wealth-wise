@@ -381,8 +381,6 @@ public final class AccessibilityPreferences: Codable {
     public var isAssistiveTechnologyActive: Bool {
         return voiceOverEnabled || switchControlEnabled || voiceControlEnabled
     }
-    
-
 }
 
 // MARK: - Supporting Types

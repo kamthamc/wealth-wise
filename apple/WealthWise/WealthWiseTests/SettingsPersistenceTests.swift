@@ -346,7 +346,7 @@ final class SettingsPersistenceTests: XCTestCase {
         // Configure complex nested objects
         settings.localization.appLanguage = .hindi
         settings.localization.numberSystem = .indian
-        settings.theme.selectedTheme = .vibrant
+        settings.theme.selectedTheme = .professional
         settings.theme.chartColorPalette = .warm
         settings.accessibility.voiceOverEnabled = true
         settings.accessibility.textSizeMultiplier = 1.5
@@ -360,7 +360,7 @@ final class SettingsPersistenceTests: XCTestCase {
         // Verify complex nested objects
         XCTAssertEqual(loadedSettings.localization.appLanguage, .hindi)
         XCTAssertEqual(loadedSettings.localization.numberSystem, .indian)
-        XCTAssertEqual(loadedSettings.theme.selectedTheme, .vibrant)
+        XCTAssertEqual(loadedSettings.theme.selectedTheme, .professional)
         XCTAssertEqual(loadedSettings.theme.chartColorPalette, .warm)
         XCTAssertEqual(loadedSettings.accessibility.voiceOverEnabled, true)
         XCTAssertEqual(loadedSettings.accessibility.textSizeMultiplier, 1.5)

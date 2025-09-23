@@ -295,9 +295,6 @@ public final class ThemePreferences: Codable {
         
         return issues
     }
-    
-
-
 }
 
 // MARK: - Supporting Types

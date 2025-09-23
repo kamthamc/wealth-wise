@@ -196,7 +196,6 @@ public final class UserSettings: Codable {
     public func markAsModified() {
         lastModified = Date()
     }
-    
     /// Reset to default settings
     public func resetToDefaults() {
         setupDefaultSettings()
@@ -206,9 +205,6 @@ public final class UserSettings: Codable {
         privacy = PrivacySettings()
         configureForAudience(primaryAudience)
     }
-    
-
-    
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(appVersion, forKey: .appVersion)

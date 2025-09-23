@@ -368,8 +368,6 @@ public final class PrivacySettings: Codable {
         
         return issues
     }
-    
-
 }
 
 // MARK: - Supporting Types

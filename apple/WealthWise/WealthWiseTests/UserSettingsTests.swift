@@ -102,7 +102,7 @@ final class UserSettingsTests: XCTestCase {
         }
         wait(for: [expectation], timeout: 1.0)
         
-        userSettings.updateSettings(\.primaryCurrency, value: .USD)
+        userSettings.updateSettings(for: \.primaryCurrency, value: .USD)
         
         XCTAssertEqual(userSettings.primaryCurrency, .USD)
         XCTAssertGreaterThan(userSettings.lastModified, originalModified)

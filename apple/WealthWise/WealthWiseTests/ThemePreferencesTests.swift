@@ -14,14 +14,14 @@ final class ThemePreferencesTests: XCTestCase {
     
     var themePreferences: ThemePreferences!
     
-    override func setUp() async throws {
-        try await super.setUp()
+    override func setUp() {
+        super.setUp()
         themePreferences = ThemePreferences()
     }
     
-    override func tearDown() async throws {
+    override func tearDown() {
         themePreferences = nil
-        try await super.tearDown()
+        super.tearDown()
     }
     
     // MARK: - Initialization Tests
