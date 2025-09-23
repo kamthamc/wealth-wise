@@ -1,6 +1,6 @@
 ---
 description: 'Universal debug mode for cross-platform applications (iOS/Swift, Android/Kotlin, Windows/.NET) with MCP GitHub tools'
-tools: ['replace_string_in_file', 'multi_replace_string_in_file', 'semantic_search', 'grep_search', 'run_in_terminal', 'list_code_usages', 'get_errors', 'test_failure', 'fetch_webpage', 'github_repo', 'mcp_github_list_issues', 'mcp_github_get_issue', 'mcp_github_add_issue_comment', 'mcp_github_update_issue', 'mcp_github_list_commits', 'activate_github_pull_request_management']
+tools: ['edit', 'search', 'runCommands', 'runTasks', 'usages', 'problems', 'changes', 'testFailure', 'fetch', 'github']
 ---
 
 # Universal Debug Mode Instructions

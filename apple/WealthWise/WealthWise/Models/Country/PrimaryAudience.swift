@@ -117,7 +117,7 @@ public enum PrimaryAudience: String, CaseIterable, Codable, Hashable {
     }
     
     /// Preferred date format style
-    public var dateFormatStyle: DateFormatStyle {
+    public var dateFormatStyle: AudienceDateFormatStyle {
         switch self {
         case .indian: return .ddMMYYYY  // DD/MM/YYYY
         case .american: return .mmDDYYYY  // MM/DD/YYYY
@@ -236,7 +236,7 @@ public enum NumberFormatStyle: String, CaseIterable, Codable {
 }
 
 /// Date formatting styles for different audiences
-public enum DateFormatStyle: String, CaseIterable, Codable {
+public enum AudienceDateFormatStyle: String, CaseIterable, Codable {
     case ddMMYYYY = "ddMMYYYY"    // DD/MM/YYYY
     case mmDDYYYY = "mmDDYYYY"    // MM/DD/YYYY
     case yyyyMMDD = "yyyyMMDD"    // YYYY/MM/DD
