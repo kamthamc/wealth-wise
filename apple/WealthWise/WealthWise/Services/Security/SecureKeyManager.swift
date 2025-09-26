@@ -490,7 +490,7 @@ public struct KeyBackup: Codable, Sendable {
         self.secureKey = secureKey
         self.exportedAt = exportedAt
         self.version = version
-        self.securityLevel = SecurityLevel.high
+        self.securityLevel = .high
     }
 }
 
@@ -510,7 +510,7 @@ extension SecureKey: Codable {
       self.keySize       = try c.decode(Int.self, forKey: .keySize)
       self.createdAt     = try c.decode(Date.self, forKey: .createdAt)
       self.accessibility = try c.decode(KeyAccessibility.self, forKey: .accessibility)
-      self.securityLevel = SecurityLevel.maximum // Default for backward compatibility
+      self.securityLevel = .maximum // Default for backward compatibility
       self.keyDerivationContext = nil // Not encoded/decoded
     }
     

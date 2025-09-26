@@ -78,15 +78,16 @@ final class AssetDataModelsIntegrationTests: XCTestCase {
     
     func testTaxResidencyStatusPersistence() throws {
         let taxStatus = TaxResidencyStatus(
-            country: "US",
+            countryCode: "US",
             residencyType: .taxResident,
+            taxYear: "2024-25",
             effectiveDate: Date(),
-            expiryDate: Calendar.current.date(byAdding: .year, value: 1, to: Date())
+            documentType: .taxResidencyCertificate
         )
         
         // Add compliance obligations
-        taxStatus.addComplianceObligation(.fatcaReporting)
-        taxStatus.addComplianceObligation(.fbarFiling)
+        taxStatus.addComplianceObligation(.fatcaCompliance)
+        taxStatus.addComplianceObligation(.fbardReporting)
         
         // Insert into context
         modelContext.insert(taxStatus)
@@ -99,7 +100,7 @@ final class AssetDataModelsIntegrationTests: XCTestCase {
         
         // Query back from context
         let descriptor = FetchDescriptor<TaxResidencyStatus>(
-            predicate: #Predicate { $0.country == "US" }
+            predicate: #Predicate { $0.countryCode == "US" }
         )
         
         let retrievedStatuses = try modelContext.fetch(descriptor)
@@ -107,10 +108,10 @@ final class AssetDataModelsIntegrationTests: XCTestCase {
         XCTAssertEqual(retrievedStatuses.count, 1)
         let retrievedStatus = retrievedStatuses.first!
         
-        XCTAssertEqual(retrievedStatus.country, "US")
+        XCTAssertEqual(retrievedStatus.countryCode, "US")
         XCTAssertEqual(retrievedStatus.residencyType, .taxResident)
-        XCTAssertTrue(retrievedStatus.hasComplianceObligation(.fatcaReporting))
-        XCTAssertTrue(retrievedStatus.hasComplianceObligation(.fbarFiling))
+        XCTAssertTrue(retrievedStatus.complianceObligations.contains(.fatcaCompliance))
+        XCTAssertTrue(retrievedStatus.complianceObligations.contains(.fbardReporting))
     }
     
     func testPerformanceMetricsPersistence() throws {
@@ -361,7 +362,7 @@ final class AssetDataModelsIntegrationTests: XCTestCase {
         
         // Test ComplianceRequirementsTransformer
         let complianceTransformer = ComplianceRequirementsTransformer()
-        let originalRequirements: Set<ComplianceObligation> = [.fatcaReporting, .fbarFiling, .lrsCompliance]
+        let originalRequirements: Set<ComplianceObligation> = [.fatcaCompliance, .fbardReporting, .liberalizedRemittanceScheme]
         
         let transformedComplianceData = complianceTransformer.transformedValue(originalRequirements) as? Data
         XCTAssertNotNil(transformedComplianceData)
