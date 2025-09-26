@@ -216,14 +216,18 @@ final class FinancialModelsTests: XCTestCase {
     
     func testTransactionCreationPerformance() throws {
         measure {
+            var transactions: [Transaction] = []
             for i in 1...1000 {
-                let _ = Transaction(
+                let transaction = Transaction(
                     amount: Decimal(i * 100),
                     transactionDescription: "Test transaction \(i)",
                     transactionType: .expense,
                     category: .food_dining
                 )
+                transactions.append(transaction)
             }
+            // Use the array to prevent compiler optimization
+            XCTAssertEqual(transactions.count, 1000)
         }
     }
     

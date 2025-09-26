@@ -60,7 +60,8 @@ public final class Goal {
     
     // MARK: - Relationships
     
-    @Relationship(deleteRule: .cascade) public var linkedAssets: [CrossBorderAsset]?
+    // TODO: CrossBorderAsset relationship will be activated when Issue #20 (Asset Data Models) is fully integrated
+    // @Relationship(deleteRule: .cascade) public var linkedAssets: [CrossBorderAsset]?
     @Relationship(deleteRule: .cascade) public var linkedTransactions: [Transaction]?
     
     // MARK: - Initialization
@@ -161,12 +162,19 @@ public final class Goal {
         let monthlyReturn = expectedAnnualReturn / 100 / 12
         
         if monthlyReturn > 0 {
-            // Future value of annuity calculation using Double for complex math
-            let remainingDouble = Double(truncating: remainingAmount as NSDecimalNumber)
-            let returnDouble = Double(truncating: monthlyReturn as NSDecimalNumber)
-            let numerator = remainingDouble * returnDouble
-            let denominator = pow((1 + returnDouble), monthsRemaining) - 1
-            return Decimal(numerator / denominator)
+            // Future value of annuity calculation using NSDecimalNumber for precision
+            let remainingDecimal = NSDecimalNumber(decimal: remainingAmount)
+            let returnDecimal = NSDecimalNumber(decimal: monthlyReturn)
+            let monthsDecimal = NSDecimalNumber(value: monthsRemaining)
+            let onePlusReturn = returnDecimal.adding(NSDecimalNumber(value: 1))
+            
+            // Use power approximation for NSDecimalNumber since raising(toPower:) has limitations
+            let powerResult = pow(onePlusReturn.doubleValue, monthsRemaining)
+            let denominator = NSDecimalNumber(value: powerResult).subtracting(NSDecimalNumber(value: 1))
+            let numerator = remainingDecimal.multiplying(by: returnDecimal)
+            
+            guard denominator.doubleValue != 0 else { return Decimal.zero }
+            return numerator.dividing(by: denominator).decimalValue
         } else {
             // Simple division if no expected return
             return remainingAmount / Decimal(monthsRemaining)

@@ -300,9 +300,20 @@ public final class Transaction {
         }
     }
     
-    /// Get tax bracket rate (assuming 30% for high earners)
+    /// Get tax bracket rate based on user's income bracket
+    /// TODO: This should be calculated based on user's actual income and tax jurisdiction
+    /// For now, using conservative estimate for high-income bracket
     private func getTaxBracketRate() -> Decimal {
-        return 0.30 // This should be calculated based on user's income
+        // This is a placeholder implementation - should be replaced with proper tax calculation
+        // when Tax Calculation Service (Issue #29) is implemented
+        return getUserTaxBracket() // Will be implemented in future tax service integration
+    }
+    
+    /// Get user's applicable tax bracket (placeholder for future tax service integration)
+    private func getUserTaxBracket() -> Decimal {
+        // Conservative estimate for demonstration purposes
+        // Will be replaced with actual user tax bracket calculation
+        return 0.30 // 30% bracket for high earners
     }
     
     /// Get applicable tax section
