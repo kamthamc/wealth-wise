@@ -128,3 +128,201 @@
 "format.million" = "Million";
 "format.billion" = "Billion";
 "format.thousand" = "Thousand";
+
+/* Financial Models - Goals */
+"goal_type_investment" = "Investment";
+"goal_type_savings" = "Savings";
+"goal_type_retirement" = "Retirement";
+"goal_type_education" = "Education";
+"goal_type_property" = "Property";
+"goal_type_vacation" = "Vacation";
+"goal_type_emergency" = "Emergency Fund";
+"goal_type_business" = "Business";
+"goal_type_tax_saving" = "Tax Saving";
+"goal_type_debt_payoff" = "Debt Payoff";
+
+"priority_low" = "Low";
+"priority_medium" = "Medium";
+"priority_high" = "High";
+"priority_critical" = "Critical";
+
+"risk_conservative" = "Conservative";
+"risk_moderate" = "Moderate";
+"risk_aggressive" = "Aggressive";
+"risk_very_aggressive" = "Very Aggressive";
+
+"five_crore_goal_title" = "5 Crore Investment Goal";
+"five_crore_goal_description" = "Achieve 5 crore investment target in 3 years through systematic investing";
+"milestone_25_percent" = "25% Milestone";
+"milestone_50_percent" = "50% Milestone";
+"milestone_75_percent" = "75% Milestone";
+
+"contribution_to_stay_on_track" = "Monthly contribution to stay on track with your goal";
+"contribution_to_finish_early" = "Accelerated contribution to finish your goal early";
+"lump_sum_boost" = "One-time lump sum investment to boost your progress";
+
+/* Financial Models - Transactions */
+"transaction_type_income" = "Income";
+"transaction_type_expense" = "Expense";
+"transaction_type_investment" = "Investment";
+"transaction_type_transfer" = "Transfer";
+"transaction_type_refund" = "Refund";
+"transaction_type_dividend" = "Dividend";
+"transaction_type_interest" = "Interest";
+"transaction_type_capital_gain" = "Capital Gain";
+"transaction_type_capital_loss" = "Capital Loss";
+
+"category_salary" = "Salary";
+"category_mutual_funds" = "Mutual Funds";
+"category_food_dining" = "Food & Dining";
+"category_tax_saving" = "Tax Saving Investment";
+"category_home_loan" = "Home Loan EMI";
+
+"account_type_bank" = "Bank Account";
+"account_type_credit_card" = "Credit Card";
+"account_type_investment" = "Investment Account";
+"account_type_upi" = "UPI";
+"account_type_brokerage" = "Brokerage Account";
+
+"status_pending" = "Pending";
+"status_completed" = "Completed";
+"status_failed" = "Failed";
+"status_cancelled" = "Cancelled";
+"status_disputed" = "Disputed";
+"status_refunded" = "Refunded";
+
+"source_manual" = "Manual Entry";
+"source_bank_sync" = "Bank Sync";
+"source_sms_import" = "SMS Import";
+
+"tax_stcg" = "Short-term Capital Gain";
+"tax_ltcg" = "Long-term Capital Gain";
+"tax_dividend" = "Dividend Income";
+"tax_free" = "Tax-free";
+
+"frequency_daily" = "Daily";
+"frequency_weekly" = "Weekly";
+"frequency_monthly" = "Monthly";
+"frequency_quarterly" = "Quarterly";
+"frequency_annually" = "Annually";
+
+"attachment_receipt" = "Receipt";
+"attachment_invoice" = "Invoice";
+
+"salary_transaction_desc" = "Monthly salary credited";
+"tax_saving_80c_desc" = "Tax saving investment under section 80C";
+"tax_saving_80d_desc" = "Health insurance premium under section 80D";
+"tax_saving_home_loan_desc" = "Home loan EMI tax benefits under section 80C and 24";
+"tax_saving_general_desc" = "Tax saving benefit available";
+
+/* Financial Models - Salary Components */
+"component_basic_salary" = "Basic Salary";
+"component_hra" = "House Rent Allowance";
+"component_epfo" = "Employees' Provident Fund";
+"component_nps" = "National Pension System";
+"component_espp" = "Employee Stock Purchase Plan";
+"component_health_insurance" = "Health Insurance";
+"component_life_insurance" = "Life Insurance";
+
+"status_active" = "Active";
+"status_inactive" = "Inactive";
+"status_suspended" = "Suspended";
+"status_pending_docs" = "Pending Documentation";
+"status_under_review" = "Under Review";
+
+"fund_type_equity" = "Equity Fund";
+"fund_type_debt" = "Debt Fund";
+"fund_type_balanced" = "Balanced Fund";
+"fund_type_liquid" = "Liquid Fund";
+"fund_type_gilt" = "Government Securities Fund";
+
+"coverage_individual" = "Individual";
+"coverage_family" = "Family";
+"coverage_parents" = "Parents";
+"coverage_self_spouse" = "Self + Spouse";
+
+"withdrawal_retirement" = "Retirement";
+"withdrawal_medical" = "Medical Emergency";
+"withdrawal_home" = "Home Purchase";
+"withdrawal_education" = "Education";
+
+"return_interest" = "Interest";
+"return_dividend" = "Dividend";
+"return_capital_appreciation" = "Capital Appreciation";
+"return_bonus" = "Bonus";
+
+"alert_contribution" = "Contribution Alert";
+"alert_withdrawal" = "Withdrawal Alert";
+"alert_compliance" = "Compliance Alert";
+"alert_configuration" = "Configuration Alert";
+"alert_performance" = "Performance Alert";
+"alert_renewal" = "Renewal Alert";
+
+"severity_low" = "Low";
+"severity_medium" = "Medium";
+"severity_high" = "High";
+"severity_critical" = "Critical";
+
+"optimization_increase_contribution" = "Increase Contribution";
+"optimization_add_vpf" = "Add VPF";
+"optimization_allocation" = "Optimize Allocation";
+"optimization_insurance" = "Add Insurance";
+"optimization_restructure" = "Restructure Salary";
+
+/* Financial Models - Tax Calculations */
+"tax_residency_resident" = "Resident";
+"tax_residency_non_resident" = "Non-Resident";
+"tax_residency_rnor" = "RNOR";
+
+"filing_individual" = "Individual";
+"filing_huf" = "Hindu Undivided Family";
+"filing_company" = "Company";
+"filing_partnership" = "Partnership";
+"filing_trust" = "Trust";
+
+"treaty_reduced_withholding" = "Reduced Withholding Tax";
+"treaty_exemption" = "Tax Exemption";
+"treaty_credit_relief" = "Foreign Tax Credit";
+
+"optimization_80c" = "Section 80C Optimization";
+"optimization_nps" = "NPS Contribution";
+"optimization_health_insurance" = "Health Insurance";
+"optimization_regime_switch" = "Tax Regime Switch";
+"optimization_capital_gains" = "Capital Gains Planning";
+
+"risk_low" = "Low Risk";
+"risk_medium" = "Medium Risk";
+"risk_high" = "High Risk";
+
+"compliance_not_filed" = "Not Filed";
+"compliance_filed" = "Filed";
+"compliance_verified" = "Verified";
+"compliance_pending_payment" = "Pending Payment";
+"compliance_compliant" = "Compliant";
+"compliance_overdue" = "Overdue";
+"compliance_scrutiny" = "Under Scrutiny";
+
+"payment_advance_tax" = "Advance Tax";
+"payment_tds" = "TDS";
+"payment_self_assessment" = "Self Assessment Tax";
+
+"penalty_late_filing" = "Late Filing Fee";
+"penalty_interest" = "Interest on Delayed Payment";
+"penalty_234a" = "Section 234A Penalty";
+"penalty_234b" = "Section 234B Penalty";
+"penalty_234c" = "Section 234C Penalty";
+
+"notice_scrutiny" = "Scrutiny Notice";
+"notice_demand" = "Demand Notice";
+"notice_defective" = "Defective Return Notice";
+"notice_intimation" = "Intimation u/s 143(1)";
+
+"notice_status_received" = "Received";
+"notice_status_review" = "Under Review";
+"notice_status_responded" = "Responded";
+"notice_status_resolved" = "Resolved";
+"notice_status_escalated" = "Escalated";
+
+"document_form16" = "Form 16 - TDS Certificate";
+"document_form16a" = "Form 16A - TDS Certificate";
+"document_investment_proofs" = "Investment Proofs";
