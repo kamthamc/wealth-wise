@@ -7,7 +7,11 @@
 //
 
 import Foundation
+import CryptoKit
 import Security
+import OSLog
+
+// Import SecurityProtocols for SecureKey and SecurityLevel
 import CryptoKit
 import Combine
 import LocalAuthentication
@@ -165,7 +169,7 @@ public final class SecureKeyManager: SecureKeyManagementProtocol, ObservableObje
                 keySize: 256,
                 createdAt: Date(),
                 accessibility: .secureEnclave,
-                version: 2,
+                version: 1,
                 securityLevel: .maximum
             )
         }
@@ -220,7 +224,8 @@ public final class SecureKeyManager: SecureKeyManagementProtocol, ObservableObje
             algorithm: existingKey.algorithm,
             keySize: existingKey.keySize,
             createdAt: existingKey.createdAt,
-            accessibility: accessibility
+            accessibility: accessibility,
+            securityLevel: existingKey.securityLevel
         )
         
         // Store updated key
@@ -259,7 +264,8 @@ public final class SecureKeyManager: SecureKeyManagementProtocol, ObservableObje
             algorithm: algorithm,
             keySize: algorithm.keySize,
             createdAt: Date(),
-            accessibility: accessibility
+            accessibility: accessibility,
+            securityLevel: .maximum
         )
         
         try storeKey(secureKey, identifier: identifier, accessibility: accessibility)
@@ -538,7 +544,7 @@ public final class MockSecureKeyManager: SecureKeyManagementProtocol, Observable
     
     public func generateSecureKey(identifier: String, accessibility: KeyAccessibility) throws -> SecureKey {
         let keyData = Data((0..<32).map { _ in UInt8.random(in: 0...255) })
-        let key = SecureKey(keyData: keyData, identifier: identifier, accessibility: accessibility)
+        let key = SecureKey(keyData: keyData, identifier: identifier, accessibility: accessibility, securityLevel: .high)
         mockKeys[identifier] = key
         storedKeyIdentifiers.insert(identifier)
         return key
@@ -573,7 +579,8 @@ public final class MockSecureKeyManager: SecureKeyManagementProtocol, Observable
             algorithm: key.algorithm,
             keySize: key.keySize,
             createdAt: key.createdAt,
-            accessibility: accessibility
+            accessibility: accessibility,
+            securityLevel: key.securityLevel
         )
         mockKeys[identifier] = updatedKey
     }

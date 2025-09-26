@@ -17,6 +17,15 @@ Based on the issue or task platform, refer to the appropriate instruction file:
 
 ## Universal Development Principles
 
+### Localization First (All Platforms)
+- **ALL user-facing strings MUST be localized** using platform-specific methods
+- Apple: Use `NSLocalizedString("key", comment: "description")`
+- Android: Use `getString(R.string.key)` or `@string/key` in layouts
+- Windows: Use `ResourceLoader.GetForCurrentView().GetString("key")`
+- Never hardcode user-facing text in any language
+- Support cultural formatting for numbers, dates, currencies
+- Test with RTL languages and different locales
+
 ### Security First (All Platforms)
 - All financial data must be encrypted at rest
 - Use platform-specific secure storage mechanisms
@@ -88,6 +97,49 @@ When working with GitHub issues, use these MCP tools:
 7. Create PR → 8. Link to issue → 9. Request review
 ```
 
+## Common Development Issues & Solutions (Efficiency Reference)
+
+### Swift @Observable + Codable Issues
+```swift
+// ❌ WRONG - Default values cause compilation errors
+@Observable
+final class Settings: Codable {
+    var enabled: Bool = true  // Breaks Codable synthesis
+}
+
+// ✅ CORRECT - Initialize in init()
+@Observable  
+final class Settings: Codable {
+    var enabled: Bool
+    
+    init() {
+        enabled = true
+    }
+}
+```
+
+### Core Data Transformer Issues
+```swift
+// ❌ Generic parameter inference errors
+func validateEntity<T>(_ entity: T) -> ValidationResult
+
+// ✅ Add constraint for proper inference  
+func validateEntity<T: NSManagedObject>(_ entity: T) -> ValidationResult
+```
+
+### Unused Variable Warnings
+```swift
+// ❌ Unused immutable value warning
+let backupURL = getBackupURL()
+
+// ✅ Use underscore for intentionally unused values
+let _ = getBackupURL()
+```
+
+### Duplicate Declaration Errors
+- Check for duplicate method/property names in extensions
+- Rename conflicting static properties (e.g., `DateFormatter.backup` → `DateFormatter.migrationBackup`)
+
 ## Git Operations Guidelines
 
 ### Standard Commit Workflow
@@ -108,6 +160,33 @@ Fixes #issue-number"
 
 # Push to feature branch
 git push origin feature/branch-name
+```
+
+### Code Review Response Workflow
+When addressing code review comments:
+
+```bash
+# 1. Address all review comments in code
+# 2. Stage the fixes
+git add .
+
+# 3. Commit fixes with descriptive message
+git commit -S -m "fix: address code review comments
+
+- Fix specific issue 1 described in review
+- Fix specific issue 2 described in review
+- Improve code formatting and consistency
+
+Addresses review comments from PR #xx"
+
+# 4. Push fixes to feature branch
+git push origin feature/branch-name
+
+# 5. Request re-review using GitHub MCP tools
+# mcp_github_request_copilot_review
+
+# 6. Respond to review with summary comment
+# mcp_github_create_and_submit_pull_request_review
 ```
 
 ### Commit Message Standards
@@ -133,6 +212,39 @@ git push origin feature/branch-name
 - Include comprehensive technical documentation in PR body
 - Request appropriate reviewers based on code changes
 - Ensure CI/CD pipeline passes before requesting review
+
+### Code Review Comment Resolution
+When addressing code review feedback:
+
+1. **Analyze Each Comment**:
+   - Read all review comments carefully
+   - Prioritize critical issues over nitpicks
+   - Understand the reviewer's intent and context
+
+2. **Fix Implementation Issues**:
+   - Address compilation errors and logical bugs first
+   - Fix missing method implementations
+   - Correct invalid enum/type references
+   - Resolve Swift 6 concurrency issues
+
+3. **Code Quality Improvements**:
+   - Remove unnecessary whitespace and formatting issues
+   - Simplify overly complex code patterns
+   - Fix naming convention violations
+   - Improve code documentation where requested
+
+4. **Test Related Fixes**:
+   - Fix failing test methods and assertions
+   - Remove unnecessary async/await from simple test setup
+   - Correct test data and expected outcomes
+   - Ensure test coverage meets requirements
+
+5. **Response Documentation**:
+   - Create comprehensive review response comment
+   - Use `mcp_github_create_and_submit_pull_request_review` with COMMENT event
+   - Document what was fixed and how
+   - Mark resolved issues with ✅ status
+   - Request re-review using `mcp_github_request_copilot_review`
 
 ## Feature Implementation Guidelines
 

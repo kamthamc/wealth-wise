@@ -18,239 +18,299 @@ public final class PrivacySettings: Codable {
     // MARK: - Data Collection Settings
     
     /// Allow analytics data collection
-    public var analyticsEnabled: Bool = false
+    public var analyticsEnabled: Bool
     
     /// Allow crash reporting
-    public var crashReportingEnabled: Bool = true
+    public var crashReportingEnabled: Bool
     
     /// Allow usage statistics collection
-    public var usageStatisticsEnabled: Bool = false
+    public var usageStatisticsEnabled: Bool
     
     /// Allow performance monitoring
-    public var performanceMonitoringEnabled: Bool = false
+    public var performanceMonitoringEnabled: Bool
     
-    /// Share diagnostic data with developers
-    public var diagnosticDataSharingEnabled: Bool = false
+    /// Allow diagnostic data sharing
+    public var diagnosticDataSharingEnabled: Bool
     
-    // MARK: - Data Processing Settings
+    // MARK: - Consent Management
     
-    /// Data processing consent given
-    public var dataProcessingConsent: Bool = false
+    /// Consent for data processing
+    public var dataProcessingConsent: Bool
     
-    /// Marketing communications consent
-    public var marketingConsent: Bool = false
+    /// Consent for marketing communications
+    public var marketingConsent: Bool
     
-    /// Third-party data sharing consent
-    public var thirdPartyDataSharingConsent: Bool = false
+    /// Consent for third-party data sharing
+    public var thirdPartyDataSharingConsent: Bool
     
-    /// Personalization consent (for recommendations)
-    public var personalizationConsent: Bool = false
+    /// Consent for personalization
+    public var personalizationConsent: Bool
     
-    /// Cross-border data transfer consent
-    public var crossBorderDataTransferConsent: Bool = false
+    /// Consent for cross-border data transfer
+    public var crossBorderDataTransferConsent: Bool
     
     // MARK: - Data Retention Settings
     
-    /// Automatic data cleanup enabled
-    public var automaticDataCleanupEnabled: Bool = true
+    /// Enable automatic data cleanup
+    public var automaticDataCleanupEnabled: Bool
     
     /// Data retention period in days
-    public var dataRetentionPeriodDays: Int = 365
+    public var dataRetentionPeriod: Int
     
-    /// Delete inactive data automatically
-    public var deleteInactiveDataEnabled: Bool = true
+    /// Enable deletion of inactive data
+    public var deleteInactiveDataEnabled: Bool
     
     /// Inactive data threshold in days
-    public var inactiveDataThresholdDays: Int = 90
-    
-    /// Backup data retention period
-    public var backupRetentionPeriodDays: Int = 30
+    public var inactiveDataThreshold: Int
     
     // MARK: - Security Settings
     
-    /// Enable data encryption at rest
-    public var encryptionAtRestEnabled: Bool = true
+    /// Enable encryption at rest
+    public var encryptionAtRestEnabled: Bool
     
-    /// Enable data encryption in transit
-    public var encryptionInTransitEnabled: Bool = true
+    /// Enable encryption in transit
+    public var encryptionInTransitEnabled: Bool
     
-    /// Security level preference
-    public var securityLevel: PrivacySecurityLevel = .standard
+    /// Security level
+    public var securityLevel: SecurityLevel
     
-    /// Biometric data usage consent
-    public var biometricDataUsageConsent: Bool = false
+    /// Allow biometric data usage
+    public var biometricDataUsageConsent: Bool
     
-    /// Location data usage consent
-    public var locationDataUsageConsent: Bool = false
+    /// Allow location data usage
+    public var locationDataUsageConsent: Bool
     
-    // MARK: - Sharing and Sync Settings
+    // MARK: - Data Sharing Settings
     
-    /// Allow data synchronization across devices
-    public var dataSyncEnabled: Bool = false
+    /// Enable data synchronization
+    public var dataSyncEnabled: Bool
     
-    /// Cloud backup enabled
-    public var cloudBackupEnabled: Bool = false
+    /// Enable cloud backup
+    public var cloudBackupEnabled: Bool
     
-    /// Share data with family members
-    public var familySharingEnabled: Bool = false
+    /// Enable family sharing
+    public var familySharingEnabled: Bool
     
-    /// Allow export to external services
-    public var externalServiceExportEnabled: Bool = false
+    /// Enable external service export
+    public var externalServiceExportEnabled: Bool
     
-    /// Third-party integrations enabled
-    public var thirdPartyIntegrationsEnabled: Bool = false
+    /// Enable third-party integrations
+    public var thirdPartyIntegrationsEnabled: Bool
     
-    // MARK: - Communication Settings
+    // MARK: - Communication Preferences
     
-    /// In-app notifications enabled
-    public var inAppNotificationsEnabled: Bool = true
+    /// Enable in-app notifications
+    public var inAppNotificationsEnabled: Bool
     
-    /// Push notifications enabled
-    public var pushNotificationsEnabled: Bool = true
+    /// Enable push notifications
+    public var pushNotificationsEnabled: Bool
     
-    /// Email communications enabled
-    public var emailCommunicationsEnabled: Bool = false
+    /// Enable email communications
+    public var emailCommunicationsEnabled: Bool
     
-    /// SMS notifications enabled
-    public var smsNotificationsEnabled: Bool = false
+    /// Enable SMS notifications
+    public var smsNotificationsEnabled: Bool
     
-    /// Marketing notifications enabled
-    public var marketingNotificationsEnabled: Bool = false
+    /// Enable marketing notifications
+    public var marketingNotificationsEnabled: Bool
     
     // MARK: - Tracking and Cookies
     
-    /// Allow functional cookies
-    public var functionalCookiesEnabled: Bool = true
+    /// Enable functional cookies
+    public var functionalCookiesEnabled: Bool
     
-    /// Allow analytics cookies
-    public var analyticsCookiesEnabled: Bool = false
+    /// Enable analytics cookies
+    public var analyticsCookiesEnabled: Bool
     
-    /// Allow marketing cookies
-    public var marketingCookiesEnabled: Bool = false
+    /// Enable marketing cookies
+    public var marketingCookiesEnabled: Bool
     
-    /// Allow cross-site tracking
-    public var crossSiteTrackingEnabled: Bool = false
+    /// Enable cross-site tracking
+    public var crossSiteTrackingEnabled: Bool
     
-    /// Advertising identifier usage
-    public var advertisingIdentifierEnabled: Bool = false
+    /// Enable advertising identifier
+    public var advertisingIdentifierEnabled: Bool
     
-    // MARK: - Compliance Settings
+    // MARK: - Regional Compliance
     
-    /// GDPR compliance region
-    public var gdprRegion: Bool = false
+    /// GDPR region flag
+    public var gdprRegion: Bool
     
-    /// CCPA compliance region
-    public var ccpaRegion: Bool = false
+    /// CCPA region flag
+    public var ccpaRegion: Bool
     
-    /// Age verification completed
-    public var ageVerificationCompleted: Bool = false
+    /// Selected privacy regulation
+    public var privacyRegulation: PrivacyRegulation
     
-    /// Minimum age for service
-    public var minimumAge: Int = 13
-    
-    /// Parental consent required
-    public var parentalConsentRequired: Bool = false
-    
-    // MARK: - Audit and Logging
-    
-    /// Privacy settings version
-    public var privacySettingsVersion: Int = 1
-    
-    /// Consent timestamp
-    public var consentTimestamp: Date?
-    
-    /// Last privacy update date
-    public var lastPrivacyUpdateDate: Date = Date()
+    /// Last privacy policy acceptance date
+    public var privacyPolicyAcceptanceDate: Date?
     
     /// Privacy policy version accepted
     public var privacyPolicyVersionAccepted: String?
     
-    /// Terms of service version accepted
-    public var termsOfServiceVersionAccepted: String?
+    /// Data subject rights exercised
+    public var dataSubjectRightsExercised: Set<String>
+    
+    // MARK: - Audit Trail
+    
+    /// Last updated timestamp
+    public var lastUpdated: Date
+    
+    /// Settings change history
+    public var changeHistory: [PrivacySettingChange]
+    
+    /// Privacy review reminders enabled
+    public var reviewRemindersEnabled: Bool
+    
+    /// Next privacy review date
+    public var nextReviewDate: Date?
     
     // MARK: - Initialization
     
     public init() {
-        configureDefaults()
-    }
-    
-    public init(forRegion region: PrivacyRegion) {
-        configureDefaults()
-        configureForRegion(region)
-    }
-    
-    // MARK: - Configuration
-    
-    private func configureDefaults() {
-        // Set conservative defaults for privacy
+        // Initialize all properties with secure defaults
         analyticsEnabled = false
         crashReportingEnabled = true // Essential for app stability
         usageStatisticsEnabled = false
         performanceMonitoringEnabled = false
         diagnosticDataSharingEnabled = false
         
-        // Security defaults
+        dataProcessingConsent = false
+        marketingConsent = false
+        thirdPartyDataSharingConsent = false
+        personalizationConsent = false
+        crossBorderDataTransferConsent = false
+        
+        automaticDataCleanupEnabled = true
+        dataRetentionPeriod = 2555 // 7 years in days
+        deleteInactiveDataEnabled = true
+        inactiveDataThreshold = 730 // 2 years
+        
         encryptionAtRestEnabled = true
         encryptionInTransitEnabled = true
         securityLevel = .high
+        biometricDataUsageConsent = false
+        locationDataUsageConsent = false
         
-        // Communication defaults
+        dataSyncEnabled = false
+        cloudBackupEnabled = false
+        familySharingEnabled = false
+        externalServiceExportEnabled = false
+        thirdPartyIntegrationsEnabled = false
+        
         inAppNotificationsEnabled = true
         pushNotificationsEnabled = true
+        emailCommunicationsEnabled = false
+        smsNotificationsEnabled = false
+        marketingNotificationsEnabled = false
         
-        // Essential cookies only
         functionalCookiesEnabled = true
         analyticsCookiesEnabled = false
         marketingCookiesEnabled = false
+        crossSiteTrackingEnabled = false
+        advertisingIdentifierEnabled = false
         
-        lastPrivacyUpdateDate = Date()
+        gdprRegion = false
+        ccpaRegion = false
+        privacyRegulation = .other
+        privacyPolicyAcceptanceDate = nil
+        privacyPolicyVersionAccepted = nil
+        dataSubjectRightsExercised = []
+        
+        lastUpdated = Date()
+        changeHistory = []
+        reviewRemindersEnabled = true
+        nextReviewDate = Calendar.current.date(byAdding: .year, value: 1, to: Date())
+        
+        // Auto-configure based on region
+        configureForRegion()
     }
     
-    public func configureForRegion(_ region: PrivacyRegion) {
-        switch region {
+    public convenience init(forRegulation regulation: PrivacyRegulation) {
+        self.init()
+        self.privacyRegulation = regulation
+        configureForRegulation(regulation)
+    }
+    
+    // MARK: - Regional Configuration
+    
+    private func configureForRegion() {
+        let locale = Locale.current
+        
+        if let regionCode = locale.region?.identifier {
+            switch regionCode {
+            case "GB", "DE", "FR", "IT", "ES", "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "GR", "HU", "IE", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "SE":
+                // European Union - GDPR
+                gdprRegion = true
+                privacyRegulation = .europeanUnion
+                configureForRegulation(.europeanUnion)
+                
+            case "US":
+                if let stateCode = locale.region?.identifier.split(separator: "_").last, stateCode == "CA" {
+                    // California - CCPA
+                    ccpaRegion = true
+                    privacyRegulation = .california
+                } else {
+                    privacyRegulation = .other
+                }
+                
+            case "CA":
+                privacyRegulation = .canada
+                configureForRegulation(.canada)
+                
+            case "AU":
+                privacyRegulation = .australia
+                configureForRegulation(.australia)
+                
+            case "IN":
+                privacyRegulation = .india
+                configureForRegulation(.india)
+                
+            case "SG":
+                privacyRegulation = .singapore
+                configureForRegulation(.singapore)
+                
+            default:
+                privacyRegulation = .other
+            }
+        }
+    }
+    
+    private func configureForRegulation(_ regulation: PrivacyRegulation) {
+        switch regulation {
         case .europeanUnion:
+            // GDPR requires explicit consent
             gdprRegion = true
-            // GDPR requires explicit consent for all non-essential processing
-            analyticsEnabled = false
-            usageStatisticsEnabled = false
-            marketingConsent = false
-            thirdPartyDataSharingConsent = false
-            crossBorderDataTransferConsent = false
-            analyticsCookiesEnabled = false
-            marketingCookiesEnabled = false
+            dataProcessingConsent = true
+            securityLevel = .maximum
+            automaticDataCleanupEnabled = true
             
         case .california:
+            // CCPA requirements
             ccpaRegion = true
-            // CCPA allows opt-out approach
-            thirdPartyDataSharingConsent = false
             crossSiteTrackingEnabled = false
             advertisingIdentifierEnabled = false
             
         case .canada:
-            // PIPEDA compliance
+            // PIPEDA requirements
             dataProcessingConsent = true
-            crossBorderDataTransferConsent = false
             
         case .australia:
-            // Privacy Act compliance
+            // Privacy Act requirements
             dataProcessingConsent = true
-            crossBorderDataTransferConsent = false
             
         case .india:
-            // PDPB (proposed) compliance
+            // PDPB requirements (when enacted)
             dataProcessingConsent = true
-            crossBorderDataTransferConsent = false
             
         case .singapore:
-            // PDPA compliance
+            // PDPA requirements
             dataProcessingConsent = true
-            marketingConsent = false
             
         case .unitedKingdom:
-            // UK GDPR compliance
+            // UK GDPR
             gdprRegion = true
-            analyticsEnabled = false
-            marketingConsent = false
+            dataProcessingConsent = true
             
         case .other:
             // Conservative defaults
@@ -260,146 +320,284 @@ public final class PrivacySettings: Codable {
     
     // MARK: - Consent Management
     
-    /// Record user consent with timestamp
-    public func recordConsent() {
-        consentTimestamp = Date()
-        lastPrivacyUpdateDate = Date()
-    }
-    
-    /// Check if consent is still valid
-    public func isConsentValid() -> Bool {
-        guard let consentDate = consentTimestamp else { return false }
+    public func grantConsent(for type: ConsentType) {
+        switch type {
+        case .dataProcessing:
+            dataProcessingConsent = true
+        case .marketing:
+            marketingConsent = true
+        case .thirdPartySharing:
+            thirdPartyDataSharingConsent = true
+        case .personalization:
+            personalizationConsent = true
+        case .crossBorderTransfer:
+            crossBorderDataTransferConsent = true
+        case .biometricData:
+            biometricDataUsageConsent = true
+        case .locationData:
+            locationDataUsageConsent = true
+        }
         
-        // Consent valid for 12 months (can be adjusted based on regulation)
-        let expiryDate = Calendar.current.date(byAdding: .year, value: 1, to: consentDate)
-        return Date() < (expiryDate ?? Date())
+        recordConsentChange(type: type, granted: true)
     }
     
-    /// Withdraw all consent
-    public func withdrawAllConsent() {
-        analyticsEnabled = false
-        usageStatisticsEnabled = false
-        performanceMonitoringEnabled = false
-        diagnosticDataSharingEnabled = false
-        dataProcessingConsent = false
-        marketingConsent = false
-        thirdPartyDataSharingConsent = false
-        personalizationConsent = false
-        crossBorderDataTransferConsent = false
-        biometricDataUsageConsent = false
-        locationDataUsageConsent = false
-        dataSyncEnabled = false
-        cloudBackupEnabled = false
-        familySharingEnabled = false
-        externalServiceExportEnabled = false
-        thirdPartyIntegrationsEnabled = false
-        emailCommunicationsEnabled = false
-        smsNotificationsEnabled = false
-        marketingNotificationsEnabled = false
-        analyticsCookiesEnabled = false
-        marketingCookiesEnabled = false
-        crossSiteTrackingEnabled = false
-        advertisingIdentifierEnabled = false
+    public func revokeConsent(for type: ConsentType) {
+        switch type {
+        case .dataProcessing:
+            dataProcessingConsent = false
+        case .marketing:
+            marketingConsent = false
+            marketingNotificationsEnabled = false
+            marketingCookiesEnabled = false
+        case .thirdPartySharing:
+            thirdPartyDataSharingConsent = false
+            thirdPartyIntegrationsEnabled = false
+        case .personalization:
+            personalizationConsent = false
+            analyticsCookiesEnabled = false
+        case .crossBorderTransfer:
+            crossBorderDataTransferConsent = false
+            cloudBackupEnabled = false
+            dataSyncEnabled = false
+        case .biometricData:
+            biometricDataUsageConsent = false
+        case .locationData:
+            locationDataUsageConsent = false
+        }
         
-        recordConsent()
+        recordConsentChange(type: type, granted: false)
     }
     
-    // MARK: - Data Rights
-    
-    /// Get summary of collected data types
-    public func getDataCollectionSummary() -> [String] {
-        var dataTypes: [String] = []
+    private func recordConsentChange(type: ConsentType, granted: Bool) {
+        let change = PrivacySettingChange(
+            settingType: .consent,
+            settingName: type.rawValue,
+            oldValue: !granted,
+            newValue: granted,
+            timestamp: Date(),
+            reason: granted ? "User granted consent" : "User revoked consent"
+        )
         
-        if analyticsEnabled { dataTypes.append("Usage Analytics") }
-        if usageStatisticsEnabled { dataTypes.append("Usage Statistics") }
-        if performanceMonitoringEnabled { dataTypes.append("Performance Data") }
-        if crashReportingEnabled { dataTypes.append("Crash Reports") }
-        if biometricDataUsageConsent { dataTypes.append("Biometric Data") }
-        if locationDataUsageConsent { dataTypes.append("Location Data") }
-        if functionalCookiesEnabled { dataTypes.append("Functional Cookies") }
-        if analyticsCookiesEnabled { dataTypes.append("Analytics Cookies") }
-        if marketingCookiesEnabled { dataTypes.append("Marketing Cookies") }
+        changeHistory.append(change)
+        lastUpdated = Date()
+    }
+    
+    // MARK: - Data Subject Rights
+    
+    public func exerciseDataSubjectRight(_ right: String) {
+        dataSubjectRightsExercised.insert(right)
         
-        return dataTypes
+        let change = PrivacySettingChange(
+            settingType: .dataSubjectRight,
+            settingName: right,
+            oldValue: false,
+            newValue: true,
+            timestamp: Date(),
+            reason: "Data subject right exercised"
+        )
+        
+        changeHistory.append(change)
+        lastUpdated = Date()
     }
     
-    /// Check if user has right to data portability
-    public var hasDataPortabilityRight: Bool {
-        return gdprRegion || ccpaRegion
+    // MARK: - Privacy Review
+    
+    public func scheduleNextReview(in timeInterval: TimeInterval) {
+        nextReviewDate = Date().addingTimeInterval(timeInterval)
+        lastUpdated = Date()
     }
     
-    /// Check if user has right to be forgotten
-    public var hasRightToBeForgotten: Bool {
-        return gdprRegion
+    public func markReviewCompleted() {
+        scheduleNextReview(in: 365 * 24 * 60 * 60) // 1 year
+        
+        let change = PrivacySettingChange(
+            settingType: .review,
+            settingName: "privacy_review",
+            oldValue: false,
+            newValue: true,
+            timestamp: Date(),
+            reason: "Privacy review completed"
+        )
+        
+        changeHistory.append(change)
     }
     
     // MARK: - Validation
     
+    public func validateCompliance() -> [String] {
+        var violations: [String] = []
+        
+        if gdprRegion && !dataProcessingConsent {
+            violations.append("GDPR requires explicit consent for data processing")
+        }
+        
+        if ccpaRegion && crossSiteTrackingEnabled {
+            violations.append("CCPA restricts cross-site tracking without explicit consent")
+        }
+        
+        if !encryptionAtRestEnabled || !encryptionInTransitEnabled {
+            violations.append("Encryption is required for financial data")
+        }
+        
+        return violations
+    }
+    
+    /// Validate privacy settings for consistency
     public func validate() -> [String] {
-        var issues: [String] = []
-        
-        // Validate age requirements
-        if minimumAge < 13 {
-            issues.append("Minimum age cannot be less than 13")
-        }
-        
-        // Validate data retention periods
-        if dataRetentionPeriodDays < 1 || dataRetentionPeriodDays > 3650 {
-            issues.append("Data retention period must be between 1 and 3650 days")
-        }
-        
-        if inactiveDataThresholdDays < 1 || inactiveDataThresholdDays > dataRetentionPeriodDays {
-            issues.append("Inactive data threshold must be less than retention period")
-        }
-        
-        // Validate backup retention
-        if backupRetentionPeriodDays < 1 || backupRetentionPeriodDays > 365 {
-            issues.append("Backup retention period must be between 1 and 365 days")
-        }
-        
-        // Check for conflicting settings
-        if marketingNotificationsEnabled && !marketingConsent {
-            issues.append("Marketing notifications enabled without marketing consent")
-        }
-        
-        if thirdPartyIntegrationsEnabled && !thirdPartyDataSharingConsent {
-            issues.append("Third-party integrations enabled without consent")
-        }
-        
-        return issues
+        return validateCompliance()
+    }
+    
+    // MARK: - Codable Implementation
+    
+    private enum CodingKeys: String, CodingKey {
+        case analyticsEnabled
+        case crashReportingEnabled
+        case usageStatisticsEnabled
+        case performanceMonitoringEnabled
+        case diagnosticDataSharingEnabled
+        case dataProcessingConsent
+        case marketingConsent
+        case thirdPartyDataSharingConsent
+        case personalizationConsent
+        case crossBorderDataTransferConsent
+        case automaticDataCleanupEnabled
+        case dataRetentionPeriod
+        case deleteInactiveDataEnabled
+        case inactiveDataThreshold
+        case encryptionAtRestEnabled
+        case encryptionInTransitEnabled
+        case securityLevel
+        case biometricDataUsageConsent
+        case locationDataUsageConsent
+        case dataSyncEnabled
+        case cloudBackupEnabled
+        case familySharingEnabled
+        case externalServiceExportEnabled
+        case thirdPartyIntegrationsEnabled
+        case inAppNotificationsEnabled
+        case pushNotificationsEnabled
+        case emailCommunicationsEnabled
+        case smsNotificationsEnabled
+        case marketingNotificationsEnabled
+        case functionalCookiesEnabled
+        case analyticsCookiesEnabled
+        case marketingCookiesEnabled
+        case crossSiteTrackingEnabled
+        case advertisingIdentifierEnabled
+        case gdprRegion
+        case ccpaRegion
+        case privacyRegulation
+        case privacyPolicyAcceptanceDate
+        case privacyPolicyVersionAccepted
+        case dataSubjectRightsExercised
+        case lastUpdated
+        case changeHistory
+        case reviewRemindersEnabled
+        case nextReviewDate
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(analyticsEnabled, forKey: .analyticsEnabled)
+        try container.encode(crashReportingEnabled, forKey: .crashReportingEnabled)
+        try container.encode(usageStatisticsEnabled, forKey: .usageStatisticsEnabled)
+        try container.encode(performanceMonitoringEnabled, forKey: .performanceMonitoringEnabled)
+        try container.encode(diagnosticDataSharingEnabled, forKey: .diagnosticDataSharingEnabled)
+        try container.encode(dataProcessingConsent, forKey: .dataProcessingConsent)
+        try container.encode(marketingConsent, forKey: .marketingConsent)
+        try container.encode(thirdPartyDataSharingConsent, forKey: .thirdPartyDataSharingConsent)
+        try container.encode(personalizationConsent, forKey: .personalizationConsent)
+        try container.encode(crossBorderDataTransferConsent, forKey: .crossBorderDataTransferConsent)
+        try container.encode(automaticDataCleanupEnabled, forKey: .automaticDataCleanupEnabled)
+        try container.encode(dataRetentionPeriod, forKey: .dataRetentionPeriod)
+        try container.encode(deleteInactiveDataEnabled, forKey: .deleteInactiveDataEnabled)
+        try container.encode(inactiveDataThreshold, forKey: .inactiveDataThreshold)
+        try container.encode(encryptionAtRestEnabled, forKey: .encryptionAtRestEnabled)
+        try container.encode(encryptionInTransitEnabled, forKey: .encryptionInTransitEnabled)
+        try container.encode(securityLevel, forKey: .securityLevel)
+        try container.encode(biometricDataUsageConsent, forKey: .biometricDataUsageConsent)
+        try container.encode(locationDataUsageConsent, forKey: .locationDataUsageConsent)
+        try container.encode(dataSyncEnabled, forKey: .dataSyncEnabled)
+        try container.encode(cloudBackupEnabled, forKey: .cloudBackupEnabled)
+        try container.encode(familySharingEnabled, forKey: .familySharingEnabled)
+        try container.encode(externalServiceExportEnabled, forKey: .externalServiceExportEnabled)
+        try container.encode(thirdPartyIntegrationsEnabled, forKey: .thirdPartyIntegrationsEnabled)
+        try container.encode(inAppNotificationsEnabled, forKey: .inAppNotificationsEnabled)
+        try container.encode(pushNotificationsEnabled, forKey: .pushNotificationsEnabled)
+        try container.encode(emailCommunicationsEnabled, forKey: .emailCommunicationsEnabled)
+        try container.encode(smsNotificationsEnabled, forKey: .smsNotificationsEnabled)
+        try container.encode(marketingNotificationsEnabled, forKey: .marketingNotificationsEnabled)
+        try container.encode(functionalCookiesEnabled, forKey: .functionalCookiesEnabled)
+        try container.encode(analyticsCookiesEnabled, forKey: .analyticsCookiesEnabled)
+        try container.encode(marketingCookiesEnabled, forKey: .marketingCookiesEnabled)
+        try container.encode(crossSiteTrackingEnabled, forKey: .crossSiteTrackingEnabled)
+        try container.encode(advertisingIdentifierEnabled, forKey: .advertisingIdentifierEnabled)
+        try container.encode(gdprRegion, forKey: .gdprRegion)
+        try container.encode(ccpaRegion, forKey: .ccpaRegion)
+        try container.encode(privacyRegulation, forKey: .privacyRegulation)
+        try container.encode(privacyPolicyAcceptanceDate, forKey: .privacyPolicyAcceptanceDate)
+        try container.encode(privacyPolicyVersionAccepted, forKey: .privacyPolicyVersionAccepted)
+        try container.encode(dataSubjectRightsExercised, forKey: .dataSubjectRightsExercised)
+        try container.encode(lastUpdated, forKey: .lastUpdated)
+        try container.encode(changeHistory, forKey: .changeHistory)
+        try container.encode(reviewRemindersEnabled, forKey: .reviewRemindersEnabled)
+        try container.encode(nextReviewDate, forKey: .nextReviewDate)
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        analyticsEnabled = try container.decode(Bool.self, forKey: .analyticsEnabled)
+        crashReportingEnabled = try container.decode(Bool.self, forKey: .crashReportingEnabled)
+        usageStatisticsEnabled = try container.decode(Bool.self, forKey: .usageStatisticsEnabled)
+        performanceMonitoringEnabled = try container.decode(Bool.self, forKey: .performanceMonitoringEnabled)
+        diagnosticDataSharingEnabled = try container.decode(Bool.self, forKey: .diagnosticDataSharingEnabled)
+        dataProcessingConsent = try container.decode(Bool.self, forKey: .dataProcessingConsent)
+        marketingConsent = try container.decode(Bool.self, forKey: .marketingConsent)
+        thirdPartyDataSharingConsent = try container.decode(Bool.self, forKey: .thirdPartyDataSharingConsent)
+        personalizationConsent = try container.decode(Bool.self, forKey: .personalizationConsent)
+        crossBorderDataTransferConsent = try container.decode(Bool.self, forKey: .crossBorderDataTransferConsent)
+        automaticDataCleanupEnabled = try container.decode(Bool.self, forKey: .automaticDataCleanupEnabled)
+        dataRetentionPeriod = try container.decode(Int.self, forKey: .dataRetentionPeriod)
+        deleteInactiveDataEnabled = try container.decode(Bool.self, forKey: .deleteInactiveDataEnabled)
+        inactiveDataThreshold = try container.decode(Int.self, forKey: .inactiveDataThreshold)
+        encryptionAtRestEnabled = try container.decode(Bool.self, forKey: .encryptionAtRestEnabled)
+        encryptionInTransitEnabled = try container.decode(Bool.self, forKey: .encryptionInTransitEnabled)
+        securityLevel = try container.decode(SecurityLevel.self, forKey: .securityLevel)
+        biometricDataUsageConsent = try container.decode(Bool.self, forKey: .biometricDataUsageConsent)
+        locationDataUsageConsent = try container.decode(Bool.self, forKey: .locationDataUsageConsent)
+        dataSyncEnabled = try container.decode(Bool.self, forKey: .dataSyncEnabled)
+        cloudBackupEnabled = try container.decode(Bool.self, forKey: .cloudBackupEnabled)
+        familySharingEnabled = try container.decode(Bool.self, forKey: .familySharingEnabled)   
+        externalServiceExportEnabled = try container.decode(Bool.self, forKey: .externalServiceExportEnabled)
+        thirdPartyIntegrationsEnabled = try container.decode(Bool.self, forKey: .thirdPartyIntegrationsEnabled)
+        inAppNotificationsEnabled = try container.decode(Bool.self, forKey: .inAppNotificationsEnabled)
+        pushNotificationsEnabled = try container.decode(Bool.self, forKey: .pushNotificationsEnabled)
+        emailCommunicationsEnabled = try container.decode(Bool.self, forKey: .emailCommunicationsEnabled)
+        smsNotificationsEnabled = try container.decode(Bool.self, forKey: .smsNotificationsEnabled)
+        marketingNotificationsEnabled = try container.decode(Bool.self, forKey: .marketingNotificationsEnabled)
+        functionalCookiesEnabled = try container.decode(Bool.self, forKey: .functionalCookiesEnabled)
+        analyticsCookiesEnabled = try container.decode(Bool.self, forKey: .analyticsCookiesEnabled)
+        marketingCookiesEnabled = try container.decode(Bool.self, forKey: .marketingCookiesEnabled)
+        crossSiteTrackingEnabled = try container.decode(Bool.self, forKey: .crossSiteTrackingEnabled)
+        advertisingIdentifierEnabled = try container.decode(Bool.self, forKey: .advertisingIdentifierEnabled)
+        gdprRegion = try container.decode(Bool.self, forKey: .gdprRegion)
+        ccpaRegion = try container.decode(Bool.self, forKey: .ccpaRegion)
+        privacyRegulation = try container.decode(PrivacyRegulation.self, forKey: .privacyRegulation)
+        privacyPolicyAcceptanceDate = try container.decodeIfPresent(Date.self, forKey: .privacyPolicyAcceptanceDate)
+        privacyPolicyVersionAccepted = try container.decodeIfPresent(String.self, forKey: .privacyPolicyVersionAccepted)
+        dataSubjectRightsExercised = try container.decode(Set<String>.self, forKey: .dataSubjectRightsExercised)
+        lastUpdated = try container.decode(Date.self, forKey: .lastUpdated)
+        changeHistory = try container.decode([PrivacySettingChange].self, forKey: .changeHistory)
+        reviewRemindersEnabled = try container.decode(Bool.self, forKey: .reviewRemindersEnabled)
+        nextReviewDate = try container.decodeIfPresent(Date.self, forKey: .nextReviewDate)
     }
 }
 
 // MARK: - Supporting Types
 
-/// Security level preferences
-public enum PrivacySecurityLevel: String, CaseIterable, Codable {
-    case basic = "basic"
-    case standard = "standard"
-    case high = "high"
-    case maximum = "maximum"
-    
-    public var displayName: String {
-        switch self {
-        case .basic: return "Basic"
-        case .standard: return "Standard"
-        case .high: return "High"
-        case .maximum: return "Maximum"
-        }
-    }
-    
-    public var description: String {
-        switch self {
-        case .basic: return "Basic encryption and security measures"
-        case .standard: return "Standard encryption with biometric authentication"
-        case .high: return "High-level encryption with enhanced security features"
-        case .maximum: return "Maximum security with all advanced features enabled"
-        }
-    }
-}
+// SecurityLevel is defined in SecurityProtocols.swift to avoid duplicate declarations
 
-/// Privacy regulation regions
-public enum PrivacyRegion: String, CaseIterable, Codable {
+public enum PrivacyRegulation: String, CaseIterable, Codable {
     case europeanUnion = "eu"
     case california = "ca_us"
     case canada = "ca"
@@ -411,27 +609,82 @@ public enum PrivacyRegion: String, CaseIterable, Codable {
     
     public var displayName: String {
         switch self {
-        case .europeanUnion: return "European Union (GDPR)"
-        case .california: return "California, USA (CCPA)"
-        case .canada: return "Canada (PIPEDA)"
-        case .australia: return "Australia (Privacy Act)"
-        case .india: return "India (PDPB)"
-        case .singapore: return "Singapore (PDPA)"
-        case .unitedKingdom: return "United Kingdom (UK GDPR)"
-        case .other: return "Other"
+        case .europeanUnion: return NSLocalizedString("GDPR (EU)", comment: "European Union GDPR")
+        case .california: return NSLocalizedString("CCPA (California)", comment: "California Consumer Privacy Act")
+        case .canada: return NSLocalizedString("PIPEDA (Canada)", comment: "Personal Information Protection and Electronic Documents Act")
+        case .australia: return NSLocalizedString("Privacy Act (Australia)", comment: "Australian Privacy Act")
+        case .india: return NSLocalizedString("PDPB (India)", comment: "Personal Data Protection Bill")
+        case .singapore: return NSLocalizedString("PDPA (Singapore)", comment: "Personal Data Protection Act")
+        case .unitedKingdom: return NSLocalizedString("UK GDPR", comment: "United Kingdom GDPR")
+        case .other: return NSLocalizedString("Other/Regional", comment: "Other or regional privacy laws")
         }
     }
+}
+
+public enum ConsentType: String, CaseIterable, Codable {
+    case dataProcessing = "data_processing"
+    case marketing = "marketing"
+    case thirdPartySharing = "third_party_sharing"
+    case personalization = "personalization"
+    case crossBorderTransfer = "cross_border_transfer"
+    case biometricData = "biometric_data"
+    case locationData = "location_data"
+}
+
+public struct PrivacySettingChange: Codable {
+    public let settingType: SettingType
+    public let settingName: String
+    public let oldValue: Any
+    public let newValue: Any
+    public let timestamp: Date
+    public let reason: String
     
-    public var regulationName: String {
-        switch self {
-        case .europeanUnion: return "GDPR"
-        case .california: return "CCPA"
-        case .canada: return "PIPEDA"
-        case .australia: return "Privacy Act 1988"
-        case .india: return "PDPB (Proposed)"
-        case .singapore: return "PDPA"
-        case .unitedKingdom: return "UK GDPR"
-        case .other: return "Local Regulations"
-        }
+    public enum SettingType: String, Codable {
+        case consent = "consent"
+        case security = "security"
+        case dataRetention = "data_retention"
+        case communication = "communication"
+        case tracking = "tracking"
+        case dataSubjectRight = "data_subject_right"
+        case review = "review"
+    }
+    
+    private enum CodingKeys: String, CodingKey {
+        case settingType, settingName, timestamp, reason
+        case oldValueString, newValueString
+    }
+    
+    public init(settingType: SettingType, settingName: String, oldValue: Any, newValue: Any, timestamp: Date, reason: String) {
+        self.settingType = settingType
+        self.settingName = settingName
+        self.oldValue = oldValue
+        self.newValue = newValue
+        self.timestamp = timestamp
+        self.reason = reason
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        settingType = try container.decode(SettingType.self, forKey: .settingType)
+        settingName = try container.decode(String.self, forKey: .settingName)
+        timestamp = try container.decode(Date.self, forKey: .timestamp)
+        reason = try container.decode(String.self, forKey: .reason)
+        
+        let oldValueString = try container.decode(String.self, forKey: .oldValueString)
+        let newValueString = try container.decode(String.self, forKey: .newValueString)
+        
+        oldValue = oldValueString
+        newValue = newValueString
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(settingType, forKey: .settingType)
+        try container.encode(settingName, forKey: .settingName)
+        try container.encode(timestamp, forKey: .timestamp)
+        try container.encode(reason, forKey: .reason)
+        
+        try container.encode(String(describing: oldValue), forKey: .oldValueString)
+        try container.encode(String(describing: newValue), forKey: .newValueString)
     }
 }

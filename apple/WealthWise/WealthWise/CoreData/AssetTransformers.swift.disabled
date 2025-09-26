@@ -1,0 +1,192 @@
+import Foundation
+import CoreData
+
+// MARK: - Decimal Transformer
+
+/// Transformer for storing Decimal values in Core Data
+/// Converts Decimal to NSData using NSDecimalNumber for secure archiving
+@objc(DecimalTransformer)
+public final class DecimalTransformer: NSSecureUnarchiveFromDataTransformer, @unchecked Sendable {
+    
+    public static let name = NSValueTransformerName(rawValue: String(describing: DecimalTransformer.self))
+    
+    nonisolated public override static var allowedTopLevelClasses: [AnyClass] {
+        return [NSDecimalNumber.self]
+    }
+    
+    nonisolated public override static func allowsReverseTransformation() -> Bool {
+        return true
+    }
+    
+    nonisolated public override func transformedValue(_ value: Any?) -> Any? {
+        guard let decimal = value as? Decimal else { return nil }
+        let decimalNumber = NSDecimalNumber(decimal: decimal)
+        return try? NSKeyedArchiver.archivedData(withRootObject: decimalNumber, requiringSecureCoding: true)
+    }
+    
+    nonisolated public override func reverseTransformedValue(_ value: Any?) -> Any? {
+        guard let data = value as? Data else { return nil }
+        guard let decimalNumber = try? NSKeyedUnarchiver.unarchivedObject(
+            ofClass: NSDecimalNumber.self, 
+            from: data
+        ) else { return nil }
+        return decimalNumber.decimalValue
+    }
+}
+
+// MARK: - String Set Transformer
+
+/// Transformer for storing Set<String> values in Core Data
+/// Converts Set<String> to NSData using NSSet for secure archiving
+@objc(StringSetTransformer)
+public final class StringSetTransformer: NSSecureUnarchiveFromDataTransformer, @unchecked Sendable {
+    
+    public static let name = NSValueTransformerName(rawValue: String(describing: StringSetTransformer.self))
+    
+    nonisolated public override static var allowedTopLevelClasses: [AnyClass] {
+        return [NSSet.self, NSString.self]
+    }
+    
+    nonisolated public override static func allowsReverseTransformation() -> Bool {
+        return true
+    }
+    
+    nonisolated public override func transformedValue(_ value: Any?) -> Any? {
+        guard let stringSet = value as? Set<String> else { return nil }
+        let nsSet = NSSet(array: Array(stringSet))
+        return try? NSKeyedArchiver.archivedData(withRootObject: nsSet, requiringSecureCoding: true)
+    }
+    
+    nonisolated public override func reverseTransformedValue(_ value: Any?) -> Any? {
+        guard let data = value as? Data else { return nil }
+        guard let nsSet = try? NSKeyedUnarchiver.unarchivedObject(
+            ofClass: NSSet.self,
+            from: data
+        ) else { return nil }
+        return Set(nsSet.allObjects.compactMap { $0 as? String })
+    }
+}
+
+// MARK: - Dictionary Transformer
+
+/// Transformer for storing Dictionary values in Core Data
+/// Converts Dictionary to NSData using NSDictionary for secure archiving
+@objc(DictionaryTransformer)
+public final class DictionaryTransformer: NSSecureUnarchiveFromDataTransformer, @unchecked Sendable {
+    
+    public static let name = NSValueTransformerName(rawValue: String(describing: DictionaryTransformer.self))
+    
+    nonisolated public override static var allowedTopLevelClasses: [AnyClass] {
+        return [NSDictionary.self, NSString.self, NSNumber.self]
+    }
+    
+    nonisolated public override static func allowsReverseTransformation() -> Bool {
+        return true
+    }
+    
+    nonisolated public override func transformedValue(_ value: Any?) -> Any? {
+        guard let dictionary = value as? [String: Any] else { return nil }
+        let nsDictionary = NSDictionary(dictionary: dictionary)
+        return try? NSKeyedArchiver.archivedData(withRootObject: nsDictionary, requiringSecureCoding: true)
+    }
+    
+    nonisolated public override func reverseTransformedValue(_ value: Any?) -> Any? {
+        guard let data = value as? Data else { return nil }
+        guard let nsDictionary = try? NSKeyedUnarchiver.unarchivedObject(
+            ofClass: NSDictionary.self,
+            from: data
+        ) else { return nil }
+        return nsDictionary as? [String: Any]
+    }
+}
+
+// MARK: - Performance History Transformer
+
+/// Transformer for storing performance history data in Core Data
+/// Converts [String: Double] to NSData for secure archiving
+@objc(PerformanceHistoryTransformer)
+public final class PerformanceHistoryTransformer: NSSecureUnarchiveFromDataTransformer, @unchecked Sendable {
+    
+    public static let name = NSValueTransformerName(rawValue: String(describing: PerformanceHistoryTransformer.self))
+    
+    nonisolated public override static var allowedTopLevelClasses: [AnyClass] {
+        return [NSDictionary.self, NSString.self, NSNumber.self]
+    }
+    
+    nonisolated public override static func allowsReverseTransformation() -> Bool {
+        return true
+    }
+    
+    nonisolated public override func transformedValue(_ value: Any?) -> Any? {
+        guard let history = value as? [String: Double] else { return nil }
+        return try? NSKeyedArchiver.archivedData(withRootObject: history, requiringSecureCoding: true)
+    }
+    
+    nonisolated public override func reverseTransformedValue(_ value: Any?) -> Any? {
+        guard let data = value as? Data else { return nil }
+        return try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSDictionary.self, from: data) as? [String: Double]
+    }
+}
+
+// MARK: - Compliance Requirements Transformer
+
+/// Transformer for storing compliance requirements in Core Data
+/// Uses JSON encoding for Set<ComplianceObligation> storage
+@objc(ComplianceRequirementsTransformer) 
+public final class ComplianceRequirementsTransformer: NSSecureUnarchiveFromDataTransformer, @unchecked Sendable {
+    
+    public static let name = NSValueTransformerName(rawValue: String(describing: ComplianceRequirementsTransformer.self))
+    
+    nonisolated public override static var allowedTopLevelClasses: [AnyClass] {
+        return [NSData.self]
+    }
+    
+    nonisolated public override static func allowsReverseTransformation() -> Bool {
+        return true
+    }
+    
+    nonisolated public override func transformedValue(_ value: Any?) -> Any? {
+        guard let requirements = value as? Set<ComplianceObligation> else { return nil }
+        let array = Array(requirements.map { $0.rawValue })
+        return try? JSONEncoder().encode(array)
+    }
+    
+    nonisolated public override func reverseTransformedValue(_ value: Any?) -> Any? {
+        guard let data = value as? Data else { return nil }
+        guard let array = try? JSONDecoder().decode([String].self, from: data) else { return nil }
+        return Set(array.compactMap { ComplianceObligation(rawValue: $0) })
+    }
+}
+
+// MARK: - Transformer Registration
+
+/// Registers all custom transformers with Core Data
+public class AssetTransformers {
+    
+    public static func registerTransformers() {
+        ValueTransformer.setValueTransformer(
+            DecimalTransformer(),
+            forName: DecimalTransformer.name
+        )
+        
+        ValueTransformer.setValueTransformer(
+            StringSetTransformer(),
+            forName: StringSetTransformer.name
+        )
+        
+        ValueTransformer.setValueTransformer(
+            DictionaryTransformer(),
+            forName: DictionaryTransformer.name
+        )
+        
+        ValueTransformer.setValueTransformer(
+            PerformanceHistoryTransformer(),
+            forName: PerformanceHistoryTransformer.name
+        )
+        
+        ValueTransformer.setValueTransformer(
+            ComplianceRequirementsTransformer(),
+            forName: ComplianceRequirementsTransformer.name
+        )
+    }
+}
