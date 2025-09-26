@@ -381,6 +381,127 @@ public final class AccessibilityPreferences: Codable {
     public var isAssistiveTechnologyActive: Bool {
         return voiceOverEnabled || switchControlEnabled || voiceControlEnabled
     }
+    
+    // MARK: - Codable Implementation
+    
+    private enum CodingKeys: String, CodingKey {
+        case voiceOverEnabled
+        case voiceOverRate
+        case voiceOverPitch
+        case voiceOverVolume
+        case voiceOverVoice
+        case announceFinancialDetails
+        case usePhoneticCurrencyCodes
+        case reduceMotion
+        case reduceTransparency
+        case increaseContrast
+        case useHighContrastColors
+        case preferLargeText
+        case textSizeMultiplier
+        case preferBoldText
+        case showButtonShapes
+        case guidedAccessEnabled
+        case switchControlEnabled
+        case voiceControlEnabled
+        case stickyKeysEnabled
+        case touchAccommodationsEnabled
+        case touchHoldDuration
+        case ignoreRepeatTouches
+        case monoAudio
+        case audioDescriptionsEnabled
+        case soundEffectsEnabled
+        case hapticFeedbackLevel
+        case simplifiedUIMode
+        case skipNonEssentialAnimations
+        case autoPlayMedia
+        case showImageDescriptions
+        case useColorBlindFriendlyPalette
+        case colorBlindnessType
+        case enhanceFocusIndicator
+        case prioritizeKeyboardNavigation
+        case customTabOrder
+        case enableSkipLinks
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(voiceOverEnabled, forKey: .voiceOverEnabled)
+        try container.encode(voiceOverRate, forKey: .voiceOverRate)
+        try container.encode(voiceOverPitch, forKey: .voiceOverPitch)
+        try container.encode(voiceOverVolume, forKey: .voiceOverVolume)
+        try container.encode(voiceOverVoice, forKey: .voiceOverVoice)
+        try container.encode(announceFinancialDetails, forKey: .announceFinancialDetails)
+        try container.encode(usePhoneticCurrencyCodes, forKey: .usePhoneticCurrencyCodes)
+        try container.encode(reduceMotion, forKey: .reduceMotion)
+        try container.encode(reduceTransparency, forKey: .reduceTransparency)
+        try container.encode(increaseContrast, forKey: .increaseContrast)
+        try container.encode(useHighContrastColors, forKey: .useHighContrastColors)
+        try container.encode(preferLargeText, forKey: .preferLargeText)
+        try container.encode(textSizeMultiplier, forKey: .textSizeMultiplier)
+        try container.encode(preferBoldText, forKey: .preferBoldText)
+        try container.encode(showButtonShapes, forKey: .showButtonShapes)
+        try container.encode(guidedAccessEnabled, forKey: .guidedAccessEnabled)
+        try container.encode(switchControlEnabled, forKey: .switchControlEnabled)
+        try container.encode(voiceControlEnabled, forKey: .voiceControlEnabled)
+        try container.encode(stickyKeysEnabled, forKey: .stickyKeysEnabled)
+        try container.encode(touchAccommodationsEnabled, forKey: .touchAccommodationsEnabled)
+        try container.encode(touchHoldDuration, forKey: .touchHoldDuration)
+        try container.encode(ignoreRepeatTouches, forKey: .ignoreRepeatTouches)
+        try container.encode(monoAudio, forKey: .monoAudio)
+        try container.encode(audioDescriptionsEnabled, forKey: .audioDescriptionsEnabled)
+        try container.encode(soundEffectsEnabled, forKey: .soundEffectsEnabled)
+        try container.encode(hapticFeedbackLevel, forKey: .hapticFeedbackLevel)
+        try container.encode(simplifiedUIMode, forKey: .simplifiedUIMode)
+        try container.encode(skipNonEssentialAnimations, forKey: .skipNonEssentialAnimations)
+        try container.encode(autoPlayMedia, forKey: .autoPlayMedia)
+        try container.encode(showImageDescriptions, forKey: .showImageDescriptions)
+        try container.encode(useColorBlindFriendlyPalette, forKey: .useColorBlindFriendlyPalette)
+        try container.encode(colorBlindnessType, forKey: .colorBlindnessType)
+        try container.encode(enhanceFocusIndicator, forKey: .enhanceFocusIndicator)
+        try container.encode(prioritizeKeyboardNavigation, forKey: .prioritizeKeyboardNavigation)
+        try container.encode(customTabOrder, forKey: .customTabOrder)
+        try container.encode(enableSkipLinks, forKey: .enableSkipLinks)
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        voiceOverEnabled = try container.decode(Bool.self, forKey: .voiceOverEnabled)
+        voiceOverRate = try container.decode(Float.self, forKey: .voiceOverRate)
+        voiceOverPitch = try container.decode(Float.self, forKey: .voiceOverPitch)
+        voiceOverVolume = try container.decode(Float.self, forKey: .voiceOverVolume)
+        voiceOverVoice = try container.decodeIfPresent(String.self, forKey: .voiceOverVoice)
+        announceFinancialDetails = try container.decode(Bool.self, forKey: .announceFinancialDetails)
+        usePhoneticCurrencyCodes = try container.decode(Bool.self, forKey: .usePhoneticCurrencyCodes)
+        reduceMotion = try container.decode(Bool.self, forKey: .reduceMotion)
+        reduceTransparency = try container.decode(Bool.self, forKey: .reduceTransparency)
+        increaseContrast = try container.decode(Bool.self, forKey: .increaseContrast)
+        useHighContrastColors = try container.decode(Bool.self, forKey: .useHighContrastColors)
+        preferLargeText = try container.decode(Bool.self, forKey: .preferLargeText)
+        textSizeMultiplier = try container.decode(CGFloat.self, forKey: .textSizeMultiplier)
+        preferBoldText = try container.decode(Bool.self, forKey: .preferBoldText)
+        showButtonShapes = try container.decode(Bool.self, forKey: .showButtonShapes)
+        guidedAccessEnabled = try container.decode(Bool.self, forKey: .guidedAccessEnabled)
+        switchControlEnabled = try container.decode(Bool.self, forKey: .switchControlEnabled)
+        voiceControlEnabled = try container.decode(Bool.self, forKey: .voiceControlEnabled)
+        stickyKeysEnabled = try container.decode(Bool.self, forKey: .stickyKeysEnabled)
+        touchAccommodationsEnabled = try container.decode(Bool.self, forKey: .touchAccommodationsEnabled)
+        touchHoldDuration = try container.decode(TimeInterval.self, forKey: .touchHoldDuration)
+        ignoreRepeatTouches = try container.decode(Bool.self, forKey: .ignoreRepeatTouches)
+        monoAudio = try container.decode(Bool.self, forKey: .monoAudio)
+        audioDescriptionsEnabled = try container.decode(Bool.self, forKey: .audioDescriptionsEnabled)
+        soundEffectsEnabled = try container.decode(Bool.self, forKey: .soundEffectsEnabled)
+        hapticFeedbackLevel = try container.decode(HapticFeedbackLevel.self, forKey: .hapticFeedbackLevel)
+        simplifiedUIMode = try container.decode(Bool.self, forKey: .simplifiedUIMode)
+        skipNonEssentialAnimations = try container.decode(Bool.self, forKey: .skipNonEssentialAnimations)
+        autoPlayMedia = try container.decode(Bool.self, forKey: .autoPlayMedia)
+        showImageDescriptions = try container.decode(Bool.self, forKey: .showImageDescriptions)
+        useColorBlindFriendlyPalette = try container.decode(Bool.self, forKey: .useColorBlindFriendlyPalette)
+        colorBlindnessType = try container.decode(ColorBlindnessType.self, forKey: .colorBlindnessType)
+        enhanceFocusIndicator = try container.decode(Bool.self, forKey: .enhanceFocusIndicator)
+        prioritizeKeyboardNavigation = try container.decode(Bool.self, forKey: .prioritizeKeyboardNavigation)
+        customTabOrder = try container.decode(Bool.self, forKey: .customTabOrder)
+        enableSkipLinks = try container.decode(Bool.self, forKey: .enableSkipLinks)
+    }
 }
 
 // MARK: - Supporting Types

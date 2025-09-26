@@ -3,339 +3,229 @@
 //  WealthWise
 //
 //  Created by WealthWise Team on 2025-09-23.
-//  Foundation: User Preference Models - Theme Configuration
+//  Foundation: User Preference Models - Theme Preferences
 //
 
 import Foundation
 import SwiftUI
-#if canImport(UIKit)
-import UIKit
-#endif
 
-/// Theme preferences for dark/light mode, custom themes, and visual appearance
-/// Supports comprehensive theming with accessibility compliance
-@MainActor
+/// User theme preferences for customizing app appearance
 @Observable
-public final class ThemePreferences: Codable {
+public final class ThemePreferences: Codable, Sendable {
     
-    // MARK: - Theme Settings
+    // MARK: - Theme Properties
     
-    /// Color scheme preference
-    public var colorScheme: ColorSchemePreference = .system
-    
-    /// Selected theme
-    public var selectedTheme: AppTheme = .default
-    
-    /// Custom theme identifier (if using custom theme)
-    public var customThemeId: String?
+    /// Selected theme preference
+    public var selectedTheme: ThemeType
     
     /// Accent color preference
-    public var accentColor: AccentColorOption = .system
+    public var accentColor: AccentColor
     
-    /// Custom accent color RGB values (if using custom accent)
-    public var customAccentColorRGB: [Double]?
+    /// Chart color palette preference
+    public var chartColorPalette: ChartColorPalette
     
-    /// Computed property to get Color from RGB values
-    public var customAccentColor: Color? {
-        get {
-            guard let rgb = customAccentColorRGB, rgb.count >= 3 else { return nil }
-            return Color(red: rgb[0], green: rgb[1], blue: rgb[2])
-        }
-        set {
-            if let color = newValue {
-                #if canImport(UIKit)
-                let uiColor = UIColor(color)
-                var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
-                uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
-                customAccentColorRGB = [Double(red), Double(green), Double(blue)]
-                #else
-                let nsColor = NSColor(color)
-                customAccentColorRGB = [Double(nsColor.redComponent), Double(nsColor.greenComponent), Double(nsColor.blueComponent)]
-                #endif
-            } else {
-                customAccentColorRGB = nil
-            }
+    /// Animation preferences
+    public var animationsEnabled: Bool
+    
+    /// High contrast accessibility setting
+    public var highContrastEnabled: Bool
+    
+    /// Card display style
+    public var cardStyle: CardStyle
+    
+    /// Graph display style
+    public var graphStyle: GraphStyle
+    
+    /// Cultural theme preference
+    public var culturalTheme: CulturalTheme
+    
+    /// Date of last modification
+    public var lastModified: Date
+    
+    /// Reduce motion accessibility setting
+    public var reduceMotion: Bool
+    
+    // MARK: - Computed Properties
+    
+    /// Appearance mode (computed from selectedTheme)
+    public var appearanceMode: AppearanceMode {
+        switch selectedTheme {
+        case .system:
+            return .automatic
+        case .light:
+            return .alwaysLight
+        case .dark:
+            return .alwaysDark
         }
     }
-    
-    // MARK: - Visual Effects
-    
-    /// Enable visual effects (blur, shadows, etc.)
-    public var visualEffectsEnabled: Bool = true
-    
-    /// Animation speed multiplier
-    public var animationSpeed: AnimationSpeed = .normal
-    
-    /// Reduce motion effects (different from accessibility setting)
-    public var reduceMotionEffects: Bool = false
-    
-    /// Enable particles and decorative animations
-    public var decorativeAnimationsEnabled: Bool = true
-    
-    /// Transparency level (0.0 to 1.0)
-    public var transparencyLevel: Double = 1.0
-    
-    // MARK: - Interface Customization
-    
-    /// Corner radius style
-    public var cornerRadiusStyle: CornerRadiusStyle = .standard
-    
-    /// Button style preference
-    public var buttonStyle: ButtonStylePreference = .filled
-    
-    /// Card style preference
-    public var cardStyle: CardStylePreference = .elevated
-    
-    /// Navigation style
-    public var navigationStyle: NavigationStylePreference = .standard
-    
-    /// Show gradient backgrounds
-    public var useGradientBackgrounds: Bool = true
-    
-    /// Icon style preference
-    public var iconStyle: IconStyle = .outlined
-    
-    // MARK: - Chart and Data Visualization
-    
-    /// Chart color palette
-    public var chartColorPalette: ChartColorPalette = .vibrant
-    
-    /// Use pattern fills for accessibility
-    public var usePatternFills: Bool = false
-    
-    /// Chart animation enabled
-    public var chartAnimationsEnabled: Bool = true
-    
-    /// Data point emphasis
-    public var emphasizeDataPoints: Bool = false
-    
-    // MARK: - Cultural Adaptations
-    
-    /// Currency symbol style
-    public var currencySymbolStyle: CurrencySymbolStyle = .standard
-    
-    /// Number display style
-    public var numberDisplayStyle: NumberDisplayStyle = .standard
-    
-    /// Use cultural color meanings
-    public var useCulturalColors: Bool = true
-    
-    // MARK: - Accessibility Integration
-    
-    /// Force high contrast when accessibility needs it
-    public var autoHighContrast: Bool = true
-    
-    /// Minimum contrast ratio for text
-    public var minimumContrastRatio: Double = 4.5
-    
-    /// Focus indicator style
-    public var focusIndicatorStyle: FocusIndicatorStyle = .outline
-    
-    /// Large touch targets
-    public var useLargeTouchTargets: Bool = false
     
     // MARK: - Initialization
     
-    public init() {
-        configureDefaults()
+    public init(
+        selectedTheme: ThemeType = .system,
+        accentColor: AccentColor = .blue,
+        chartColorPalette: ChartColorPalette = .balanced,
+        animationsEnabled: Bool = true,
+        highContrastEnabled: Bool = false,
+        cardStyle: CardStyle = .standard,
+        graphStyle: GraphStyle = .modern,
+        culturalTheme: CulturalTheme = .none,
+        reduceMotion: Bool = false
+    ) {
+        self.selectedTheme = selectedTheme
+        self.accentColor = accentColor
+        self.chartColorPalette = chartColorPalette
+        self.animationsEnabled = animationsEnabled
+        self.highContrastEnabled = highContrastEnabled
+        self.cardStyle = cardStyle
+        self.graphStyle = graphStyle
+        self.culturalTheme = culturalTheme
+        self.lastModified = Date()
+        self.reduceMotion = reduceMotion
     }
     
-    public init(forAudience audience: PrimaryAudience) {
-        configureDefaults()
-        configureForAudience(audience)
-    }
+    // MARK: - Theme Configuration
     
-    // MARK: - Configuration
-    
-    private func configureDefaults() {
-        // Set system-appropriate defaults
-        colorScheme = .system
-        selectedTheme = .default
-        accentColor = .system
-#if canImport(UIKit)
-        visualEffectsEnabled = !UIAccessibility.isReduceMotionEnabled
-        reduceMotionEffects = UIAccessibility.isReduceMotionEnabled
-#else
-        visualEffectsEnabled = true
-        reduceMotionEffects = false
-#endif
-    }
-    
+    /// Configure theme preferences for specific audience
     public func configureForAudience(_ audience: PrimaryAudience) {
         switch audience {
         case .indian:
-            // Indian cultural preferences
-            useCulturalColors = true
-            chartColorPalette = .warm
-            currencySymbolStyle = .prominent
-            
+            selectedTheme = .light
+            accentColor = .orange
         case .american:
-            // American preferences
-            chartColorPalette = .vibrant
-            buttonStyle = .filled
-            
+            selectedTheme = .system
+            accentColor = .blue
         case .british:
-            // British preferences
-            chartColorPalette = .classic
-            cornerRadiusStyle = .minimal
-            
+            selectedTheme = .system
+            accentColor = .blue
         case .canadian:
-            // Canadian preferences
-            chartColorPalette = .nature
-            
+            selectedTheme = .system
+            accentColor = .green
         case .australian:
-            // Australian preferences
-            chartColorPalette = .vibrant
-            useGradientBackgrounds = true
-            
-        case .singaporean:
-            // Singaporean preferences
-            chartColorPalette = .professional
-            cardStyle = .minimal
-            
-        default:
-            // Default international settings
-            break
+            selectedTheme = .light
+            accentColor = .orange
+        case .singaporean, .german, .french, .dutch, .swiss, .irish, .luxembourgish, .japanese, .hongKongese, .newZealander, .malaysian, .thai, .filipino, .emirati, .qatari, .saudi, .brazilian, .mexican:
+            selectedTheme = .system
+            accentColor = .blue
         }
+        lastModified = Date()
     }
     
-    // MARK: - Dynamic Properties
-    
-    /// Current effective color scheme
-    public var effectiveColorScheme: ColorScheme? {
-        switch colorScheme {
-        case .system:
-            return nil // Let system decide
-        case .light:
-            return .light
-        case .dark:
-            return .dark
-        }
-    }
-    
-    /// Whether high contrast should be applied
-    public var shouldUseHighContrast: Bool {
-#if canImport(UIKit)
-        return autoHighContrast && UIAccessibility.isDarkerSystemColorsEnabled
-#else
-        return autoHighContrast
-#endif
-    }
-    
-    /// Effective animation speed based on accessibility
-    public var effectiveAnimationSpeed: Double {
-#if canImport(UIKit)
-        let reduceMotion = UIAccessibility.isReduceMotionEnabled || reduceMotionEffects
-#else
-        let reduceMotion = reduceMotionEffects
-#endif
-        if reduceMotion {
-            return 0.1 // Very fast/minimal animation
-        }
-        return animationSpeed.multiplier
-    }
-    
-    // MARK: - Theme Application
-    
-    /// Apply theme to environment
-    public func applyToEnvironment() -> some View {
-        EmptyView()
-            .preferredColorScheme(effectiveColorScheme)
-            .accentColor(effectiveAccentColor)
-    }
-    
-    /// Get effective accent color
-    public var effectiveAccentColor: Color {
-        switch accentColor {
-        case .system:
-            return .accentColor
-        case .blue:
-            return .blue
-        case .green:
-            return .green
-        case .orange:
-            return .orange
-        case .red:
-            return .red
-        case .purple:
-            return .purple
-        case .pink:
-            return .pink
-        case .yellow:
-            return .yellow
-        case .custom:
-            return customAccentColor ?? .accentColor
-        }
-    }
-    
-    // MARK: - Validation
-    
+    /// Validate theme preferences for consistency
     public func validate() -> [String] {
         var issues: [String] = []
         
-        // Validate transparency level
-        if transparencyLevel < 0.0 || transparencyLevel > 1.0 {
-            issues.append("Transparency level must be between 0.0 and 1.0")
-        }
-        
-        // Validate contrast ratio
-        if minimumContrastRatio < 1.0 || minimumContrastRatio > 21.0 {
-            issues.append("Minimum contrast ratio must be between 1.0 and 21.0")
-        }
-        
-        // Validate custom theme
-        if selectedTheme == .custom && customThemeId == nil {
-            issues.append("Custom theme selected but no theme ID provided")
-        }
-        
-        // Validate custom accent color
-        if accentColor == .custom && customAccentColor == nil {
-            issues.append("Custom accent color selected but no color provided")
+        // Validate accessibility
+        if !animationsEnabled && highContrastEnabled {
+            issues.append(NSLocalizedString("theme.validation.motion.accessibility", 
+                                           comment: "Accessibility improvements may require animations"))
         }
         
         return issues
     }
+    
+    /// Configure theme based on current cultural context
+    public func configureColorScheme(for event: CulturalEvent) {
+        switch event {
+        case .diwali:
+            accentColor = .orange
+            culturalTheme = .festival
+        case .christmas:
+            accentColor = .green
+            culturalTheme = .seasonal
+        case .newyear:
+            accentColor = .blue
+            culturalTheme = .celebration
+        }
+        lastModified = Date()
+    }
+    
+    /// Update theme based on cultural events
+    public func updateForCulturalEvent(_ event: CulturalEvent) {
+        lastModified = Date()
+        configureColorScheme(for: event)
+    }
+    
+    /// Reset to default theme
+    public func resetToDefault() {
+        selectedTheme = .system
+        accentColor = .blue
+        chartColorPalette = .balanced
+        animationsEnabled = true
+        highContrastEnabled = false
+        cardStyle = .standard
+        graphStyle = .modern
+        culturalTheme = .none
+        reduceMotion = false
+        lastModified = Date()
+    }
+    
+    // MARK: - Codable Implementation
+    
+    private enum CodingKeys: String, CodingKey {
+        case selectedTheme
+        case accentColor
+        case chartColorPalette
+        case animationsEnabled
+        case highContrastEnabled
+        case cardStyle
+        case graphStyle
+        case culturalTheme
+        case lastModified
+        case reduceMotion
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(selectedTheme, forKey: .selectedTheme)
+        try container.encode(accentColor, forKey: .accentColor)
+        try container.encode(chartColorPalette, forKey: .chartColorPalette)
+        try container.encode(animationsEnabled, forKey: .animationsEnabled)
+        try container.encode(highContrastEnabled, forKey: .highContrastEnabled)
+        try container.encode(cardStyle, forKey: .cardStyle)
+        try container.encode(graphStyle, forKey: .graphStyle)
+        try container.encode(culturalTheme, forKey: .culturalTheme)
+        try container.encode(lastModified, forKey: .lastModified)
+        try container.encode(reduceMotion, forKey: .reduceMotion)
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        selectedTheme = try container.decode(ThemeType.self, forKey: .selectedTheme)
+        accentColor = try container.decode(AccentColor.self, forKey: .accentColor)
+        chartColorPalette = try container.decode(ChartColorPalette.self, forKey: .chartColorPalette)
+        animationsEnabled = try container.decode(Bool.self, forKey: .animationsEnabled)
+        highContrastEnabled = try container.decode(Bool.self, forKey: .highContrastEnabled)
+        cardStyle = try container.decode(CardStyle.self, forKey: .cardStyle)
+        graphStyle = try container.decode(GraphStyle.self, forKey: .graphStyle)
+        culturalTheme = try container.decode(CulturalTheme.self, forKey: .culturalTheme)
+        lastModified = try container.decode(Date.self, forKey: .lastModified)
+        reduceMotion = try container.decode(Bool.self, forKey: .reduceMotion)
+    }
 }
 
-// MARK: - Supporting Types
+// MARK: - Supporting Enums
 
-/// Color scheme preferences
-public enum ColorSchemePreference: String, CaseIterable, Codable {
+/// Available theme types
+public enum ThemeType: String, CaseIterable, Codable, Sendable {
     case system = "system"
     case light = "light"
     case dark = "dark"
     
     public var displayName: String {
         switch self {
-        case .system: return "System"
-        case .light: return "Light"
-        case .dark: return "Dark"
+        case .system:
+            return NSLocalizedString("theme.type.system", comment: "System theme option")
+        case .light:
+            return NSLocalizedString("theme.type.light", comment: "Light theme option")
+        case .dark:
+            return NSLocalizedString("theme.type.dark", comment: "Dark theme option")
         }
     }
 }
 
-/// Available app themes
-public enum AppTheme: String, CaseIterable, Codable {
-    case `default` = "default"
-    case minimal = "minimal"
-    case vibrant = "vibrant"
-    case professional = "professional"
-    case custom = "custom"
-    
-    public var displayName: String {
-        switch self {
-        case .default: return "Default"
-        case .minimal: return "Minimal"
-        case .vibrant: return "Vibrant"
-        case .professional: return "Professional"
-        case .custom: return "Custom"
-        }
-    }
-}
-
-/// Accent color options
-public enum AccentColorOption: String, CaseIterable, Codable {
-    case system = "system"
+/// Available accent colors
+public enum AccentColor: String, CaseIterable, Codable, Sendable {
     case blue = "blue"
     case green = "green"
     case orange = "orange"
@@ -343,231 +233,159 @@ public enum AccentColorOption: String, CaseIterable, Codable {
     case purple = "purple"
     case pink = "pink"
     case yellow = "yellow"
-    case custom = "custom"
+    case indigo = "indigo"
+    
+    public var swiftUIColor: Color {
+        switch self {
+        case .blue: return .blue
+        case .green: return .green
+        case .orange: return .orange
+        case .red: return .red
+        case .purple: return .purple
+        case .pink: return .pink
+        case .yellow: return .yellow
+        case .indigo: return .indigo
+        }
+    }
     
     public var displayName: String {
         switch self {
-        case .system: return "System"
-        case .blue: return "Blue"
-        case .green: return "Green"
-        case .orange: return "Orange"
-        case .red: return "Red"
-        case .purple: return "Purple"
-        case .pink: return "Pink"
-        case .yellow: return "Yellow"
-        case .custom: return "Custom"
+        case .blue:
+            return NSLocalizedString("accent.blue", comment: "Blue accent color")
+        case .green:
+            return NSLocalizedString("accent.green", comment: "Green accent color")
+        case .orange:
+            return NSLocalizedString("accent.orange", comment: "Orange accent color")
+        case .red:
+            return NSLocalizedString("accent.red", comment: "Red accent color")
+        case .purple:
+            return NSLocalizedString("accent.purple", comment: "Purple accent color")
+        case .pink:
+            return NSLocalizedString("accent.pink", comment: "Pink accent color")
+        case .yellow:
+            return NSLocalizedString("accent.yellow", comment: "Yellow accent color")
+        case .indigo:
+            return NSLocalizedString("accent.indigo", comment: "Indigo accent color")
         }
     }
 }
 
-/// Animation speed options
-public enum AnimationSpeed: String, CaseIterable, Codable {
-    case slow = "slow"
-    case normal = "normal"
-    case fast = "fast"
-    
-    public var displayName: String {
-        switch self {
-        case .slow: return "Slow"
-        case .normal: return "Normal"
-        case .fast: return "Fast"
-        }
-    }
-    
-    public var multiplier: Double {
-        switch self {
-        case .slow: return 1.5
-        case .normal: return 1.0
-        case .fast: return 0.7
-        }
-    }
-}
-
-/// Corner radius style options
-public enum CornerRadiusStyle: String, CaseIterable, Codable {
-    case minimal = "minimal"    // 2-4pt
-    case standard = "standard"  // 8-12pt
-    case rounded = "rounded"    // 16-20pt
-    
-    public var displayName: String {
-        switch self {
-        case .minimal: return "Minimal"
-        case .standard: return "Standard"
-        case .rounded: return "Rounded"
-        }
-    }
-    
-    public var radius: CGFloat {
-        switch self {
-        case .minimal: return 4
-        case .standard: return 12
-        case .rounded: return 20
-        }
-    }
-}
-
-/// Button style preferences
-public enum ButtonStylePreference: String, CaseIterable, Codable {
-    case filled = "filled"
-    case outlined = "outlined"
-    case text = "text"
-    
-    public var displayName: String {
-        switch self {
-        case .filled: return "Filled"
-        case .outlined: return "Outlined"
-        case .text: return "Text"
-        }
-    }
-}
-
-/// Card style preferences
-public enum CardStylePreference: String, CaseIterable, Codable {
-    case elevated = "elevated"
-    case outlined = "outlined"
-    case minimal = "minimal"
-    
-    public var displayName: String {
-        switch self {
-        case .elevated: return "Elevated"
-        case .outlined: return "Outlined"
-        case .minimal: return "Minimal"
-        }
-    }
-}
-
-/// Navigation style preferences
-public enum NavigationStylePreference: String, CaseIterable, Codable {
+/// Chart color palettes
+public enum ChartColorPalette: String, CaseIterable, Codable, Sendable {
     case standard = "standard"
-    case large = "large"
-    case inline = "inline"
-    
-    public var displayName: String {
-        switch self {
-        case .standard: return "Standard"
-        case .large: return "Large"
-        case .inline: return "Inline"
-        }
-    }
-}
-
-/// Icon style preferences
-public enum IconStyle: String, CaseIterable, Codable {
-    case outlined = "outlined"
-    case filled = "filled"
-    case rounded = "rounded"
-    case sharp = "sharp"
-    
-    public var displayName: String {
-        switch self {
-        case .outlined: return "Outlined"
-        case .filled: return "Filled"
-        case .rounded: return "Rounded"
-        case .sharp: return "Sharp"
-        }
-    }
-}
-
-/// Chart color palette options
-public enum ChartColorPalette: String, CaseIterable, Codable {
-    case vibrant = "vibrant"
-    case professional = "professional"
-    case warm = "warm"
-    case cool = "cool"
-    case nature = "nature"
-    case classic = "classic"
+    case accessible = "accessible"
     case monochrome = "monochrome"
+    case vibrant = "vibrant"
+    case balanced = "balanced"
     
     public var displayName: String {
         switch self {
-        case .vibrant: return "Vibrant"
-        case .professional: return "Professional"
-        case .warm: return "Warm"
-        case .cool: return "Cool"
-        case .nature: return "Nature"
-        case .classic: return "Classic"
-        case .monochrome: return "Monochrome"
+        case .standard:
+            return NSLocalizedString("palette.standard", comment: "Standard color palette")
+        case .accessible:
+            return NSLocalizedString("palette.accessible", comment: "Accessible color palette")
+        case .monochrome:
+            return NSLocalizedString("palette.monochrome", comment: "Monochrome color palette")
+        case .vibrant:
+            return NSLocalizedString("palette.vibrant", comment: "Vibrant color palette")
+        case .balanced:
+            return NSLocalizedString("palette.balanced", comment: "Balanced color palette")
         }
     }
 }
 
-/// Currency symbol display styles
-public enum CurrencySymbolStyle: String, CaseIterable, Codable {
-    case standard = "standard"      // $1,000
-    case prominent = "prominent"    // $ 1,000
-    case suffix = "suffix"          // 1,000 USD
-    case full = "full"             // 1,000 US Dollars
+/// Appearance modes
+public enum AppearanceMode: String, CaseIterable, Codable, Sendable {
+    case automatic = "automatic"
+    case alwaysLight = "alwaysLight"
+    case alwaysDark = "alwaysDark"
     
     public var displayName: String {
         switch self {
-        case .standard: return "Standard ($1,000)"
-        case .prominent: return "Prominent ($ 1,000)"
-        case .suffix: return "Suffix (1,000 USD)"
-        case .full: return "Full Name (1,000 US Dollars)"
+        case .automatic:
+            return NSLocalizedString("appearance.automatic", comment: "Automatic appearance mode")
+        case .alwaysLight:
+            return NSLocalizedString("appearance.light", comment: "Always light appearance mode")
+        case .alwaysDark:
+            return NSLocalizedString("appearance.dark", comment: "Always dark appearance mode")
         }
     }
 }
 
-/// Number display style preferences
-public enum NumberDisplayStyle: String, CaseIterable, Codable {
-    case standard = "standard"      // 1,000,000
-    case abbreviated = "abbreviated" // 1M
-    case scientific = "scientific"  // 1e6
-    case words = "words"           // One Million
+/// Card display styles
+public enum CardStyle: String, CaseIterable, Codable, Sendable {
+    case standard = "standard"
+    case minimal = "minimal"
+    case detailed = "detailed"
     
     public var displayName: String {
         switch self {
-        case .standard: return "Standard (1,000,000)"
-        case .abbreviated: return "Abbreviated (1M)"
-        case .scientific: return "Scientific (1e6)"
-        case .words: return "Words (One Million)"
+        case .standard:
+            return NSLocalizedString("card.standard", comment: "Standard card style")
+        case .minimal:
+            return NSLocalizedString("card.minimal", comment: "Minimal card style")
+        case .detailed:
+            return NSLocalizedString("card.detailed", comment: "Detailed card style")
         }
     }
 }
 
-/// Focus indicator style options
-public enum FocusIndicatorStyle: String, CaseIterable, Codable {
-    case outline = "outline"
-    case glow = "glow"
-    case underline = "underline"
-    case highlight = "highlight"
+/// Graph display styles
+public enum GraphStyle: String, CaseIterable, Codable, Sendable {
+    case smooth = "smooth"
+    case sharp = "sharp"
+    case stepped = "stepped"
+    case modern = "modern"
     
     public var displayName: String {
         switch self {
-        case .outline: return "Outline"
-        case .glow: return "Glow"
-        case .underline: return "Underline"
-        case .highlight: return "Highlight"
+        case .smooth:
+            return NSLocalizedString("graph.smooth", comment: "Smooth graph style")
+        case .sharp:
+            return NSLocalizedString("graph.sharp", comment: "Sharp graph style")
+        case .stepped:
+            return NSLocalizedString("graph.stepped", comment: "Stepped graph style")
+        case .modern:
+            return NSLocalizedString("graph.modern", comment: "Modern graph style")
         }
     }
 }
 
-// MARK: - Color Extensions
-
-extension Color {
-    /// Initialize color from hex string
-    init(hex: String) {
-        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int: UInt64 = 0
-        Scanner(string: hex).scanHexInt64(&int)
-        let a, r, g, b: UInt64
-        switch hex.count {
-        case 3: // RGB (12-bit)
-            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-        case 6: // RGB (24-bit)
-            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
-        case 8: // ARGB (32-bit)
-            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
-        default:
-            (a, r, g, b) = (1, 1, 1, 0)
+/// Cultural theme preferences
+public enum CulturalTheme: String, CaseIterable, Codable, Sendable {
+    case none = "none"
+    case festival = "festival"
+    case seasonal = "seasonal"
+    case celebration = "celebration"
+    
+    public var displayName: String {
+        switch self {
+        case .none:
+            return NSLocalizedString("cultural.none", comment: "No cultural theme")
+        case .festival:
+            return NSLocalizedString("cultural.festival", comment: "Festival cultural theme")
+        case .seasonal:
+            return NSLocalizedString("cultural.seasonal", comment: "Seasonal cultural theme")
+        case .celebration:
+            return NSLocalizedString("cultural.celebration", comment: "Celebration cultural theme")
         }
-        
-        self.init(
-            .sRGB,
-            red: Double(r) / 255,
-            green: Double(g) / 255,
-            blue:  Double(b) / 255,
-            opacity: Double(a) / 255
-        )
+    }
+}
+
+/// Cultural events that can influence theme
+public enum CulturalEvent: String, CaseIterable, Codable, Sendable {
+    case diwali = "diwali"
+    case christmas = "christmas"
+    case newyear = "newyear"
+    
+    public var displayName: String {
+        switch self {
+        case .diwali:
+            return NSLocalizedString("event.diwali", comment: "Diwali festival")
+        case .christmas:
+            return NSLocalizedString("event.christmas", comment: "Christmas celebration")
+        case .newyear:
+            return NSLocalizedString("event.newyear", comment: "New Year celebration")
+        }
     }
 }
