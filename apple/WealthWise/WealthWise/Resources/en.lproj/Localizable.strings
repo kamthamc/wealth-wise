@@ -326,3 +326,105 @@
 "document_form16" = "Form 16 - TDS Certificate";
 "document_form16a" = "Form 16A - TDS Certificate";
 "document_investment_proofs" = "Investment Proofs";
+
+/* Goal Tracking Service Strings */
+
+/* Compounding Frequencies */
+"compounding.annually" = "Annually";
+"compounding.semi_annually" = "Semi-Annually";
+"compounding.quarterly" = "Quarterly";
+"compounding.monthly" = "Monthly";
+"compounding.weekly" = "Weekly";
+"compounding.daily" = "Daily";
+"compounding.continuously" = "Continuously";
+
+/* Scenarios */
+"scenario.conservative" = "Conservative Scenario";
+"scenario.expected" = "Expected Scenario";
+"scenario.optimistic" = "Optimistic Scenario";
+"scenario.minimum" = "Minimum Contribution";
+"scenario.aggressive" = "Aggressive Strategy";
+
+/* Progress Messages */
+"progress.on_track" = "Your goal is on track for successful achievement";
+"progress.increase_reason" = "Increase contributions to meet your target amount";
+"progress.timeline_reason" = "Extend timeline to improve success probability";
+"progress.milestone_close" = "You're very close to achieving this milestone!";
+"progress.optimize_reason" = "Optimize investment returns to improve goal achievement probability";
+
+/* Risk Levels */
+"risk.level.low" = "Low Risk";
+"risk.level.moderate" = "Moderate Risk";
+"risk.level.high" = "High Risk";
+"risk.level.critical" = "Critical Risk";
+
+/* Mitigation Strategies */
+"mitigation.time_risk" = "Consider extending your timeline or increasing monthly contributions";
+"mitigation.amount_risk" = "Increase your monthly contributions or make a larger initial investment";
+"mitigation.market_risk" = "Diversify your investments across different asset classes to reduce volatility";
+"mitigation.inflation_risk" = "Consider inflation-protected investments like TIPS or real estate";
+
+/* Recommendations */
+"recommendation.increase_contributions" = "Increase monthly contributions by ₹%.2f. Reason: %@";
+"recommendation.adjust_timeline" = "Consider extending timeline to %@. Reason: %@";
+"recommendation.optimize_returns" = "Target %.1f%% annual returns. Reason: %@";
+"recommendation.celebrate_milestone" = "🎉 Milestone Achievement: %@ - %@";
+"recommendation.risk_warning" = "⚠️ Risk Alert: %@ - Mitigation: %@";
+"recommendation.on_track" = "✅ Excellent Progress: %@";
+
+/* Contribution Messages */
+"contribution.default_description" = "Regular contribution toward goal";
+
+/* Error Messages */
+"error.goal_not_found" = "Goal not found";
+"error.invalid_parameters" = "Invalid goal parameters";
+"error.calculation_failed" = "Financial calculation failed";
+"error.persistence_failed" = "Failed to save goal data";
+
+/* Goal Status Messages */
+"goal.status.on_track" = "On Track";
+"goal.status.behind" = "Behind Schedule";
+"goal.status.at_risk" = "At Risk";
+"goal.status.achieved" = "Achieved";
+"goal.status.exceeded" = "Exceeded Target";
+
+/* Progress Indicators */
+"progress.excellent" = "Excellent Progress";
+"progress.good" = "Good Progress";
+"progress.needs_attention" = "Needs Attention";
+"progress.critical" = "Critical - Action Required";
+
+/* Financial Terms for Goal Tracking */
+"financial.compound_interest" = "Compound Interest";
+"financial.future_value" = "Future Value";
+"financial.present_value" = "Present Value";
+"financial.annuity" = "Annuity";
+"financial.perpetuity" = "Perpetuity";
+"financial.net_present_value" = "Net Present Value";
+"financial.internal_rate_return" = "Internal Rate of Return";
+"financial.time_value_money" = "Time Value of Money";
+
+/* Achievement Messages */
+"achievement.milestone_25" = "🎯 25% of your goal achieved! Keep up the great work!";
+"achievement.milestone_50" = "🎯 Halfway there! 50% of your goal completed!";
+"achievement.milestone_75" = "🎯 You're in the home stretch! 75% achieved!";
+"achievement.goal_complete" = "🏆 Goal Achieved! Congratulations on reaching your target!";
+
+/* Time-based Messages */
+"time.years_remaining" = "%.1f years remaining";
+"time.months_remaining" = "%.0f months remaining";
+"time.days_remaining" = "%.0f days remaining";
+"time.overdue" = "Overdue by %.0f days";
+
+/* Amount Formatting */
+"amount.crores" = "%.2f Cr";
+"amount.lakhs" = "%.2f L";
+"amount.thousands" = "%.0f K";
+"amount.rupees" = "₹%.2f";
+
+/* Success Probability Messages */
+"probability.very_high" = "Very High (>90%)";
+"probability.high" = "High (70-90%)";
+"probability.moderate" = "Moderate (50-70%)";
+"probability.low" = "Low (30-50%)";
+"probability.very_low" = "Very Low (<30%)";

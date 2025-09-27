@@ -34,8 +34,8 @@
 
 ### 1. Clone Repository
 ```bash
-git clone https://github.com/your-org/unified-banking.git
-cd unified-banking
+git clone https://github.com/kamthamc/wealth-wise.git
+cd wealth-wise
 ```
 
 ### 2. Install Dependencies
@@ -73,7 +73,7 @@ cd ..
 
 #### Create Firebase Project
 1. Go to [Firebase Console](https://console.firebase.google.com/)
-2. Create new project: "unified-banking-app"
+2. Create new project: "wealth-wise-app"
 3. Enable Authentication, Firestore, Storage, Analytics
 
 #### Download Configuration Files

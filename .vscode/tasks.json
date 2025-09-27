@@ -1,231 +1,406 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "Build - WealthWise (macOS)",
-            "type": "shell",
-            "command": "xcodebuild",
-            "args": [
-                "-project", "apple/WealthWise/WealthWise.xcodeproj",
-                "-scheme", "WealthWise",
-                "-destination", "generic/platform=macOS",
-                "build"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": false
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            }
-        },
-        {
-            "label": "Build - WealthWise (iOS Simulator)",
-            "type": "shell",
-            "command": "xcodebuild",
-            "args": [
-                "-project", "apple/WealthWise/WealthWise.xcodeproj",
-                "-scheme", "WealthWise",
-                "-destination", "generic/platform=iOS Simulator",
-                "build"
-            ],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": false
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            }
-        },
-        {
-            "label": "Test - WealthWise (macOS)",
-            "type": "shell",
-            "command": "xcodebuild",
-            "args": [
-                "-project", "apple/WealthWise/WealthWise.xcodeproj",
-                "-scheme", "WealthWise",
-                "-destination", "generic/platform=macOS",
-                "test"
-            ],
-            "group": "test",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": false
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            }
-        },
-        {
-            "label": "Clean - WealthWise",
-            "type": "shell",
-            "command": "xcodebuild",
-            "args": [
-                "-project", "apple/WealthWise/WealthWise.xcodeproj",
-                "-scheme", "WealthWise",
-                "clean"
-            ],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": false
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            }
-        },
-        {
-            "label": "Archive - WealthWise (macOS)",
-            "type": "shell",
-            "command": "xcodebuild",
-            "args": [
-                "-project", "apple/WealthWise/WealthWise.xcodeproj",
-                "-scheme", "WealthWise",
-                "-destination", "generic/platform=macOS",
-                "archive",
-                "-archivePath", "build/WealthWise.xcarchive"
-            ],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": false
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            }
-        },
-        {
-            "label": "Swift Format - All Files",
-            "type": "shell",
-            "command": "find",
-            "args": [
-                "apple", "-name", "*.swift", "-exec", "swift-format", "-i", "{}", ";"
-            ],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "silent",
-                "focus": false,
-                "panel": "shared"
-            },
-            "options": {
-                "cwd": "${workspaceFolder}"
-            }
-        },
-        {
-            "label": "SwiftLint - Fix Issues",
-            "type": "shell",
-            "command": "swiftlint",
-            "args": [
-                "--fix", "--path", "apple/"
-            ],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "silent",
-                "focus": false,
-                "panel": "shared"
-            },
-            "options": {
-                "cwd": "${workspaceFolder}"
-            }
-        },
-        {
-            "label": "Create Git Branch for Issue",
-            "type": "shell",
-            "command": "bash",
-            "args": [
-                "-c",
-                "read -p 'Enter issue number: ' issue && git checkout -b \"feature/issue-$issue\" && echo \"Created branch: feature/issue-$issue\""
-            ],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared"
-            },
-            "options": {
-                "cwd": "${workspaceFolder}"
-            }
-        },
-        {
-            "label": "Commit and Push Changes",
-            "type": "shell",
-            "command": "bash",
-            "args": [
-                "-c",
-                "git add . && read -p 'Enter commit message: ' msg && git commit -m \"$msg\" && git push origin $(git branch --show-current)"
-            ],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared"
-            },
-            "options": {
-                "cwd": "${workspaceFolder}"
-            }
-        },
-        {
-            "label": "Run Security Analysis",
-            "type": "shell",
-            "command": "bash",
-            "args": [
-                "-c",
-                "echo 'Running security analysis...' && find apple -name '*.swift' -exec grep -l 'keychain\\|password\\|secret\\|token\\|auth' {} \\; | head -10"
-            ],
-            "group": "test",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            },
-            "options": {
-                "cwd": "${workspaceFolder}"
-            }
-        }
-    ]
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build - WealthWise (macOS)",
+			"type": "shell",
+			"command": "xcodebuild",
+			"args": [
+				"-project",
+				"apple/WealthWise/WealthWise.xcodeproj",
+				"-scheme",
+				"WealthWise",
+				"-destination",
+				"generic/platform=macOS",
+				"build"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "Build - WealthWise (iOS Simulator)",
+			"type": "shell",
+			"command": "xcodebuild",
+			"args": [
+				"-project",
+				"apple/WealthWise/WealthWise.xcodeproj",
+				"-scheme",
+				"WealthWise",
+				"-destination",
+				"generic/platform=iOS Simulator",
+				"build"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "Test - WealthWise (macOS)",
+			"type": "shell",
+			"command": "xcodebuild",
+			"args": [
+				"-project",
+				"apple/WealthWise/WealthWise.xcodeproj",
+				"-scheme",
+				"WealthWise",
+				"-destination",
+				"generic/platform=macOS",
+				"test"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "Clean - WealthWise",
+			"type": "shell",
+			"command": "xcodebuild",
+			"args": [
+				"-project",
+				"apple/WealthWise/WealthWise.xcodeproj",
+				"-scheme",
+				"WealthWise",
+				"clean"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "Archive - WealthWise (macOS)",
+			"type": "shell",
+			"command": "xcodebuild",
+			"args": [
+				"-project",
+				"apple/WealthWise/WealthWise.xcodeproj",
+				"-scheme",
+				"WealthWise",
+				"-destination",
+				"generic/platform=macOS",
+				"archive",
+				"-archivePath",
+				"build/WealthWise.xcarchive"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "Swift Format - All Files",
+			"type": "shell",
+			"command": "find",
+			"args": [
+				"apple",
+				"-name",
+				"*.swift",
+				"-exec",
+				"swift-format",
+				"-i",
+				"{}",
+				";"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "silent",
+				"focus": false,
+				"panel": "shared"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "SwiftLint - Fix Issues",
+			"type": "shell",
+			"command": "swiftlint",
+			"args": [
+				"--fix",
+				"--path",
+				"apple/"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "silent",
+				"focus": false,
+				"panel": "shared"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "Create Git Branch for Issue",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-c",
+				"read -p 'Enter issue number: ' issue && git checkout -b \"feature/issue-$issue\" && echo \"Created branch: feature/issue-$issue\""
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "Commit and Push Changes",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-c",
+				"git add . && read -p 'Enter commit message: ' msg && git commit -m \"$msg\" && git push origin $(git branch --show-current)"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "Run Security Analysis",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-c",
+				"echo 'Running security analysis...' && find apple -name '*.swift' -exec grep -l 'keychain\\|password\\|secret\\|token\\|auth' {} \\; | head -10"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "Swift Compile - Specific Files",
+			"type": "shell",
+			"command": "swiftc",
+			"args": [
+				"-typecheck",
+				"-target",
+				"arm64-apple-macos15.6",
+				"-sdk",
+				"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk",
+				"-I",
+				"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks",
+				"${input:filePath}"
+			],
+			"problemMatcher": [
+				"$swift"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Swift Typecheck - Interactive",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-c",
+				"echo 'Enter file path relative to WealthWise directory:' && read filepath && swiftc -typecheck -target arm64-apple-macos15.6 -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk \"$filepath\" 2>&1 || echo 'Compilation failed for $filepath'"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Swift Check - Goal.swift",
+			"type": "shell",
+			"command": "swiftc",
+			"args": [
+				"-typecheck",
+				"-target",
+				"arm64-apple-macos15.6",
+				"-sdk",
+				"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk",
+				"-I",
+				"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks",
+				"WealthWise/Models/Financial/Goal.swift"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Swift Compile - Any File",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-c",
+				"echo 'Compiling: ${input:filePath}' && cd ${workspaceFolder}/apple/WealthWise && xcodebuild -project WealthWise.xcodeproj -scheme WealthWise -destination 'platform=macOS' -showBuildSettings | grep -E 'SWIFT_EXEC|SDK_DIR' > /tmp/swift_settings.txt && SWIFT_EXEC=$(grep SWIFT_EXEC /tmp/swift_settings.txt | cut -d'=' -f2 | xargs) && SDK_DIR=$(grep 'SDKROOT.*MacOSX' /tmp/swift_settings.txt | cut -d'=' -f2 | xargs) && echo 'Using Swift: '$SWIFT_EXEC && echo 'Using SDK: '$SDK_DIR && $SWIFT_EXEC -typecheck -target arm64-apple-macos15.6 -sdk $SDK_DIR -I $SDK_DIR/System/Library/Frameworks ${input:filePath} 2>&1 | head -30"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": [
+				"$swiftc"
+			]
+		},
+		{
+			"label": "Swift Check Goal.swift",
+			"type": "shell",
+			"command": "swiftc",
+			"args": [
+				"-parse",
+				"WealthWise/Models/Financial/Goal.swift"
+			],
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/apple/WealthWise"
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": [
+				"$swiftc"
+			]
+		},
+		{
+			"label": "Swift Syntax Check - Custom File",
+			"type": "shell",
+			"command": "swiftc",
+			"args": [
+				"-parse",
+				"${input:swiftFilePath}"
+			],
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/apple/WealthWise"
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": [
+				"$swiftc"
+			]
+		},
+		{
+			"label": "Swift Detailed Check",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-c",
+				"cd /Users/chaitanyakkamatham/Projects/wealth-wise/apple/WealthWise && echo 'Checking Goal.swift compilation with standard library...' && swiftc -v -parse WealthWise/Models/Financial/Goal.swift 2>&1 | grep -E 'error:|warning:|import|module'"
+			],
+			"group": "build"
+		},
+		{
+			"label": "List New Swift Files",
+			"type": "shell",
+			"command": "find", 
+			"args": [
+				"apple/WealthWise",
+				"-name", "*.swift",
+				"-path", "*/Mathematics/*", "-o",
+				"-path", "*/Goals/*", "-o", 
+				"-path", "*/GoalServiceTests/*"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		}
+	],
+	"inputs": [
+		{
+			"id": "filePath",
+			"description": "Swift file path relative to WealthWise directory",
+			"default": "WealthWise/Models/Financial/Goal.swift",
+			"type": "promptString"
+		},
+		{
+			"id": "swiftFilePath",
+			"description": "Swift file to check (relative to WealthWise directory)",
+			"default": "WealthWise/Models/Financial/Goal.swift",
+			"type": "promptString"
+		}
+	]
 }

@@ -165,7 +165,7 @@ public final class Goal {
             // Future value of annuity calculation using NSDecimalNumber for precision
             let remainingDecimal = NSDecimalNumber(decimal: remainingAmount)
             let returnDecimal = NSDecimalNumber(decimal: monthlyReturn)
-            let monthsDecimal = NSDecimalNumber(value: monthsRemaining)
+            let _ = NSDecimalNumber(value: monthsRemaining)
             let onePlusReturn = returnDecimal.adding(NSDecimalNumber(value: 1))
             
             // Use power approximation for NSDecimalNumber since raising(toPower:) has limitations
@@ -247,10 +247,10 @@ public final class Goal {
     @MainActor
     public func addContribution(amount: Decimal, date: Date = Date(), description: String? = nil) {
         let contribution = GoalContribution(
+            id: UUID(),
             amount: amount,
             date: date,
-            description: description,
-            currency: targetCurrency
+            description: description ?? NSLocalizedString("default_contribution_description", comment: "Investment contribution")
         )
         contributions.append(contribution)
         contributedAmount += amount
@@ -262,11 +262,14 @@ public final class Goal {
     /// Add a milestone to track
     @MainActor
     public func addMilestone(percentage: Double, title: String, description: String? = nil) {
+        let milestoneTargetAmount = targetAmount * Decimal(percentage / 100)
+        let milestoneTargetDate = calculateMilestoneDate(percentage: Decimal(percentage))
         let milestone = GoalMilestone(
             percentage: percentage,
             title: title,
             description: description,
-            targetAmount: targetAmount * Decimal(percentage / 100)
+            targetAmount: milestoneTargetAmount,
+            targetDate: milestoneTargetDate
         )
         milestones.append(milestone)
         milestones.sort { $0.percentage < $1.percentage }
@@ -484,6 +487,7 @@ public struct GoalMilestone: Codable, Sendable, Identifiable {
     public let title: String
     public let description: String?
     public let targetAmount: Decimal
+    public let targetDate: Date
     public var isAchieved: Bool
     public var achievedAt: Date?
     
@@ -492,13 +496,15 @@ public struct GoalMilestone: Codable, Sendable, Identifiable {
         percentage: Double,
         title: String,
         description: String? = nil,
-        targetAmount: Decimal
+        targetAmount: Decimal,
+        targetDate: Date
     ) {
         self.id = id
         self.percentage = percentage
         self.title = title
         self.description = description
         self.targetAmount = targetAmount
+        self.targetDate = targetDate
         self.isAchieved = false
         self.achievedAt = nil
     }
@@ -635,10 +641,46 @@ extension Goal {
         )
         
         // Add milestones
-        goal.addMilestone(percentage: 25, title: NSLocalizedString("milestone_25_percent", comment: "25% milestone"), description: "1.25 crores")
-        goal.addMilestone(percentage: 50, title: NSLocalizedString("milestone_50_percent", comment: "50% milestone"), description: "2.5 crores")
-        goal.addMilestone(percentage: 75, title: NSLocalizedString("milestone_75_percent", comment: "75% milestone"), description: "3.75 crores")
+        let milestone25 = GoalMilestone(percentage: 25.0, title: "25% milestone", description: "1.25 crores", targetAmount: 12500000, targetDate: Calendar.current.date(byAdding: .month, value: 9, to: Date()) ?? Date())
+        let milestone50 = GoalMilestone(percentage: 50.0, title: "50% milestone", description: "2.5 crores", targetAmount: 25000000, targetDate: Calendar.current.date(byAdding: .month, value: 18, to: Date()) ?? Date())
+        let milestone75 = GoalMilestone(percentage: 75.0, title: "75% milestone", description: "3.75 crores", targetAmount: 37500000, targetDate: Calendar.current.date(byAdding: .month, value: 27, to: Date()) ?? Date())
+        goal.milestones = [milestone25, milestone50, milestone75]
         
         return goal
+    }
+    
+    /// Add a milestone to the goal
+    @MainActor
+    public func addMilestone(percentage: Decimal, title: String, description: String? = nil) {
+        let targetAmount = (self.targetAmount * percentage) / 100
+        let milestoneTargetDate = calculateMilestoneDate(percentage: percentage)
+        let milestone = GoalMilestone(
+            percentage: Double(truncating: NSDecimalNumber(decimal: percentage)),
+            title: title,
+            description: description,
+            targetAmount: targetAmount,
+            targetDate: milestoneTargetDate
+        )
+        
+        milestones.append(milestone)
+    }
+    
+    /// Add a contribution to the goal
+    @MainActor
+    public func addContribution(amount: Decimal, description: String? = nil, date: Date = Date()) {
+        let contribution = GoalContribution(
+            amount: amount,
+            date: date,
+            description: description
+        )
+        
+        contributions.append(contribution)
+    }
+    
+    /// Calculate milestone date based on percentage
+    private func calculateMilestoneDate(percentage: Decimal) -> Date {
+        let timeInterval = targetDate.timeIntervalSince(startDate)
+        let milestoneInterval = timeInterval * Double(truncating: NSDecimalNumber(decimal: percentage / 100))
+        return startDate.addingTimeInterval(milestoneInterval)
     }
 }
