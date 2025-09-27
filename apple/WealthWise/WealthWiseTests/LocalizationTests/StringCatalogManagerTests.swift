@@ -182,27 +182,24 @@ final class StringCatalogManagerTests: XCTestCase {
     
     func testStringValidation() async {
         let locale = Locale(identifier: "en")
-        mockLocalizationValidator.mockValidationResult = LocalizationValidator.LocalizationValidationResult(
-            locale: locale,
-            totalKeys: 100,
-            validCount: 90,
-            missingCount: 5,
-            malformedCount: 3,
-            suspiciousCount: 2,
-            missingTranslations: [],
-            malformedTranslations: [],
-            suspiciousTranslations: [],
-            formatMismatches: [],
-            lengthViolations: [],
-            validationDate: Date()
+        var mockStats = ValidationStatistics()
+        mockStats.locale = locale.identifier
+        mockStats.totalKeys = 100
+        mockStats.validKeys = 90
+        mockStats.overallScore = 90.0
+        
+        mockLocalizationValidator.mockValidationResult = LocalizationValidationResult(
+            locale: locale.identifier,
+            issues: [],
+            statistics: mockStats
         )
         
         let result = await stringCatalogManager.validateStrings(for: locale)
         
         XCTAssertTrue(mockLocalizationValidator.validateAllStringsCalled)
-        XCTAssertEqual(result.totalKeys, 100)
-        XCTAssertEqual(result.validCount, 90)
-        XCTAssertEqual(result.validationScore, 0.9, accuracy: 0.01)
+        XCTAssertEqual(result.statistics.totalKeys, 100)
+        XCTAssertEqual(result.statistics.validKeys, 90)
+        XCTAssertEqual(result.statistics.overallScore, 90.0, accuracy: 0.01)
     }
     
     func testMissingTranslations() {
@@ -325,24 +322,42 @@ final class StringCatalogManagerTests: XCTestCase {
 
 // MARK: - Mock Classes
 
-class MockTranslationCache: TranslationCache {
+class MockTranslationCache: TranslationCacheProtocol {
     var cachedStringCalled = false
     var cacheStringCalled = false
     var clearCacheCalled = false
     var shouldReturnCachedString = false
     var cachedStringToReturn: String?
     
-    override func cachedString(for key: LocalizationKey, locale: Locale) -> String? {
+    // MARK: - TranslationCacheProtocol
+    
+    var count: Int = 0
+    var totalHits: Int = 0
+    var totalMisses: Int = 0
+    var hitRate: Double = 0.0
+    var estimatedMemoryUsage: Int = 0
+    
+    func get(key: String, locale: String) -> String? {
         cachedStringCalled = true
         return shouldReturnCachedString ? cachedStringToReturn : nil
     }
     
-    override func cacheString(_ translation: String, for key: LocalizationKey, locale: Locale) {
+    func set(key: String, locale: String, translation: String) {
         cacheStringCalled = true
+        count += 1
     }
     
-    override func clearCache() {
+    func clear() {
         clearCacheCalled = true
+        count = 0
+    }
+    
+    func cacheKey(for key: String, locale: String) -> String {
+        return "\(key)_\(locale)"
+    }
+    
+    func performMaintenance() {
+        // Mock maintenance
     }
     
     func reset() {
@@ -351,32 +366,41 @@ class MockTranslationCache: TranslationCache {
         clearCacheCalled = false
         shouldReturnCachedString = false
         cachedStringToReturn = nil
+        count = 0
+        totalHits = 0
+        totalMisses = 0
+        hitRate = 0.0
+        estimatedMemoryUsage = 0
     }
 }
 
-class MockLocalizationValidator: LocalizationValidator {
+class MockLocalizationValidator: LocalizationValidatorProtocol {
     var validateAllStringsCalled = false
-    var mockValidationResult: LocalizationValidator.LocalizationValidationResult?
+    var mockValidationResult: LocalizationValidationResult?
     
-    override func validateAllStrings(
-        keys: [LocalizationKey],
-        locale: Locale
-    ) async -> LocalizationValidator.LocalizationValidationResult {
+    func validate(translations: [String: String], for locale: String) -> LocalizationValidationResult {
         validateAllStringsCalled = true
         
-        return mockValidationResult ?? LocalizationValidator.LocalizationValidationResult(
+        return mockValidationResult ?? LocalizationValidationResult(
             locale: locale,
-            totalKeys: keys.count,
-            validCount: keys.count,
-            missingCount: 0,
-            malformedCount: 0,
-            suspiciousCount: 0,
-            missingTranslations: [],
-            malformedTranslations: [],
-            suspiciousTranslations: [],
-            formatMismatches: [],
-            lengthViolations: [],
-            validationDate: Date()
+            issues: [],
+            statistics: ValidationStatistics()
         )
+    }
+    
+    func generateTextReport(from result: LocalizationValidationResult) -> String {
+        return "Mock text report"
+    }
+    
+    func generateJSONReport(from result: LocalizationValidationResult) -> String {
+        return "{\"mock\": \"json\"}"
+    }
+    
+    func generateCSVReport(from result: LocalizationValidationResult) -> String {
+        return "key,value\nmock,csv"
+    }
+    
+    func generateMarkdownReport(from result: LocalizationValidationResult) -> String {
+        return "# Mock Markdown Report"
     }
 }

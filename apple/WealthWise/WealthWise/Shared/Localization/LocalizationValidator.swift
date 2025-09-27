@@ -10,10 +10,30 @@ import Foundation
 import Combine
 import os.log
 
+/// Protocol for localization validation, enabling testability and dependency injection
+public protocol LocalizationValidatorProtocol: AnyObject {
+    /// Validate translations for a specific locale
+    /// - Parameters:
+    ///   - translations: Dictionary of key-value translations
+    ///   - locale: Target locale identifier
+    /// - Returns: Validation result with issues and statistics
+    func validate(translations: [String: String], for locale: String) -> LocalizationValidationResult
+    
+    /// Generate validation report in specified format
+    /// - Parameters:
+    ///   - result: Validation result
+    ///   - format: Report format (text, JSON, CSV, markdown)
+    /// - Returns: Formatted report string
+    func generateTextReport(from result: LocalizationValidationResult) -> String
+    func generateJSONReport(from result: LocalizationValidationResult) -> String
+    func generateCSVReport(from result: LocalizationValidationResult) -> String
+    func generateMarkdownReport(from result: LocalizationValidationResult) -> String
+}
+
 /// Comprehensive validation system for localization quality assurance
 /// Supports parameter validation, length checking, consistency validation, and multiple report formats
 @MainActor
-public final class LocalizationValidator: ObservableObject {
+public final class LocalizationValidator: ObservableObject, LocalizationValidatorProtocol {
     
     // MARK: - Properties
     

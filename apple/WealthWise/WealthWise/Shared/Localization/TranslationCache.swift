@@ -16,10 +16,25 @@ import UIKit
 import AppKit
 #endif
 
+/// Protocol for translation cache to enable dependency injection and mocking
+public protocol TranslationCacheProtocol: AnyObject {
+    var count: Int { get }
+    var totalHits: Int { get }
+    var totalMisses: Int { get }
+    var hitRate: Double { get }
+    var estimatedMemoryUsage: Int { get }
+    
+    func get(key: String, locale: String) -> String?
+    func set(key: String, locale: String, translation: String)
+    func clear()
+    func cacheKey(for key: String, locale: String) -> String
+    func performMaintenance()
+}
+
 /// High-performance translation cache with automatic memory management
 /// Features LRU eviction, memory pressure handling, and thread-safe operations
 @MainActor
-public final class TranslationCache: ObservableObject {
+public final class TranslationCache: ObservableObject, TranslationCacheProtocol {
     
     // MARK: - Configuration
     

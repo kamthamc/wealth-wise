@@ -31,8 +31,8 @@ public final class StringCatalogManager: ObservableObject {
     
     // MARK: - Dependencies
     
-    private let translationCache: TranslationCache
-    private let localizationValidator: LocalizationValidator
+    private let translationCache: TranslationCacheProtocol
+    private let localizationValidator: LocalizationValidatorProtocol
     private let logger = Logger(subsystem: "com.wealthwise.localization", category: "StringCatalogManager")
     
     // MARK: - Configuration
@@ -59,8 +59,8 @@ public final class StringCatalogManager: ObservableObject {
     // MARK: - Initialization
     
     public init(
-        translationCache: TranslationCache = TranslationCache(),
-        localizationValidator: LocalizationValidator = LocalizationValidator()
+        translationCache: TranslationCacheProtocol = TranslationCache(),
+        localizationValidator: LocalizationValidatorProtocol = LocalizationValidator()
     ) {
         self.translationCache = translationCache
         self.localizationValidator = localizationValidator
