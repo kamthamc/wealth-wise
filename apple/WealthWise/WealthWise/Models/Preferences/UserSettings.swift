@@ -19,49 +19,49 @@ public final class UserSettings: Codable {
     // MARK: - Properties
     
     /// Current app version for migration purposes
-    public var appVersion: String = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
+    public var appVersion: String
     
     /// Settings version for migration tracking
-    public var settingsVersion: Int = 1
+    public var settingsVersion: Int
     
     /// User's preferred primary currency
-    public var primaryCurrency: SupportedCurrency = .INR
+    public var primaryCurrency: SupportedCurrency
     
     /// User's preferred audience/market
-    public var primaryAudience: PrimaryAudience = .indian
+    public var primaryAudience: PrimaryAudience
     
     /// Localization configuration
-    public var localization: LocalizationConfig = LocalizationConfig()
+    public var localization: LocalizationConfig
     
     /// Accessibility preferences
-    public var accessibility: AccessibilityPreferences = AccessibilityPreferences()
+    public var accessibility: AccessibilityPreferences
     
     /// Theme preferences
-    public var theme: ThemePreferences = ThemePreferences()
+    public var theme: ThemePreferences
     
     /// Privacy settings
-    public var privacy: PrivacySettings = PrivacySettings()
+    public var privacy: PrivacySettings
     
     /// Auto-lock timeout in seconds (default: 15 minutes)
-    public var autoLockTimeout: TimeInterval = 15 * 60
+    public var autoLockTimeout: TimeInterval
     
     /// Enable haptic feedback
-    public var hapticFeedbackEnabled: Bool = true
+    public var hapticFeedbackEnabled: Bool
     
     /// Enable biometric authentication
-    public var biometricAuthEnabled: Bool = true
+    public var biometricAuthEnabled: Bool
     
     /// Enable notifications
-    public var notificationsEnabled: Bool = true
+    public var notificationsEnabled: Bool
     
     /// Data sync preferences
-    public var dataSyncEnabled: Bool = false
+    public var dataSyncEnabled: Bool
     
     /// Last settings sync timestamp
     public var lastSyncTimestamp: Date?
     
     /// Settings modification timestamp
-    public var lastModified: Date = Date()
+    public var lastModified: Date
     
     // MARK: - Computed Properties
     
@@ -96,12 +96,45 @@ public final class UserSettings: Codable {
     // MARK: - Initialization
     
     public init() {
+        // Initialize with default values
+        self.appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
+        self.settingsVersion = 1
+        self.primaryCurrency = .INR
+        self.primaryAudience = .indian
+        self.localization = LocalizationConfig()
+        self.accessibility = AccessibilityPreferences()
+        self.theme = ThemePreferences()
+        self.privacy = PrivacySettings()
+        self.autoLockTimeout = 15 * 60  // 15 minutes
+        self.hapticFeedbackEnabled = true
+        self.biometricAuthEnabled = true
+        self.notificationsEnabled = true
+        self.dataSyncEnabled = false
+        self.lastSyncTimestamp = nil
+        self.lastModified = Date()
+        
         setupDefaultSettings()
     }
     
     /// Initialize with default settings for specific audience
     public init(forAudience audience: PrimaryAudience) {
+        // Initialize with default values
+        self.appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
+        self.settingsVersion = 1
+        self.primaryCurrency = .INR
         self.primaryAudience = audience
+        self.localization = LocalizationConfig()
+        self.accessibility = AccessibilityPreferences()
+        self.theme = ThemePreferences()
+        self.privacy = PrivacySettings()
+        self.autoLockTimeout = 15 * 60  // 15 minutes
+        self.hapticFeedbackEnabled = true
+        self.biometricAuthEnabled = true
+        self.notificationsEnabled = true
+        self.dataSyncEnabled = false
+        self.lastSyncTimestamp = nil
+        self.lastModified = Date()
+        
         setupDefaultSettings()
         configureForAudience(audience)
     }
