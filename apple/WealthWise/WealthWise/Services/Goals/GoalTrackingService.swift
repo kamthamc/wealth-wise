@@ -187,14 +187,16 @@ public final class GoalTrackingService: ObservableObject {
         defer { isLoading = false }
         
         // Create contribution
+        let goal = activeGoals[goalIndex]
         let contribution = GoalContribution(
+            id: UUID(),
             amount: amount,
             date: date,
-            description: description ?? NSLocalizedString("contribution.default_description", comment: "Regular contribution")
+            description: description ?? NSLocalizedString("contribution.default_description", comment: "Regular contribution"),
+            currency: goal.targetCurrency
         )
         
         // Add to goal
-        let goal = activeGoals[goalIndex]
         goal.contributions.append(contribution)
         
         // Update persistence

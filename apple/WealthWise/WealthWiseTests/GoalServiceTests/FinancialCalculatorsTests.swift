@@ -116,7 +116,7 @@ final class FinancialCalculatorsTests: XCTestCase {
         // When
         let result = PresentValueCalculator.calculateNetPresentValue(
             initialInvestment: initialInvestment,
-            cashFlows: cashFlows,
+            cashFlows: cashFlows.enumerated().map { (amount: $1, timeInYears: Decimal($0 + 1)) },
             discountRate: discountRate
         )
         

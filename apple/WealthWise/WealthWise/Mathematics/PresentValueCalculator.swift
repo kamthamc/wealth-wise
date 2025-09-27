@@ -41,16 +41,23 @@ public final class PresentValueCalculator {
         public let totalPresentValue: Decimal
         public let initialInvestment: Decimal
         public let isPositiveNPV: Bool
+        public let profitabilityIndex: Decimal
+        public let paybackPeriod: Decimal
         
         /// Initialize NPV result
-        public init(cashFlows: [CashFlow], discountRate: Decimal, netPresentValue: Decimal, totalPresentValue: Decimal, initialInvestment: Decimal, isPositiveNPV: Bool) {
+        public init(cashFlows: [CashFlow], discountRate: Decimal, netPresentValue: Decimal, totalPresentValue: Decimal, initialInvestment: Decimal, isPositiveNPV: Bool, profitabilityIndex: Decimal, paybackPeriod: Decimal) {
             self.cashFlows = cashFlows
             self.discountRate = discountRate
             self.netPresentValue = netPresentValue
             self.totalPresentValue = totalPresentValue
             self.initialInvestment = initialInvestment
             self.isPositiveNPV = isPositiveNPV
+            self.profitabilityIndex = profitabilityIndex
+            self.paybackPeriod = paybackPeriod
         }
+        
+        /// Convenience property for test compatibility
+        public var npv: Decimal { netPresentValue }
     }
     
     /// Cash flow structure for NPV calculations
@@ -64,6 +71,42 @@ public final class PresentValueCalculator {
             self.amount = amount
             self.timeInYears = timeInYears
             self.presentValue = presentValue
+        }
+    }
+    
+    /// Annuity type enumeration
+    public enum AnnuityType: String, CaseIterable, Sendable {
+        case ordinary = "ordinary"
+        case due = "due"
+        
+        /// Localized description
+        public var localizedDescription: String {
+            switch self {
+            case .ordinary:
+                return NSLocalizedString("annuity.type.ordinary", comment: "Ordinary annuity")
+            case .due:
+                return NSLocalizedString("annuity.type.due", comment: "Annuity due")
+            }
+        }
+    }
+    
+    /// Annuity present value calculation result
+    public struct AnnuityResult: Sendable {
+        public let payment: Decimal
+        public let discountRate: Decimal
+        public let periods: Int
+        public let annuityType: AnnuityType
+        public let presentValue: Decimal
+        public let totalPayments: Decimal
+        
+        /// Initialize annuity result
+        public init(payment: Decimal, discountRate: Decimal, periods: Int, annuityType: AnnuityType, presentValue: Decimal, totalPayments: Decimal) {
+            self.payment = payment
+            self.discountRate = discountRate
+            self.periods = periods
+            self.annuityType = annuityType
+            self.presentValue = presentValue
+            self.totalPayments = totalPayments
         }
     }
     
@@ -101,7 +144,7 @@ public final class PresentValueCalculator {
     ///   - cashFlows: Array of future cash flows with their timing
     ///   - discountRate: Required rate of return
     /// - Returns: NPV calculation result
-    public static func calculateNPV(
+    public static func calculateNetPresentValue(
         initialInvestment: Decimal,
         cashFlows: [(amount: Decimal, timeInYears: Decimal)],
         discountRate: Decimal
@@ -131,40 +174,76 @@ public final class PresentValueCalculator {
         let netPresentValue = totalPresentValue - initialInvestment
         let isPositiveNPV = netPresentValue > 0
         
+        // Calculate profitability index
+        let profitabilityIndex = initialInvestment > 0 ? totalPresentValue / initialInvestment : 0
+        
+        // Calculate payback period (simplified)
+        var cumulativeCashFlow: Decimal = 0
+        var paybackPeriod: Decimal = 0
+        for cashFlow in processedCashFlows {
+            cumulativeCashFlow += cashFlow.amount
+            if cumulativeCashFlow >= initialInvestment {
+                paybackPeriod = cashFlow.timeInYears
+                break
+            }
+        }
+        
         return NPVResult(
             cashFlows: processedCashFlows,
             discountRate: discountRate,
             netPresentValue: netPresentValue,
             totalPresentValue: totalPresentValue,
             initialInvestment: initialInvestment,
-            isPositiveNPV: isPositiveNPV
+            isPositiveNPV: isPositiveNPV,
+            profitabilityIndex: profitabilityIndex,
+            paybackPeriod: paybackPeriod
         )
     }
     
     /// Calculate present value of an annuity (series of equal payments)
     /// - Parameters:
-    ///   - paymentAmount: Amount of each payment
-    ///   - discountRate: Annual discount rate
-    ///   - numberOfPayments: Total number of payments
-    /// - Returns: Present value of the annuity
+    ///   - payment: Amount of each payment
+    ///   - rate: Annual discount rate
+    ///   - periods: Total number of payments
+    ///   - annuityType: Type of annuity (ordinary or due)
+    /// - Returns: Annuity present value calculation result
     public static func calculateAnnuityPresentValue(
-        paymentAmount: Decimal,
-        discountRate: Decimal,
-        numberOfPayments: Int
-    ) -> Decimal {
+        payment: Decimal,
+        rate: Decimal,
+        periods: Int,
+        annuityType: AnnuityType
+    ) -> AnnuityResult {
         
-        if discountRate == 0 {
+        var presentValue: Decimal
+        
+        if rate == 0 {
             // No discount scenario
-            return paymentAmount * Decimal(numberOfPayments)
+            presentValue = payment * Decimal(periods)
+        } else {
+            // PV = PMT * [(1 - (1 + r)^-n) / r]
+            let onePlusRate = 1 + rate
+            let discountFactor = power(base: onePlusRate, exponent: Decimal(-periods))
+            let numerator = 1 - discountFactor
+            let annuityFactor = numerator / rate
+            
+            presentValue = payment * annuityFactor
+            
+            // For annuity due, multiply by (1 + r)
+            if annuityType == .due {
+                presentValue *= onePlusRate
+            }
         }
         
-        // PV = PMT * [(1 - (1 + r)^-n) / r]
-        let onePlusRate = 1 + discountRate
-        let discountFactor = power(base: onePlusRate, exponent: Decimal(-numberOfPayments))
-        let numerator = 1 - discountFactor
-        let annuityFactor = numerator / discountRate
+        let totalPayments = payment * Decimal(periods)
         
-        return paymentAmount * annuityFactor
+        return AnnuityResult(
+            payment: payment,
+            discountRate: rate,
+            periods: periods,
+            annuityType: annuityType,
+            presentValue: presentValue,
+            totalPayments: totalPayments
+        )
     }
     
     /// Calculate present value of a perpetuity (infinite series of payments)
@@ -263,11 +342,14 @@ public final class PresentValueCalculator {
         let monthlyRate = annualReturn / 12
         let numberOfPayments = Int(12 * Double(truncating: timeInYears as NSNumber))
         
-        return calculateAnnuityPresentValue(
-            paymentAmount: monthlyContribution,
-            discountRate: monthlyRate,
-            numberOfPayments: numberOfPayments
+        let result = calculateAnnuityPresentValue(
+            payment: monthlyContribution,
+            rate: monthlyRate,
+            periods: numberOfPayments,
+            annuityType: .ordinary
         )
+        
+        return result.presentValue
     }
     
     // MARK: - Utility Functions
@@ -346,6 +428,24 @@ extension PresentValueCalculator {
             totalReturn: totalReturn,
             annualizedReturn: annualizedReturn,
             roi: roi
+        )
+    }
+    
+    /// Calculate present value for goal-specific analysis
+    /// - Parameters:
+    ///   - futureValue: Future goal amount
+    ///   - discountRate: Expected return rate
+    ///   - years: Time horizon in years
+    /// - Returns: Present value calculation result
+    public static func calculateGoalPresentValue(
+        futureValue: Decimal,
+        discountRate: Decimal,
+        years: Decimal
+    ) -> PresentValueResult {
+        return calculatePresentValue(
+            futureValue: futureValue,
+            discountRate: discountRate,
+            timeInYears: years
         )
     }
 }
