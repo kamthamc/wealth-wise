@@ -188,7 +188,7 @@ extension Double {
     }
 }
 
-// MARK: - Financial Ma th Helpers
+// MARK: - Financial Math Helpers
 
 extension Double {
     
