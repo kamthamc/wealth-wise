@@ -1,0 +1,27 @@
+{
+    "requiredParameters": {
+        "dashboard.portfolio.value": ["amount", "currency"],
+        "goals.savings.target": ["amount", "currency", "date"],
+        "notifications.trade.executed": ["symbol", "quantity", "price"],
+        "alerts.goal.progress": ["goalName", "percentage"],
+        "dashboard.performance.gain": ["amount", "percentage"]
+    },
+    "maxLengthLimits": {
+        "tab.dashboard": 20,
+        "tab.portfolio": 20,
+        "tab.goals": 20,
+        "tab.settings": 20,
+        "button.cancel": 15,
+        "button.save": 15,
+        "button.delete": 15,
+        "alert.title": 60,
+        "notification.title": 80
+    },
+    "criticalKeys": [
+        "error.network.connection",
+        "error.authentication.failed",
+        "alert.data.corruption",
+        "security.biometric.prompt",
+        "backup.restore.confirmation"
+    ]
+}
