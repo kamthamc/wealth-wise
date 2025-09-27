@@ -195,7 +195,7 @@ extension Double {
     /// Format as rate (percentage) with proper precision
     public func rateString(for audience: PrimaryAudience, decimalPlaces: Int = 4) -> String {
         let config = NumberFormatterConfiguration.forAudience(audience, abbreviated: false)
-        var modifiedConfig = NumberFormatterConfiguration(
+      let modifiedConfig = NumberFormatterConfiguration(
             numberingSystem: config.numberingSystem,
             audience: config.audience,
             minimumFractionDigits: decimalPlaces,
