@@ -2,7 +2,6 @@
 //  LocalizationValidator.swift
 //  WealthWise
 //
-//  Created by GitHub Copilot on 27/09/2025.
 //  Comprehensive localization validation with quality assurance and multiple report formats
 //
 
@@ -18,6 +17,20 @@ public protocol LocalizationValidatorProtocol: AnyObject {
     ///   - locale: Target locale identifier
     /// - Returns: Validation result with issues and statistics
     func validate(translations: [String: String], for locale: String) -> LocalizationValidationResult
+    
+    /// Validate a single translation entry
+    /// - Parameters:
+    ///   - key: Localization key
+    ///   - originalText: Original text in base language
+    ///   - translation: Translated text (optional)
+    ///   - locale: Target locale
+    /// - Returns: Validation result with issues and statistics
+    func validate(key: String, originalText: String, translation: String?, locale: String) -> LocalizationValidationResult
+    
+    /// Validate consistency across multiple translations
+    /// - Parameter translations: Dictionary of key-value translations
+    /// - Returns: Array of consistency validation issues
+    func validateConsistency(translations: [String: String]) -> [ValidationIssue]
     
     /// Generate validation report in specified format
     /// - Parameters:
@@ -38,45 +51,39 @@ public final class LocalizationValidator: ObservableObject, LocalizationValidato
     // MARK: - Properties
     
     private let logger = Logger(subsystem: "com.wealthwise.localization", category: "LocalizationValidator")
-    private let requiredParameters: [String: [String]]
-    private let maxLengthLimits: [String: Int]
-    private let criticalKeys: Set<String>
+    private(set) var requiredParameters: [String: [String]] = [:]
+    private(set) var maxLengthLimits: [String: Int] = [:]
+    private(set) var criticalKeys: Set<String> = []
     
     // MARK: - Initialization
     
     public init() {
-        // Define required parameters for specific keys
-        self.requiredParameters = [
-            "dashboard.portfolio.value": ["amount", "currency"],
-            "goals.savings.target": ["amount", "currency", "date"],
-            "notifications.trade.executed": ["symbol", "quantity", "price"],
-            "alerts.goal.progress": ["goalName", "percentage"],
-            "dashboard.performance.gain": ["amount", "percentage"]
-        ]
-        
-        // Define maximum length limits for UI components
-        self.maxLengthLimits = [
-            "tab.dashboard": 20,
-            "tab.portfolio": 20,
-            "tab.goals": 20,
-            "tab.settings": 20,
-            "button.cancel": 15,
-            "button.save": 15,
-            "button.delete": 15,
-            "alert.title": 60,
-            "notification.title": 80
-        ]
-        
-        // Define critical keys that must be present
-        self.criticalKeys = Set([
-            "error.network.connection",
-            "error.authentication.failed",
-            "alert.data.corruption",
-            "security.biometric.prompt",
-            "backup.restore.confirmation"
-        ])
-        
+        loadValidationConfig()
         logger.info("LocalizationValidator initialized with \(self.requiredParameters.count) parameter rules")
+    }
+    
+    /// Loads validation rules from LocalizationValidationConfig.json in the app bundle
+    private func loadValidationConfig() {
+        guard let url = Bundle.main.url(forResource: "LocalizationValidationConfig", withExtension: "json") else {
+            logger.error("LocalizationValidationConfig.json not found in bundle")
+            return
+        }
+        do {
+            let data = try Data(contentsOf: url)
+            let config = try JSONDecoder().decode(LocalizationValidationConfig.self, from: data)
+            self.requiredParameters = config.requiredParameters
+            self.maxLengthLimits = config.maxLengthLimits
+            self.criticalKeys = Set(config.criticalKeys)
+        } catch {
+            logger.error("Failed to load validation config: \(error.localizedDescription)")
+        }
+    }
+    
+    /// Struct for decoding validation config JSON
+    private struct LocalizationValidationConfig: Decodable {
+        let requiredParameters: [String: [String]]
+        let maxLengthLimits: [String: Int]
+        let criticalKeys: [String]
     }
     
     // MARK: - Validation Methods
@@ -137,6 +144,129 @@ public final class LocalizationValidator: ObservableObject, LocalizationValidato
         )
     }
     
+    /// Validate a single translation entry (alternative interface for testing)
+    /// - Parameters:
+    ///   - key: Localization key
+    ///   - originalText: Original text in base language
+    ///   - translation: Translated text (optional)
+    ///   - locale: Target locale
+    /// - Returns: Validation result with issues and statistics
+    public func validate(key: String, originalText: String, translation: String?, locale: String) -> LocalizationValidationResult {
+        logger.info("Validating single translation for key: \(key), locale: \(locale)")
+        
+        var issues: [ValidationIssue] = []
+        var statistics = ValidationStatistics()
+        
+        // Initialize statistics
+        statistics.totalKeys = 1
+        statistics.locale = locale
+        statistics.validationDate = Date()
+        
+        // Handle missing translation
+        guard let translation = translation else {
+            issues.append(ValidationIssue(
+                key: key,
+                type: .missingTranslation,
+                severity: .error,
+                message: "Translation is missing for key '\(key)'",
+                suggestion: "Provide a translation for the key '\(key)'"
+            ))
+            
+            statistics.invalidKeys = 1
+            statistics.errorCount = 1
+            statistics.overallScore = 0.0
+            
+            return LocalizationValidationResult(
+                locale: locale,
+                issues: issues,
+                statistics: statistics
+            )
+        }
+        
+        // Validate the translation using existing logic
+        let translationIssues = validateTranslation(key: key, value: translation, locale: locale)
+        issues.append(contentsOf: translationIssues)
+        
+        // Update statistics
+        if translationIssues.isEmpty {
+            statistics.validKeys = 1
+            statistics.invalidKeys = 0
+        } else {
+            statistics.validKeys = 0
+            statistics.invalidKeys = 1
+            
+            for issue in translationIssues {
+                switch issue.severity {
+                case .error:
+                    statistics.errorCount += 1
+                case .warning:
+                    statistics.warningCount += 1
+                case .info:
+                    statistics.infoCount += 1
+                }
+            }
+        }
+        
+        // Calculate overall score
+        statistics.overallScore = calculateOverallScore(statistics: statistics)
+        
+        return LocalizationValidationResult(
+            locale: locale,
+            issues: issues,
+            statistics: statistics
+        )
+    }
+    
+    /// Validate consistency across multiple translations
+    /// - Parameter translations: Dictionary of key-value translations
+    /// - Returns: Array of consistency validation issues
+    public func validateConsistency(translations: [String: String]) -> [ValidationIssue] {
+        var issues: [ValidationIssue] = []
+        
+        // Check for terminology consistency
+        let terminologyGroups = groupTerminology(translations: translations)
+        
+        for (baseKey, variants) in terminologyGroups {
+            if variants.count > 1 {
+                // Multiple translations for the same concept
+                let sortedVariants = variants.sorted { $0.key < $1.key }
+                let primaryTranslation = sortedVariants.first?.value ?? ""
+                
+                for variant in sortedVariants.dropFirst() {
+                    issues.append(ValidationIssue(
+                        key: variant.key,
+                        type: .inconsistentTerminology,
+                        severity: .warning,
+                        message: "Inconsistent terminology: '\(variant.value)' vs '\(primaryTranslation)' for similar concepts",
+                        suggestion: "Use consistent terminology across related keys. Consider using '\(primaryTranslation)'"
+                    ))
+                }
+            }
+        }
+        
+        return issues
+    }
+    
+    /// Group translations by similar concepts for terminology consistency checking
+    private func groupTerminology(translations: [String: String]) -> [String: [(key: String, value: String)]] {
+        var groups: [String: [(key: String, value: String)]] = [:]
+        
+        // Simple terminology grouping based on key patterns
+        for (key, value) in translations {
+            let components = key.components(separatedBy: ".")
+            if let lastComponent = components.last {
+                // Group by the last component of the key (e.g., "settings" in "app.settings", "menu.settings")
+                let baseKey = lastComponent
+                if groups[baseKey] == nil {
+                    groups[baseKey] = []
+                }
+                groups[baseKey]?.append((key: key, value: value))
+            }
+        }
+        
+        return groups
+    }
+    
     /// Validate a single translation entry
     /// - Parameters:
     ///   - key: Localization key
@@ -150,7 +280,7 @@ public final class LocalizationValidator: ObservableObject, LocalizationValidato
         if value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             issues.append(ValidationIssue(
                 key: key,
-                type: .emptyValue,
+                type: .emptyTranslation,
                 severity: .error,
                 message: "Translation value is empty or contains only whitespace",
                 suggestion: "Provide a meaningful translation for key '\(key)'"
@@ -521,11 +651,17 @@ public struct ValidationIssue: Codable, Identifiable, Equatable {
 /// Types of validation issues
 public enum ValidationType: String, Codable, CaseIterable {
     case emptyValue = "empty_value"
+    case emptyTranslation = "empty_translation"
     case missingKey = "missing_key"
+    case missingTranslation = "missing_translation"
     case missingParameter = "missing_parameter"
+    case parameterMismatch = "parameter_mismatch"
     case lengthExceeded = "length_exceeded"
+    case excessiveLength = "excessive_length"
     case invalidFormat = "invalid_format"
+    case invalidCharacters = "invalid_characters"
     case inconsistentFormatting = "inconsistent_formatting"
+    case inconsistentTerminology = "inconsistent_terminology"
     case duplicateKey = "duplicate_key"
     case unusedKey = "unused_key"
 }
@@ -558,6 +694,11 @@ public struct LocalizationValidationResult: Codable {
     public let locale: String
     public let issues: [ValidationIssue]
     public let statistics: ValidationStatistics
+    
+    /// Returns true if validation passed without errors
+    public var isValid: Bool {
+        return issues.allSatisfy { $0.severity != .error }
+    }
     
     public init(locale: String, issues: [ValidationIssue], statistics: ValidationStatistics) {
         self.locale = locale
