@@ -9,9 +9,6 @@ import Foundation
 import SwiftUI
 import Combine
 
-import Foundation
-import SwiftUI
-
 /// Text direction enumeration for comprehensive RTL/LTR support
 public enum TextDirection: String, CaseIterable, Codable, Sendable {
     case leftToRight = "ltr"

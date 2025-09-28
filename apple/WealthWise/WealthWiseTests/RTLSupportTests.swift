@@ -11,6 +11,13 @@ import SwiftUI
 
 final class RTLSupportTests: XCTestCase {
     
+    // MARK: - Constants
+    
+    /// Unicode directional marks for better test readability
+    private static let rightToLeftMark = "\u{200F}"  // RLM
+    private static let leftToRightMark = "\u{200E}"  // LRM
+    private static let popDirectionalFormatting = "\u{202C}"  // PDF
+    
     var textDirectionDetector: TextDirectionDetector!
     var rtlLayoutManager: RTLLayoutManager!
     var biDirectionalHandler: BiDirectionalTextHandler!
@@ -141,7 +148,7 @@ final class RTLSupportTests: XCTestCase {
         
         XCTAssertTrue(formattedNumber.contains(number), "Should contain the original number")
         // Should contain RTL formatting marks
-        XCTAssertTrue(formattedNumber.contains("\u{200F}") || formattedNumber.contains("\u{200E}"), 
+        XCTAssertTrue(formattedNumber.contains(Self.rightToLeftMark) || formattedNumber.contains(Self.leftToRightMark), 
                      "Should contain directional formatting marks")
     }
     

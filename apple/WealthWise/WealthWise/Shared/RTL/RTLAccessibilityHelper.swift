@@ -229,7 +229,3 @@ public extension EnvironmentValues {
         set { self[RTLAccessibilityHelperKey.self] = newValue }
     }
 }
-
-#if canImport(UIKit)
-import UIKit
-#endif

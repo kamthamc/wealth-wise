@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Foundation
+import Combine
 
 /// RTL layout manager for comprehensive right-to-left layout support
 @MainActor
@@ -125,5 +126,3 @@ public extension EnvironmentValues {
         set { self[RTLLayoutManagerKey.self] = newValue }
     }
 }
-
-import Combine
