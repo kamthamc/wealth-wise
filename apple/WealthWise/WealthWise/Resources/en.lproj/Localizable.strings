@@ -428,3 +428,103 @@
 "probability.moderate" = "Moderate (50-70%)";
 "probability.low" = "Low (30-50%)";
 "probability.very_low" = "Very Low (<30%)";
+
+/* Security & Authentication */
+"authenticate_access_app" = "Authenticate to access WealthWise";
+"enable_biometric_auth" = "Enable biometric authentication for WealthWise";
+
+/* Authentication Methods */
+"auth_none" = "No authentication";
+"auth_pin" = "PIN";
+"auth_password" = "Password";
+"auth_biometric" = "Biometric";
+"auth_two_factor" = "Two-factor authentication";
+"auth_passkey" = "Passkey";
+
+/* Security Event Types */
+"login_attempt" = "Login attempt";
+"login_success" = "Login successful";
+"login_failure" = "Login failed";
+"logout" = "User logout";
+"session_expired" = "Session expired";
+"biometric_auth_success" = "Biometric authentication successful";
+"biometric_auth_failure" = "Biometric authentication failed";
+"pin_auth_success" = "PIN authentication successful";
+"pin_auth_failure" = "PIN authentication failed";
+"account_locked" = "Account locked";
+"account_unlocked" = "Account unlocked";
+"password_changed" = "Password changed";
+"biometric_enabled" = "Biometric authentication enabled";
+"biometric_disabled" = "Biometric authentication disabled";
+"two_factor_enabled" = "Two-factor authentication enabled";
+"two_factor_disabled" = "Two-factor authentication disabled";
+"data_access" = "Data accessed";
+"data_export" = "Data exported";
+"data_import" = "Data imported";
+"encryption_key_generated" = "Encryption key generated";
+"encryption_key_rotated" = "Encryption key rotated";
+"suspicious_activity" = "Suspicious activity detected";
+"device_compromised" = "Device compromised";
+"app_integrity_violation" = "App integrity violation";
+"debugger_detected" = "Debugger detected";
+"authentication_state_changed" = "Authentication state changed";
+
+/* Risk Levels */
+"risk_low" = "Low risk";
+"risk_medium" = "Medium risk";
+"risk_high" = "High risk";
+"risk_critical" = "Critical risk";
+
+/* Threat Types */
+"jailbreak_detected" = "Jailbreak detected";
+"debugger_attached" = "Debugger attached";
+"app_integrity_compromised" = "App integrity compromised";
+"suspicious_network_activity" = "Suspicious network activity";
+"multiple_failed_logins" = "Multiple failed login attempts";
+"unusual_device_access" = "Unusual device access pattern";
+"certificate_pinning_failure" = "Certificate pinning failure";
+"memory_manipulation" = "Memory manipulation detected";
+"screen_recording" = "Screen recording detected";
+"keystroke_logging" = "Keystroke logging detected";
+
+/* Threat Severity */
+"severity_info" = "Informational";
+"severity_low" = "Low severity";
+"severity_medium" = "Medium severity";
+"severity_high" = "High severity";
+"severity_critical" = "Critical severity";
+
+/* Security Status */
+"security_status_excellent" = "Excellent";
+"security_status_good" = "Good";
+"security_status_fair" = "Fair";
+"security_status_poor" = "Poor";
+"security_status_critical" = "Critical";
+
+/* Security Recommendations */
+"security_recommendation_failed_attempts" = "Consider implementing stricter authentication policies due to high number of failed attempts";
+"security_recommendation_unresolved_threats" = "Address unresolved security threats immediately";
+"security_recommendation_high_risk_events" = "Review high-risk security events and implement additional safeguards";
+"security_recommendation_good_status" = "Security status is good. Continue monitoring for potential threats";
+
+/* Authentication Errors */
+"error_biometric_not_available" = "Biometric authentication is not available on this device";
+"error_biometric_not_enrolled" = "No biometric authentication is enrolled on this device";
+"error_authentication_failed" = "Authentication failed: %@";
+"error_invalid_credentials" = "Invalid credentials provided";
+"error_weak_credentials" = "Credentials do not meet security requirements";
+"error_setup_required" = "Authentication setup is required";
+"error_setup_failed" = "Failed to set up authentication";
+"error_user_not_found" = "User not found";
+"error_user_already_exists" = "User already exists";
+"error_session_expired" = "Your session has expired";
+"error_account_locked" = "Account is temporarily locked";
+"error_device_not_supported" = "This device is not supported";
+
+/* Security Issues */
+"device_compromised" = "Device Compromised";
+"app_integrity_violation" = "App Integrity Violation";
+"debugger_detected" = "Debugger Detected";
+"network_security_issue" = "Network Security Issue";
+"keystore_compromised" = "Keystore Compromised";
+"suspicious_activity" = "Suspicious Activity";
