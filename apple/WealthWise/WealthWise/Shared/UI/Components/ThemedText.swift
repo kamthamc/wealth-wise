@@ -8,6 +8,12 @@
 
 import SwiftUI
 
+/// Content type for ThemedText
+public enum ThemedTextContent {
+    case string(String)
+    case localizedKey(LocalizedStringKey)
+}
+
 /// Themed text component that applies semantic colors and typography
 public struct ThemedText: View {
     
@@ -15,7 +21,7 @@ public struct ThemedText: View {
     
     @Environment(\.themeConfiguration) private var themeConfiguration
     
-    private let text: String
+    private let content: ThemedTextContent
     private let level: TextLevel
     private let alignment: TextAlignment
     private let lineLimit: Int?
@@ -28,7 +34,19 @@ public struct ThemedText: View {
         alignment: TextAlignment = .leading,
         lineLimit: Int? = nil
     ) {
-        self.text = text
+        self.content = .string(text)
+        self.level = level
+        self.alignment = alignment
+        self.lineLimit = lineLimit
+    }
+    
+    public init(
+        _ localizedKey: LocalizedStringKey,
+        level: TextLevel = .primary,
+        alignment: TextAlignment = .leading,
+        lineLimit: Int? = nil
+    ) {
+        self.content = .localizedKey(localizedKey)
         self.level = level
         self.alignment = alignment
         self.lineLimit = lineLimit
@@ -37,7 +55,7 @@ public struct ThemedText: View {
     // MARK: - Body
     
     public var body: some View {
-        Text(text)
+        textView
             .font(font)
             .foregroundColor(color)
             .multilineTextAlignment(alignment)
@@ -45,6 +63,18 @@ public struct ThemedText: View {
             .animation(themeConfiguration.animationCurve, value: themeConfiguration.preferences.selectedTheme)
             .accessibilityLabel(accessibilityLabel)
             .accessibilityValue(accessibilityValue ?? "")
+    }
+    
+    // MARK: - Helper Views
+    
+    @ViewBuilder
+    private var textView: some View {
+        switch content {
+        case .string(let text):
+            Text(text)
+        case .localizedKey(let key):
+            Text(key)
+        }
     }
     
     // MARK: - Computed Properties
@@ -75,18 +105,23 @@ public struct ThemedText: View {
     // MARK: - Accessibility
     
     private var accessibilityLabel: String {
+        let textString = switch content {
+        case .string(let text): text
+        case .localizedKey(let key): String(describing: key)
+        }
+        
         switch level {
         case .primary, .secondary, .tertiary, .accent:
-            return text
+            return textString
         case .positive:
             return String(format: NSLocalizedString("text.positive.accessibility", 
-                                                   comment: "Positive value: %@"), text)
+                                                   comment: "Positive value: %@"), textString)
         case .negative:
             return String(format: NSLocalizedString("text.negative.accessibility", 
-                                                   comment: "Negative value: %@"), text)
+                                                   comment: "Negative value: %@"), textString)
         case .warning:
             return String(format: NSLocalizedString("text.warning.accessibility", 
-                                                   comment: "Warning: %@"), text)
+                                                   comment: "Warning: %@"), textString)
         }
     }
     
@@ -149,12 +184,33 @@ public extension TextLevel {
 // MARK: - Convenience Extensions
 
 public extension Text {
-    /// Apply themed styling
+    /// Apply themed styling for string literals
+    static func themed(
+        _ text: String,
+        level: TextLevel = .primary,
+        alignment: TextAlignment = .leading,
+        lineLimit: Int? = nil
+    ) -> ThemedText {
+        ThemedText(text, level: level, alignment: alignment, lineLimit: lineLimit)
+    }
+
+    /// Apply themed styling for localized string keys
+    static func themed(
+        _ text: LocalizedStringKey,
+        level: TextLevel = .primary,
+        alignment: TextAlignment = .leading,
+        lineLimit: Int? = nil
+    ) -> ThemedText {
+        ThemedText(text, level: level, alignment: alignment, lineLimit: lineLimit)
+    }
+
+    /// Deprecated: Cannot extract text content from Text
+    @available(*, deprecated, message: "Cannot extract text content from Text. Use Text.themed(_:level:alignment:lineLimit:) with a String or LocalizedStringKey instead.")
     func themed(
         level: TextLevel = .primary,
         alignment: TextAlignment = .leading
     ) -> ThemedText {
-        // Extract text content (simplified - in practice you'd need proper text extraction)
+        // Unable to extract text content from Text
         ThemedText("", level: level, alignment: alignment)
     }
 }

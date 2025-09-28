@@ -33,13 +33,24 @@ public struct AccessibilityColorHelper: Sendable {
     
     /// Calculate relative luminance of a color according to WCAG guidelines
     public static func relativeLuminance(of color: Color) -> Double {
-        let components = color.cgColor?.components ?? [0, 0, 0, 1]
+        // Convert SwiftUI Color to NSColor and extract sRGB components
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 1
         
-        let red = linearRGBComponent(components[0])
-        let green = linearRGBComponent(components[1])
-        let blue = linearRGBComponent(components[2])
+        if let nsColor = NSColor(color).usingColorSpace(.sRGB) {
+            red = nsColor.redComponent
+            green = nsColor.greenComponent
+            blue = nsColor.blueComponent
+            alpha = nsColor.alphaComponent
+        }
         
-        return 0.2126 * red + 0.7152 * green + 0.0722 * blue
+        let r = linearRGBComponent(red)
+        let g = linearRGBComponent(green)
+        let b = linearRGBComponent(blue)
+        
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b
     }
     
     /// Convert sRGB component to linear RGB

@@ -412,8 +412,7 @@ public extension ChartColorPalette {
 public extension Color {
     /// Calculate luminance of the color for contrast calculations
     func luminance() -> Double {
-        // Simplified luminance calculation
-        // In a real implementation, you'd want more accurate color space conversion
-        return 0.5 // Placeholder - implement proper luminance calculation
+        // Use the proper AccessibilityColorHelper for luminance calculation
+        return AccessibilityColorHelper.relativeLuminance(of: self)
     }
 }
