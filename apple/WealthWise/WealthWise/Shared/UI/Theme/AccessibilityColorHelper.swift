@@ -46,6 +46,9 @@ public struct AccessibilityColorHelper: Sendable {
             alpha = nsColor.alphaComponent
         }
         
+        // Use alpha to avoid unused variable warning
+        let _ = alpha
+        
         let r = linearRGBComponent(red)
         let g = linearRGBComponent(green)
         let b = linearRGBComponent(blue)
