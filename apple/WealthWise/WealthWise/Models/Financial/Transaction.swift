@@ -389,6 +389,29 @@ public enum TransactionType: String, CaseIterable, Codable, Sendable {
             return false
         }
     }
+    
+    public var systemImageName: String {
+        switch self {
+        case .income:
+            return "plus.circle.fill"
+        case .expense:
+            return "minus.circle.fill"
+        case .investment:
+            return "chart.line.uptrend.xyaxis"
+        case .transfer:
+            return "arrow.left.arrow.right"
+        case .refund:
+            return "arrow.counterclockwise.circle.fill"
+        case .dividend:
+            return "percent.circle.fill"
+        case .interest:
+            return "banknote.fill"
+        case .capital_gain:
+            return "arrow.up.circle.fill"
+        case .capital_loss:
+            return "arrow.down.circle.fill"
+        }
+    }
 }
 
 /// Transaction category for detailed classification
@@ -445,6 +468,7 @@ public enum TransactionCategory: String, CaseIterable, Codable, Sendable {
     case tax_payment = "tax_payment"
     case donation = "donation"
     case other = "other"
+    case other_expense = "other_expense"
     
     public var displayName: String {
         switch self {
@@ -458,6 +482,8 @@ public enum TransactionCategory: String, CaseIterable, Codable, Sendable {
             return NSLocalizedString("category_tax_saving", comment: "Tax saving investment category")
         case .home_loan_emi:
             return NSLocalizedString("category_home_loan", comment: "Home loan EMI category")
+        case .other_expense:
+            return NSLocalizedString("category_other_expense", comment: "Other expense category")
         // Add more localized strings as needed
         default:
             return rawValue.replacingOccurrences(of: "_", with: " ").capitalized
@@ -476,6 +502,7 @@ public enum TransactionCategory: String, CaseIterable, Codable, Sendable {
         case .home_loan_emi, .real_estate: return "house.fill"
         case .shopping: return "bag.fill"
         case .entertainment: return "tv.fill"
+        case .other_expense: return "questionmark.circle.fill"
         default: return "circle.fill"
         }
     }
@@ -495,6 +522,10 @@ public enum TransactionCategory: String, CaseIterable, Codable, Sendable {
         default:
             return "gray"
         }
+    }
+    
+    public var systemImageName: String {
+        return icon
     }
 }
 
