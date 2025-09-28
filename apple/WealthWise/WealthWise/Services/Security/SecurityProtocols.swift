@@ -668,7 +668,7 @@ public enum SecurityThreat: String, CaseIterable, Sendable {
         switch self {
         case .jailbrokenDevice: return "Jailbroken/Rooted Device"
         case .debuggerAttached: return "Debugger Attached"
-        case .suspiciousApp: return "Suspicious Application"
+        case .suspiciousApp: return "Suspicious Application"  
         case .networkAttack: return "Network Attack"
         case .integrityViolation: return "Integrity Violation"
         case .unauthorizedAccess: return "Unauthorized Access"
