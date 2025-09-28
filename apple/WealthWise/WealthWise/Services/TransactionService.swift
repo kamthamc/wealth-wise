@@ -14,7 +14,7 @@ import OSLog
 /// Service for managing financial transactions with CRUD operations, validation, and analytics
 @available(iOS 18.6, macOS 15.6, *)
 @Observable
-public final class TransactionService: Sendable {
+public final class TransactionService {
     
     // MARK: - Properties
     
@@ -166,7 +166,7 @@ public final class TransactionService: Sendable {
             transactions = try modelContext.fetch(descriptor)
             transactionCount = transactions.count
             
-            logger.info("Loaded \(transactions.count) transactions")
+          logger.info("Loaded \(self.transactions.count) transactions")
             
         } catch {
             logger.error("Failed to load transactions: \(error.localizedDescription)")
@@ -279,10 +279,17 @@ public final class TransactionService: Sendable {
                 return total - abs(transaction.baseCurrencyAmount)
             case .transfer, .investment:
                 return total // Transfers don't affect net worth, investments tracked separately
+            case .refund, .dividend, .interest, .capital_gain:
+                return total + transaction.baseCurrencyAmount // Positive income types
+            case .capital_loss:
+                return total - abs(transaction.baseCurrencyAmount) // Negative impact
             }
         }
         
-        logger.info("Analytics updated - Balance: \(totalBalance), Income: \(monthlyIncome), Expenses: \(monthlyExpenses)")
+      logger
+        .info(
+          "Analytics updated - Balance: \(self.totalBalance), Income: \(self.monthlyIncome), Expenses: \(self.monthlyExpenses)"
+        )
     }
     
     /// Get spending by category for current month
@@ -307,7 +314,7 @@ public final class TransactionService: Sendable {
                 category: category,
                 amount: total,
                 transactionCount: transactions.count,
-                percentage: monthlyExpenses > 0 ? Double(total / monthlyExpenses) * 100 : 0
+                percentage: monthlyExpenses > 0 ? Double(truncating: NSDecimalNumber(decimal: total / monthlyExpenses)) * 100 : 0
             )
         }.sorted { $0.amount > $1.amount }
     }
@@ -322,7 +329,7 @@ public final class TransactionService: Sendable {
         }
         
         // Description validation
-        if transaction.transactionDescription.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+        if transaction.transactionDescription.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty {
             throw TransactionError.invalidDescription("Description cannot be empty")
         }
         

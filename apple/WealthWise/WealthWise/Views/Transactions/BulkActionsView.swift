@@ -52,7 +52,9 @@ public struct BulkActionsView: View {
                 deleteActionsSection
             }
             .navigationTitle("Bulk Actions")
+            #if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
@@ -110,7 +112,7 @@ public struct BulkActionsView: View {
                 // Total amount summary
                 let totalAmount = selectedTransactions.reduce(Decimal(0)) { $0 + $1.amount }
                 
-                Text("Total Amount: \(CurrencyFormatter.shared.format(totalAmount, currency: .inr))")
+                Text("Total Amount: \(CurrencyFormatter.shared.format(totalAmount, currency: .INR))")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                 

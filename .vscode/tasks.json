@@ -372,13 +372,19 @@
 		{
 			"label": "List New Swift Files",
 			"type": "shell",
-			"command": "find", 
+			"command": "find",
 			"args": [
 				"apple/WealthWise",
-				"-name", "*.swift",
-				"-path", "*/Mathematics/*", "-o",
-				"-path", "*/Goals/*", "-o", 
-				"-path", "*/GoalServiceTests/*"
+				"-name",
+				"*.swift",
+				"-path",
+				"*/Mathematics/*",
+				"-o",
+				"-path",
+				"*/Goals/*",
+				"-o",
+				"-path",
+				"*/GoalServiceTests/*"
 			],
 			"group": "build",
 			"presentation": {
@@ -387,6 +393,21 @@
 				"focus": false,
 				"panel": "shared"
 			}
+		},
+		{
+			"label": "Build - WealthWise (macOS) - Quick",
+			"type": "shell",
+			"command": "xcodebuild",
+			"args": [
+				"-project",
+				"apple/WealthWise/WealthWise.xcodeproj",
+				"-scheme",
+				"WealthWise",
+				"-destination",
+				"platform=macOS",
+				"build",
+				"-quiet"
+			]
 		}
 	],
 	"inputs": [

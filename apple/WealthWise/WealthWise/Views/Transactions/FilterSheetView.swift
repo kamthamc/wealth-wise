@@ -57,7 +57,9 @@ public struct FilterSheetView: View {
                 resetSection
             }
             .navigationTitle("Filter Transactions")
+            #if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
@@ -91,8 +93,12 @@ public struct FilterSheetView: View {
                         .tag(type as TransactionType?)
                 }
             }
+            #if os(macOS)
+            .pickerStyle(.menu)
+            #else
             .pickerStyle(.wheel)
             .frame(height: 120)
+            #endif
         }
     }
     
@@ -157,14 +163,18 @@ public struct FilterSheetView: View {
             if enableAmountFilter {
                 HStack {
                     TextField("Min", text: $minAmount)
+                        #if !os(macOS)
                         .keyboardType(.decimalPad)
+                        #endif
                         .textFieldStyle(.roundedBorder)
                     
                     Text("to")
                         .foregroundColor(.secondary)
                     
                     TextField("Max", text: $maxAmount)
+                        #if !os(macOS)
                         .keyboardType(.decimalPad)
+                        #endif
                         .textFieldStyle(.roundedBorder)
                 }
                 
@@ -203,9 +213,9 @@ public struct FilterSheetView: View {
                 Text("All Currencies")
                     .tag(nil as String?)
                 
-                ForEach(Currency.supportedCurrencies, id: \.code) { currency in
-                    Text("\(currency.code) - \(currency.name)")
-                        .tag(currency.code as String?)
+                ForEach(SupportedCurrency.allCases, id: \.self) { currency in
+                    Text("\(currency.rawValue) - \(currency.displayName)")
+                        .tag(currency.rawValue as String?)
                 }
             }
             .pickerStyle(.menu)

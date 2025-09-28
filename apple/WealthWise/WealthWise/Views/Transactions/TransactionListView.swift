@@ -325,18 +325,18 @@ public struct TransactionListView: View {
                     Calendar.current.isDate($0.date, inSameDayAs: date)
                 }
                 
-                let totalAmount = dayTransactions.reduce(0) { total, transaction in
+                let totalAmount = dayTransactions.reduce(Decimal(0)) { total, transaction in
                     switch transaction.transactionType {
-                    case .income:
-                        return total + NSDecimalNumber(decimal: transaction.baseCurrencyAmount).intValue
-                    case .expense:
+                    case .income, .refund, .dividend, .interest, .capital_gain:
+                        return total + transaction.baseCurrencyAmount
+                    case .expense, .capital_loss:
                         return total - abs(transaction.baseCurrencyAmount)
                     case .transfer, .investment:
                         return total
                     }
                 }
                 
-                Text(CurrencyFormatter.shared.format(totalAmount))
+                Text(CurrencyFormatter.shared.format(totalAmount, currency: .INR))
                     .font(.subheadline)
                     .foregroundColor(totalAmount >= 0 ? .green : .red)
             }

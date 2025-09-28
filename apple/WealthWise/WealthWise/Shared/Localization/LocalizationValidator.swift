@@ -226,7 +226,7 @@ public final class LocalizationValidator: ObservableObject, LocalizationValidato
         // Check for terminology consistency
         let terminologyGroups = groupTerminology(translations: translations)
         
-        for (baseKey, variants) in terminologyGroups {
+      for (_, variants) in terminologyGroups {
             if variants.count > 1 {
                 // Multiple translations for the same concept
                 let sortedVariants = variants.sorted { $0.key < $1.key }
