@@ -85,6 +85,64 @@
 "financial.tax_loss_harvesting" = "कर हानि संचयन";
 "financial.rebalancing" = "पुनर्संतुलन";
 
+/* Portfolio Management */
+"portfolio_type_diversified" = "विविध";
+"portfolio_type_equity" = "इक्विटी";
+"portfolio_type_fixed_income" = "निश्चित आय";
+"portfolio_type_retirement" = "सेवानिवृत्ति";
+"portfolio_type_growth" = "विकास";
+"portfolio_type_income" = "आय";
+"portfolio_type_custom" = "कस्टम";
+
+/* Investor Profiles */
+"investor_profile_conservative" = "रूढ़िवादी";
+"investor_profile_moderate" = "मध्यम";
+"investor_profile_aggressive" = "आक्रामक";
+"investor_profile_growth" = "विकास";
+"investor_profile_income" = "आय";
+
+/* Portfolio Allocation Categories */
+"allocation_domestic_equity" = "घरेलू इक्विटी";
+"allocation_international_equity" = "अंतर्राष्ट्रीय इक्विटी";
+"allocation_domestic_bonds" = "घरेलू बांड";
+"allocation_international_bonds" = "अंतर्राष्ट्रीय बांड";
+"allocation_alternatives" = "वैकल्पिक";
+"allocation_cash" = "नकद";
+"allocation_others" = "अन्य";
+
+/* Transaction Types */
+"transaction_type_buy" = "खरीद";
+"transaction_type_sell" = "बिक्री";
+"transaction_type_dividend" = "लाभांश";
+"transaction_type_split" = "स्टॉक स्प्लिट";
+"transaction_type_bonus" = "बोनस शेयर";
+"transaction_type_merger" = "विलय";
+"transaction_type_spinoff" = "स्पिनऑफ";
+"transaction_type_rights" = "राइट्स इश्यू";
+
+/* Portfolio Errors */
+"error_portfolio_creation_failed" = "पोर्टफोलियो बनाने में विफल";
+"error_portfolio_update_failed" = "पोर्टफोलियो अपडेट करने में विफल";
+"error_portfolio_deletion_failed" = "पोर्टफोलियो डिलीट करने में विफल";
+"error_portfolio_fetch_failed" = "पोर्टफोलियो लाने में विफल";
+"error_holding_operation_failed" = "होल्डिंग ऑपरेशन विफल";
+"error_transaction_failed" = "लेनदेन विफल";
+"error_invalid_portfolio_name" = "पोर्टफोलियो का नाम खाली नहीं हो सकता";
+"error_invalid_currency" = "अमान्य करेंसी कोड";
+"error_invalid_holding_symbol" = "होल्डिंग सिंबल खाली नहीं हो सकता";
+"error_invalid_quantity" = "मात्रा शून्य से अधिक होनी चाहिए";
+"error_invalid_price" = "कीमत शून्य से अधिक होनी चाहिए";
+"error_duplicate_holding" = "होल्डिंग पहले से मौजूद है";
+"error_holding_not_found" = "होल्डिंग नहीं मिला";
+"error_insufficient_quantity" = "अपर्याप्त मात्रा उपलब्ध";
+
+/* Market Data Errors */
+"error_market_data_fetch_failed" = "बाजार डेटा लाने में विफल";
+"error_invalid_symbol" = "अमान्य सिंबल";
+"error_no_data_available" = "कोई डेटा उपलब्ध नहीं";
+"error_rate_limit_exceeded" = "रेट लिमिट पार हो गई। कृपया बाद में पुनः प्रयास करें";
+"error_network_error" = "नेटवर्क त्रुटि हुई";
+
 /* Error Messages */
 "error.network" = "नेटवर्क त्रुटि हुई";
 "error.invalid_data" = "अमान्य डेटा";

@@ -85,6 +85,64 @@
 "financial.tax_loss_harvesting" = "Tax Loss Harvesting";
 "financial.rebalancing" = "Rebalancing";
 
+/* Portfolio Management */
+"portfolio_type_diversified" = "Diversified";
+"portfolio_type_equity" = "Equity";
+"portfolio_type_fixed_income" = "Fixed Income";
+"portfolio_type_retirement" = "Retirement";
+"portfolio_type_growth" = "Growth";
+"portfolio_type_income" = "Income";
+"portfolio_type_custom" = "Custom";
+
+/* Investor Profiles */
+"investor_profile_conservative" = "Conservative";
+"investor_profile_moderate" = "Moderate";
+"investor_profile_aggressive" = "Aggressive";
+"investor_profile_growth" = "Growth";
+"investor_profile_income" = "Income";
+
+/* Portfolio Allocation Categories */
+"allocation_domestic_equity" = "Domestic Equity";
+"allocation_international_equity" = "International Equity";
+"allocation_domestic_bonds" = "Domestic Bonds";
+"allocation_international_bonds" = "International Bonds";
+"allocation_alternatives" = "Alternatives";
+"allocation_cash" = "Cash";
+"allocation_others" = "Others";
+
+/* Transaction Types */
+"transaction_type_buy" = "Buy";
+"transaction_type_sell" = "Sell";
+"transaction_type_dividend" = "Dividend";
+"transaction_type_split" = "Stock Split";
+"transaction_type_bonus" = "Bonus Shares";
+"transaction_type_merger" = "Merger";
+"transaction_type_spinoff" = "Spinoff";
+"transaction_type_rights" = "Rights Issue";
+
+/* Portfolio Errors */
+"error_portfolio_creation_failed" = "Failed to create portfolio";
+"error_portfolio_update_failed" = "Failed to update portfolio";
+"error_portfolio_deletion_failed" = "Failed to delete portfolio";
+"error_portfolio_fetch_failed" = "Failed to fetch portfolio";
+"error_holding_operation_failed" = "Holding operation failed";
+"error_transaction_failed" = "Transaction failed";
+"error_invalid_portfolio_name" = "Portfolio name cannot be empty";
+"error_invalid_currency" = "Invalid currency code";
+"error_invalid_holding_symbol" = "Holding symbol cannot be empty";
+"error_invalid_quantity" = "Quantity must be greater than zero";
+"error_invalid_price" = "Price must be greater than zero";
+"error_duplicate_holding" = "Holding already exists";
+"error_holding_not_found" = "Holding not found";
+"error_insufficient_quantity" = "Insufficient quantity available";
+
+/* Market Data Errors */
+"error_market_data_fetch_failed" = "Failed to fetch market data";
+"error_invalid_symbol" = "Invalid symbol";
+"error_no_data_available" = "No data available";
+"error_rate_limit_exceeded" = "Rate limit exceeded. Please try again later";
+"error_network_error" = "Network error occurred";
+
 /* Error Messages */
 "error.network" = "Network error occurred";
 "error.invalid_data" = "Invalid data";

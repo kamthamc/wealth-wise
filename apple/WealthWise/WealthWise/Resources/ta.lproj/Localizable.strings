@@ -77,6 +77,64 @@
 "financial.unrealized_gain" = "அறியப்படாத ஆதாயம்";
 "financial.realized_gain" = "உணரப்பட்ட ஆதாயம்";
 
+/* Portfolio Management - Tamil */
+"portfolio_type_diversified" = "பன்முகப்படுத்தப்பட்ட";
+"portfolio_type_equity" = "ஈக்விட்டி";
+"portfolio_type_fixed_income" = "நிலையான வருமானம்";
+"portfolio_type_retirement" = "ஓய்வூதியம்";
+"portfolio_type_growth" = "வளர்ச்சி";
+"portfolio_type_income" = "வருமானம்";
+"portfolio_type_custom" = "தனிப்பயன்";
+
+/* Investor Profiles - Tamil */
+"investor_profile_conservative" = "பழமைவாத";
+"investor_profile_moderate" = "மிதமான";
+"investor_profile_aggressive" = "தீவிர";
+"investor_profile_growth" = "வளர்ச்சி";
+"investor_profile_income" = "வருமானம்";
+
+/* Portfolio Allocation Categories - Tamil */
+"allocation_domestic_equity" = "உள்நாட்டு ஈக்விட்டி";
+"allocation_international_equity" = "சர்வதேச ஈக்விட்டி";
+"allocation_domestic_bonds" = "உள்நாட்டு பத்திரங்கள்";
+"allocation_international_bonds" = "சர்வதேச பத்திரங்கள்";
+"allocation_alternatives" = "மாற்றுகள்";
+"allocation_cash" = "பணம்";
+"allocation_others" = "மற்றவை";
+
+/* Transaction Types - Tamil */
+"transaction_type_buy" = "வாங்கல்";
+"transaction_type_sell" = "விற்பனை";
+"transaction_type_dividend" = "டிவிடென்ட்";
+"transaction_type_split" = "பங்கு பிரிப்பு";
+"transaction_type_bonus" = "போனஸ் பங்குகள்";
+"transaction_type_merger" = "இணைப்பு";
+"transaction_type_spinoff" = "ஸ்பின்ஆஃப்";
+"transaction_type_rights" = "உரிமை வெளியீடு";
+
+/* Portfolio Errors - Tamil */
+"error_portfolio_creation_failed" = "போர்ட்ஃபோலியோ உருவாக்க முடியவில்லை";
+"error_portfolio_update_failed" = "போர்ட்ஃபோலியோ புதுப்பிக்க முடியவில்லை";
+"error_portfolio_deletion_failed" = "போர்ட்ஃபோலியோ நீக்க முடியவில்லை";
+"error_portfolio_fetch_failed" = "போர்ட்ஃபோலியோ பெற முடியவில்லை";
+"error_holding_operation_failed" = "ஹோல்டிங் செயல்பாடு தோல்வியடைந்தது";
+"error_transaction_failed" = "பரிவர்த்தனை தோல்வியடைந்தது";
+"error_invalid_portfolio_name" = "போர்ட்ஃபோலியோ பெயர் காலியாக இருக்க முடியாது";
+"error_invalid_currency" = "தவறான நாணய குறியீடு";
+"error_invalid_holding_symbol" = "ஹோல்டிங் குறியீடு காலியாக இருக்க முடியாது";
+"error_invalid_quantity" = "அளவு பூஜ்ஜியத்தை விட அதிகமாக இருக்க வேண்டும்";
+"error_invalid_price" = "விலை பூஜ்ஜியத்தை விட அதிகமாக இருக்க வேண்டும்";
+"error_duplicate_holding" = "ஹோல்டிங் ஏற்கனவே உள்ளது";
+"error_holding_not_found" = "ஹோல்டிங் கிடைக்கவில்லை";
+"error_insufficient_quantity" = "போதுமான அளவு கிடைக்கவில்லை";
+
+/* Market Data Errors - Tamil */
+"error_market_data_fetch_failed" = "சந்தை தரவு பெற முடியவில்லை";
+"error_invalid_symbol" = "தவறான குறியீடு";
+"error_no_data_available" = "தரவு கிடைக்கவில்லை";
+"error_rate_limit_exceeded" = "விகித வரம்பு மீறப்பட்டது. தயவுசெய்து பின்னர் முயற்சிக்கவும்";
+"error_network_error" = "நெட்வொர்க் பிழை ஏற்பட்டது";
+
 /* Error Messages - Tamil */
 "error.network" = "நெட்வொர்க் பிழை ஏற்பட்டது";
 "error.invalid_data" = "தவறான தரவு";
