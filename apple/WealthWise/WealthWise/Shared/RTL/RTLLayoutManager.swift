@@ -9,15 +9,6 @@ import SwiftUI
 import Foundation
 import Combine
 
-/// Icon types for RTL mirroring decisions
-public enum RTLIconType {
-    case navigational  // Back/forward arrows - should mirror
-    case directional   // Progress, sorting indicators - should mirror
-    case content       // Profile pics, documents - should NOT mirror
-    case action        // Share, settings - context dependent
-    case status        // Success, error icons - should NOT mirror
-}
-
 /// RTL layout manager for comprehensive right-to-left layout support
 @MainActor
 public final class RTLLayoutManager: ObservableObject {
