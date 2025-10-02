@@ -133,7 +133,7 @@ public actor CSVParser {
             }
         }
         
-        return CSVData(headers: headers, rows: rows)
+      return await CSVData(headers: headers, rows: rows)
     }
     
     /// Detect delimiter from content
@@ -180,7 +180,7 @@ public actor CSVParser {
     public func preview(fileURL: URL, rows: Int = 10) async throws -> CSVData {
         let csvData = try await parse(fileURL: fileURL)
         let previewRows = Array(csvData.rows.prefix(rows))
-        return CSVData(headers: csvData.headers, rows: previewRows)
+      return await CSVData(headers: csvData.headers, rows: previewRows)
     }
     
     // MARK: - Private Methods

@@ -9,6 +9,7 @@
 import Foundation
 import SwiftData
 import CryptoKit
+import Combine
 
 /// Backup error
 public enum BackupError: Error, LocalizedError {
@@ -42,7 +43,8 @@ public enum BackupError: Error, LocalizedError {
 
 /// Backup service with encryption support
 @available(iOS 18.6, macOS 15.6, *)
-public actor BackupService {
+@MainActor
+public final class BackupService {
     
     // MARK: - Properties
     
@@ -61,10 +63,10 @@ public actor BackupService {
     /// Create encrypted backup of all data
     public func createBackup(password: String, includeAttachments: Bool = false) async throws -> URL {
         // Generate salt for key derivation
-        let salt = encryptionService.generateSalt()
+      let salt = encryptionService.generateSalt()
         
         // Derive encryption key from password
-        let key = try encryptionService.deriveKey(
+      let key = try encryptionService.deriveKey(
             from: password,
             salt: salt,
             iterations: 100000
@@ -113,7 +115,7 @@ public actor BackupService {
             throw BackupError.corruptedBackup
         }
         
-        let key = try encryptionService.deriveKey(
+      let key = try encryptionService.deriveKey(
             from: password,
             salt: saltData,
             iterations: metadata.keyDerivationIterations
@@ -123,7 +125,7 @@ public actor BackupService {
         let decryptedData = try await encryptionService.decrypt(encryptedData, using: key)
         
         // Verify data integrity
-        let dataHash = encryptionService.hashSHA256(decryptedData).base64EncodedString()
+      let dataHash = encryptionService.hashSHA256(decryptedData).base64EncodedString()
         guard dataHash == metadata.dataHash else {
             throw BackupError.corruptedBackup
         }
@@ -154,10 +156,14 @@ public actor BackupService {
             // Verify encryption
             guard let saltData = Data(base64Encoded: metadata.salt) else {
                 errors.append(NSLocalizedString("backup_error_invalid_salt", comment: "Invalid salt in backup"))
-                return BackupValidationResult(isValid: false, errors: errors, warnings: warnings)
+              return BackupValidationResult(
+                isValid: false,
+                errors: errors,
+                warnings: warnings
+              )
             }
             
-            let key = try encryptionService.deriveKey(
+          let key = try encryptionService.deriveKey(
                 from: password,
                 salt: saltData,
                 iterations: metadata.keyDerivationIterations
@@ -170,7 +176,11 @@ public actor BackupService {
             errors.append(error.localizedDescription)
         }
         
-        return BackupValidationResult(isValid: errors.isEmpty, errors: errors, warnings: warnings)
+      return BackupValidationResult(
+            isValid: errors.isEmpty,
+            errors: errors,
+            warnings: warnings
+        )
     }
     
     // MARK: - Private Methods
@@ -188,30 +198,33 @@ public actor BackupService {
         let goalDescriptor = FetchDescriptor<Goal>()
         let goals = try modelContext.fetch(goalDescriptor)
         
+        // Convert to DTOs for serialization (making them Sendable and Codable)
+        let transactionDTOs = transactions.map { TransactionDTO(from: $0) }
+        let goalDTOs = goals.map { GoalDTO(from: $0) }
+        
         // Create backup data structure
         let backupData = BackupDataStructure(
-            transactions: transactions,
-            goals: goals,
+            transactions: transactionDTOs,
+            goals: goalDTOs,
             exportDate: Date()
         )
         
-        return try encoder.encode(backupData)
+        return try encodeBackupData(backupData)
     }
     
     /// Import all data from JSON
     private func importAllData(_ data: Data) async throws {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
+        let backupData = try decodeBackupData(data)
         
-        let backupData = try decoder.decode(BackupDataStructure.self, from: data)
-        
-        // Import transactions
-        for transaction in backupData.transactions {
+        // Import transactions from DTOs
+        for transactionDTO in backupData.transactions {
+            let transaction = transactionDTO.toTransaction()
             modelContext.insert(transaction)
         }
         
-        // Import goals
-        for goal in backupData.goals {
+        // Import goals from DTOs
+        for goalDTO in backupData.goals {
+            let goal = goalDTO.toGoal()
             modelContext.insert(goal)
         }
         
@@ -227,9 +240,9 @@ public actor BackupService {
         let goals = try modelContext.fetch(goalDescriptor)
         
         let deviceName = ProcessInfo.processInfo.hostName
-        let deviceId = UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
+        let deviceId = getDeviceIdentifier()
         
-        let metadata = BackupMetadata(
+      let metadata = BackupMetadata(
             appVersion: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0",
             dataVersion: "1.0.0",
             deviceName: deviceName,
@@ -248,19 +261,7 @@ public actor BackupService {
     
     /// Package encrypted data and metadata into backup file
     private func packageBackup(encryptedData: EncryptedData, metadata: BackupMetadata) async throws -> URL {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = .prettyPrinted
-        
-        let metadataData = try encoder.encode(metadata)
-        let encryptedDataEncoded = try encoder.encode(encryptedData)
-        
-        // Create backup package
-        let package: [String: Data] = [
-            "metadata": metadataData,
-            "data": encryptedDataEncoded
-        ]
-        
-        let packageData = try encoder.encode(package)
+        let packageData = try encodeBackupPackage(metadata: metadata, encryptedData: encryptedData)
         
         // Save to temporary file
         let tempDir = FileManager.default.temporaryDirectory
@@ -277,6 +278,76 @@ public actor BackupService {
     
     /// Extract metadata and encrypted data from backup file
     private func extractBackup(_ data: Data) throws -> (BackupMetadata, EncryptedData) {
+        return try decodeBackupPackage(data)
+    }
+    
+    /// Compress data using zlib
+    private func compress(_ data: Data) throws -> Data {
+        guard let compressed = try (data as NSData).compressed(using: .zlib) as Data? else {
+            throw BackupError.compressionFailed
+        }
+        return compressed
+    }
+    
+    /// Decompress data using zlib
+    private func decompress(_ data: Data) throws -> Data {
+        guard let decompressed = try (data as NSData).decompressed(using: .zlib) as Data? else {
+            throw BackupError.compressionFailed
+        }
+        return decompressed
+    }
+    
+    /// Get device identifier in a cross-platform way
+    private func getDeviceIdentifier() -> String {
+        #if os(macOS)
+        return UUID().uuidString
+        #else
+        return UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
+        #endif
+    }
+    
+    /// Check if backup version is compatible
+    private func isCompatibleVersion(_ version: String) -> Bool {
+        // Simple version check - can be made more sophisticated
+        let currentVersion = "1.0.0"
+        return version <= currentVersion
+    }
+    
+    // MARK: - Encoding/Decoding Helpers
+    
+    /// Encode backup data structure
+    private func encodeBackupData(_ backupData: BackupDataStructure) throws -> Data {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        return try encoder.encode(backupData)
+    }
+    
+    /// Decode backup data structure
+    private func decodeBackupData(_ data: Data) throws -> BackupDataStructure {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode(BackupDataStructure.self, from: data)
+    }
+    
+    /// Encode backup package with metadata and encrypted data
+    private func encodeBackupPackage(metadata: BackupMetadata, encryptedData: EncryptedData) throws -> Data {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        
+        let metadataData = try encoder.encode(metadata)
+        let encryptedDataEncoded = try encoder.encode(encryptedData)
+        
+        // Create backup package
+        let package: [String: Data] = [
+            "metadata": metadataData,
+            "data": encryptedDataEncoded
+        ]
+        
+        return try encoder.encode(package)
+    }
+    
+    /// Decode backup package to extract metadata and encrypted data
+    private func decodeBackupPackage(_ data: Data) throws -> (BackupMetadata, EncryptedData) {
         let decoder = JSONDecoder()
         
         let package = try decoder.decode([String: Data].self, from: data)
@@ -291,38 +362,96 @@ public actor BackupService {
         
         return (metadata, encryptedData)
     }
-    
-    /// Compress data using zlib
-    private func compress(_ data: Data) throws -> Data {
-        guard let compressed = (data as NSData).compressed(using: .zlib) as Data? else {
-            throw BackupError.compressionFailed
-        }
-        return compressed
-    }
-    
-    /// Decompress data using zlib
-    private func decompress(_ data: Data) throws -> Data {
-        guard let decompressed = (data as NSData).decompressed(using: .zlib) as Data? else {
-            throw BackupError.compressionFailed
-        }
-        return decompressed
-    }
-    
-    /// Check if backup version is compatible
-    private func isCompatibleVersion(_ version: String) -> Bool {
-        // Simple version check - can be made more sophisticated
-        let currentVersion = "1.0.0"
-        return version <= currentVersion
-    }
 }
 
 // MARK: - Supporting Types
 
-/// Backup data structure for serialization
-private struct BackupDataStructure: Codable {
-    let transactions: [Transaction]
-    let goals: [Goal]
+/// Backup data structure for serialization using DTOs
+private struct BackupDataStructure: Codable, Sendable {
+    let transactions: [TransactionDTO]
+    let goals: [GoalDTO]
     let exportDate: Date
+}
+
+/// Transaction Data Transfer Object for backup serialization
+private struct TransactionDTO: Codable, Sendable {
+    let id: UUID
+    let amount: Decimal
+    let currency: String
+    let transactionDescription: String
+    let notes: String?
+    let date: Date
+    let transactionType: String
+    let category: String
+    let source: String
+    let tags: [String]
+    
+    nonisolated init(from transaction: Transaction) {
+        self.id = transaction.id
+        self.amount = transaction.amount
+        self.currency = transaction.currency
+        self.transactionDescription = transaction.transactionDescription
+        self.notes = transaction.notes
+        self.date = transaction.date
+        self.transactionType = transaction.transactionType.rawValue
+        self.category = transaction.category.rawValue
+        self.source = transaction.source.rawValue
+        self.tags = transaction.tags
+    }
+    
+    nonisolated func toTransaction() -> Transaction {
+        return Transaction(
+            amount: amount,
+            currency: currency,
+            transactionDescription: transactionDescription,
+            notes: notes,
+            date: date,
+            transactionType: TransactionType(rawValue: transactionType) ?? .expense,
+            category: TransactionCategory(rawValue: category) ?? .other_expense,
+            source: TransactionSource(rawValue: source) ?? .manual
+        )
+    }
+}
+
+/// Goal Data Transfer Object for backup serialization
+private struct GoalDTO: Codable, Sendable {
+    let id: UUID
+    let name: String
+    let goalDescription: String?
+    let targetAmount: Decimal
+    let currentAmount: Decimal
+    let currency: String
+    let targetDate: Date?
+    let createdAt: Date
+    let goalType: String
+    let priority: String
+    let isCompleted: Bool
+    
+    nonisolated init(from goal: Goal) {
+        self.id = goal.id
+        self.name = goal.title
+        self.goalDescription = goal.goalDescription
+        self.targetAmount = goal.targetAmount
+        self.currentAmount = goal.currentAmount
+        self.currency = goal.targetCurrency
+        self.targetDate = goal.targetDate
+        self.createdAt = goal.createdAt
+        self.goalType = goal.goalType.rawValue
+        self.priority = goal.priority.rawValue
+        self.isCompleted = goal.isCompleted
+    }
+    
+    nonisolated func toGoal() -> Goal {
+        return Goal(
+            title: name,
+            goalDescription: goalDescription,
+            targetAmount: targetAmount,
+            targetCurrency: currency,
+            targetDate: targetDate ?? Date().addingTimeInterval(365 * 24 * 60 * 60), // Default to 1 year from now
+            goalType: GoalType(rawValue: goalType) ?? .investment,
+            priority: GoalPriority(rawValue: priority) ?? .high
+        )
+    }
 }
 
 // MARK: - UIDevice Extension for macOS Compatibility

@@ -52,8 +52,10 @@ struct CSVImportView: View {
                 }
                 .padding()
             }
-            .navigationTitle(NSLocalizedString("import_button_title", comment: "Import"))
+                        .navigationTitle(NSLocalizedString("csv_import_title", comment: "CSV Import"))
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(NSLocalizedString("general.cancel", comment: "Cancel")) {
@@ -114,7 +116,7 @@ struct CSVImportView: View {
                     Spacer()
                 }
                 .padding()
-                .background(Color(.systemBackground))
+                .background(Color(nsColor: .controlBackgroundColor))
                 .cornerRadius(12)
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
@@ -159,7 +161,7 @@ struct CSVImportView: View {
                 }
             }
             .padding()
-            .background(Color(.systemGray6))
+            .background(Color(nsColor: .controlBackgroundColor))
             .cornerRadius(8)
             
             Button(action: loadPreview) {
@@ -222,7 +224,7 @@ struct CSVImportView: View {
             }
             .frame(maxWidth: .infinity)
             .padding()
-            .background(Color(.systemGray6))
+            .background(Color(nsColor: .controlBackgroundColor))
             .cornerRadius(12)
             
             // Preview list
@@ -294,7 +296,7 @@ struct CSVImportView: View {
         guard let csvData = csvData else { return }
         
         isLoading = true
-        Task {
+        Task { @MainActor in
             defer { isLoading = false }
             
             do {
@@ -310,7 +312,7 @@ struct CSVImportView: View {
         guard let csvData = csvData else { return }
         
         isLoading = true
-        Task {
+        Task { @MainActor in
             defer { isLoading = false }
             
             do {
@@ -323,7 +325,7 @@ struct CSVImportView: View {
                 importJob = job
                 
                 let importer = TransactionImporter(modelContext: modelContext, configuration: configuration)
-                _ = try await importer.importTransactions(csvData: csvData, importJob: job)
+                let _ = try await importer.importTransactions(csvData: csvData, importJob: job)
                 
                 // Dismiss after successful import
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -403,7 +405,7 @@ struct TransactionPreviewRow: View {
         } else if !preview.validationResult.isValid {
             return Color.red.opacity(0.1)
         } else {
-            return Color(.systemGray6)
+            return Color(nsColor: .controlBackgroundColor)
         }
     }
 }
@@ -429,7 +431,7 @@ struct ImportResultView: View {
             }
         }
         .padding()
-        .background(Color(.systemGray6))
+        .background(Color(nsColor: .controlBackgroundColor))
         .cornerRadius(8)
     }
 }
@@ -438,5 +440,4 @@ struct ImportResultView: View {
 
 #Preview {
     CSVImportView()
-        .modelContainer(for: [Transaction.self, ImportJob.self])
 }

@@ -49,7 +49,8 @@ public struct ImportedTransactionPreview: Sendable, Identifiable {
 
 /// Transaction importer with duplicate detection and validation
 @available(iOS 18.6, macOS 15.6, *)
-public actor TransactionImporter {
+@MainActor
+public final class TransactionImporter {
     
     // MARK: - Properties
     
@@ -76,8 +77,8 @@ public actor TransactionImporter {
                 
                 let preview = ImportedTransactionPreview(
                     rowIndex: index,
-                    amount: transaction.amount,
-                    date: transaction.date,
+                    amount: transaction.amount ?? 0,
+                    date: transaction.date ?? Date(),
                     description: transaction.description,
                     category: transaction.category,
                     validationResult: validation
@@ -129,15 +130,15 @@ public actor TransactionImporter {
                 
                 // Create transaction
                 let transaction = Transaction(
-                    amount: parsedData.amount,
+                    amount: parsedData.amount ?? 0,
                     currency: parsedData.currency ?? configuration.defaultCurrency,
                     transactionDescription: parsedData.description,
                     notes: parsedData.notes,
-                    date: parsedData.date,
+                    date: parsedData.date ?? Date(),
                     transactionType: parsedData.type,
                     category: parsedData.categoryEnum ?? .other,
                     status: .completed,
-                    source: .import
+                    source: .file_import
                 )
                 
                 modelContext.insert(transaction)
@@ -257,7 +258,7 @@ public actor TransactionImporter {
     
     /// Validate transaction and check for duplicates
     private func validateTransaction(_ data: ParsedTransactionData, rowIndex: Int) async -> ImportValidationResult {
-        var errors: [String] = []
+        let errors: [String] = []
         var warnings: [String] = []
         var isDuplicate = false
         
@@ -296,13 +297,14 @@ public actor TransactionImporter {
         let calendar = Calendar.current
         let startDate = calendar.date(byAdding: .day, value: -configuration.duplicateThresholdDays, to: date) ?? date
         let endDate = calendar.date(byAdding: .day, value: configuration.duplicateThresholdDays, to: date) ?? date
+        let description = data.description
         
         let descriptor = FetchDescriptor<Transaction>(
-            predicate: #Predicate { transaction in
+            predicate: #Predicate<Transaction> { transaction in
                 transaction.date >= startDate &&
                 transaction.date <= endDate &&
                 transaction.amount == amount &&
-                transaction.transactionDescription == data.description
+                transaction.transactionDescription == description
             }
         )
         

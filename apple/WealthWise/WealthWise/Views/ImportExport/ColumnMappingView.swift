@@ -34,9 +34,9 @@ struct ColumnMappingView: View {
                 }
                 
                 Section(NSLocalizedString("import_settings", comment: "Import Settings")) {
-                    Toggle(NSLocalizedString("import_skip_first_row", comment: "Skip first row (header)"), isToggled: $configuration.skipFirstRow)
+                    Toggle(NSLocalizedString("import_skip_first_row", comment: "Skip first row (header)"), isOn: $configuration.skipFirstRow)
                     
-                    Toggle(NSLocalizedString("duplicate_detection_title", comment: "Detect duplicates"), isToggled: $configuration.detectDuplicates)
+                    Toggle(NSLocalizedString("duplicate_detection_title", comment: "Detect duplicates"), isOn: $configuration.detectDuplicates)
                     
                     if configuration.detectDuplicates {
                         Stepper(
@@ -56,7 +56,9 @@ struct ColumnMappingView: View {
                 }
             }
             .navigationTitle(NSLocalizedString("column_mapping_title", comment: "Column Mapping"))
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(NSLocalizedString("general.cancel", comment: "Cancel")) {

@@ -56,7 +56,9 @@ struct BackupManagementView: View {
                 .padding()
             }
             .navigationTitle(NSLocalizedString("backup_management_title", comment: "Backup Management"))
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(NSLocalizedString("general.cancel", comment: "Cancel")) {
@@ -128,7 +130,11 @@ struct BackupManagementView: View {
             .disabled(isCreatingBackup)
         }
         .padding()
+        #if os(macOS)
+        .background(Color(nsColor: .controlBackgroundColor))
+        #else
         .background(Color(.systemGray6))
+        #endif
         .cornerRadius(12)
     }
     
@@ -161,7 +167,11 @@ struct BackupManagementView: View {
                     Spacer()
                 }
                 .padding()
+                #if os(macOS)
+                .background(Color(nsColor: .windowBackgroundColor))
+                #else
                 .background(Color(.systemBackground))
+                #endif
                 .cornerRadius(8)
             }
             
@@ -191,7 +201,11 @@ struct BackupManagementView: View {
             }
         }
         .padding()
+        #if os(macOS)
+        .background(Color(nsColor: .controlBackgroundColor))
+        #else
         .background(Color(.systemGray6))
+        #endif
         .cornerRadius(12)
     }
     
@@ -259,7 +273,7 @@ struct BackupManagementView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(String(format: NSLocalizedString("restore_transactions_count", comment: "%d transactions"), metadata.transactionCount))
                         Text(String(format: NSLocalizedString("restore_goals_count", comment: "%d goals"), metadata.goalCount))
-                        Text(String(format: NSLocalizedString("restore_backup_date", comment: "Backup from %@"), metadata.createdAt, style: .date))
+                        Text(String(format: NSLocalizedString("restore_backup_date", comment: "Backup from %@"), metadata.createdAt.formatted(date: .abbreviated, time: .omitted)))
                     }
                     .font(.subheadline)
                     .foregroundColor(.secondary)
@@ -401,7 +415,9 @@ struct BackupPasswordSheet: View {
                 }
             }
             .navigationTitle(NSLocalizedString("backup_password", comment: "Password"))
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(NSLocalizedString("general.cancel", comment: "Cancel")) {
