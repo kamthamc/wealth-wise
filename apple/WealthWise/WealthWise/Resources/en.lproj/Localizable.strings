@@ -428,3 +428,108 @@
 "probability.moderate" = "Moderate (50-70%)";
 "probability.low" = "Low (30-50%)";
 "probability.very_low" = "Very Low (<30%)";
+
+/* Import/Export - Import Status */
+"import_status_pending" = "Pending";
+"import_status_processing" = "Processing";
+"import_status_completed" = "Completed";
+"import_status_failed" = "Failed";
+"import_status_cancelled" = "Cancelled";
+
+/* Import/Export - Import Source Types */
+"import_source_csv" = "CSV File";
+"import_source_excel" = "Excel File";
+"import_source_json" = "JSON File";
+"import_source_bank_statement" = "Bank Statement";
+"import_source_manual" = "Manual Entry";
+"import_source_backup" = "Backup File";
+
+/* Import/Export - Export Status */
+"export_status_pending" = "Pending";
+"export_status_processing" = "Processing";
+"export_status_completed" = "Completed";
+"export_status_failed" = "Failed";
+
+/* Import/Export - Export Formats */
+"export_format_csv" = "CSV";
+"export_format_json" = "JSON";
+"export_format_excel" = "Excel";
+"export_format_pdf" = "PDF";
+"export_format_backup" = "Encrypted Backup";
+
+/* Import/Export - Field Names */
+"import_field_date" = "Date";
+"import_field_amount" = "Amount";
+"import_field_description" = "Description";
+"import_field_category" = "Category";
+"import_field_type" = "Type";
+"import_field_account" = "Account";
+"import_field_currency" = "Currency";
+"import_field_notes" = "Notes";
+"import_field_merchant" = "Merchant";
+"import_field_reference" = "Reference Number";
+"import_field_ignore" = "Ignore";
+
+/* Import/Export - Data Types */
+"import_datatype_string" = "Text";
+"import_datatype_decimal" = "Decimal Number";
+"import_datatype_integer" = "Integer";
+"import_datatype_date" = "Date";
+"import_datatype_boolean" = "Yes/No";
+"import_datatype_currency" = "Currency";
+
+/* Import/Export - CSV Errors */
+"csv_error_invalid_format" = "Invalid CSV format";
+"csv_error_empty_file" = "CSV file is empty";
+"csv_error_encoding" = "Unable to read file encoding";
+"csv_error_invalid_delimiter" = "Invalid CSV delimiter";
+"csv_error_header_missing" = "CSV header row is missing";
+"csv_error_row_parse" = "Error parsing row %d: %@";
+
+/* Import/Export - CSV Validation */
+"csv_validation_no_data" = "No data rows found in CSV file";
+"csv_validation_inconsistent_columns" = "Row %d has inconsistent column count";
+
+/* Import/Export - Import Errors */
+"import_error_missing_date" = "Date is required";
+"import_error_missing_amount" = "Amount is required";
+"import_error_missing_description" = "Description is required";
+"import_error_invalid_date" = "Invalid date format";
+"import_error_invalid_amount" = "Invalid amount format";
+"import_invalid_row" = "Invalid row";
+
+/* Import/Export - Import Warnings */
+"import_warning_zero_amount" = "Transaction has zero amount";
+"import_warning_future_date" = "Transaction date is in the future";
+
+/* Import/Export - Backup Errors */
+"backup_error_invalid_password" = "Invalid password";
+"backup_error_encryption_failed" = "Failed to encrypt backup";
+"backup_error_compression_failed" = "Failed to compress backup data";
+"backup_error_invalid_file" = "Invalid backup file";
+"backup_error_corrupted" = "Backup file is corrupted";
+"backup_error_incompatible_version" = "Backup version is incompatible with this app version";
+"backup_error_export_failed" = "Export failed: %@";
+"backup_error_invalid_salt" = "Invalid encryption salt in backup file";
+
+/* Import/Export - Backup Warnings */
+"backup_warning_version_incompatible" = "Backup may be from an incompatible version";
+
+/* Import/Export - UI Labels */
+"import_button_title" = "Import";
+"export_button_title" = "Export";
+"backup_button_title" = "Create Backup";
+"restore_button_title" = "Restore Backup";
+"preview_button_title" = "Preview";
+"import_preview_title" = "Import Preview";
+"column_mapping_title" = "Column Mapping";
+"duplicate_detection_title" = "Duplicate Detection";
+"backup_management_title" = "Backup Management";
+
+/* Import/Export - Help Text */
+"import_help_text" = "Import transactions from CSV files. Map columns to transaction fields.";
+"export_help_text" = "Export your transactions to CSV, Excel, or PDF format.";
+"backup_help_text" = "Create encrypted backups of all your financial data.";
+"restore_help_text" = "Restore your data from a previous backup.";
+"column_mapping_help" = "Match CSV columns to transaction fields. Required fields: Date, Amount, Description.";
+"duplicate_detection_help" = "Automatically detect and skip duplicate transactions during import.";
