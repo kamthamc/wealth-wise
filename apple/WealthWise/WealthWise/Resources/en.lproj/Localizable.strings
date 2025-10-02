@@ -201,6 +201,14 @@
 "bond_interest_payment" = "Bond Interest Payment";
 "chit_payout" = "Chit Fund Payout Received";
 "default_contribution_description" = "Investment Contribution";
+
+/* Alternative Investments - Service Errors */
+"error_property_not_found" = "Real estate property not found";
+"error_commodity_not_found" = "Commodity not found";
+"error_bond_not_found" = "Bond not found";
+"error_chit_fund_not_found" = "Chit fund not found";
+"error_invalid_data" = "Invalid data provided";
+"error_save_failed" = "Failed to save data";
 "success.synchronized" = "Successfully synchronized";
 
 /* Asset Categories */

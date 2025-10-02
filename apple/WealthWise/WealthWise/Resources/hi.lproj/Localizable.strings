@@ -201,6 +201,14 @@
 "bond_interest_payment" = "बांड ब्याज भुगतान";
 "chit_payout" = "चिट फंड भुगतान प्राप्त";
 "default_contribution_description" = "निवेश योगदान";
+
+/* Alternative Investments - Service Errors */
+"error_property_not_found" = "रियल एस्टेट संपत्ति नहीं मिली";
+"error_commodity_not_found" = "कमोडिटी नहीं मिली";
+"error_bond_not_found" = "बांड नहीं मिला";
+"error_chit_fund_not_found" = "चिट फंड नहीं मिला";
+"error_invalid_data" = "अमान्य डेटा प्रदान किया गया";
+"error_save_failed" = "डेटा सेव करने में विफल";
 "success.synchronized" = "सफलतापूर्वक सिंक्रोनाइज़ किया गया";
 
 /* Asset Categories */

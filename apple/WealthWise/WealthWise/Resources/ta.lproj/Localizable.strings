@@ -201,6 +201,14 @@
 "bond_interest_payment" = "பத்திர வட்டி செலுத்துதல்";
 "chit_payout" = "சிட் ஃபண்ட் செலுத்துதல் பெறப்பட்டது";
 "default_contribution_description" = "முதலீடு பங்களிப்பு";
+
+/* Alternative Investments - Service Errors */
+"error_property_not_found" = "ரியல் எஸ்டேட் சொத்து கிடைக்கவில்லை";
+"error_commodity_not_found" = "பொருள் கிடைக்கவில்லை";
+"error_bond_not_found" = "பத்திரம் கிடைக்கவில்லை";
+"error_chit_fund_not_found" = "சிட் ஃபண்ட் கிடைக்கவில்லை";
+"error_invalid_data" = "தவறான தரவு வழங்கப்பட்டது";
+"error_save_failed" = "தரவு சேமிக்க தோல்வி";
 "time.all_time" = "எல்லா நேரமும்";
 "time.1_year" = "1 வருடம்";
 "time.3_years" = "3 வருடங்கள்";
