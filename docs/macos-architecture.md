@@ -40,6 +40,69 @@ WealthWise macOS is a native SwiftUI application designed for comprehensive pers
 - Reactive programming with Combine framework
 - Service-oriented architecture for business logic
 
+## Dependency Injection Container
+
+### ServiceContainer Implementation
+
+The application uses a centralized `ServiceContainer` for dependency injection:
+
+```swift
+@MainActor
+public final class ServiceContainer: ObservableObject {
+    public static let shared = ServiceContainer()
+    
+    // Register services
+    public func register<T>(_ type: T.Type, instance: T)
+    public func register<T>(_ type: T.Type, factory: @escaping () -> T)
+    
+    // Resolve services
+    public func resolve<T>(_ type: T.Type) -> T?
+    public func resolveRequired<T>(_ type: T.Type) -> T
+}
+```
+
+### Registered Services
+
+#### Security Services
+- `SecureKeyManagementProtocol` - Manages encryption keys in Keychain
+- `EncryptionServiceProtocol` - AES-256-GCM encryption/decryption
+- `BiometricAuthenticationProtocol` - Touch ID/Face ID authentication
+- `AuthenticationStateProtocol` - Authentication state management
+- `SecurityValidationProtocol` - Device security validation
+
+#### Data Services
+- `DataServiceProtocol` - SwiftData persistence operations
+- `TransactionServiceProtocol` - Transaction management
+- `CurrencyServiceProtocol` - Currency conversion and exchange rates
+
+### Usage in SwiftUI
+
+Services are injected via SwiftUI environment:
+
+```swift
+@main
+struct WealthWiseApp: App {
+    @StateObject private var serviceContainer = ServiceContainer.shared
+    
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environmentObject(serviceContainer)
+        }
+    }
+}
+
+// In views
+struct ContentView: View {
+    @EnvironmentObject var serviceContainer: ServiceContainer
+    
+    var body: some View {
+        let encryptionService = serviceContainer.resolve(EncryptionServiceProtocol.self)
+        // Use service
+    }
+}
+```
+
 ## System Architecture
 
 ```
