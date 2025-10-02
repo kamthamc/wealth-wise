@@ -9,6 +9,15 @@ import SwiftUI
 import Foundation
 import Combine
 
+/// Icon types for RTL mirroring decisions
+public enum RTLIconType {
+    case navigational  // Back/forward arrows - should mirror
+    case directional   // Progress, sorting indicators - should mirror
+    case content       // Profile pics, documents - should NOT mirror
+    case action        // Share, settings - context dependent
+    case status        // Success, error icons - should NOT mirror
+}
+
 /// RTL layout manager for comprehensive right-to-left layout support
 @MainActor
 public final class RTLLayoutManager: ObservableObject {
@@ -80,6 +89,37 @@ public final class RTLLayoutManager: ObservableObject {
     /// Get scale transform for RTL icon mirroring
     public func iconScale(shouldMirror: Bool = true) -> CGSize {
         return (isRTLLayout && shouldMirror) ? CGSize(width: -1, height: 1) : CGSize(width: 1, height: 1)
+    }
+    
+    /// Get layout direction for a specific text direction
+    public func layoutDirection(for textDirection: TextDirection) -> LayoutDirection {
+        return textDirection.layoutDirection
+    }
+    
+    /// Determine if an icon should be mirrored based on type and direction
+    public func shouldMirrorIcon(type: RTLIconType, in direction: TextDirection) -> Bool {
+        guard direction.isRTL else { return false }
+        
+        switch type {
+        case .navigational, .directional:
+            return true  // These should mirror in RTL
+        case .content, .status:
+            return false  // These should NOT mirror
+        case .action:
+            return true  // Actions typically mirror
+        }
+    }
+    
+    /// Calculate RTL-aware padding by swapping leading and trailing
+    public func calculateRTLPadding(_ padding: EdgeInsets) -> EdgeInsets {
+        guard isRTLLayout else { return padding }
+        
+        return EdgeInsets(
+            top: padding.top,
+            leading: padding.trailing,
+            bottom: padding.bottom,
+            trailing: padding.leading
+        )
     }
     
     private func observeDirectionChanges() {

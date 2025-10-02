@@ -103,6 +103,11 @@ public final class TextDirectionDetector: ObservableObject {
         }
     }
     
+    /// Detect text direction from specific text content (alias for consistency)
+    public func detectDirection(for text: String) -> TextDirection {
+        return detectDirection(from: text)
+    }
+    
     /// Set explicit text direction
     public func setDirection(_ direction: TextDirection) {
         currentDirection = direction
