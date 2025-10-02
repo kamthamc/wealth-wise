@@ -1,6 +1,15 @@
 import SwiftUI
 
+@available(iOS 18.6, macOS 15.6, *)
 struct ContentView: View {
+    var body: some View {
+        MainView()
+    }
+}
+
+// MARK: - Legacy ContentView for backwards compatibility
+
+struct LegacyContentView: View {
     @StateObject private var localizationManager = LocalizationManager.shared
     
     var body: some View {
@@ -63,5 +72,9 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    if #available(iOS 18.6, macOS 15.6, *) {
+        ContentView()
+    } else {
+        LegacyContentView()
+    }
 }

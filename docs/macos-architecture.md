@@ -141,24 +141,67 @@ struct ContentView: View {
 
 #### 1. View Hierarchy
 ```swift
-WealthWiseMacApp
+WealthWiseApp
 ├── WindowGroup
-│   ├── MacContentView (NavigationSplitView)
-│   │   ├── SidebarView
-│   │   ├── ContentView
-│   │   └── DetailView
-│   ├── DashboardView
-│   ├── PortfolioView
-│   ├── AssetsView
-│   └── ReportsView
-└── MenuBarExtra (optional)
+│   └── MainView
+│       ├── macOS: NavigationSplitView
+│       │   ├── SidebarView (Navigation)
+│       │   └── NavigationStack (Content)
+│       │       ├── DashboardView
+│       │       ├── PortfolioListView
+│       │       ├── AssetListView
+│       │       ├── TransactionListView
+│       │       └── ReportsView
+│       └── iOS: TabView
+│           ├── Dashboard Tab
+│           ├── Portfolios Tab
+│           ├── Assets Tab
+│           ├── Transactions Tab
+│           └── Reports Tab
+├── Settings Window (macOS)
+│   ├── GeneralSettingsView
+│   ├── SecuritySettingsView
+│   └── DataSettingsView
+└── MenuCommands (macOS)
+    ├── File Menu (New Portfolio, Asset, Transaction)
+    ├── Portfolio Menu (View, Import, Export)
+    └── View Menu (Dashboard, Assets, Transactions, Reports)
 ```
 
 #### 2. Navigation Management
-- `NavigationManager`: Centralized navigation state
-- Deep linking support for menu commands
-- Multi-window coordination
-- State restoration
+
+The `NavigationCoordinator` provides centralized navigation state:
+
+```swift
+@MainActor
+public final class NavigationCoordinator: ObservableObject {
+    @Published public var selectedTab: NavigationTab = .dashboard
+    @Published public var navigationPath = NavigationPath()
+    @Published public var showingSettings = false
+    @Published public var showingNewPortfolio = false
+    @Published public var showingNewAsset = false
+    @Published public var showingNewTransaction = false
+    
+    public func navigateTo(_ tab: NavigationTab)
+    public func push(_ destination: NavigationDestination)
+    public func pop()
+    public func popToRoot()
+}
+```
+
+**Navigation Tabs:**
+- Dashboard: Financial overview and net worth
+- Portfolios: Portfolio management and allocation
+- Assets: Individual asset tracking
+- Transactions: Transaction history and management
+- Reports: Financial reports and analytics
+- Settings: App configuration
+
+**Navigation Destinations:**
+- Portfolio Detail
+- Asset Detail
+- Transaction Detail
+- Add Portfolio/Asset/Transaction forms
 
 #### 3. View Models
 - Protocol-based ViewModels using `ObservableObject`
@@ -231,46 +274,117 @@ protocol MarketDataServiceProtocol {
 ### Data Layer
 
 #### 1. SwiftData Models
+
+**Asset Model** (`Models/Financial/Asset.swift`)
 ```swift
 @Model
-class Asset {
-    @Attribute(.unique) var id: UUID
-    var name: String
-    var type: AssetType
-    var currentValue: Decimal
-    var purchaseDate: Date
-    var purchasePrice: Decimal?
-    @Relationship var transactions: [Transaction]
+public final class Asset {
+    @Attribute(.unique) public var id: UUID
+    public var name: String
+    public var symbol: String?
+    public var assetType: AssetType
+    public var currentValue: Decimal
+    public var currency: String
+    public var purchasePrice: Decimal?
+    public var purchaseDate: Date?
+    public var quantity: Decimal?
     
-    // Encrypted fields using custom property wrappers
-    @Encrypted var accountNumber: String?
-    @Encrypted var notes: String?
+    // Encrypted fields (stored as Data)
+    private var encryptedAccountNumber: Data?
+    private var encryptedNotes: Data?
+    
+    // Computed properties for encryption/decryption
+    public var accountNumber: String? { get set }
+    public var notes: String? { get set }
+    
+    // Relationships
+    @Relationship(inverse: \Portfolio.assets) public var portfolio: Portfolio?
+    @Relationship(deleteRule: .cascade) public var transactions: [Transaction]
+    
+    // Financial calculations
+    public var costBasis: Decimal { /* ... */ }
+    public var marketValue: Decimal { /* ... */ }
+    public var unrealizedGainLoss: Decimal { /* ... */ }
 }
+```
 
-@Model  
-class Portfolio {
-    @Attribute(.unique) var id: UUID
-    var name: String
-    var description: String?
-    var createdDate: Date
-    @Relationship var holdings: [Holding]
-    @Relationship var transactions: [Transaction]
-}
-
+**Portfolio Model** (`Models/Financial/Portfolio.swift`)
+```swift
 @Model
-class Transaction {
-    @Attribute(.unique) var id: UUID
-    var date: Date
-    var type: TransactionType
-    var amount: Decimal
-    var price: Decimal?
-    var quantity: Decimal?
-    @Relationship var asset: Asset
-    @Relationship var portfolio: Portfolio?
+public final class Portfolio {
+    @Attribute(.unique) public var id: UUID
+    public var name: String
+    public var portfolioDescription: String?
+    public var currency: String
+    public var isDefault: Bool
+    public var createdAt: Date
+    public var updatedAt: Date
     
-    @Encrypted var reference: String?
-    @Encrypted var notes: String?
+    // Relationships
+    @Relationship(deleteRule: .cascade, inverse: \Asset.portfolio)
+    public var assets: [Asset]
+    
+    @Relationship(deleteRule: .cascade)
+    public var transactions: [Transaction]
+    
+    // Computed properties
+    public var totalValue: Decimal { /* ... */ }
+    public var assetCount: Int { /* ... */ }
 }
+```
+
+**Transaction Model** (`Models/Financial/Transaction.swift`)
+```swift
+@Model
+public final class Transaction {
+    @Attribute(.unique) public var id: UUID
+    public var amount: Decimal
+    public var currency: String
+    public var transactionDescription: String
+    public var date: Date
+    public var transactionType: TransactionType
+    public var category: TransactionCategory
+    public var accountId: String?
+    public var status: TransactionStatus
+    
+    // Multi-currency support
+    public var originalAmount: Decimal?
+    public var originalCurrency: String?
+    public var exchangeRate: Decimal?
+    
+    // Relationships
+    @Relationship public var asset: Asset?
+}
+```
+
+**Goal Model** (`Models/Financial/Goal.swift`)
+```swift
+@Model
+public final class Goal {
+    @Attribute(.unique) public var id: UUID
+    public var title: String
+    public var targetAmount: Decimal
+    public var currentAmount: Decimal
+    public var targetDate: Date
+    public var goalType: GoalType
+    public var priority: GoalPriority
+    public var isActive: Bool
+    
+    // Progress tracking
+    public var contributedAmount: Decimal
+    public var projectedAmount: Decimal
+}
+```
+
+**Schema Registration:**
+```swift
+let schema = Schema([
+    Asset.self,
+    Portfolio.self,
+    Transaction.self,
+    Goal.self,
+])
+let modelContainer = try ModelContainer(for: schema)
 ```
 
 #### 2. Encryption Layer
