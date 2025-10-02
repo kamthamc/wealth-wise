@@ -127,4 +127,81 @@
 "format.crore" = "करोड़";
 "format.million" = "मिलियन";
 "format.billion" = "बिलियन";
+
+/* Date Formatter Strings */
+
+/* Relative Date Strings */
+"relative_today" = "आज";
+"relative_yesterday" = "कल (बीता हुआ)";
+"relative_tomorrow" = "कल (आने वाला)";
+"relative_today_short" = "आज";
+"relative_yesterday_short" = "कल";
+"relative_tomorrow_short" = "कल";
+
+/* Relative Time Periods */
+"relative_seconds_ago" = "%d सेकंड पहले";
+"relative_seconds_from_now" = "%d सेकंड में";
+"relative_minutes_ago" = "%d मिनट पहले";
+"relative_minutes_from_now" = "%d मिनट में";
+"relative_hours_ago" = "%d घंटे पहले";
+"relative_hours_from_now" = "%d घंटे में";
+"relative_days_ago" = "%d दिन पहले";
+"relative_days_from_now" = "%d दिन में";
+"relative_days_ago_short" = "%dदि पहले";
+"relative_days_from_now_short" = "%dदि में";
+
+/* Relative Weeks/Months/Years */
+"relative_last_weekday" = "पिछला %@";
+"relative_next_weekday" = "अगला %@";
+"relative_weeks_ago" = "%d सप्ताह पहले";
+"relative_weeks_from_now" = "%d सप्ताह में";
+"relative_weeks_days_ago" = "%d सप्ताह %d दिन पहले";
+"relative_weeks_days_from_now" = "%d सप्ताह %d दिन में";
+"relative_months_ago" = "%d महीने पहले";
+"relative_months_from_now" = "%d महीने में";
+"relative_years_ago" = "%d साल पहले";
+"relative_years_from_now" = "%d साल में";
+"relative_with_context" = "%@: %@";
+
+/* Date Range Formatting */
+"date_range_format" = "%@ - %@";
+
+/* Financial Year Strings */
+"financial_year_fy_format" = "वित्त वर्ष %d";
+"financial_year_standard_format" = "%d";
+"financial_quarter_fy" = "तिमाही %d वित्त वर्ष %d";
+"financial_quarter_standard" = "तिमाही %d %d";
+"date_with_financial_year" = "%@ (%@)";
+"financial_context_fy" = "तिमाही %d वित्त वर्ष %d";
+"financial_context_standard" = "तिमाही %d %d";
+"financial_year_range" = "%@ - %@";
+"date_with_tax_year_india" = "%@ (कर वर्ष वित्त वर्ष %d)";
+"date_with_tax_year_standard" = "%@ (कर वर्ष %d)";
+
+/* Accessibility Strings */
+"accessibility_today" = "आज";
+"accessibility_yesterday" = "कल (बीता हुआ)";
+"accessibility_tomorrow" = "कल (आने वाला)";
+"accessibility_days_ago" = "%d दिन पहले";
+"accessibility_days_from_now" = "%d दिन में";
+"accessibility_past_date" = "%@ (अतीत में)";
+"accessibility_future_date" = "%@ (भविष्य में)";
+"accessibility_financial_year_fy" = "वित्तीय वर्ष %d, तिमाही %d";
+"accessibility_financial_year_standard" = "वर्ष %d, तिमाही %d";
+"accessibility_date_hint" = "तारीख बदलने के लिए दो बार टैप करें";
+"accessibility_date_with_context" = "%@: %@";
+"accessibility_relative_with_absolute" = "%@, विशेष रूप से %@";
+"accessibility_date_with_fy" = "%@, %@";
+"accessibility_fy_pronunciation" = "वित्तीय वर्ष बीस %d";
+"accessibility_date_range" = "%@ से %@ तक";
+"accessibility_table_cell_date" = "%@: %@";
+"accessibility_valid_date" = "मान्य तिथि: %@";
+"accessibility_invalid_date" = "अमान्य तिथि: %@. %@";
+"accessibility_invalid_date_default" = "कृपया एक मान्य तिथि दर्ज करें";
+"accessibility_weekday_date" = "%@ (सप्ताह का दिन)";
+"accessibility_weekend_date" = "%@ (सप्ताहांत)";
+"accessibility_urgency_high" = "उच्च आवश्यकता";
+"accessibility_urgency_medium" = "मध्यम आवश्यकता";
+"accessibility_urgency_low" = "कम आवश्यकता";
+"accessibility_urgent_date" = "%@ - %@ - %@";
 "format.thousand" = "हजार";

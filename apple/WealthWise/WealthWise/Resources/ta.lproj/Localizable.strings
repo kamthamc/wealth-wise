@@ -120,3 +120,80 @@
 "category.illiquid" = "திரவமற்ற";
 "category.taxable" = "வரி விதிக்கத்தக்க";
 "category.tax_free" = "வரி இல்லாத";
+
+/* Date Formatter Strings - Tamil */
+
+/* Relative Date Strings */
+"relative_today" = "இன்று";
+"relative_yesterday" = "நேற்று";
+"relative_tomorrow" = "நாளை";
+"relative_today_short" = "இன்று";
+"relative_yesterday_short" = "நேற்று";
+"relative_tomorrow_short" = "நாளை";
+
+/* Relative Time Periods */
+"relative_seconds_ago" = "%d விநாடிகளுக்கு முன்";
+"relative_seconds_from_now" = "%d விநாடிகளில்";
+"relative_minutes_ago" = "%d நிமிடங்களுக்கு முன்";
+"relative_minutes_from_now" = "%d நிமிடங்களில்";
+"relative_hours_ago" = "%d மணி நேரங்களுக்கு முன்";
+"relative_hours_from_now" = "%d மணி நேரத்தில்";
+"relative_days_ago" = "%d நாட்களுக்கு முன்";
+"relative_days_from_now" = "%d நாட்களில்";
+"relative_days_ago_short" = "%dநா முன்";
+"relative_days_from_now_short" = "%dநாவில்";
+
+/* Relative Weeks/Months/Years */
+"relative_last_weekday" = "கடந்த %@";
+"relative_next_weekday" = "அடுத்த %@";
+"relative_weeks_ago" = "%d வாரங்களுக்கு முன்";
+"relative_weeks_from_now" = "%d வாரங்களில்";
+"relative_weeks_days_ago" = "%d வாரங்கள் %d நாட்களுக்கு முன்";
+"relative_weeks_days_from_now" = "%d வாரங்கள் %d நாட்களில்";
+"relative_months_ago" = "%d மாதங்களுக்கு முன்";
+"relative_months_from_now" = "%d மாதங்களில்";
+"relative_years_ago" = "%d வருடங்களுக்கு முன்";
+"relative_years_from_now" = "%d வருடங்களில்";
+"relative_with_context" = "%@: %@";
+
+/* Date Range Formatting */
+"date_range_format" = "%@ - %@";
+
+/* Financial Year Strings */
+"financial_year_fy_format" = "நிதியாண்டு %d";
+"financial_year_standard_format" = "%d";
+"financial_quarter_fy" = "காலாண்டு %d நிதியாண்டு %d";
+"financial_quarter_standard" = "காலாண்டு %d %d";
+"date_with_financial_year" = "%@ (%@)";
+"financial_context_fy" = "காலாண்டு %d நிதியாண்டு %d";
+"financial_context_standard" = "காலாண்டு %d %d";
+"financial_year_range" = "%@ - %@";
+"date_with_tax_year_india" = "%@ (வரி ஆண்டு நிதியாண்டு %d)";
+"date_with_tax_year_standard" = "%@ (வரி ஆண்டு %d)";
+
+/* Accessibility Strings */
+"accessibility_today" = "இன்று";
+"accessibility_yesterday" = "நேற்று";
+"accessibility_tomorrow" = "நாளை";
+"accessibility_days_ago" = "%d நாட்களுக்கு முன்";
+"accessibility_days_from_now" = "%d நாட்களில்";
+"accessibility_past_date" = "%@ (கடந்த காலத்தில்)";
+"accessibility_future_date" = "%@ (எதிர்காலத்தில்)";
+"accessibility_financial_year_fy" = "நிதியாண்டு %d, காலாண்டு %d";
+"accessibility_financial_year_standard" = "ஆண்டு %d, காலாண்டு %d";
+"accessibility_date_hint" = "தேதியை மாற்ற இரண்டு முறை தட்டவும்";
+"accessibility_date_with_context" = "%@: %@";
+"accessibility_relative_with_absolute" = "%@, குறிப்பாக %@";
+"accessibility_date_with_fy" = "%@, %@";
+"accessibility_fy_pronunciation" = "நிதியாண்டு இருபது %d";
+"accessibility_date_range" = "%@ முதல் %@ வரை";
+"accessibility_table_cell_date" = "%@: %@";
+"accessibility_valid_date" = "செல்லுபடியாகும் தேதி: %@";
+"accessibility_invalid_date" = "செல்லுபடியாகாத தேதி: %@. %@";
+"accessibility_invalid_date_default" = "தயவுசெய்து செல்லுபடியாகும் தேதியை உள்ளிடவும்";
+"accessibility_weekday_date" = "%@ (வார நாள்)";
+"accessibility_weekend_date" = "%@ (வார இறுதி)";
+"accessibility_urgency_high" = "அதிக அவசரம்";
+"accessibility_urgency_medium" = "நடுத்தர அவசரம்";
+"accessibility_urgency_low" = "குறைந்த அவசரம்";
+"accessibility_urgent_date" = "%@ - %@ - %@";

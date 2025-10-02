@@ -427,4 +427,81 @@
 "probability.high" = "High (70-90%)";
 "probability.moderate" = "Moderate (50-70%)";
 "probability.low" = "Low (30-50%)";
+
+/* Date Formatter Strings */
+
+/* Relative Date Strings */
+"relative_today" = "Today";
+"relative_yesterday" = "Yesterday";
+"relative_tomorrow" = "Tomorrow";
+"relative_today_short" = "Today";
+"relative_yesterday_short" = "Yest";
+"relative_tomorrow_short" = "Tmrw";
+
+/* Relative Time Periods */
+"relative_seconds_ago" = "%d seconds ago";
+"relative_seconds_from_now" = "in %d seconds";
+"relative_minutes_ago" = "%d minutes ago";
+"relative_minutes_from_now" = "in %d minutes";
+"relative_hours_ago" = "%d hours ago";
+"relative_hours_from_now" = "in %d hours";
+"relative_days_ago" = "%d days ago";
+"relative_days_from_now" = "in %d days";
+"relative_days_ago_short" = "%dd ago";
+"relative_days_from_now_short" = "in %dd";
+
+/* Relative Weeks/Months/Years */
+"relative_last_weekday" = "Last %@";
+"relative_next_weekday" = "Next %@";
+"relative_weeks_ago" = "%d weeks ago";
+"relative_weeks_from_now" = "in %d weeks";
+"relative_weeks_days_ago" = "%d weeks %d days ago";
+"relative_weeks_days_from_now" = "in %d weeks %d days";
+"relative_months_ago" = "%d months ago";
+"relative_months_from_now" = "in %d months";
+"relative_years_ago" = "%d years ago";
+"relative_years_from_now" = "in %d years";
+"relative_with_context" = "%@: %@";
+
+/* Date Range Formatting */
+"date_range_format" = "%@ - %@";
+
+/* Financial Year Strings */
+"financial_year_fy_format" = "FY%d";
+"financial_year_standard_format" = "%d";
+"financial_quarter_fy" = "Q%d FY%d";
+"financial_quarter_standard" = "Q%d %d";
+"date_with_financial_year" = "%@ (%@)";
+"financial_context_fy" = "Q%d FY%d";
+"financial_context_standard" = "Q%d %d";
+"financial_year_range" = "%@ - %@";
+"date_with_tax_year_india" = "%@ (Tax Year FY%d)";
+"date_with_tax_year_standard" = "%@ (Tax Year %d)";
+
+/* Accessibility Strings */
+"accessibility_today" = "Today";
+"accessibility_yesterday" = "Yesterday";
+"accessibility_tomorrow" = "Tomorrow";
+"accessibility_days_ago" = "%d days ago";
+"accessibility_days_from_now" = "in %d days";
+"accessibility_past_date" = "%@ (in the past)";
+"accessibility_future_date" = "%@ (in the future)";
+"accessibility_financial_year_fy" = "Financial Year %d, Quarter %d";
+"accessibility_financial_year_standard" = "Year %d, Quarter %d";
+"accessibility_date_hint" = "Double tap to change date";
+"accessibility_date_with_context" = "%@: %@";
+"accessibility_relative_with_absolute" = "%@, specifically %@";
+"accessibility_date_with_fy" = "%@, %@";
+"accessibility_fy_pronunciation" = "Financial Year twenty %d";
+"accessibility_date_range" = "From %@ to %@";
+"accessibility_table_cell_date" = "%@: %@";
+"accessibility_valid_date" = "Valid date: %@";
+"accessibility_invalid_date" = "Invalid date: %@. %@";
+"accessibility_invalid_date_default" = "Please enter a valid date";
+"accessibility_weekday_date" = "%@ (weekday)";
+"accessibility_weekend_date" = "%@ (weekend)";
+"accessibility_urgency_high" = "High urgency";
+"accessibility_urgency_medium" = "Medium urgency";
+"accessibility_urgency_low" = "Low urgency";
+"accessibility_urgent_date" = "%@ - %@ - %@";
 "probability.very_low" = "Very Low (<30%)";
