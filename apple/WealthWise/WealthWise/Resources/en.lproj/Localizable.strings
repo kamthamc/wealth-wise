@@ -428,3 +428,65 @@
 "probability.moderate" = "Moderate (50-70%)";
 "probability.low" = "Low (30-50%)";
 "probability.very_low" = "Very Low (<30%)";
+/* Dashboard */
+"dashboard.title" = "Dashboard";
+"dashboard.view.overview" = "Overview";
+"dashboard.view.portfolio" = "Portfolio";
+"dashboard.view.goals" = "Goals";
+"dashboard.view.taxes" = "Taxes";
+"dashboard.view.analytics" = "Analytics";
+
+"dashboard.asset_breakdown" = "Asset Breakdown";
+"dashboard.allocation_subtitle" = "Portfolio Distribution";
+"dashboard.percentage" = "Percentage";
+"dashboard.asset_type" = "Asset Type";
+"dashboard.asset_count" = "%d assets";
+
+"dashboard.recent_transactions" = "Recent Transactions";
+"dashboard.last_transactions" = "Last 7 days";
+"dashboard.view_all" = "View All";
+"dashboard.no_transactions" = "No recent transactions";
+
+"dashboard.performance_subtitle" = "Portfolio Returns & Risk";
+"dashboard.return_1m" = "1 Month";
+"dashboard.return_3m" = "3 Months";
+"dashboard.return_6m" = "6 Months";
+"dashboard.return_1y" = "1 Year";
+"dashboard.sharpe_ratio" = "Sharpe Ratio";
+
+"dashboard.alerts" = "Alerts & Notifications";
+"dashboard.alerts_count" = "%d active alerts";
+"dashboard.action_required" = "%d action required";
+"dashboard.no_alerts" = "No alerts";
+"dashboard.all_clear" = "Everything looks good!";
+
+"dashboard.last_updated" = "Last updated";
+"dashboard.refresh" = "Refresh";
+"dashboard.currency" = "Currency";
+"dashboard.view" = "View";
+
+"timeframe.week" = "1W";
+"timeframe.month" = "1M";
+"timeframe.quarter" = "3M";
+"timeframe.year" = "1Y";
+"timeframe.all" = "All";
+
+"chart.date" = "Date";
+
+"financial.volatility" = "Volatility";
+
+"alert.tax_payment_due" = "Tax Payment Due";
+"alert.tax_payment_due_message" = "Advance tax payment due in 15 days";
+"alert.goal_milestone" = "Goal Milestone Reached";
+"alert.goal_milestone_message" = "You've reached 75% of your retirement goal";
+
+"transaction.salary" = "Monthly Salary";
+"transaction.mutual_fund_investment" = "Mutual Fund Investment";
+"transaction.grocery_shopping" = "Grocery Shopping";
+"transaction.electricity_bill" = "Electricity Bill";
+
+"category_other_expense" = "Other Expense";
+"category_utilities" = "Utilities";
+
+"attachment_receipt" = "Receipt";
+"attachment_invoice" = "Invoice";
