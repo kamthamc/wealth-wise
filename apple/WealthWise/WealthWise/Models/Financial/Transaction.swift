@@ -86,7 +86,9 @@ public final class Transaction {
     
     // MARK: - Relationships
     
-    @Relationship(deleteRule: .nullify) public var linkedGoal: Goal?
+    // NOTE: Temporarily commented to break circular dependency with Goal
+    // Will be restored via extension after successful compilation
+    // @Relationship(deleteRule: .nullify) public var linkedGoal: Goal?
     @Relationship(deleteRule: .cascade) public var attachments: [TransactionAttachment]?
     
     // MARK: - Initialization

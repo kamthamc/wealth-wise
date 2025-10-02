@@ -110,24 +110,25 @@ public final class RTLAccessibilityHelper: ObservableObject {
     
     /// Create accessibility traits for RTL controls
     public func accessibilityTraits(for controlType: String, isRTL: Bool) -> AccessibilityTraits {
-      var traits: AccessibilityTraits = []
-      
-      switch controlType {
+        var traits: AccessibilityTraits = []
+        
+        switch controlType {
         case "button":
-          _ = traits.insert(.isButton)
+            _ = traits.insert(.isButton)
         case "link":
-          _ = traits.insert(.isLink)
+            _ = traits.insert(.isLink)
         case "header":
-          _ = traits.insert(.isHeader)
+            _ = traits.insert(.isHeader)
         default:
-          break
-      }
-      
-      if isRTL {
-        _ = traits.insert(.updatesFrequently)
-      }
-      
-      return traits
+            break
+        }
+        
+        if isRTL {
+            // Add RTL-specific traits if needed
+            _ = traits.insert(.updatesFrequently)
+        }
+        
+        return traits
     }
     
     /// Configure reading order for RTL container
