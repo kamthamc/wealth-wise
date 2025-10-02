@@ -572,8 +572,9 @@ public enum EncryptionAlgorithm: String, CaseIterable, Sendable, Codable {
     public static let postQuantumHybrid = EncryptionAlgorithm.quantumResistant
 }
 
-/// Security event types for audit logging
-public enum SecurityEventType: String, CaseIterable, Sendable, Codable {
+/// Audit security event types for logging purposes.
+/// This enum is used exclusively for audit logging and should not be confused with `SecurityEvent` in SecurityModels.swift.
+public enum AuditSecurityEvent: String, CaseIterable, Sendable, Codable {
     case loginSuccess = "loginSuccess"
     case loginFailure = "loginFailure"
     case accountLocked = "accountLocked"
@@ -592,10 +593,10 @@ public enum SecurityEventType: String, CaseIterable, Sendable, Codable {
     case dataIntegrityViolation = "dataIntegrityViolation"
 }
 
-/// Security event for audit logging
-public struct SecurityEvent: Sendable, Codable, Identifiable {
+/// Audit event for security logging (protocols layer)
+public struct AuditEvent: Sendable, Codable, Identifiable {
     public let id: UUID
-    public let type: SecurityEventType
+    public let type: AuditSecurityEvent
     public let description: String
     public let riskLevel: SecurityRiskLevel
     public let timestamp: Date
@@ -603,7 +604,7 @@ public struct SecurityEvent: Sendable, Codable, Identifiable {
     public let additionalData: [String: String]
     
     public init(
-        type: SecurityEventType,
+        type: AuditSecurityEvent,
         description: String,
         riskLevel: SecurityRiskLevel,
         userID: String? = nil,
@@ -690,29 +691,42 @@ public enum SecurityThreat: String, CaseIterable, Sendable {
 }
 
 /// Threat severity levels
-public enum ThreatSeverity: String, CaseIterable, Comparable, Sendable {
-    case low = "low"
-    case medium = "medium"
-    case high = "high"
-    case critical = "critical"
-    
-    public static func < (lhs: ThreatSeverity, rhs: ThreatSeverity) -> Bool {
-        let order: [ThreatSeverity] = [.low, .medium, .high, .critical]
-        guard let lhsIndex = order.firstIndex(of: lhs),
-              let rhsIndex = order.firstIndex(of: rhs) else {
-            return false
-        }
-        return lhsIndex < rhsIndex
+public enum ThreatSeverity: String, CaseIterable, Comparable, Sendable, Codable {
+  case low = "low"
+  case medium = "medium"
+  case high = "high"
+  case critical = "critical"
+  
+  public static func < (lhs: ThreatSeverity, rhs: ThreatSeverity) -> Bool {
+    let order: [ThreatSeverity] = [.low, .medium, .high, .critical]
+    return order.firstIndex(of: lhs)! < order.firstIndex(of: rhs)!
+  }
+  
+  public var displayName: String {
+    switch self {
+      case .low: return "Low"
+      case .medium: return "Medium"
+      case .high: return "High"
+      case .critical: return "Critical"
     }
-    
-    public var displayName: String {
-        switch self {
-        case .low: return "Low"
-        case .medium: return "Medium"
-        case .high: return "High"
-        case .critical: return "Critical"
-        }
+  }
+  
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.singleValueContainer()
+    let value = try container.decode(String.self)
+    guard let severity = ThreatSeverity(rawValue: value) else {
+      throw DecodingError.dataCorruptedError(
+        in: container,
+        debugDescription: "Invalid threat severity value: \(value)"
+      )
     }
+    self = severity
+  }
+  
+  public func encode(to encoder: Encoder) throws {
+    var container = encoder.singleValueContainer()
+    try container.encode(self.rawValue)
+  }
 }
 
 // MARK: - Error Types
