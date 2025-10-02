@@ -27,7 +27,16 @@ WealthWise follows a multi-platform architecture with native implementations:
 - **Android**: Kotlin with modern Android development stack (planned)
 - **Windows**: .NET with native Windows UI frameworks (planned)
 
-Detailed technical documentation is available in the `/docs` directory.
+### 📚 Architecture Documentation
+
+Comprehensive architecture documentation is available:
+- **[Architecture Overview](./docs/ARCHITECTURE.md)** - Complete architecture guide
+- **[macOS Architecture](./docs/macos-architecture.md)** - Detailed macOS/iOS implementation
+- **[Entity Diagrams](./docs/entity-diagrams.md)** - Data models and relationships
+- **[Component Diagrams](./docs/component-diagrams.md)** - System components and interactions
+- **[Security Framework](./docs/security-framework.md)** - Security implementation details
+
+All documentation in the `/docs` directory is kept in sync with the codebase.
 
 ## 🛠 Technology Stack
 
