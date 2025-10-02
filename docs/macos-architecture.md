@@ -2,16 +2,18 @@
 
 ## Overview
 
-WealthWise macOS is a native SwiftUI application designed for comprehensive personal finance management with local-first, privacy-focused architecture. The application provides secure asset tracking, portfolio management, and financial insights### Technology Stack
+WealthWise macOS is a native SwiftUI application designed for comprehensive personal finance management with local-first, privacy-focused architecture. The application provides secure asset tracking, portfolio management, and financial insights while maintaining complete data ownership through local encrypted storage.
 
-### Core Technologies
+### Technology Stack
+
+#### Core Technologies
 - **UI Framework**: SwiftUI with AppKit integration
 - **Visual Effects**: Glass effects for macOS 15+ and iOS 18+ (enhanced for 26+)
 - **Data Persistence**: SwiftData with CloudKit sync (optional)
 - **Authentication**: LocalAuthentication framework
 - **Encryption**: CryptoKit for AES-256 encryption
 - **Networking**: URLSession for market data (optional)
-- **Testing**: XCTest with SwiftUI testing utilitiesintaining complete data ownership through local encrypted storage.
+- **Testing**: XCTest with SwiftUI testing utilities
 
 ## Architecture Principles
 
@@ -252,28 +254,107 @@ Biometric Check Available?
 
 ## Entity-Relationship Diagram
 
+### Core Data Models (Actual Implementation)
+
 ```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   Portfolio │────▶│   Holding   │◀────│    Asset    │
-│             │     │             │     │             │
-│ - id        │     │ - id        │     │ - id        │
-│ - name      │     │ - quantity  │     │ - name      │
-│ - created   │     │ - avgCost   │     │ - type      │
-└─────────────┘     │ - currentVal│     │ - value     │
-        │           └─────────────┘     │ - purchase  │
-        │                  │            └─────────────┘
-        ▼                  ▼                    │
-┌─────────────┐     ┌─────────────┐           │
-│ Transaction │     │   Valuation │           │
-│             │     │             │           │
-│ - id        │     │ - id        │           │
-│ - date      │     │ - date      │           │
-│ - type      │     │ - price     │           │
-│ - amount    │     │ - source    │           │
-│ - reference │     └─────────────┘           │
-└─────────────┘                               │
-        ▲                                     │
-        └─────────────────────────────────────┘
+┌──────────────────────┐     ┌──────────────────────┐
+│  CrossBorderAsset    │     │     Transaction      │
+│  (Struct/Codable)    │     │  (@Model/SwiftData)  │
+├──────────────────────┤     ├──────────────────────┤
+│ - id: UUID           │     │ - id: UUID           │
+│ - name: String       │     │ - amount: Decimal    │
+│ - assetType: Enum    │     │ - currency: String   │
+│ - domicileCountry    │     │ - transactionType    │
+│ - ownerCountry       │     │ - category: Enum     │
+│ - currentValue       │     │ - date: Date         │
+│ - nativeCurrency     │     │ - accountType: Enum  │
+│ - quantity           │     │ - status: Enum       │
+│ - pricePerUnit       │     │ - isTaxable: Bool    │
+│ - isActive: Bool     │     │ - taxCategory        │
+│ - performanceHistory │     │ - linkedGoal         │
+│ - taxJurisdictions   │     │ - attachments[]      │
+└──────────────────────┘     └──────────────────────┘
+         │                            │
+         │                            │
+         ▼                            ▼
+┌──────────────────────┐     ┌──────────────────────┐
+│ PerformanceSnapshot  │     │        Goal          │
+│     (Embedded)       │     │  (@Model/SwiftData)  │
+├──────────────────────┤     ├──────────────────────┤
+│ - date: Date         │     │ - id: UUID           │
+│ - value: Decimal     │     │ - title: String      │
+│ - currency: String   │     │ - targetAmount       │
+│ - source: String     │     │ - currentAmount      │
+└──────────────────────┘     │ - targetDate: Date   │
+                             │ - goalType: Enum     │
+                             │ - priority: Enum     │
+┌──────────────────────┐     │ - milestones[]       │
+│   IncomePayment      │     │ - contributions[]    │
+│     (Embedded)       │     │ - progressHistory[]  │
+├──────────────────────┤     │ - linkedTransactions │
+│ - amount: Decimal    │     └──────────────────────┘
+│ - currency: String   │              │
+│ - paymentDate        │              │
+│ - type: Enum         │              ▼
+└──────────────────────┘     ┌──────────────────────┐
+                             │   GoalMilestone      │
+                             │     (Embedded)       │
+                             ├──────────────────────┤
+                             │ - id: UUID           │
+                             │ - percentage: Double │
+                             │ - targetAmount       │
+                             │ - targetDate: Date   │
+                             │ - isAchieved: Bool   │
+                             └──────────────────────┘
+
+┌──────────────────────────────────────────────────────────┐
+│                    Supporting Models                      │
+├──────────────────────────────────────────────────────────┤
+│ • AssetType: Enum (equity, fixedIncome, alternative)     │
+│ • AssetCategory: Enum (derived from AssetType)           │
+│ • ComplianceRequirement: Enum (tax, reporting)           │
+│ • TransactionCategory: Enum (50+ categories)             │
+│ • AccountType: Enum (bank, credit_card, investment)      │
+│ • TaxCategory: Enum (STCG, LTCG, dividend, interest)     │
+│ • GoalType: Enum (investment, retirement, education)     │
+│ • RiskTolerance: Enum (conservative to aggressive)       │
+└──────────────────────────────────────────────────────────┘
+```
+
+### Cross-Border Asset System
+
+```
+┌─────────────────────────────────────────────────────────┐
+│              CrossBorderAsset Properties                 │
+├─────────────────────────────────────────────────────────┤
+│                                                          │
+│  Geographic & Regulatory:                               │
+│    • domicileCountryCode (where asset is registered)    │
+│    • ownerCountryCode (investor's country)              │
+│    • taxJurisdictions (Set<String>)                     │
+│    • complianceRequirements (Set<ComplianceRequirement>)│
+│                                                          │
+│  Financial Information:                                 │
+│    • currentValue (Decimal)                             │
+│    • nativeCurrencyCode (asset's currency)              │
+│    • originalInvestment (Decimal?)                      │
+│    • quantity (Decimal?)                                │
+│    • pricePerUnit (Decimal?)                            │
+│                                                          │
+│  Risk & Analytics:                                      │
+│    • riskRating (RiskRating?)                           │
+│    • liquidityRating (LiquidityRating)                  │
+│    • esgScore (ESGScore?)                               │
+│    • correlationData ([String: Decimal])                │
+│                                                          │
+│  Computed Properties:                                   │
+│    • isCrossBorder (Bool)                               │
+│    • unrealizedGainLoss (Decimal?)                      │
+│    • unrealizedGainLossPercentage (Double?)             │
+│    • currentYield (Double?)                             │
+│    • qualifiesForLongTermCapitalGains (Bool)            │
+│                                                          │
+└─────────────────────────────────────────────────────────┘
 ```
 
 ## Component Interaction Diagram

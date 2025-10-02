@@ -15,128 +15,147 @@ erDiagram
         string encryptedMasterKey
     }
     
-    Portfolio {
+    CrossBorderAsset {
         uuid id PK
-        uuid userId FK
         string name
-        string description
-        datetime createdAt
-        datetime updatedAt
-        decimal totalValue
-        string currency
-        boolean isDefault
-    }
-    
-    Asset {
-        uuid id PK
-        uuid portfolioId FK
-        string name
-        string symbol
-        enum type
-        string category
+        enum assetType
+        enum category
+        string domicileCountryCode
+        string ownerCountryCode
         decimal currentValue
-        decimal purchasePrice
-        datetime purchaseDate
-        string currency
+        string nativeCurrencyCode
+        decimal originalInvestment
+        datetime acquisitionDate
         decimal quantity
-        string encryptedAccountNumber
-        string encryptedNotes
+        decimal pricePerUnit
+        string institutionIdentifier
+        string securityIdentifier
         datetime createdAt
         datetime updatedAt
+        boolean isActive
+        boolean isIncludedInPortfolio
     }
     
     Transaction {
         uuid id PK
-        uuid assetId FK
-        uuid portfolioId FK
-        enum type
         decimal amount
-        decimal price
-        decimal quantity
+        string currency
+        string transactionDescription
+        string notes
         datetime date
-        string description
-        string encryptedReference
-        string encryptedNotes
+        datetime valueDate
+        enum transactionType
+        enum category
+        string subcategory
+        string accountId
+        enum accountType
+        decimal originalAmount
+        string originalCurrency
+        decimal exchangeRate
+        decimal baseCurrencyAmount
+        enum status
+        boolean isRecurring
         datetime createdAt
+        datetime updatedAt
+        boolean isTaxable
+        enum taxCategory
+        decimal taxAmount
+        decimal tdsAmount
     }
     
-    Valuation {
+    Goal {
         uuid id PK
-        uuid assetId FK
-        decimal price
-        decimal marketValue
+        string title
+        string goalDescription
+        decimal targetAmount
+        string targetCurrency
+        datetime startDate
+        datetime targetDate
+        decimal currentAmount
+        decimal contributedAmount
+        decimal projectedAmount
+        enum goalType
+        enum priority
+        boolean isActive
+        boolean isCompleted
+        datetime completedAt
+        enum riskTolerance
+        decimal expectedAnnualReturn
+        boolean inflationAdjusted
+        datetime createdAt
+        datetime updatedAt
+    }
+    
+    PerformanceSnapshot {
         datetime date
+        decimal value
+        string currency
         string source
-        datetime createdAt
     }
     
-    Category {
+    IncomePayment {
+        decimal amount
+        string currency
+        datetime paymentDate
+        enum type
+    }
+    
+    GoalMilestone {
         uuid id PK
-        string name
+        double percentage
+        string title
         string description
-        string color
-        string icon
-        uuid parentId FK
-        boolean isDefault
+        decimal targetAmount
+        datetime targetDate
+        boolean isAchieved
+        datetime achievedAt
     }
     
-    MarketData {
+    GoalContribution {
         uuid id PK
-        string symbol
-        string exchange
-        decimal price
-        decimal previousClose
-        decimal change
-        decimal changePercent
-        datetime lastUpdated
+        decimal amount
+        datetime date
+        string description
         string currency
     }
     
-    Alert {
+    TransactionAttachment {
         uuid id PK
-        uuid userId FK
-        uuid assetId FK
-        enum type
-        string title
-        string message
-        decimal triggerValue
-        boolean isActive
-        datetime createdAt
-        datetime triggeredAt
+        string fileName
+        enum fileType
+        string filePath
+        datetime uploadDate
+        int fileSize
     }
     
-    Backup {
-        uuid id PK
-        uuid userId FK
-        string filename
-        string encryptedPath
-        datetime createdAt
-        long fileSize
-        string checksum
+    ExchangeRate {
+        string fromCurrency PK
+        string toCurrency PK
+        decimal rate
+        datetime lastUpdated
+        string source
     }
     
-    AuditLog {
+    TaxResidencyStatus {
         uuid id PK
-        uuid userId FK
-        string action
-        string entityType
-        uuid entityId
-        string oldValues
-        string newValues
-        datetime timestamp
-        string ipAddress
-        string userAgent
+        string countryCode
+        enum residencyType
+        datetime effectiveFrom
+        datetime effectiveTo
+        boolean isPrimary
     }
 
-    User ||--o{ Portfolio : "owns"
-    Portfolio ||--o{ Asset : "contains"
-    Asset ||--o{ Transaction : "has"
-    Asset ||--o{ Valuation : "valued_by"
-    Asset }o--|| Category : "categorized_as"
-    User ||--o{ Alert : "receives"
-    Alert }o--|| Asset : "monitors"
-    User ||--o{ Backup : "creates"
-    User ||--o{ AuditLog : "generates"
+    User ||--o{ CrossBorderAsset : "owns"
+    User ||--o{ Transaction : "creates"
+    User ||--o{ Goal : "sets"
+    CrossBorderAsset ||--o{ PerformanceSnapshot : "has_history"
+    CrossBorderAsset ||--o{ IncomePayment : "receives"
+    Transaction ||--o{ TransactionAttachment : "has"
+    Transaction }o--o| Goal : "linked_to"
+    Goal ||--o{ GoalMilestone : "tracks"
+    Goal ||--o{ GoalContribution : "receives"
+    Goal ||--o{ Transaction : "contains"
+    CrossBorderAsset }o--|| TaxResidencyStatus : "subject_to"
 ```
 
 ## Asset Type Hierarchy
@@ -503,11 +522,11 @@ graph TB
 ## Notes
 
 ### Entity Constraints
-1. **User**: Single user per application instance
-2. **Portfolio**: User can have multiple portfolios, one default
-3. **Asset**: Must belong to exactly one portfolio
-4. **Transaction**: Must reference valid asset and portfolio
-5. **Valuation**: Historical price data, multiple per asset
+1. **User**: Single user per application instance (local-first design)
+2. **CrossBorderAsset**: Can be domestic or international, tracks multi-currency assets
+3. **Transaction**: SwiftData @Model with comprehensive financial tracking
+4. **Goal**: Supports milestone tracking and contribution suggestions
+5. **PerformanceSnapshot**: Historical data, maximum 100 snapshots per asset
 
 ### Encryption Strategy
 - **Field-Level**: Sensitive data encrypted before storage
