@@ -428,3 +428,80 @@
 "probability.moderate" = "Moderate (50-70%)";
 "probability.low" = "Low (30-50%)";
 "probability.very_low" = "Very Low (<30%)";
+
+/* Reporting & Insights - Report Types */
+"report_type_tax" = "Tax Report";
+"report_type_capital_gains" = "Capital Gains Report";
+"report_type_dividend" = "Dividend Report";
+"report_type_performance" = "Performance Report";
+"report_type_allocation" = "Asset Allocation Report";
+"report_type_net_worth" = "Net Worth Report";
+"report_type_income" = "Income Report";
+"report_type_expense" = "Expense Report";
+
+/* Reporting & Insights - Report Formats */
+"report_format_summary" = "Summary";
+"report_format_detailed" = "Detailed";
+"report_format_csv" = "CSV";
+"report_format_json" = "JSON";
+
+/* Reporting & Insights - Report Categories */
+"report_category_tax" = "Tax Reports";
+"report_category_investment" = "Investment Reports";
+"report_category_budgeting" = "Budgeting Reports";
+"report_category_net_worth" = "Net Worth Reports";
+"report_category_compliance" = "Compliance Reports";
+
+/* Reporting & Insights - Tax Sections */
+"tax_section_80c" = "Section 80C (₹1.5L)";
+"tax_section_80ccd1b" = "Section 80CCD(1B) (₹50K NPS)";
+"tax_section_80d" = "Section 80D (Health Insurance)";
+"tax_section_80e" = "Section 80E (Education Loan)";
+"tax_section_80g" = "Section 80G (Donations)";
+"tax_section_24" = "Section 24 (Home Loan Interest)";
+
+/* Reporting & Insights - Interest Sources */
+"interest_source_savings" = "Savings Account";
+"interest_source_fd" = "Fixed Deposit";
+"interest_source_bonds" = "Bonds";
+"interest_source_debt_mf" = "Debt Mutual Funds";
+"interest_source_other" = "Other Interest";
+
+/* Reporting & Insights - Tax Categories */
+"tax_stcg" = "Short-term Capital Gain";
+"tax_ltcg" = "Long-term Capital Gain";
+"tax_dividend" = "Dividend Income";
+"tax_free" = "Tax-free";
+
+/* Reporting & Insights - Insight Categories */
+"insight_category_rebalancing" = "Portfolio Rebalancing";
+"insight_category_tax_saving" = "Tax Saving Opportunity";
+"insight_category_underperforming" = "Underperforming Asset";
+"insight_category_diversification" = "Diversification Needed";
+"insight_category_goal_alignment" = "Goal Alignment";
+"insight_category_risk_management" = "Risk Management";
+"insight_category_cost_optimization" = "Cost Optimization";
+"insight_category_opportunity" = "Investment Opportunity";
+
+/* Reporting & Insights - Rebalancing Actions */
+"rebalancing_increase" = "Increase Allocation";
+"rebalancing_reduce" = "Reduce Allocation";
+"rebalancing_maintain" = "Maintain Allocation";
+
+/* Reporting & Insights - Insight Messages */
+"insight_impact_unknown" = "Impact Unknown";
+"rebalancing_needed_title" = "Portfolio Rebalancing Needed";
+"rebalancing_needed_desc" = "Your portfolio allocation deviates from target. Consider rebalancing.";
+"rebalancing_action" = "Review allocation and adjust investments to match target percentages.";
+"tax_saving_opportunity_title" = "Tax Saving Opportunity";
+"tax_saving_opportunity_desc" = "You can invest ₹%@ more in 80C to save ₹%@ in taxes";
+"tax_saving_action" = "Invest in ELSS, PPF, or NPS before March 31";
+"underperforming_asset_title" = "Underperforming Asset";
+"underperforming_asset_desc" = "%@ is underperforming with %.1f%% loss";
+"underperforming_action" = "Review this investment and consider reallocation";
+"goal_off_track_title" = "Goal Off Track";
+"goal_off_track_desc" = "%@ is off track. Need ₹%@ monthly to achieve target";
+"goal_off_track_action" = "Increase monthly contributions or extend target date";
+"sector_concentration_title" = "Sector Concentration Risk";
+"sector_concentration_desc" = "%@ sector represents %.1f%% of portfolio. Consider diversification";
+"diversification_action" = "Spread investments across different sectors";
