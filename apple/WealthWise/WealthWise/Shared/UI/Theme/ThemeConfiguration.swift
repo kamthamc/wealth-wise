@@ -3,19 +3,16 @@
 //  WealthWise
 //
 //  Created by WealthWise Team on 2025-09-28.
-//  Theme System: Configuration container for theme-aware components
+//  Theme System: Configuration container for theme-aware components (temporarily simplified)
 //
 
 import Foundation
 import SwiftUI
 
-/// Complete theme configuration for UI components
+/// Complete theme configuration for UI components (temporarily simplified)
 public struct ThemeConfiguration: Sendable {
     
     // MARK: - Properties
-    
-    /// Theme preferences
-    public let preferences: ThemePreferences
     
     /// Effective color scheme
     public let effectiveColorScheme: ColorScheme
@@ -24,40 +21,16 @@ public struct ThemeConfiguration: Sendable {
     public let semanticColors: SemanticColors
     
     /// Whether animations are enabled
-    public var animationsEnabled: Bool {
-        preferences.animationsEnabled && !preferences.reduceMotion
-    }
+    public var animationsEnabled: Bool = true
     
-    /// Whether high contrast is enabled
-    public var isHighContrastEnabled: Bool {
-        preferences.highContrastEnabled
-    }
-    
-    /// Card style configuration
-    public var cardStyle: CardStyle {
-        preferences.cardStyle
-    }
-    
-    /// Graph style configuration
-    public var graphStyle: GraphStyle {
-        preferences.graphStyle
-    }
-    
-    /// Chart color palette
-    public var chartColorPalette: ChartColorPalette {
-        preferences.chartColorPalette
-    }
+    /// Whether high contrast is enabled  
+    public var isHighContrastEnabled: Bool = false
     
     // MARK: - Initialization
     
-    public init(
-        preferences: ThemePreferences,
-        effectiveColorScheme: ColorScheme,
-        semanticColors: SemanticColors
-    ) {
-        self.preferences = preferences
+    public init(effectiveColorScheme: ColorScheme, semanticColors: SemanticColors? = nil) {
         self.effectiveColorScheme = effectiveColorScheme
-        self.semanticColors = semanticColors
+        self.semanticColors = semanticColors ?? SemanticColors(colorScheme: effectiveColorScheme)
     }
     
     // MARK: - Styling Helpers
@@ -72,97 +45,18 @@ public struct ThemeConfiguration: Sendable {
         animationsEnabled ? .easeInOut(duration: animationDuration) : .linear(duration: 0)
     }
     
-    /// Get corner radius for cards based on style
-    public var cardCornerRadius: CGFloat {
-        switch cardStyle {
-        case .minimal:
-            return 4.0
-        case .standard:
-            return 8.0
-        case .detailed:
-            return 12.0
-        }
-    }
+    /// Get corner radius for cards
+    public var cardCornerRadius: CGFloat = 8.0
     
-    /// Get padding for cards based on style
+    /// Get padding for cards
     public var cardPadding: EdgeInsets {
-        switch cardStyle {
-        case .minimal:
-            return EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12)
-        case .standard:
-            return EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
-        case .detailed:
-            return EdgeInsets(top: 16, leading: 20, bottom: 16, trailing: 20)
-        }
+        EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
     }
     
     /// Get shadow configuration for cards
     public var cardShadow: (color: Color, radius: CGFloat, x: CGFloat, y: CGFloat) {
-        let baseColor = semanticColors.cardStroke.opacity(0.1)
-        switch cardStyle {
-        case .minimal:
-            return (baseColor, 1.0, 0, 1)
-        case .standard:
-            return (baseColor, 2.0, 0, 2)
-        case .detailed:
-            return (baseColor, 4.0, 0, 3)
-        }
-    }
-    
-    /// Get button styling configuration
-    public func buttonConfiguration(for style: ButtonStyleType) -> ButtonConfiguration {
-        ButtonConfiguration(
-            backgroundColor: semanticColors.primary,
-            foregroundColor: semanticColors.background,
-            cornerRadius: cardCornerRadius * 0.75,
-            padding: EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16),
-            animation: animationCurve
-        )
-    }
-    
-    /// Get text styling configuration
-    public func textConfiguration(for level: TextLevel) -> TextConfiguration {
-        TextConfiguration(
-            color: textColor(for: level),
-            font: font(for: level),
-            animation: animationCurve
-        )
-    }
-    
-    // MARK: - Private Helpers
-    
-    private func textColor(for level: TextLevel) -> Color {
-        switch level {
-        case .primary:
-            return semanticColors.primaryText
-        case .secondary:
-            return semanticColors.secondaryText
-        case .tertiary:
-            return semanticColors.tertiaryText
-        case .accent:
-            return semanticColors.primary
-        case .positive:
-            return semanticColors.positive
-        case .negative:
-            return semanticColors.negative
-        case .warning:
-            return semanticColors.warning
-        }
-    }
-    
-    private func font(for level: TextLevel) -> Font {
-        switch level {
-        case .primary:
-            return .body
-        case .secondary:
-            return .callout
-        case .tertiary:
-            return .caption
-        case .accent:
-            return .body.weight(.medium)
-        case .positive, .negative, .warning:
-            return .body.weight(.semibold)
-        }
+        let baseColor = Color.gray.opacity(0.1)
+        return (baseColor, 2.0, 0, 2)
     }
 }
 
@@ -208,9 +102,7 @@ public struct TextConfiguration: Sendable {
 
 public struct ThemeConfigurationKey: EnvironmentKey {
     public static let defaultValue: ThemeConfiguration = ThemeConfiguration(
-        preferences: ThemePreferences(),
-        effectiveColorScheme: .light,
-        semanticColors: SemanticColors(colorScheme: .light, accentColor: .blue)
+        effectiveColorScheme: ColorScheme.light
     )
 }
 

@@ -572,6 +572,88 @@ public enum EncryptionAlgorithm: String, CaseIterable, Sendable, Codable {
     public static let postQuantumHybrid = EncryptionAlgorithm.quantumResistant
 }
 
+/// Audit security event types for logging purposes.
+/// This enum is used exclusively for audit logging and should not be confused with `SecurityEvent` in SecurityModels.swift.
+public enum AuditSecurityEvent: String, CaseIterable, Sendable, Codable {
+    case loginSuccess = "loginSuccess"
+    case loginFailure = "loginFailure"
+    case accountLocked = "accountLocked"
+    case sessionExpired = "sessionExpired"
+    case biometricAuthSuccess = "biometricAuthSuccess"
+    case biometricAuthFailure = "biometricAuthFailure"
+    case pinAuthSuccess = "pinAuthSuccess"
+    case pinAuthFailure = "pinAuthFailure"
+    case sessionStarted = "sessionStarted"
+    case sessionEnded = "sessionEnded"
+    case deviceCompromised = "deviceCompromised"
+    case securityThreatDetected = "securityThreatDetected"
+    case encryptionFailure = "encryptionFailure"
+    case keyManagementFailure = "keyManagementFailure"
+    case unauthorizedAccess = "unauthorizedAccess"
+    case dataIntegrityViolation = "dataIntegrityViolation"
+}
+
+/// Audit event for security logging (protocols layer)
+public struct AuditEvent: Sendable, Codable, Identifiable {
+    public let id: UUID
+    public let type: AuditSecurityEvent
+    public let description: String
+    public let riskLevel: SecurityRiskLevel
+    public let timestamp: Date
+    public let userID: String?
+    public let additionalData: [String: String]
+    
+    public init(
+        type: AuditSecurityEvent,
+        description: String,
+        riskLevel: SecurityRiskLevel,
+        userID: String? = nil,
+        additionalData: [String: String] = [:]
+    ) {
+        self.id = UUID()
+        self.type = type
+        self.description = description
+        self.riskLevel = riskLevel
+        self.timestamp = Date()
+        self.userID = userID
+        self.additionalData = additionalData
+    }
+}
+
+/// Security risk levels
+public enum SecurityRiskLevel: String, CaseIterable, Sendable, Codable {
+    case low = "low"
+    case medium = "medium"
+    case high = "high"
+    case critical = "critical"
+    
+    public var displayName: String {
+        switch self {
+        case .low: return "Low Risk"
+        case .medium: return "Medium Risk"
+        case .high: return "High Risk"
+        case .critical: return "Critical Risk"
+        }
+    }
+}
+
+/// Simple authentication method enum for AuthenticationService
+public enum AuthenticationMethod: String, CaseIterable, Sendable, Codable {
+    case none = "none"
+    case pin = "pin"
+    case biometric = "biometric"
+    case password = "password"
+    
+    public var displayName: String {
+        switch self {
+        case .none: return "None"
+        case .pin: return "PIN"
+        case .biometric: return "Biometric"
+        case .password: return "Password"
+        }
+    }
+}
+
 /// Security threat types
 public enum SecurityThreat: String, CaseIterable, Sendable {
     case jailbrokenDevice = "jailbrokenDevice"
@@ -587,7 +669,7 @@ public enum SecurityThreat: String, CaseIterable, Sendable {
         switch self {
         case .jailbrokenDevice: return "Jailbroken/Rooted Device"
         case .debuggerAttached: return "Debugger Attached"
-        case .suspiciousApp: return "Suspicious Application"
+        case .suspiciousApp: return "Suspicious Application"  
         case .networkAttack: return "Network Attack"
         case .integrityViolation: return "Integrity Violation"
         case .unauthorizedAccess: return "Unauthorized Access"
@@ -609,29 +691,42 @@ public enum SecurityThreat: String, CaseIterable, Sendable {
 }
 
 /// Threat severity levels
-public enum ThreatSeverity: String, CaseIterable, Comparable, Sendable {
-    case low = "low"
-    case medium = "medium"
-    case high = "high"
-    case critical = "critical"
-    
-    public static func < (lhs: ThreatSeverity, rhs: ThreatSeverity) -> Bool {
-        let order: [ThreatSeverity] = [.low, .medium, .high, .critical]
-        guard let lhsIndex = order.firstIndex(of: lhs),
-              let rhsIndex = order.firstIndex(of: rhs) else {
-            return false
-        }
-        return lhsIndex < rhsIndex
+public enum ThreatSeverity: String, CaseIterable, Comparable, Sendable, Codable {
+  case low = "low"
+  case medium = "medium"
+  case high = "high"
+  case critical = "critical"
+  
+  public static func < (lhs: ThreatSeverity, rhs: ThreatSeverity) -> Bool {
+    let order: [ThreatSeverity] = [.low, .medium, .high, .critical]
+    return order.firstIndex(of: lhs)! < order.firstIndex(of: rhs)!
+  }
+  
+  public var displayName: String {
+    switch self {
+      case .low: return "Low"
+      case .medium: return "Medium"
+      case .high: return "High"
+      case .critical: return "Critical"
     }
-    
-    public var displayName: String {
-        switch self {
-        case .low: return "Low"
-        case .medium: return "Medium"
-        case .high: return "High"
-        case .critical: return "Critical"
-        }
+  }
+  
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.singleValueContainer()
+    let value = try container.decode(String.self)
+    guard let severity = ThreatSeverity(rawValue: value) else {
+      throw DecodingError.dataCorruptedError(
+        in: container,
+        debugDescription: "Invalid threat severity value: \(value)"
+      )
     }
+    self = severity
+  }
+  
+  public func encode(to encoder: Encoder) throws {
+    var container = encoder.singleValueContainer()
+    try container.encode(self.rawValue)
+  }
 }
 
 // MARK: - Error Types
@@ -650,6 +745,10 @@ public enum AuthenticationError: Error, LocalizedError, Sendable, Codable, Equat
     case sessionExpired
     case deviceCompromised
     case authenticationFailed(String)
+    case setupRequired
+    case weakCredentials
+    case userAlreadyExists
+    case userNotFound
     case unknown(Error)
     
     public var errorDescription: String? {
@@ -678,6 +777,14 @@ public enum AuthenticationError: Error, LocalizedError, Sendable, Codable, Equat
             return "Device security has been compromised"
         case .authenticationFailed(let message):
             return "Authentication failed: \(message)"
+        case .setupRequired:
+            return "Authentication setup is required"
+        case .weakCredentials:
+            return "Credentials are too weak"
+        case .userAlreadyExists:
+            return "User already exists"
+        case .userNotFound:
+            return "User not found"
         case .unknown(let error):
             return "Unknown authentication error: \(error.localizedDescription)"
         }
@@ -715,6 +822,14 @@ public enum AuthenticationError: Error, LocalizedError, Sendable, Codable, Equat
             try container.encode("sessionExpired", forKey: .type)
         case .deviceCompromised:
             try container.encode("deviceCompromised", forKey: .type)
+        case .setupRequired:
+            try container.encode("setupRequired", forKey: .type)
+        case .weakCredentials:
+            try container.encode("weakCredentials", forKey: .type)
+        case .userAlreadyExists:
+            try container.encode("userAlreadyExists", forKey: .type)
+        case .userNotFound:
+            try container.encode("userNotFound", forKey: .type)
         case .unknown(let error):
             try container.encode("unknown", forKey: .type)
             try container.encode(error.localizedDescription, forKey: .message)
@@ -751,6 +866,14 @@ public enum AuthenticationError: Error, LocalizedError, Sendable, Codable, Equat
             self = .sessionExpired
         case "deviceCompromised":
             self = .deviceCompromised
+        case "setupRequired":
+            self = .setupRequired
+        case "weakCredentials":
+            self = .weakCredentials
+        case "userAlreadyExists":
+            self = .userAlreadyExists
+        case "userNotFound":
+            self = .userNotFound
         case "unknown":
             let message = try container.decode(String.self, forKey: .message)
             self = .unknown(NSError(domain: "AuthenticationError", code: -1, userInfo: [NSLocalizedDescriptionKey: message]))
@@ -817,9 +940,17 @@ extension AuthenticationError {
         case .authenticationFailed(let message):
             hasher.combine(11)
             hasher.combine(message)
+        case .setupRequired:
+            hasher.combine(12)
+        case .weakCredentials:
+            hasher.combine(13)
+        case .userAlreadyExists:
+            hasher.combine(14)
+        case .userNotFound:
+            hasher.combine(15)
         case .unknown(let error):
             let nserr = error as NSError
-            hasher.combine(12)
+            hasher.combine(16)
             hasher.combine(nserr.domain)
             hasher.combine(nserr.code)
             hasher.combine(nserr.localizedDescription)
