@@ -59,14 +59,25 @@ jobs:
       - name: 🧪 Run iOS Tests
         if: matrix.platform == 'ios'
         run: |
-          cd ios
-          pod install
+          cd apple/WealthWise
           xcodebuild test \
-            -workspace UnifiedBanking.xcworkspace \
-            -scheme UnifiedBankingTests \
+            -project WealthWise.xcodeproj \
+            -scheme WealthWise \
             -destination "platform=iOS Simulator,name=iPhone 15 Pro" \
             -enableCodeCoverage YES \
             -resultBundlePath TestResults.xcresult
+      
+      # macOS Tests
+      - name: 🧪 Run macOS Tests
+        if: matrix.platform == 'ios'
+        run: |
+          cd apple/WealthWise
+          xcodebuild test \
+            -project WealthWise.xcodeproj \
+            -scheme WealthWise \
+            -destination "platform=macOS" \
+            -enableCodeCoverage YES \
+            -resultBundlePath TestResults-macOS.xcresult
 
       # Android Tests  
       - name: ☕ Setup Java (Android)
