@@ -128,3 +128,65 @@
 "format.million" = "मिलियन";
 "format.billion" = "बिलियन";
 "format.thousand" = "हजार";
+/* Dashboard - Hindi */
+"dashboard.title" = "डैशबोर्ड";
+"dashboard.view.overview" = "अवलोकन";
+"dashboard.view.portfolio" = "पोर्टफोलियो";
+"dashboard.view.goals" = "लक्ष्य";
+"dashboard.view.taxes" = "कर";
+"dashboard.view.analytics" = "विश्लेषण";
+
+"dashboard.asset_breakdown" = "संपत्ति विवरण";
+"dashboard.allocation_subtitle" = "पोर्टफोलियो वितरण";
+"dashboard.percentage" = "प्रतिशत";
+"dashboard.asset_type" = "संपत्ति प्रकार";
+"dashboard.asset_count" = "%d संपत्तियां";
+
+"dashboard.recent_transactions" = "हाल के लेनदेन";
+"dashboard.last_transactions" = "पिछले 7 दिन";
+"dashboard.view_all" = "सभी देखें";
+"dashboard.no_transactions" = "कोई हाल का लेनदेन नहीं";
+
+"dashboard.performance_subtitle" = "पोर्टफोलियो रिटर्न और जोखिम";
+"dashboard.return_1m" = "1 महीना";
+"dashboard.return_3m" = "3 महीने";
+"dashboard.return_6m" = "6 महीने";
+"dashboard.return_1y" = "1 साल";
+"dashboard.sharpe_ratio" = "शार्प अनुपात";
+
+"dashboard.alerts" = "अलर्ट और सूचनाएं";
+"dashboard.alerts_count" = "%d सक्रिय अलर्ट";
+"dashboard.action_required" = "%d कार्रवाई आवश्यक";
+"dashboard.no_alerts" = "कोई अलर्ट नहीं";
+"dashboard.all_clear" = "सब कुछ अच्छा लग रहा है!";
+
+"dashboard.last_updated" = "अंतिम अपडेट";
+"dashboard.refresh" = "रिफ्रेश करें";
+"dashboard.currency" = "मुद्रा";
+"dashboard.view" = "दृश्य";
+
+"timeframe.week" = "1स";
+"timeframe.month" = "1म";
+"timeframe.quarter" = "3म";
+"timeframe.year" = "1व";
+"timeframe.all" = "सभी";
+
+"chart.date" = "तारीख";
+
+"financial.volatility" = "अस्थिरता";
+
+"alert.tax_payment_due" = "कर भुगतान देय";
+"alert.tax_payment_due_message" = "15 दिनों में अग्रिम कर भुगतान देय";
+"alert.goal_milestone" = "लक्ष्य मील का पत्थर पहुंचा";
+"alert.goal_milestone_message" = "आपने अपने सेवानिवृत्ति लक्ष्य का 75% हासिल कर लिया है";
+
+"transaction.salary" = "मासिक वेतन";
+"transaction.mutual_fund_investment" = "म्यूचुअल फंड निवेश";
+"transaction.grocery_shopping" = "किराना खरीदारी";
+"transaction.electricity_bill" = "बिजली बिल";
+
+"category_other_expense" = "अन्य खर्च";
+"category_utilities" = "उपयोगिताएं";
+
+"attachment_receipt" = "रसीद";
+"attachment_invoice" = "चालान";
