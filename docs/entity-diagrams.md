@@ -1,5 +1,71 @@
 # WealthWise Entity-Relationship Diagrams
 
+## Overview
+
+This document provides comprehensive entity-relationship diagrams for WealthWise, detailing the data models and their relationships. The diagrams reflect the actual implementation in the codebase, including SwiftData @Model entities and Codable structures.
+
+### Documentation Contents
+1. **Core Entity Model** - Primary entities with Mermaid ER diagram
+2. **Asset Type Hierarchy** - Comprehensive asset classification
+3. **Transaction Types & States** - Transaction lifecycle and categories
+4. **Security & Encryption Model** - Encryption and key management
+5. **Data Flow Architecture** - System data flow patterns
+6. **Portfolio Performance** - Performance metrics and calculations
+7. **Reporting & Analytics** - Report generation models
+8. **Import/Export** - Data import and export structures
+9. **System Integration** - External service integration points
+
+### Implementation Status
+
+#### SwiftData @Model Entities (Persistent)
+- ✅ **Transaction** - Full implementation with relationships
+- ✅ **Goal** - Complete with milestones and contributions
+- ⏳ **User** - Planned for authentication system
+- ⏳ **Portfolio** - Planned when multi-portfolio support added
+
+#### Codable Structures (Non-Persistent)
+- ✅ **CrossBorderAsset** - Comprehensive international asset tracking
+- ✅ **PerformanceSnapshot** - Historical performance tracking
+- ✅ **ExchangeRate** - Currency conversion rates
+- ✅ **TaxResidencyStatus** - Tax jurisdiction tracking
+- ✅ **GoalMilestone** - Embedded in Goal entity
+- ✅ **TransactionAttachment** - Embedded in Transaction
+
+### Entity Relationship Summary
+
+```
+┌────────────────────────────────────────────────────────┐
+│              WealthWise Data Model Overview            │
+├────────────────────────────────────────────────────────┤
+│                                                         │
+│  User (Planned)                                        │
+│    │                                                    │
+│    ├──▶ CrossBorderAsset (Codable)                    │
+│    │      └──▶ PerformanceSnapshot[]                   │
+│    │      └──▶ IncomePayment[]                         │
+│    │      └──▶ TaxResidencyStatus                      │
+│    │                                                    │
+│    ├──▶ Transaction (@Model)                           │
+│    │      ├──▶ TransactionAttachment[]                 │
+│    │      └──▶ Goal (@Model)                           │
+│    │                                                    │
+│    └──▶ Goal (@Model)                                  │
+│           ├──▶ GoalMilestone[]                         │
+│           ├──▶ GoalContribution[]                      │
+│           ├──▶ ProgressSnapshot[]                      │
+│           └──▶ Transaction[] (linked)                  │
+│                                                         │
+│  Relationships:                                        │
+│    • User → CrossBorderAsset (1:N)                    │
+│    • User → Transaction (1:N)                          │
+│    • User → Goal (1:N)                                 │
+│    • Transaction ↔ Goal (M:N via linkedGoal)          │
+│    • Goal → Transaction (1:N via linkedTransactions)  │
+│    • Transaction → Attachments (1:N cascade)          │
+│                                                         │
+└────────────────────────────────────────────────────────┘
+```
+
 ## Core Entity Model
 
 ```mermaid
