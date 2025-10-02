@@ -120,3 +120,108 @@
 "category.illiquid" = "திரவமற்ற";
 "category.taxable" = "வரி விதிக்கத்தக்க";
 "category.tax_free" = "வரி இல்லாத";
+
+/* Import/Export - Import Status - Tamil */
+"import_status_pending" = "நிலுவையில்";
+"import_status_processing" = "செயலாக்கம்";
+"import_status_completed" = "முடிந்தது";
+"import_status_failed" = "தோல்வி";
+"import_status_cancelled" = "ரத்து செய்யப்பட்டது";
+
+/* Import/Export - Import Source Types - Tamil */
+"import_source_csv" = "CSV கோப்பு";
+"import_source_excel" = "Excel கோப்பு";
+"import_source_json" = "JSON கோப்பு";
+"import_source_bank_statement" = "வங்கி அறிக்கை";
+"import_source_manual" = "கைமுறை நுழைவு";
+"import_source_backup" = "காப்பு கோப்பு";
+
+/* Import/Export - Export Status - Tamil */
+"export_status_pending" = "நிலுவையில்";
+"export_status_processing" = "செயலாக்கம்";
+"export_status_completed" = "முடிந்தது";
+"export_status_failed" = "தோல்வி";
+
+/* Import/Export - Export Formats - Tamil */
+"export_format_csv" = "CSV";
+"export_format_json" = "JSON";
+"export_format_excel" = "Excel";
+"export_format_pdf" = "PDF";
+"export_format_backup" = "குறியாக்க காப்பு";
+
+/* Import/Export - Field Names - Tamil */
+"import_field_date" = "தேதி";
+"import_field_amount" = "தொகை";
+"import_field_description" = "விளக்கம்";
+"import_field_category" = "வகை";
+"import_field_type" = "வகை";
+"import_field_account" = "கணக்கு";
+"import_field_currency" = "நாணயம்";
+"import_field_notes" = "குறிப்புகள்";
+"import_field_merchant" = "வணிகர்";
+"import_field_reference" = "குறிப்பு எண்";
+"import_field_ignore" = "புறக்கணிக்க";
+
+/* Import/Export - Data Types - Tamil */
+"import_datatype_string" = "உரை";
+"import_datatype_decimal" = "தசம எண்";
+"import_datatype_integer" = "முழு எண்";
+"import_datatype_date" = "தேதி";
+"import_datatype_boolean" = "ஆம்/இல்லை";
+"import_datatype_currency" = "நாணயம்";
+
+/* Import/Export - CSV Errors - Tamil */
+"csv_error_invalid_format" = "தவறான CSV வடிவம்";
+"csv_error_empty_file" = "CSV கோப்பு காலியாக உள்ளது";
+"csv_error_encoding" = "கோப்பு குறியாக்கத்தை படிக்க முடியவில்லை";
+"csv_error_invalid_delimiter" = "தவறான CSV பிரிப்பான்";
+"csv_error_header_missing" = "CSV தலைப்பு வரிசை இல்லை";
+"csv_error_row_parse" = "வரிசை %d பாகுபடுத்தும் பிழை: %@";
+
+/* Import/Export - CSV Validation - Tamil */
+"csv_validation_no_data" = "CSV கோப்பில் தரவு வரிசைகள் இல்லை";
+"csv_validation_inconsistent_columns" = "வரிசை %d ல் பொருந்தாத நெடுவரிசை எண்ணிக்கை";
+
+/* Import/Export - Import Errors - Tamil */
+"import_error_missing_date" = "தேதி தேவை";
+"import_error_missing_amount" = "தொகை தேவை";
+"import_error_missing_description" = "விளக்கம் தேவை";
+"import_error_invalid_date" = "தவறான தேதி வடிவம்";
+"import_error_invalid_amount" = "தவறான தொகை வடிவம்";
+"import_invalid_row" = "தவறான வரிசை";
+
+/* Import/Export - Import Warnings - Tamil */
+"import_warning_zero_amount" = "பரிவர்த்தனை பூஜ்ய தொகை கொண்டது";
+"import_warning_future_date" = "பரிவர்த்தனை தேதி எதிர்காலத்தில் உள்ளது";
+
+/* Import/Export - Backup Errors - Tamil */
+"backup_error_invalid_password" = "தவறான கடவுச்சொல்";
+"backup_error_encryption_failed" = "காப்பு குறியாக்கம் தோல்வியடைந்தது";
+"backup_error_compression_failed" = "காப்பு தரவு சுருக்கம் தோல்வியடைந்தது";
+"backup_error_invalid_file" = "தவறான காப்பு கோப்பு";
+"backup_error_corrupted" = "காப்பு கோப்பு சிதைந்துள்ளது";
+"backup_error_incompatible_version" = "காப்பு பதிப்பு இந்த பயன்பாடு பதிப்புடன் பொருந்தவில்லை";
+"backup_error_export_failed" = "ஏற்றுமதி தோல்வியடைந்தது: %@";
+"backup_error_invalid_salt" = "காப்பு கோப்பில் தவறான குறியாக்க உப்பு";
+
+/* Import/Export - Backup Warnings - Tamil */
+"backup_warning_version_incompatible" = "காப்பு பொருந்தாத பதிப்பிலிருந்து இருக்கலாம்";
+
+/* Import/Export - UI Labels - Tamil */
+"import_button_title" = "இறக்குமதி";
+"export_button_title" = "ஏற்றுமதி";
+"backup_button_title" = "காப்பு உருவாக்கு";
+"restore_button_title" = "காப்பு மீட்டமை";
+"preview_button_title" = "முன்னோட்டம்";
+"import_preview_title" = "இறக்குமதி முன்னோட்டம்";
+"column_mapping_title" = "நெடுவரிசை மேப்பிங்";
+"duplicate_detection_title" = "நகல் கண்டறிதல்";
+"backup_management_title" = "காப்பு மேலாண்மை";
+
+/* Import/Export - Help Text - Tamil */
+"import_help_text" = "CSV கோப்புகளிலிருந்து பரிவர்த்தனைகளை இறக்குமதி செய்யவும். நெடுவரிசைகளை பரிவர்த்தனை புலங்களுக்கு மேப் செய்யவும்.";
+"export_help_text" = "உங்கள் பரிவர்த்தனைகளை CSV, Excel, அல்லது PDF வடிவத்தில் ஏற்றுமதி செய்யவும்.";
+"backup_help_text" = "உங்கள் எல்லா நிதி தரவையும் குறியாக்க காப்பு உருவாக்கவும்.";
+"restore_help_text" = "முந்தைய காப்பிலிருந்து உங்கள் தரவை மீட்டமைக்கவும்.";
+"column_mapping_help" = "CSV நெடுவரிசைகளை பரிவர்த்தனை புலங்களுடன் பொருத்தவும். தேவையான புலங்கள்: தேதி, தொகை, விளக்கம்.";
+"duplicate_detection_help" = "இறக்குமதியின் போது நகல் பரிவர்த்தனைகளை தானாக கண்டறிந்து தவிர்க்கவும்.";
