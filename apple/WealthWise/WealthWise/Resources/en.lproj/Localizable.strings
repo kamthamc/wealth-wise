@@ -98,6 +98,109 @@
 "success.updated" = "Successfully updated";
 "success.deleted" = "Successfully deleted";
 "success.uploaded" = "Successfully uploaded";
+
+/* Alternative Investments - Property Types */
+"property_type_apartment" = "Apartment";
+"property_type_villa" = "Villa";
+"property_type_plot" = "Plot/Land";
+"property_type_office" = "Commercial Office";
+"property_type_shop" = "Commercial Shop";
+"property_type_warehouse" = "Warehouse";
+"property_type_agricultural" = "Agricultural Land";
+"property_type_industrial" = "Industrial Property";
+
+/* Alternative Investments - Area Units */
+"area_sq_ft" = "Square Feet";
+"area_sq_m" = "Square Meters";
+"area_acres" = "Acres";
+"area_hectares" = "Hectares";
+
+/* Alternative Investments - Commodities */
+"commodity_gold" = "Gold";
+"commodity_silver" = "Silver";
+"commodity_platinum" = "Platinum";
+"commodity_palladium" = "Palladium";
+"commodity_diamond" = "Diamond";
+"commodity_other" = "Other Precious Metals";
+
+/* Alternative Investments - Weight Units */
+"weight_grams" = "Grams";
+"weight_kg" = "Kilograms";
+"weight_oz" = "Ounces";
+"weight_lbs" = "Pounds";
+
+/* Alternative Investments - Commodity Forms */
+"form_jewelry" = "Jewelry";
+"form_coins" = "Coins";
+"form_bars" = "Bars";
+"form_bullion" = "Bullion";
+"form_ornaments" = "Ornaments";
+"form_other" = "Other Form";
+
+/* Alternative Investments - Storage Locations */
+"storage_home_locker" = "Home Locker";
+"storage_bank_locker" = "Bank Locker";
+"storage_vault" = "Vault Storage";
+"storage_jeweler" = "Jeweler Custody";
+"storage_other" = "Other Storage";
+
+/* Alternative Investments - Bond Types */
+"bond_government" = "Government Bond";
+"bond_corporate" = "Corporate Bond";
+"bond_municipal" = "Municipal Bond";
+"bond_treasury" = "Treasury Bond";
+"bond_savings" = "Savings Bond";
+"bond_zero_coupon" = "Zero Coupon Bond";
+"bond_convertible" = "Convertible Bond";
+
+/* Alternative Investments - Interest Frequencies */
+"frequency_monthly" = "Monthly";
+"frequency_quarterly" = "Quarterly";
+"frequency_half_yearly" = "Half-Yearly";
+"frequency_annually" = "Annually";
+"frequency_at_maturity" = "At Maturity";
+
+/* Alternative Investments - Risk Levels */
+"risk_very_low" = "Very Low Risk";
+"risk_low" = "Low Risk";
+"risk_medium" = "Medium Risk";
+"risk_high" = "High Risk";
+"risk_very_high" = "Very High Risk";
+
+/* Alternative Investments - Income Types */
+"income_rent" = "Rental Income";
+"income_interest" = "Interest Income";
+"income_dividend" = "Dividend Income";
+"income_chit_payout" = "Chit Fund Payout";
+"income_other" = "Other Income";
+
+/* Alternative Investments - Maintenance Categories */
+"maintenance_repair" = "Repair";
+"maintenance_renovation" = "Renovation";
+"maintenance_painting" = "Painting";
+"maintenance_plumbing" = "Plumbing";
+"maintenance_electrical" = "Electrical";
+"maintenance_cleaning" = "Cleaning";
+"maintenance_landscaping" = "Landscaping";
+"maintenance_other" = "Other Maintenance";
+
+/* Alternative Investments - Document Types */
+"doc_sale_agreement" = "Sale Agreement";
+"doc_title_deed" = "Title Deed";
+"doc_property_tax" = "Property Tax Receipt";
+"doc_insurance" = "Insurance Policy";
+"doc_invoice" = "Purchase Invoice";
+"doc_hallmark" = "Hallmark Certificate";
+"doc_bond_certificate" = "Bond Certificate";
+"doc_chit_agreement" = "Chit Fund Agreement";
+"doc_photo" = "Photo";
+"doc_other" = "Other Document";
+
+/* Alternative Investments - Income Descriptions */
+"rental_income" = "Monthly Rental Income";
+"bond_interest_payment" = "Bond Interest Payment";
+"chit_payout" = "Chit Fund Payout Received";
+"default_contribution_description" = "Investment Contribution";
 "success.synchronized" = "Successfully synchronized";
 
 /* Asset Categories */

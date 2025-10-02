@@ -98,6 +98,109 @@
 "time.monthly" = "மாதாந்திர";
 "time.quarterly" = "காலாண்டு";
 "time.yearly" = "வருடாந்திர";
+
+/* Alternative Investments - Property Types */
+"property_type_apartment" = "அபார்ட்மெண்ட்";
+"property_type_villa" = "வில்லா";
+"property_type_plot" = "பிளாட்/நிலம்";
+"property_type_office" = "வணிக அலுவலகம்";
+"property_type_shop" = "வணிக கடை";
+"property_type_warehouse" = "கிடங்கு";
+"property_type_agricultural" = "விவசாய நிலம்";
+"property_type_industrial" = "தொழில்துறை சொத்து";
+
+/* Alternative Investments - Area Units */
+"area_sq_ft" = "சதுர அடி";
+"area_sq_m" = "சதுர மீட்டர்";
+"area_acres" = "ஏக்கர்";
+"area_hectares" = "ஹெக்டேர்";
+
+/* Alternative Investments - Commodities */
+"commodity_gold" = "தங்கம்";
+"commodity_silver" = "வெள்ளி";
+"commodity_platinum" = "பிளாட்டினம்";
+"commodity_palladium" = "பாலடியம்";
+"commodity_diamond" = "வைரம்";
+"commodity_other" = "பிற விலைமதிப்பு உலோகங்கள்";
+
+/* Alternative Investments - Weight Units */
+"weight_grams" = "கிராம்";
+"weight_kg" = "கிலோகிராம்";
+"weight_oz" = "அவுன்ஸ்";
+"weight_lbs" = "பவுண்ட்";
+
+/* Alternative Investments - Commodity Forms */
+"form_jewelry" = "நகைகள்";
+"form_coins" = "நாணயங்கள்";
+"form_bars" = "பார்கள்";
+"form_bullion" = "புல்லியன்";
+"form_ornaments" = "அணிகலன்கள்";
+"form_other" = "பிற வடிவம்";
+
+/* Alternative Investments - Storage Locations */
+"storage_home_locker" = "வீட்டு லாக்கர்";
+"storage_bank_locker" = "வங்கி லாக்கர்";
+"storage_vault" = "வால்ட் சேமிப்பு";
+"storage_jeweler" = "நகை வியாபாரி காவல்";
+"storage_other" = "பிற சேமிப்பு";
+
+/* Alternative Investments - Bond Types */
+"bond_government" = "அரசாங்க பத்திரம்";
+"bond_corporate" = "கார்ப்பரேட் பத்திரம்";
+"bond_municipal" = "நகராட்சி பத்திரம்";
+"bond_treasury" = "கருவூல பத்திரம்";
+"bond_savings" = "சேமிப்பு பத்திரம்";
+"bond_zero_coupon" = "ஜீரோ கூப்பன் பத்திரம்";
+"bond_convertible" = "மாற்றத்தக்க பத்திரம்";
+
+/* Alternative Investments - Interest Frequencies */
+"frequency_monthly" = "மாதாந்திர";
+"frequency_quarterly" = "காலாண்டு";
+"frequency_half_yearly" = "அரையாண்டு";
+"frequency_annually" = "வருடாந்திர";
+"frequency_at_maturity" = "முதிர்வில்";
+
+/* Alternative Investments - Risk Levels */
+"risk_very_low" = "மிகக் குறைந்த ஆபத்து";
+"risk_low" = "குறைந்த ஆபத்து";
+"risk_medium" = "நடுத்தர ஆபத்து";
+"risk_high" = "உயர் ஆபத்து";
+"risk_very_high" = "மிக உயர் ஆபத்து";
+
+/* Alternative Investments - Income Types */
+"income_rent" = "வாடகை வருமானம்";
+"income_interest" = "வட்டி வருமானம்";
+"income_dividend" = "டிவிடென்ட் வருமானம்";
+"income_chit_payout" = "சிட் ஃபண்ட் செலுத்துதல்";
+"income_other" = "பிற வருமானம்";
+
+/* Alternative Investments - Maintenance Categories */
+"maintenance_repair" = "பழுதுபார்ப்பு";
+"maintenance_renovation" = "புதுப்பித்தல்";
+"maintenance_painting" = "பெயிண்டிங்";
+"maintenance_plumbing" = "பிளம்பிங்";
+"maintenance_electrical" = "மின்சாரம்";
+"maintenance_cleaning" = "சுத்தம்";
+"maintenance_landscaping" = "நிலத்தோற்றம்";
+"maintenance_other" = "பிற பராமரிப்பு";
+
+/* Alternative Investments - Document Types */
+"doc_sale_agreement" = "விற்பனை ஒப்பந்தம்";
+"doc_title_deed" = "உரிமை ஆவணம்";
+"doc_property_tax" = "சொத்து வரி ரசீது";
+"doc_insurance" = "காப்பீடு பாலிசி";
+"doc_invoice" = "கொள்முதல் விலைப்பட்டியல்";
+"doc_hallmark" = "ஹால்மார்க் சான்றிதழ்";
+"doc_bond_certificate" = "பத்திர சான்றிதழ்";
+"doc_chit_agreement" = "சிட் ஃபண்ட் ஒப்பந்தம்";
+"doc_photo" = "புகைப்படம்";
+"doc_other" = "பிற ஆவணம்";
+
+/* Alternative Investments - Income Descriptions */
+"rental_income" = "மாதாந்திர வாடகை வருமானம்";
+"bond_interest_payment" = "பத்திர வட்டி செலுத்துதல்";
+"chit_payout" = "சிட் ஃபண்ட் செலுத்துதல் பெறப்பட்டது";
+"default_contribution_description" = "முதலீடு பங்களிப்பு";
 "time.all_time" = "எல்லா நேரமும்";
 "time.1_year" = "1 வருடம்";
 "time.3_years" = "3 வருடங்கள்";

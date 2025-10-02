@@ -98,6 +98,109 @@
 "success.updated" = "सफलतापूर्वक अपडेट किया गया";
 "success.deleted" = "सफलतापूर्वक डिलीट किया गया";
 "success.uploaded" = "सफलतापूर्वक अपलोड किया गया";
+
+/* Alternative Investments - Property Types */
+"property_type_apartment" = "अपार्टमेंट";
+"property_type_villa" = "विला";
+"property_type_plot" = "प्लॉट/जमीन";
+"property_type_office" = "व्यावसायिक कार्यालय";
+"property_type_shop" = "व्यावसायिक दुकान";
+"property_type_warehouse" = "गोदाम";
+"property_type_agricultural" = "कृषि भूमि";
+"property_type_industrial" = "औद्योगिक संपत्ति";
+
+/* Alternative Investments - Area Units */
+"area_sq_ft" = "वर्ग फुट";
+"area_sq_m" = "वर्ग मीटर";
+"area_acres" = "एकड़";
+"area_hectares" = "हेक्टेयर";
+
+/* Alternative Investments - Commodities */
+"commodity_gold" = "सोना";
+"commodity_silver" = "चांदी";
+"commodity_platinum" = "प्लैटिनम";
+"commodity_palladium" = "पैलेडियम";
+"commodity_diamond" = "हीरा";
+"commodity_other" = "अन्य कीमती धातु";
+
+/* Alternative Investments - Weight Units */
+"weight_grams" = "ग्राम";
+"weight_kg" = "किलोग्राम";
+"weight_oz" = "औंस";
+"weight_lbs" = "पाउंड";
+
+/* Alternative Investments - Commodity Forms */
+"form_jewelry" = "आभूषण";
+"form_coins" = "सिक्के";
+"form_bars" = "बार";
+"form_bullion" = "बुलियन";
+"form_ornaments" = "गहने";
+"form_other" = "अन्य रूप";
+
+/* Alternative Investments - Storage Locations */
+"storage_home_locker" = "घर का लॉकर";
+"storage_bank_locker" = "बैंक लॉकर";
+"storage_vault" = "तिजोरी भंडारण";
+"storage_jeweler" = "जौहरी की हिरासत";
+"storage_other" = "अन्य भंडारण";
+
+/* Alternative Investments - Bond Types */
+"bond_government" = "सरकारी बांड";
+"bond_corporate" = "कॉर्पोरेट बांड";
+"bond_municipal" = "नगरपालिका बांड";
+"bond_treasury" = "ट्रेजरी बांड";
+"bond_savings" = "बचत बांड";
+"bond_zero_coupon" = "ज़ीरो कूपन बांड";
+"bond_convertible" = "परिवर्तनीय बांड";
+
+/* Alternative Investments - Interest Frequencies */
+"frequency_monthly" = "मासिक";
+"frequency_quarterly" = "त्रैमासिक";
+"frequency_half_yearly" = "अर्धवार्षिक";
+"frequency_annually" = "वार्षिक";
+"frequency_at_maturity" = "परिपक्वता पर";
+
+/* Alternative Investments - Risk Levels */
+"risk_very_low" = "बहुत कम जोखिम";
+"risk_low" = "कम जोखिम";
+"risk_medium" = "मध्यम जोखिम";
+"risk_high" = "उच्च जोखिम";
+"risk_very_high" = "बहुत उच्च जोखिम";
+
+/* Alternative Investments - Income Types */
+"income_rent" = "किराए की आय";
+"income_interest" = "ब्याज आय";
+"income_dividend" = "लाभांश आय";
+"income_chit_payout" = "चिट फंड भुगतान";
+"income_other" = "अन्य आय";
+
+/* Alternative Investments - Maintenance Categories */
+"maintenance_repair" = "मरम्मत";
+"maintenance_renovation" = "नवीनीकरण";
+"maintenance_painting" = "पेंटिंग";
+"maintenance_plumbing" = "प्लंबिंग";
+"maintenance_electrical" = "इलेक्ट्रिकल";
+"maintenance_cleaning" = "सफाई";
+"maintenance_landscaping" = "भूदृश्य";
+"maintenance_other" = "अन्य रखरखाव";
+
+/* Alternative Investments - Document Types */
+"doc_sale_agreement" = "बिक्री समझौता";
+"doc_title_deed" = "स्वामित्व विलेख";
+"doc_property_tax" = "संपत्ति कर रसीद";
+"doc_insurance" = "बीमा पॉलिसी";
+"doc_invoice" = "खरीद चालान";
+"doc_hallmark" = "हॉलमार्क प्रमाणपत्र";
+"doc_bond_certificate" = "बांड प्रमाणपत्र";
+"doc_chit_agreement" = "चिट फंड समझौता";
+"doc_photo" = "फोटो";
+"doc_other" = "अन्य दस्तावेज़";
+
+/* Alternative Investments - Income Descriptions */
+"rental_income" = "मासिक किराया आय";
+"bond_interest_payment" = "बांड ब्याज भुगतान";
+"chit_payout" = "चिट फंड भुगतान प्राप्त";
+"default_contribution_description" = "निवेश योगदान";
 "success.synchronized" = "सफलतापूर्वक सिंक्रोनाइज़ किया गया";
 
 /* Asset Categories */
