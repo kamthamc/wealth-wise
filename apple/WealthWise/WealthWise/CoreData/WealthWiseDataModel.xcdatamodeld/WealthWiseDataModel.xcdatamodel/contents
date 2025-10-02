@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22758" systemVersion="23F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <!-- Portfolio Entity -->
+    <entity name="Portfolio" representedClassName="PortfolioEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="currency" attributeType="String" defaultValueString="INR"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="isDefault" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="portfolioDescription" optional="YES" attributeType="String"/>
+        <attribute name="totalValue" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="assets" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Asset" inverseName="portfolio" inverseEntity="Asset"/>
+        <relationship name="transactions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Transaction" inverseName="portfolio" inverseEntity="Transaction"/>
+    </entity>
+    
+    <!-- Base Asset Entity (Abstract) -->
+    <entity name="Asset" representedClassName="AssetEntity" syncable="YES" codeGenerationType="class" isAbstract="YES">
+        <attribute name="assetCategory" attributeType="String"/>
+        <attribute name="assetType" attributeType="String"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="currency" attributeType="String" defaultValueString="INR"/>
+        <attribute name="currentValue" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="encryptedAccountNumber" optional="YES" attributeType="Binary"/>
+        <attribute name="encryptedNotes" optional="YES" attributeType="Binary"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="isActive" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="purchaseDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="purchasePrice" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="quantity" optional="YES" attributeType="Decimal" defaultValueString="1.0"/>
+        <attribute name="symbol" optional="YES" attributeType="String"/>
+        <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="portfolio" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Portfolio" inverseName="assets" inverseEntity="Portfolio"/>
+        <relationship name="transactions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Transaction" inverseName="asset" inverseEntity="Transaction"/>
+    </entity>
+    
+    <!-- Commodity Entity -->
+    <entity name="Commodity" representedClassName="CommodityEntity" parentEntity="Asset" syncable="YES" codeGenerationType="class">
+        <attribute name="commodityType" attributeType="String"/>
+        <attribute name="purity" optional="YES" attributeType="String"/>
+        <attribute name="storageLocation" optional="YES" attributeType="String"/>
+        <attribute name="unit" attributeType="String" defaultValueString="gram"/>
+        <attribute name="weight" optional="YES" attributeType="Decimal"/>
+    </entity>
+    
+    <!-- RealEstate Entity -->
+    <entity name="RealEstate" representedClassName="RealEstateEntity" parentEntity="Asset" syncable="YES" codeGenerationType="class">
+        <attribute name="address" optional="YES" attributeType="String"/>
+        <attribute name="annualRentalIncome" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="areaInSqFt" optional="YES" attributeType="Decimal"/>
+        <attribute name="city" optional="YES" attributeType="String"/>
+        <attribute name="country" attributeType="String" defaultValueString="India"/>
+        <attribute name="isPrimaryResidence" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="mortgageAmount" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="propertyType" attributeType="String"/>
+        <attribute name="registrationNumber" optional="YES" attributeType="String"/>
+        <attribute name="state" optional="YES" attributeType="String"/>
+        <attribute name="zipCode" optional="YES" attributeType="String"/>
+    </entity>
+    
+    <!-- Bond Entity -->
+    <entity name="Bond" representedClassName="BondEntity" parentEntity="Asset" syncable="YES" codeGenerationType="class">
+        <attribute name="bondType" attributeType="String"/>
+        <attribute name="couponRate" optional="YES" attributeType="Decimal"/>
+        <attribute name="faceValue" optional="YES" attributeType="Decimal"/>
+        <attribute name="interestFrequency" optional="YES" attributeType="String"/>
+        <attribute name="issuer" optional="YES" attributeType="String"/>
+        <attribute name="isin" optional="YES" attributeType="String"/>
+        <attribute name="maturityDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="nextCouponDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="rating" optional="YES" attributeType="String"/>
+        <attribute name="yieldToMaturity" optional="YES" attributeType="Decimal"/>
+    </entity>
+    
+    <!-- ChitFund Entity -->
+    <entity name="ChitFund" representedClassName="ChitFundEntity" parentEntity="Asset" syncable="YES" codeGenerationType="class">
+        <attribute name="chitValue" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="currentMonth" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="forepersonName" optional="YES" attributeType="String"/>
+        <attribute name="hasReceivedPrize" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="monthlyContribution" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="prizeReceivedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="prizeReceivedMonth" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="registrationNumber" optional="YES" attributeType="String"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="totalMembers" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="totalMonths" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
+    
+    <!-- FixedDeposit Entity -->
+    <entity name="FixedDeposit" representedClassName="FixedDepositEntity" parentEntity="Asset" syncable="YES" codeGenerationType="class">
+        <attribute name="accountNumber" optional="YES" attributeType="String"/>
+        <attribute name="autoRenewal" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="bankName" attributeType="String"/>
+        <attribute name="depositType" attributeType="String"/>
+        <attribute name="interestFrequency" attributeType="String"/>
+        <attribute name="interestRate" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="maturityAmount" optional="YES" attributeType="Decimal"/>
+        <attribute name="maturityDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="nomineeDetails" optional="YES" attributeType="String"/>
+        <attribute name="tenure" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
+    
+    <!-- CashHolding Entity -->
+    <entity name="CashHolding" representedClassName="CashHoldingEntity" parentEntity="Asset" syncable="YES" codeGenerationType="class">
+        <attribute name="accountNumber" optional="YES" attributeType="String"/>
+        <attribute name="accountType" attributeType="String"/>
+        <attribute name="bankName" optional="YES" attributeType="String"/>
+        <attribute name="branchName" optional="YES" attributeType="String"/>
+        <attribute name="ifscCode" optional="YES" attributeType="String"/>
+        <attribute name="interestRate" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="isLinkedUPI" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="lastUpdated" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="minimumBalance" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+    </entity>
+    
+    <!-- Transaction Entity -->
+    <entity name="Transaction" representedClassName="TransactionEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="amount" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="encryptedNotes" optional="YES" attributeType="Binary"/>
+        <attribute name="encryptedReference" optional="YES" attributeType="Binary"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="price" optional="YES" attributeType="Decimal"/>
+        <attribute name="quantity" optional="YES" attributeType="Decimal"/>
+        <attribute name="transactionDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="transactionType" attributeType="String"/>
+        <relationship name="asset" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Asset" inverseName="transactions" inverseEntity="Asset"/>
+        <relationship name="portfolio" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Portfolio" inverseName="transactions" inverseEntity="Portfolio"/>
+    </entity>
+</model>
