@@ -1,0 +1,114 @@
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.radio-group-label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2xs);
+}
+
+.radio-group-label__required {
+  color: var(--color-danger);
+  text-decoration: none;
+}
+
+.radio-group-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.radio-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+}
+
+.radio-input {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  cursor: pointer;
+  border: 2px solid var(--color-border);
+  border-radius: 50%;
+  transition: all var(--transition-fast);
+  appearance: none;
+  background-color: var(--color-background);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.radio-input:hover:not(:disabled) {
+  border-color: var(--color-primary);
+}
+
+.radio-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.radio-input:checked {
+  border-color: var(--color-primary);
+}
+
+.radio-input:checked::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+}
+
+.radio-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.radio-label {
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  cursor: pointer;
+  user-select: none;
+}
+
+.radio-group--disabled .radio-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Error state */
+.radio-group--error .radio-input {
+  border-color: var(--color-danger);
+}
+
+.radio-group--error .radio-input:focus {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 3px var(--color-danger-light);
+}
+
+.radio-group-error {
+  font-size: var(--font-size-sm);
+  color: var(--color-danger);
+}
+
+.radio-group-helper {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .radio-input {
+    transition: none;
+  }
+}

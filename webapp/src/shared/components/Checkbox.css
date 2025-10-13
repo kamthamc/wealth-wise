@@ -1,0 +1,98 @@
+.checkbox-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+}
+
+.checkbox-input {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  cursor: pointer;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  appearance: none;
+  background-color: var(--color-background);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.checkbox-input:hover:not(:disabled) {
+  border-color: var(--color-primary);
+}
+
+.checkbox-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.checkbox-input:checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.checkbox-input:checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 6px;
+  height: 10px;
+  border: solid var(--color-background);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.checkbox-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.checkbox-label {
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-wrapper--disabled .checkbox-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Error state */
+.checkbox-wrapper--error .checkbox-input {
+  border-color: var(--color-danger);
+}
+
+.checkbox-wrapper--error .checkbox-input:focus {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 3px var(--color-danger-light);
+}
+
+.checkbox-error {
+  font-size: var(--font-size-sm);
+  color: var(--color-danger);
+  margin-left: calc(20px + var(--spacing-sm));
+}
+
+.checkbox-helper {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-left: calc(20px + var(--spacing-sm));
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .checkbox-input {
+    transition: none;
+  }
+}
