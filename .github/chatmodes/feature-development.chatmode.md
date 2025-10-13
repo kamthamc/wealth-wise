@@ -1,6 +1,6 @@
 ---
 description: 'Universal feature development mode: analyze GitHub issues → create branch → implement → test → PR → merge (works for iOS, Android, Windows)'
-tools: ['edit', 'search', 'runCommands', 'runTasks', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'fetch', 'githubRepo', 'github']
+tools: ['edit', 'search', 'runCommands', 'runTasks', 'github/*', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo']
 ---
 
 # Universal Feature Development Mode

@@ -5,12 +5,12 @@
 export { useFocusTrap } from './useFocusTrap'
 export { useKeyboardNavigation } from './useKeyboardNavigation'
 export {
-  useMediaQuery,
-  usePrefersDarkMode,
-  usePrefersReducedMotion,
-  usePrefersHighContrast,
-  usePrefersReducedTransparency,
+  useIsDesktop,
   useIsMobile,
   useIsTablet,
-  useIsDesktop,
+  useMediaQuery,
+  usePrefersDarkMode,
+  usePrefersHighContrast,
+  usePrefersReducedMotion,
+  usePrefersReducedTransparency,
 } from './useMediaQuery'

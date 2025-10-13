@@ -85,7 +85,7 @@ export function useKeyboardNavigation<T extends HTMLElement>({
       const elements = getFocusableChildren()
       if (elements.length === 0) return
 
-      const currentIndex = elements.findIndex((el) => el === document.activeElement)
+      const currentIndex = elements.indexOf(document.activeElement as HTMLElement)
       if (currentIndex === -1) return
 
       let handled = false

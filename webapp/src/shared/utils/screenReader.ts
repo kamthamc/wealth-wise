@@ -65,7 +65,10 @@ class ScreenReaderAnnouncer {
     }
 
     this.isAnnouncing = true
-    const { message, priority } = this.announcementQueue.shift()!
+    const announcement = this.announcementQueue.shift()
+    if (!announcement) return
+
+    const { message, priority } = announcement
 
     if (this.liveRegion) {
       // Update aria-live attribute based on priority
@@ -226,10 +229,8 @@ export function formatForScreenReader(
     case 'percentage':
       return `${value} percent`
 
-    case 'count':
     default:
       return value.toLocaleString('en-IN')
   }
 }
-
 export default announcer

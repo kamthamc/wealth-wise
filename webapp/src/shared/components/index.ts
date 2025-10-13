@@ -2,4 +2,4 @@
  * Export all shared components from a central location
  */
 
-export { SkipNavigation, SkipLinks } from './SkipNavigation'
+export { SkipLinks, SkipNavigation } from './SkipNavigation'

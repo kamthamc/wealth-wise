@@ -180,12 +180,8 @@ pre {
   }
 }
 
-/* Reduced transparency support */
-@media (prefers-reduced-transparency: reduce) {
-  * {
-    backdrop-filter: none !important;
-  }
-}
+/* Note: prefers-reduced-transparency is not yet widely supported
+   but included for future compatibility when browsers implement it */
 
 /* Focus visible styles */
 :focus-visible {
