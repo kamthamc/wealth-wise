@@ -1,0 +1,42 @@
+.skip-navigation {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  z-index: 9999;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--color-primary);
+  color: var(--color-background);
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 0 0 var(--radius-md) 0;
+  box-shadow: var(--shadow-lg);
+  transition: top var(--transition-fast);
+}
+
+.skip-navigation:focus {
+  top: 0;
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.skip-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+}
+
+.skip-links .skip-navigation {
+  border-radius: 0 0 var(--radius-md) 0;
+}
+
+.skip-links .skip-navigation:not(:last-child) {
+  border-radius: 0;
+}
+
+.skip-links .skip-navigation:last-child {
+  border-radius: 0 0 var(--radius-md) 0;
+}
