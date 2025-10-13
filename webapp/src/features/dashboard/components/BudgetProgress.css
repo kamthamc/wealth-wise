@@ -1,0 +1,78 @@
+.budget-progress__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-lg);
+}
+
+.budget-progress__title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.budget-progress__subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.budget-progress__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.budget-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.budget-item__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.budget-item__category {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.budget-item__icon {
+  font-size: 1.25rem;
+}
+
+.budget-item__name {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.budget-item__amount {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.budget-item__warning {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-danger);
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .budget-progress__title {
+    font-size: var(--font-size-lg);
+  }
+
+  .budget-item__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+}

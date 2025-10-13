@@ -1,0 +1,18 @@
+.dashboard-layout {
+  width: 100%;
+  min-height: 100vh;
+  padding: var(--spacing-xl);
+  background-color: var(--color-background);
+}
+
+.dashboard-layout__content {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard-layout {
+    padding: var(--spacing-md);
+  }
+}

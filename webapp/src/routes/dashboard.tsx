@@ -4,6 +4,12 @@
  */
 
 import { createFileRoute } from '@tanstack/react-router'
+import {
+  BudgetProgress,
+  DashboardLayout,
+  FinancialOverview,
+  RecentTransactions,
+} from '@/features/dashboard/components'
 
 export const Route = createFileRoute('/dashboard')({
   component: DashboardPage,
@@ -11,22 +17,31 @@ export const Route = createFileRoute('/dashboard')({
 
 function DashboardPage() {
   return (
-    <div className="container" style={{ paddingTop: 'var(--spacing-8)' }}>
+    <DashboardLayout>
       <main id="main-content">
-        <h1>Dashboard</h1>
-        <p>Financial overview and insights</p>
+        <h1
+          style={{
+            fontSize: 'var(--font-size-3xl)',
+            fontWeight: 700,
+            marginBottom: 'var(--spacing-xl)',
+          }}
+        >
+          Dashboard
+        </h1>
 
-        <div style={{ marginTop: 'var(--spacing-6)' }}>
-          <h2>Coming Soon</h2>
-          <ul style={{ listStyle: 'disc', paddingLeft: 'var(--spacing-6)' }}>
-            <li>Account balances summary</li>
-            <li>Recent transactions</li>
-            <li>Budget progress</li>
-            <li>Goal tracking</li>
-            <li>Spending insights</li>
-          </ul>
+        <FinancialOverview />
+
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+            gap: 'var(--spacing-xl)',
+          }}
+        >
+          <RecentTransactions />
+          <BudgetProgress />
         </div>
       </main>
-    </div>
+    </DashboardLayout>
   )
 }
