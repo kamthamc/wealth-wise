@@ -1,0 +1,100 @@
+.card {
+  background-color: var(--color-background);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-normal);
+}
+
+/* Variants */
+.card--default {
+  background-color: var(--color-surface);
+}
+
+.card--outlined {
+  border: 2px solid var(--color-border);
+}
+
+.card--elevated {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Padding */
+.card--padding-none {
+  padding: 0;
+}
+
+.card--padding-small {
+  padding: var(--spacing-sm);
+}
+
+.card--padding-medium {
+  padding: var(--spacing-md);
+}
+
+.card--padding-large {
+  padding: var(--spacing-lg);
+}
+
+/* Interactive */
+.card--interactive {
+  cursor: pointer;
+}
+
+.card--interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
+}
+
+.card--interactive:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.card--interactive:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Header, Content, Footer */
+.card__header {
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: var(--spacing-md);
+}
+
+.card__footer {
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+  margin-top: var(--spacing-md);
+}
+
+/* When card has no padding, add padding to sections */
+.card--padding-none .card__header {
+  padding: var(--spacing-md);
+  padding-bottom: var(--spacing-md);
+  margin-bottom: 0;
+}
+
+.card--padding-none .card__content {
+  padding: var(--spacing-md);
+}
+
+.card--padding-none .card__footer {
+  padding: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  margin-top: 0;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+
+  .card--interactive:hover {
+    transform: none;
+  }
+
+  .card--interactive:active {
+    transform: none;
+  }
+}
