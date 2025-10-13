@@ -1,0 +1,116 @@
+.progress-bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  width: 100%;
+}
+
+.progress-bar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--font-size-sm);
+}
+
+.progress-bar__label {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.progress-bar__value {
+  color: var(--color-text-secondary);
+}
+
+.progress-bar__track {
+  width: 100%;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-bar__fill {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: var(--spacing-xs);
+  transition: width var(--transition-normal);
+  border-radius: var(--radius-full);
+}
+
+.progress-bar__percentage {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-background);
+}
+
+/* Sizes */
+.progress-bar--small .progress-bar__track {
+  height: 6px;
+}
+
+.progress-bar--medium .progress-bar__track {
+  height: 10px;
+}
+
+.progress-bar--large .progress-bar__track {
+  height: 16px;
+}
+
+/* Variants */
+.progress-bar--default .progress-bar__fill {
+  background-color: var(--color-text-secondary);
+}
+
+.progress-bar--primary .progress-bar__fill {
+  background-color: var(--color-primary);
+}
+
+.progress-bar--success .progress-bar__fill {
+  background-color: var(--color-success);
+}
+
+.progress-bar--warning .progress-bar__fill {
+  background-color: var(--color-warning);
+}
+
+.progress-bar--danger .progress-bar__fill {
+  background-color: var(--color-danger);
+}
+
+/* Animated */
+.progress-bar--animated .progress-bar__fill {
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar--animated .progress-bar__fill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: progress-shimmer 1.5s infinite;
+}
+
+@keyframes progress-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .progress-bar__fill {
+    transition: none;
+  }
+
+  .progress-bar--animated .progress-bar__fill::after {
+    animation: none;
+  }
+}
