@@ -23,15 +23,15 @@
 }
 
 .card--padding-small {
-  padding: var(--spacing-sm);
+  padding: var(--spacing-4);
 }
 
 .card--padding-medium {
-  padding: var(--spacing-md);
+  padding: var(--spacing-5);
 }
 
 .card--padding-large {
-  padding: var(--spacing-lg);
+  padding: var(--spacing-6);
 }
 
 /* Interactive */

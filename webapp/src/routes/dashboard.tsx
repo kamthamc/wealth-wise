@@ -1,9 +1,11 @@
 /**
- * Dashboard route
- * Main overview page
+ * Dashboard Route
+ * Main application dashboard with financial overview
  */
 
 import { createFileRoute } from '@tanstack/react-router'
+import { useIsAppReady } from '@/core/stores'
+import { Spinner } from '@/shared/components'
 import {
   BudgetProgress,
   DashboardLayout,
@@ -16,32 +18,31 @@ export const Route = createFileRoute('/dashboard')({
 })
 
 function DashboardPage() {
+  const isAppReady = useIsAppReady()
+
+  if (!isAppReady) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+          gap: '1rem',
+        }}
+      >
+        <Spinner size="large" />
+        <p style={{ color: 'var(--color-text-secondary)' }}>Loading your financial data...</p>
+      </div>
+    )
+  }
+
   return (
     <DashboardLayout>
-      <main id="main-content">
-        <h1
-          style={{
-            fontSize: 'var(--font-size-3xl)',
-            fontWeight: 700,
-            marginBottom: 'var(--spacing-xl)',
-          }}
-        >
-          Dashboard
-        </h1>
-
-        <FinancialOverview />
-
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-            gap: 'var(--spacing-xl)',
-          }}
-        >
-          <RecentTransactions />
-          <BudgetProgress />
-        </div>
-      </main>
+      <FinancialOverview />
+      <RecentTransactions />
+      <BudgetProgress />
     </DashboardLayout>
   )
 }

@@ -51,12 +51,27 @@ class DatabaseClient {
       console.log('[DB] Initializing PGlite database...')
 
       // Create database instance with IndexedDB storage
-      this.db = new PGlite(`idb://${DB_NAME}`)
+      try {
+        this.db = new PGlite(`idb://${DB_NAME}`)
+      } catch (error) {
+        console.warn('[DB] Failed to create PGlite instance, attempting to clear corrupted database...')
+        await this.clearDatabase()
+        this.db = new PGlite(`idb://${DB_NAME}`)
+      }
 
       // Check if database is already set up
-      const versionResult = await this.db.query(
-        "SELECT value FROM settings WHERE key = 'db_version'"
-      )
+      let versionResult
+      try {
+        versionResult = await this.db.query(
+          "SELECT value FROM settings WHERE key = 'db_version'"
+        )
+      } catch (error) {
+        // Database likely corrupted, clear and retry
+        console.warn('[DB] Database appears corrupted, clearing and reinitializing...')
+        await this.clearDatabase()
+        this.db = new PGlite(`idb://${DB_NAME}`)
+        versionResult = { rows: [] }
+      }
 
       if (versionResult.rows.length === 0) {
         // First time setup
@@ -83,6 +98,44 @@ class DatabaseClient {
     } catch (error) {
       console.error('[DB] Failed to initialize database:', error)
       throw error
+    }
+  }
+
+  /**
+   * Clear corrupted database from IndexedDB
+   */
+  private async clearDatabase(): Promise<void> {
+    try {
+      console.log('[DB] Clearing database from IndexedDB...')
+      
+      // Close existing connection if any
+      if (this.db) {
+        await this.db.close()
+        this.db = null
+      }
+
+      // Delete IndexedDB databases
+      const dbNames = [`${DB_NAME}-opfs-vfs`, `${DB_NAME}-idb-vfs`]
+      for (const name of dbNames) {
+        try {
+          await new Promise<void>((resolve, reject) => {
+            const request = indexedDB.deleteDatabase(name)
+            request.onsuccess = () => resolve()
+            request.onerror = () => reject(request.error)
+            request.onblocked = () => {
+              console.warn(`[DB] Delete blocked for ${name}, forcing...`)
+              setTimeout(() => resolve(), 1000)
+            }
+          })
+          console.log(`[DB] Cleared database: ${name}`)
+        } catch (error) {
+          console.warn(`[DB] Failed to clear ${name}:`, error)
+        }
+      }
+
+      console.log('[DB] Database cleared successfully')
+    } catch (error) {
+      console.error('[DB] Error clearing database:', error)
     }
   }
 
@@ -116,6 +169,16 @@ class DatabaseClient {
       this.db = null
       console.log('[DB] Database connection closed')
     }
+  }
+
+  /**
+   * Clear and reinitialize database (useful for recovery from corruption)
+   */
+  async clearAndReinitialize(): Promise<void> {
+    console.log('[DB] Clearing and reinitializing database...')
+    await this.clearDatabase()
+    this.initializing = null
+    await this.initialize()
   }
 
   /**
@@ -155,10 +218,5 @@ class DatabaseClient {
 // Export singleton instance
 export const db = DatabaseClient.getInstance()
 
-// Initialize on module load (async)
-// Note: Components should await db.initialize() before using it
-if (typeof window !== 'undefined') {
-  db.initialize().catch((error) => {
-    console.error('[DB] Failed to auto-initialize:', error)
-  })
-}
+// Note: Database should be initialized explicitly by calling db.initialize()
+// before use, typically in the app initialization hook

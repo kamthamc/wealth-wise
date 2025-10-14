@@ -4,6 +4,7 @@
  */
 
 import type { ReactNode } from 'react'
+import { DashboardHeader } from './DashboardHeader'
 import './DashboardLayout.css'
 
 export interface DashboardLayoutProps {
@@ -13,7 +14,10 @@ export interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="dashboard-layout">
-      <div className="dashboard-layout__content">{children}</div>
+      <DashboardHeader />
+      <main className="dashboard-layout__main">
+        <div className="dashboard-layout__content">{children}</div>
+      </main>
     </div>
   )
 }
