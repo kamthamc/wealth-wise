@@ -7,7 +7,7 @@
  * Check if an element is currently focused
  */
 export function isFocused(element: HTMLElement | null): boolean {
-  return element === document.activeElement
+  return element === document.activeElement;
 }
 
 /**
@@ -27,25 +27,29 @@ export function getFocusableElements(container: HTMLElement): HTMLElement[] {
     'audio[controls]',
     'video[controls]',
     '[contenteditable]:not([contenteditable="false"])',
-  ].join(',')
+  ].join(',');
 
-  return Array.from(container.querySelectorAll<HTMLElement>(selector))
+  return Array.from(container.querySelectorAll<HTMLElement>(selector));
 }
 
 /**
  * Get the first focusable element within a container
  */
-export function getFirstFocusableElement(container: HTMLElement): HTMLElement | null {
-  const elements = getFocusableElements(container)
-  return elements[0] || null
+export function getFirstFocusableElement(
+  container: HTMLElement
+): HTMLElement | null {
+  const elements = getFocusableElements(container);
+  return elements[0] || null;
 }
 
 /**
  * Get the last focusable element within a container
  */
-export function getLastFocusableElement(container: HTMLElement): HTMLElement | null {
-  const elements = getFocusableElements(container)
-  return elements[elements.length - 1] || null
+export function getLastFocusableElement(
+  container: HTMLElement
+): HTMLElement | null {
+  const elements = getFocusableElements(container);
+  return elements[elements.length - 1] || null;
 }
 
 /**
@@ -55,13 +59,16 @@ export function getLastFocusableElement(container: HTMLElement): HTMLElement | n
  * @param preventScroll - Prevent scrolling on focus
  * @returns Whether focus was successful
  */
-export function focusFirst(container: HTMLElement, preventScroll = false): boolean {
-  const firstElement = getFirstFocusableElement(container)
+export function focusFirst(
+  container: HTMLElement,
+  preventScroll = false
+): boolean {
+  const firstElement = getFirstFocusableElement(container);
   if (firstElement) {
-    firstElement.focus({ preventScroll })
-    return true
+    firstElement.focus({ preventScroll });
+    return true;
   }
-  return false
+  return false;
 }
 
 /**
@@ -71,13 +78,16 @@ export function focusFirst(container: HTMLElement, preventScroll = false): boole
  * @param preventScroll - Prevent scrolling on focus
  * @returns Whether focus was successful
  */
-export function focusLast(container: HTMLElement, preventScroll = false): boolean {
-  const lastElement = getLastFocusableElement(container)
+export function focusLast(
+  container: HTMLElement,
+  preventScroll = false
+): boolean {
+  const lastElement = getLastFocusableElement(container);
   if (lastElement) {
-    lastElement.focus({ preventScroll })
-    return true
+    lastElement.focus({ preventScroll });
+    return true;
   }
-  return false
+  return false;
 }
 
 /**
@@ -99,13 +109,13 @@ export function focusLast(container: HTMLElement, preventScroll = false): boolea
  * ```
  */
 export function storeFocus(): () => void {
-  const previouslyFocused = document.activeElement as HTMLElement | null
+  const previouslyFocused = document.activeElement as HTMLElement | null;
 
   return () => {
     if (previouslyFocused && typeof previouslyFocused.focus === 'function') {
-      previouslyFocused.focus()
+      previouslyFocused.focus();
     }
-  }
+  };
 }
 
 /**
@@ -117,20 +127,20 @@ export function storeFocus(): () => void {
  */
 export function createFocusGuard(container: HTMLElement): () => void {
   const handleFocusOut = (event: FocusEvent) => {
-    const relatedTarget = event.relatedTarget as HTMLElement | null
+    const relatedTarget = event.relatedTarget as HTMLElement | null;
 
     // If focus moved outside the container, bring it back
     if (relatedTarget && !container.contains(relatedTarget)) {
-      event.preventDefault()
-      focusFirst(container)
+      event.preventDefault();
+      focusFirst(container);
     }
-  }
+  };
 
-  container.addEventListener('focusout', handleFocusOut)
+  container.addEventListener('focusout', handleFocusOut);
 
   return () => {
-    container.removeEventListener('focusout', handleFocusOut)
-  }
+    container.removeEventListener('focusout', handleFocusOut);
+  };
 }
 
 /**
@@ -140,11 +150,11 @@ export function createFocusGuard(container: HTMLElement): () => void {
 export function isFocusVisible(): boolean {
   try {
     // Check if browser supports :focus-visible
-    document.querySelector(':focus-visible')
-    return true
+    document.querySelector(':focus-visible');
+    return true;
   } catch {
     // Fallback: assume focus is visible
-    return true
+    return true;
   }
 }
 
@@ -156,34 +166,37 @@ export function isFocusVisible(): boolean {
  */
 export function manageFocusVisible(): () => void {
   const handleMouseDown = () => {
-    document.body.classList.add('using-mouse')
-    document.body.classList.remove('using-keyboard')
-  }
+    document.body.classList.add('using-mouse');
+    document.body.classList.remove('using-keyboard');
+  };
 
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Tab') {
-      document.body.classList.add('using-keyboard')
-      document.body.classList.remove('using-mouse')
+      document.body.classList.add('using-keyboard');
+      document.body.classList.remove('using-mouse');
     }
-  }
+  };
 
-  document.addEventListener('mousedown', handleMouseDown)
-  document.addEventListener('keydown', handleKeyDown)
+  document.addEventListener('mousedown', handleMouseDown);
+  document.addEventListener('keydown', handleKeyDown);
 
   return () => {
-    document.removeEventListener('mousedown', handleMouseDown)
-    document.removeEventListener('keydown', handleKeyDown)
-    document.body.classList.remove('using-mouse', 'using-keyboard')
-  }
+    document.removeEventListener('mousedown', handleMouseDown);
+    document.removeEventListener('keydown', handleKeyDown);
+    document.body.classList.remove('using-mouse', 'using-keyboard');
+  };
 }
 
 /**
  * Focus an element only if it's not already focused
  * Prevents unnecessary scroll jumps
  */
-export function focusIfNeeded(element: HTMLElement | null, options?: FocusOptions) {
+export function focusIfNeeded(
+  element: HTMLElement | null,
+  options?: FocusOptions
+) {
   if (element && !isFocused(element)) {
-    element.focus(options)
+    element.focus(options);
   }
 }
 
@@ -191,21 +204,26 @@ export function focusIfNeeded(element: HTMLElement | null, options?: FocusOption
  * Scroll element into view if not visible
  * Respects prefers-reduced-motion
  */
-export function scrollIntoViewIfNeeded(element: HTMLElement, options?: ScrollIntoViewOptions) {
-  const rect = element.getBoundingClientRect()
+export function scrollIntoViewIfNeeded(
+  element: HTMLElement,
+  options?: ScrollIntoViewOptions
+) {
+  const rect = element.getBoundingClientRect();
   const isVisible =
     rect.top >= 0 &&
     rect.left >= 0 &&
     rect.bottom <= window.innerHeight &&
-    rect.right <= window.innerWidth
+    rect.right <= window.innerWidth;
 
   if (!isVisible) {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
 
     element.scrollIntoView({
       behavior: prefersReducedMotion ? 'auto' : 'smooth',
       block: 'nearest',
       ...options,
-    })
+    });
   }
 }

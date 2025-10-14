@@ -3,8 +3,8 @@
  * Main navigation and branding
  */
 
-import { Link } from '@tanstack/react-router'
-import './DashboardHeader.css'
+import { Link } from '@tanstack/react-router';
+import './DashboardHeader.css';
 
 export function DashboardHeader() {
   return (
@@ -68,5 +68,5 @@ export function DashboardHeader() {
         </nav>
       </div>
     </header>
-  )
+  );
 }

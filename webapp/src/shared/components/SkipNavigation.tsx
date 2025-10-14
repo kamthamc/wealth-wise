@@ -1,8 +1,8 @@
-import './SkipNavigation.css'
+import './SkipNavigation.css';
 
 interface SkipNavigationProps {
-  mainId?: string
-  label?: string
+  mainId?: string;
+  label?: string;
 }
 
 /**
@@ -30,28 +30,28 @@ export function SkipNavigation({
   label = 'Skip to main content',
 }: SkipNavigationProps) {
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault()
-    const mainElement = document.getElementById(mainId)
+    event.preventDefault();
+    const mainElement = document.getElementById(mainId);
 
     if (mainElement) {
       // Set tabindex to make it focusable if it isn't already
       if (!mainElement.hasAttribute('tabindex')) {
-        mainElement.setAttribute('tabindex', '-1')
+        mainElement.setAttribute('tabindex', '-1');
       }
 
       // Focus the main element
-      mainElement.focus()
+      mainElement.focus();
 
       // Scroll into view
-      mainElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      mainElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  }
+  };
 
   return (
     <a href={`#${mainId}`} className="skip-navigation" onClick={handleClick}>
       {label}
     </a>
-  )
+  );
 }
 
 /**
@@ -77,19 +77,26 @@ export function SkipNavigation({
  * }
  * ```
  */
-export function SkipLinks({ links }: { links: Array<{ href: string; label: string }> }) {
-  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
-    event.preventDefault()
-    const targetElement = document.getElementById(targetId.replace('#', ''))
+export function SkipLinks({
+  links,
+}: {
+  links: Array<{ href: string; label: string }>;
+}) {
+  const handleClick = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    targetId: string
+  ) => {
+    event.preventDefault();
+    const targetElement = document.getElementById(targetId.replace('#', ''));
 
     if (targetElement) {
       if (!targetElement.hasAttribute('tabindex')) {
-        targetElement.setAttribute('tabindex', '-1')
+        targetElement.setAttribute('tabindex', '-1');
       }
-      targetElement.focus()
-      targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      targetElement.focus();
+      targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  }
+  };
 
   return (
     <nav className="skip-links" aria-label="Skip links">
@@ -104,5 +111,5 @@ export function SkipLinks({ links }: { links: Array<{ href: string; label: strin
         </a>
       ))}
     </nav>
-  )
+  );
 }

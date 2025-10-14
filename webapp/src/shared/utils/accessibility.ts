@@ -24,28 +24,28 @@
  * ```
  */
 export function generateId(prefix = 'id'): string {
-  return `${prefix}-${Math.random().toString(36).slice(2, 11)}`
+  return `${prefix}-${Math.random().toString(36).slice(2, 11)}`;
 }
 
 /**
  * Check if reduced motion is preferred
  */
 export function prefersReducedMotion(): boolean {
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
 /**
  * Check if dark mode is preferred
  */
 export function prefersDarkMode(): boolean {
-  return window.matchMedia('(prefers-color-scheme: dark)').matches
+  return window.matchMedia('(prefers-color-scheme: dark)').matches;
 }
 
 /**
  * Check if high contrast is preferred
  */
 export function prefersHighContrast(): boolean {
-  return window.matchMedia('(prefers-contrast: high)').matches
+  return window.matchMedia('(prefers-contrast: high)').matches;
 }
 
 /**
@@ -66,13 +66,13 @@ export function prefersHighContrast(): boolean {
  * ```
  */
 export function getContrastRatio(color1: string, color2: string): number {
-  const luminance1 = getRelativeLuminance(color1)
-  const luminance2 = getRelativeLuminance(color2)
+  const luminance1 = getRelativeLuminance(color1);
+  const luminance2 = getRelativeLuminance(color2);
 
-  const lighter = Math.max(luminance1, luminance2)
-  const darker = Math.min(luminance1, luminance2)
+  const lighter = Math.max(luminance1, luminance2);
+  const darker = Math.min(luminance1, luminance2);
 
-  return (lighter + 0.05) / (darker + 0.05)
+  return (lighter + 0.05) / (darker + 0.05);
 }
 
 /**
@@ -81,20 +81,20 @@ export function getContrastRatio(color1: string, color2: string): number {
  */
 function getRelativeLuminance(color: string): number {
   // Remove # if present
-  const hex = color.replace('#', '')
+  const hex = color.replace('#', '');
 
   // Convert to RGB
-  const r = Number.parseInt(hex.slice(0, 2), 16) / 255
-  const g = Number.parseInt(hex.slice(2, 4), 16) / 255
-  const b = Number.parseInt(hex.slice(4, 6), 16) / 255
+  const r = Number.parseInt(hex.slice(0, 2), 16) / 255;
+  const g = Number.parseInt(hex.slice(2, 4), 16) / 255;
+  const b = Number.parseInt(hex.slice(4, 6), 16) / 255;
 
   // Apply gamma correction
-  const rsRGB = r <= 0.03928 ? r / 12.92 : ((r + 0.055) / 1.055) ** 2.4
-  const gsRGB = g <= 0.03928 ? g / 12.92 : ((g + 0.055) / 1.055) ** 2.4
-  const bsRGB = b <= 0.03928 ? b / 12.92 : ((b + 0.055) / 1.055) ** 2.4
+  const rsRGB = r <= 0.03928 ? r / 12.92 : ((r + 0.055) / 1.055) ** 2.4;
+  const gsRGB = g <= 0.03928 ? g / 12.92 : ((g + 0.055) / 1.055) ** 2.4;
+  const bsRGB = b <= 0.03928 ? b / 12.92 : ((b + 0.055) / 1.055) ** 2.4;
 
   // Calculate luminance
-  return 0.2126 * rsRGB + 0.7152 * gsRGB + 0.0722 * bsRGB
+  return 0.2126 * rsRGB + 0.7152 * gsRGB + 0.0722 * bsRGB;
 }
 
 /**
@@ -111,9 +111,9 @@ export function meetsWCAGContrast(
   size: 'normal' | 'large' = 'normal'
 ): boolean {
   if (level === 'AAA') {
-    return size === 'large' ? ratio >= 4.5 : ratio >= 7
+    return size === 'large' ? ratio >= 4.5 : ratio >= 7;
   }
-  return size === 'large' ? ratio >= 3 : ratio >= 4.5
+  return size === 'large' ? ratio >= 3 : ratio >= 4.5;
 }
 
 /**
@@ -133,24 +133,27 @@ export function meetsWCAGContrast(
  * // Returns: "October 13, 2025 at 2:30 PM"
  * ```
  */
-export function formatDateForScreenReader(date: Date, includeTime = false): string {
+export function formatDateForScreenReader(
+  date: Date,
+  includeTime = false
+): string {
   const dateFormatter = new Intl.DateTimeFormat('en-IN', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-  })
+  });
 
   if (!includeTime) {
-    return dateFormatter.format(date)
+    return dateFormatter.format(date);
   }
 
   const timeFormatter = new Intl.DateTimeFormat('en-IN', {
     hour: 'numeric',
     minute: 'numeric',
     hour12: true,
-  })
+  });
 
-  return `${dateFormatter.format(date)} at ${timeFormatter.format(date)}`
+  return `${dateFormatter.format(date)} at ${timeFormatter.format(date)}`;
 }
 
 /**
@@ -171,13 +174,15 @@ export function getSortAriaLabel(
   currentSort?: { column: string; direction: 'asc' | 'desc' }
 ): string {
   if (!currentSort) {
-    return `${columnName}, not sorted, activate to sort ascending`
+    return `${columnName}, not sorted, activate to sort ascending`;
   }
 
-  const direction = currentSort.direction === 'asc' ? 'ascending' : 'descending'
-  const nextDirection = currentSort.direction === 'asc' ? 'descending' : 'ascending'
+  const direction =
+    currentSort.direction === 'asc' ? 'ascending' : 'descending';
+  const nextDirection =
+    currentSort.direction === 'asc' ? 'descending' : 'ascending';
 
-  return `${columnName}, sorted ${direction}, activate to sort ${nextDirection}`
+  return `${columnName}, sorted ${direction}, activate to sort ${nextDirection}`;
 }
 
 /**
@@ -187,29 +192,32 @@ export function getSortAriaLabel(
 export function isVisibleToScreenReader(element: HTMLElement): boolean {
   // Check aria-hidden
   if (element.getAttribute('aria-hidden') === 'true') {
-    return false
+    return false;
   }
 
   // Check computed styles
-  const styles = window.getComputedStyle(element)
+  const styles = window.getComputedStyle(element);
   if (styles.display === 'none' || styles.visibility === 'hidden') {
-    return false
+    return false;
   }
 
   // Check parent elements
-  let parent = element.parentElement
+  let parent = element.parentElement;
   while (parent) {
     if (parent.getAttribute('aria-hidden') === 'true') {
-      return false
+      return false;
     }
-    const parentStyles = window.getComputedStyle(parent)
-    if (parentStyles.display === 'none' || parentStyles.visibility === 'hidden') {
-      return false
+    const parentStyles = window.getComputedStyle(parent);
+    if (
+      parentStyles.display === 'none' ||
+      parentStyles.visibility === 'hidden'
+    ) {
+      return false;
     }
-    parent = parent.parentElement
+    parent = parent.parentElement;
   }
 
-  return true
+  return true;
 }
 
 /**
@@ -226,12 +234,16 @@ export function isVisibleToScreenReader(element: HTMLElement): boolean {
  * // Returns: "Savings goal: 7,500 rupees of 10,000 rupees, 75% complete"
  * ```
  */
-export function getProgressDescription(current: number, total: number, label: string): string {
-  const percentage = Math.round((current / total) * 100)
-  const currentFormatted = current.toLocaleString('en-IN')
-  const totalFormatted = total.toLocaleString('en-IN')
+export function getProgressDescription(
+  current: number,
+  total: number,
+  label: string
+): string {
+  const percentage = Math.round((current / total) * 100);
+  const currentFormatted = current.toLocaleString('en-IN');
+  const totalFormatted = total.toLocaleString('en-IN');
 
-  return `${label}: ${currentFormatted} rupees of ${totalFormatted} rupees, ${percentage}% complete`
+  return `${label}: ${currentFormatted} rupees of ${totalFormatted} rupees, ${percentage}% complete`;
 }
 
 /**
@@ -242,15 +254,15 @@ export function debounceAnnounce(
   announceFunction: (message: string) => void,
   delay = 300
 ): (message: string) => void {
-  let timeoutId: number | undefined
+  let timeoutId: number | undefined;
 
   return (message: string) => {
     if (timeoutId) {
-      clearTimeout(timeoutId)
+      clearTimeout(timeoutId);
     }
 
     timeoutId = window.setTimeout(() => {
-      announceFunction(message)
-    }, delay)
-  }
+      announceFunction(message);
+    }, delay);
+  };
 }

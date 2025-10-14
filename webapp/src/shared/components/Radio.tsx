@@ -3,26 +3,26 @@
  * Accessible radio button group
  */
 
-import type { InputHTMLAttributes } from 'react'
-import './Radio.css'
+import type { InputHTMLAttributes } from 'react';
+import './Radio.css';
 
 export interface RadioOption {
-  value: string
-  label: string
-  disabled?: boolean
+  value: string;
+  label: string;
+  disabled?: boolean;
 }
 
 export interface RadioGroupProps {
-  name: string
-  label?: string
-  options: RadioOption[]
-  value?: string
-  onChange?: (value: string) => void
-  error?: string
-  helperText?: string
-  disabled?: boolean
-  required?: boolean
-  className?: string
+  name: string;
+  label?: string;
+  options: RadioOption[];
+  value?: string;
+  onChange?: (value: string) => void;
+  error?: string;
+  helperText?: string;
+  disabled?: boolean;
+  required?: boolean;
+  className?: string;
 }
 
 export function RadioGroup({
@@ -37,12 +37,12 @@ export function RadioGroup({
   required,
   className = '',
 }: RadioGroupProps) {
-  const groupId = `radio-group-${Math.random().toString(36).slice(2, 11)}`
-  const errorId = `${groupId}-error`
-  const helperId = `${groupId}-helper`
+  const groupId = `radio-group-${Math.random().toString(36).slice(2, 11)}`;
+  const errorId = `${groupId}-error`;
+  const helperId = `${groupId}-helper`;
 
-  const hasError = Boolean(error)
-  const hasHelper = Boolean(helperText)
+  const hasError = Boolean(error);
+  const hasHelper = Boolean(helperText);
 
   const classes = [
     'radio-group',
@@ -51,13 +51,13 @@ export function RadioGroup({
     className,
   ]
     .filter(Boolean)
-    .join(' ')
+    .join(' ');
 
   const handleChange = (optionValue: string) => {
     if (onChange && !disabled) {
-      onChange(optionValue)
+      onChange(optionValue);
     }
-  }
+  };
 
   return (
     <div className={classes}>
@@ -78,7 +78,9 @@ export function RadioGroup({
         aria-labelledby={label ? groupId : undefined}
         aria-invalid={hasError}
         aria-describedby={
-          [hasError && errorId, hasHelper && helperId].filter(Boolean).join(' ') || undefined
+          [hasError && errorId, hasHelper && helperId]
+            .filter(Boolean)
+            .join(' ') || undefined
         }
       >
         {options.map((option) => (
@@ -106,22 +108,35 @@ export function RadioGroup({
         </span>
       )}
     </div>
-  )
+  );
 }
 
-interface RadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
-  label: string
+interface RadioProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+  label: string;
 }
 
-export function Radio({ label, id, className = '', disabled, ...props }: RadioProps) {
-  const radioId = id || `radio-${Math.random().toString(36).slice(2, 11)}`
+export function Radio({
+  label,
+  id,
+  className = '',
+  disabled,
+  ...props
+}: RadioProps) {
+  const radioId = id || `radio-${Math.random().toString(36).slice(2, 11)}`;
 
   return (
     <div className={`radio-wrapper ${className}`}>
-      <input type="radio" id={radioId} className="radio-input" disabled={disabled} {...props} />
+      <input
+        type="radio"
+        id={radioId}
+        className="radio-input"
+        disabled={disabled}
+        {...props}
+      />
       <label htmlFor={radioId} className="radio-label">
         {label}
       </label>
     </div>
-  )
+  );
 }

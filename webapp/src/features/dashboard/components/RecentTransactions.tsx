@@ -3,16 +3,22 @@
  * Display recent financial transactions
  */
 
-import { Badge, Card, EmptyState, Table, type TableColumn } from '@/shared/components'
-import './RecentTransactions.css'
+import {
+  Badge,
+  Card,
+  EmptyState,
+  Table,
+  type TableColumn,
+} from '@/shared/components';
+import './RecentTransactions.css';
 
 interface Transaction {
-  id: string
-  date: string
-  description: string
-  category: string
-  amount: number
-  type: 'income' | 'expense'
+  id: string;
+  date: string;
+  description: string;
+  category: string;
+  amount: number;
+  type: 'income' | 'expense';
 }
 
 export function RecentTransactions() {
@@ -58,7 +64,7 @@ export function RecentTransactions() {
       amount: -649,
       type: 'expense',
     },
-  ]
+  ];
 
   const columns: TableColumn<Transaction>[] = [
     {
@@ -88,7 +94,9 @@ export function RecentTransactions() {
       accessor: (row) => (
         <span
           className={`transaction-amount ${
-            row.type === 'income' ? 'transaction-amount--income' : 'transaction-amount--expense'
+            row.type === 'income'
+              ? 'transaction-amount--income'
+              : 'transaction-amount--expense'
           }`}
         >
           {row.type === 'income' ? '+' : ''}
@@ -101,7 +109,7 @@ export function RecentTransactions() {
       align: 'right',
       sortable: true,
     },
-  ]
+  ];
 
   return (
     <section className="recent-transactions">
@@ -130,5 +138,5 @@ export function RecentTransactions() {
         )}
       </Card>
     </section>
-  )
+  );
 }

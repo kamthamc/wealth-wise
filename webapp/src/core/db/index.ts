@@ -4,11 +4,11 @@
  */
 
 // Client and initialization
-export { db } from './client'
+export { db } from './client';
 // Repositories
-export { accountRepository } from './repositories'
+export { accountRepository } from './repositories';
 // Schema and migrations
-export { DATABASE_VERSION, SCHEMA_SQL, SEED_CATEGORIES_SQL } from './schema'
+export { DATABASE_VERSION, SCHEMA_SQL, SEED_CATEGORIES_SQL } from './schema';
 // Types
 export type {
   Account,
@@ -41,4 +41,4 @@ export type {
   UpdateBudgetInput,
   UpdateGoalInput,
   UpdateTransactionInput,
-} from './types'
+} from './types';

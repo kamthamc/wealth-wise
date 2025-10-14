@@ -3,11 +3,11 @@
  * Manage spending budgets
  */
 
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/budgets')({
   component: BudgetsPage,
-})
+});
 
 function BudgetsPage() {
   return (
@@ -28,5 +28,5 @@ function BudgetsPage() {
         </div>
       </main>
     </div>
-  )
+  );
 }

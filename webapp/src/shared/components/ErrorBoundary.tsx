@@ -3,55 +3,58 @@
  * Catches and displays errors in child components
  */
 
-import { Component, type ErrorInfo, type ReactNode } from 'react'
-import { Button } from './Button'
-import { Card } from './Card'
-import './ErrorBoundary.css'
+import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { Button } from './Button';
+import { Card } from './Card';
+import './ErrorBoundary.css';
 
 interface ErrorBoundaryProps {
-  children: ReactNode
-  fallback?: (error: Error, reset: () => void) => ReactNode
+  children: ReactNode;
+  fallback?: (error: Error, reset: () => void) => ReactNode;
 }
 
 interface ErrorBoundaryState {
-  hasError: boolean
-  error: Error | null
+  hasError: boolean;
+  error: Error | null;
 }
 
-export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+export class ErrorBoundary extends Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
   constructor(props: ErrorBoundaryProps) {
-    super(props)
+    super(props);
     this.state = {
       hasError: false,
       error: null,
-    }
+    };
   }
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     return {
       hasError: true,
       error,
-    }
+    };
   }
 
   override componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    console.error('Error caught by boundary:', error, errorInfo)
+    console.error('Error caught by boundary:', error, errorInfo);
   }
 
   resetError = (): void => {
     this.setState({
       hasError: false,
       error: null,
-    })
-  }
+    });
+  };
 
   override render(): ReactNode {
-    const { hasError, error } = this.state
-    const { children, fallback } = this.props
+    const { hasError, error } = this.state;
+    const { children, fallback } = this.props;
 
     if (hasError && error) {
       if (fallback) {
-        return fallback(error, this.resetError)
+        return fallback(error, this.resetError);
       }
 
       return (
@@ -75,9 +78,9 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             </div>
           </Card>
         </div>
-      )
+      );
     }
 
-    return children
+    return children;
   }
 }

@@ -2,8 +2,8 @@
  * Export all custom hooks from a central location
  */
 
-export { useFocusTrap } from './useFocusTrap'
-export { useKeyboardNavigation } from './useKeyboardNavigation'
+export { useFocusTrap } from './useFocusTrap';
+export { useKeyboardNavigation } from './useKeyboardNavigation';
 export {
   useIsDesktop,
   useIsMobile,
@@ -13,4 +13,4 @@ export {
   usePrefersHighContrast,
   usePrefersReducedMotion,
   usePrefersReducedTransparency,
-} from './useMediaQuery'
+} from './useMediaQuery';

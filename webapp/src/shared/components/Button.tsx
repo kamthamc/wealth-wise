@@ -3,19 +3,19 @@
  * Accessible button with multiple variants
  */
 
-import type { ButtonHTMLAttributes, ReactNode } from 'react'
-import './Button.css'
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import './Button.css';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger'
-export type ButtonSize = 'small' | 'medium' | 'large'
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
+export type ButtonSize = 'small' | 'medium' | 'large';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonVariant
-  size?: ButtonSize
-  isLoading?: boolean
-  leftIcon?: ReactNode
-  rightIcon?: ReactNode
-  fullWidth?: boolean
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  isLoading?: boolean;
+  leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
+  fullWidth?: boolean;
 }
 
 export function Button({
@@ -39,7 +39,7 @@ export function Button({
     className,
   ]
     .filter(Boolean)
-    .join(' ')
+    .join(' ');
 
   return (
     <button
@@ -56,11 +56,17 @@ export function Button({
         </>
       ) : (
         <>
-          {leftIcon && <span className="button__icon button__icon--left">{leftIcon}</span>}
+          {leftIcon && (
+            <span className="button__icon button__icon--left">{leftIcon}</span>
+          )}
           <span className="button__content">{children}</span>
-          {rightIcon && <span className="button__icon button__icon--right">{rightIcon}</span>}
+          {rightIcon && (
+            <span className="button__icon button__icon--right">
+              {rightIcon}
+            </span>
+          )}
         </>
       )}
     </button>
-  )
+  );
 }

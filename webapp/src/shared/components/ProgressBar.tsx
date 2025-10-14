@@ -3,17 +3,18 @@
  * Visual indicator of progress or completion
  */
 
-import type { HTMLAttributes } from 'react'
-import './ProgressBar.css'
+import type { HTMLAttributes } from 'react';
+import './ProgressBar.css';
 
-export interface ProgressBarProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
-  value: number
-  max?: number
-  label?: string
-  showValue?: boolean
-  variant?: 'default' | 'primary' | 'success' | 'warning' | 'danger'
-  size?: 'small' | 'medium' | 'large'
-  animated?: boolean
+export interface ProgressBarProps
+  extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
+  value: number;
+  max?: number;
+  label?: string;
+  showValue?: boolean;
+  variant?: 'default' | 'primary' | 'success' | 'warning' | 'danger';
+  size?: 'small' | 'medium' | 'large';
+  animated?: boolean;
 }
 
 export function ProgressBar({
@@ -27,7 +28,7 @@ export function ProgressBar({
   className = '',
   ...props
 }: ProgressBarProps) {
-  const percentage = Math.min(Math.max((value / max) * 100, 0), 100)
+  const percentage = Math.min(Math.max((value / max) * 100, 0), 100);
 
   const classes = [
     'progress-bar',
@@ -37,7 +38,7 @@ export function ProgressBar({
     className,
   ]
     .filter(Boolean)
-    .join(' ')
+    .join(' ');
 
   return (
     <div className={classes} {...props}>
@@ -61,10 +62,12 @@ export function ProgressBar({
       >
         <div className="progress-bar__fill" style={{ width: `${percentage}%` }}>
           {showValue && !label && (
-            <span className="progress-bar__percentage">{Math.round(percentage)}%</span>
+            <span className="progress-bar__percentage">
+              {Math.round(percentage)}%
+            </span>
           )}
         </div>
       </div>
     </div>
-  )
+  );
 }

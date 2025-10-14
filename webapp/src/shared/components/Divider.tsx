@@ -3,13 +3,13 @@
  * Visual separator between content
  */
 
-import type { HTMLAttributes } from 'react'
-import './Divider.css'
+import type { HTMLAttributes } from 'react';
+import './Divider.css';
 
 export interface DividerProps extends HTMLAttributes<HTMLHRElement> {
-  orientation?: 'horizontal' | 'vertical'
-  spacing?: 'small' | 'medium' | 'large'
-  label?: string
+  orientation?: 'horizontal' | 'vertical';
+  spacing?: 'small' | 'medium' | 'large';
+  label?: string;
 }
 
 export function Divider({
@@ -27,7 +27,7 @@ export function Divider({
     className,
   ]
     .filter(Boolean)
-    .join(' ')
+    .join(' ');
 
   if (label) {
     return (
@@ -36,8 +36,8 @@ export function Divider({
         <span className="divider__label">{label}</span>
         <hr className="divider__line" {...props} />
       </div>
-    )
+    );
   }
 
-  return <hr className={classes} {...props} />
+  return <hr className={classes} {...props} />;
 }

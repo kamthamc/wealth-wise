@@ -3,16 +3,16 @@
  * Navigate through pages of data
  */
 
-import { Button } from './Button'
-import './Pagination.css'
+import { Button } from './Button';
+import './Pagination.css';
 
 export interface PaginationProps {
-  currentPage: number
-  totalPages: number
-  onPageChange: (page: number) => void
-  maxVisible?: number
-  showFirstLast?: boolean
-  className?: string
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+  maxVisible?: number;
+  showFirstLast?: boolean;
+  className?: string;
 }
 
 export function Pagination({
@@ -23,47 +23,47 @@ export function Pagination({
   showFirstLast = true,
   className = '',
 }: PaginationProps) {
-  if (totalPages <= 1) return null
+  if (totalPages <= 1) return null;
 
   const getPageNumbers = (): (number | string)[] => {
-    const pages: (number | string)[] = []
-    const halfVisible = Math.floor(maxVisible / 2)
+    const pages: (number | string)[] = [];
+    const halfVisible = Math.floor(maxVisible / 2);
 
-    let startPage = Math.max(1, currentPage - halfVisible)
-    let endPage = Math.min(totalPages, currentPage + halfVisible)
+    let startPage = Math.max(1, currentPage - halfVisible);
+    let endPage = Math.min(totalPages, currentPage + halfVisible);
 
     // Adjust if we're at the beginning or end
     if (currentPage <= halfVisible) {
-      endPage = Math.min(totalPages, maxVisible)
+      endPage = Math.min(totalPages, maxVisible);
     } else if (currentPage >= totalPages - halfVisible) {
-      startPage = Math.max(1, totalPages - maxVisible + 1)
+      startPage = Math.max(1, totalPages - maxVisible + 1);
     }
 
     // Add first page and ellipsis
     if (startPage > 1) {
-      pages.push(1)
+      pages.push(1);
       if (startPage > 2) {
-        pages.push('...')
+        pages.push('...');
       }
     }
 
     // Add page numbers
     for (let i = startPage; i <= endPage; i++) {
-      pages.push(i)
+      pages.push(i);
     }
 
     // Add ellipsis and last page
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) {
-        pages.push('...')
+        pages.push('...');
       }
-      pages.push(totalPages)
+      pages.push(totalPages);
     }
 
-    return pages
-  }
+    return pages;
+  };
 
-  const pageNumbers = getPageNumbers()
+  const pageNumbers = getPageNumbers();
 
   return (
     <nav className={`pagination ${className}`} aria-label="Pagination">
@@ -94,14 +94,17 @@ export function Pagination({
           {pageNumbers.map((page) => {
             if (page === '...') {
               return (
-                <span key={`ellipsis-${Math.random()}`} className="pagination__ellipsis">
+                <span
+                  key={`ellipsis-${Math.random()}`}
+                  className="pagination__ellipsis"
+                >
                   ...
                 </span>
-              )
+              );
             }
 
-            const pageNumber = page as number
-            const isActive = pageNumber === currentPage
+            const pageNumber = page as number;
+            const isActive = pageNumber === currentPage;
 
             return (
               <Button
@@ -114,7 +117,7 @@ export function Pagination({
               >
                 {pageNumber}
               </Button>
-            )
+            );
           })}
         </div>
 
@@ -145,5 +148,5 @@ export function Pagination({
         Page {currentPage} of {totalPages}
       </div>
     </nav>
-  )
+  );
 }

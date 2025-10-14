@@ -3,15 +3,16 @@
  * Accessible date input with validation
  */
 
-import type { InputHTMLAttributes } from 'react'
-import { Input } from './Input'
+import type { InputHTMLAttributes } from 'react';
+import { Input } from './Input';
 
-export interface DateInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
-  label?: string
-  error?: string
-  helperText?: string
-  min?: string
-  max?: string
+export interface DateInputProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+  label?: string;
+  error?: string;
+  helperText?: string;
+  min?: string;
+  max?: string;
 }
 
 export function DateInput({
@@ -36,5 +37,5 @@ export function DateInput({
       required={required}
       {...props}
     />
-  )
+  );
 }

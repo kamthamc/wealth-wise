@@ -3,12 +3,12 @@
  * Main layout for the dashboard page
  */
 
-import type { ReactNode } from 'react'
-import { DashboardHeader } from './DashboardHeader'
-import './DashboardLayout.css'
+import type { ReactNode } from 'react';
+import { DashboardHeader } from './DashboardHeader';
+import './DashboardLayout.css';
 
 export interface DashboardLayoutProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
@@ -19,5 +19,5 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="dashboard-layout__content">{children}</div>
       </main>
     </div>
-  )
+  );
 }

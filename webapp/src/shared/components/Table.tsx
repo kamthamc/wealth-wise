@@ -3,30 +3,30 @@
  * Accessible data table with sorting and selection
  */
 
-import type { ReactNode } from 'react'
-import './Table.css'
+import type { ReactNode } from 'react';
+import './Table.css';
 
 export interface TableColumn<T> {
-  key: string
-  header: string
-  accessor: (row: T) => ReactNode
-  sortable?: boolean
-  align?: 'left' | 'center' | 'right'
-  width?: string
+  key: string;
+  header: string;
+  accessor: (row: T) => ReactNode;
+  sortable?: boolean;
+  align?: 'left' | 'center' | 'right';
+  width?: string;
 }
 
 export interface TableProps<T> {
-  columns: TableColumn<T>[]
-  data: T[]
-  keyExtractor: (row: T, index: number) => string
-  onSort?: (key: string, direction: 'asc' | 'desc') => void
-  sortKey?: string
-  sortDirection?: 'asc' | 'desc'
-  emptyMessage?: string
-  className?: string
-  striped?: boolean
-  hoverable?: boolean
-  compact?: boolean
+  columns: TableColumn<T>[];
+  data: T[];
+  keyExtractor: (row: T, index: number) => string;
+  onSort?: (key: string, direction: 'asc' | 'desc') => void;
+  sortKey?: string;
+  sortDirection?: 'asc' | 'desc';
+  emptyMessage?: string;
+  className?: string;
+  striped?: boolean;
+  hoverable?: boolean;
+  compact?: boolean;
 }
 
 export function Table<T>({
@@ -43,11 +43,12 @@ export function Table<T>({
   compact = false,
 }: TableProps<T>) {
   const handleSort = (key: string) => {
-    if (!onSort) return
+    if (!onSort) return;
 
-    const newDirection = sortKey === key && sortDirection === 'asc' ? 'desc' : 'asc'
-    onSort(key, newDirection)
-  }
+    const newDirection =
+      sortKey === key && sortDirection === 'asc' ? 'desc' : 'asc';
+    onSort(key, newDirection);
+  };
 
   const classes = [
     'table-container',
@@ -57,14 +58,14 @@ export function Table<T>({
     className,
   ]
     .filter(Boolean)
-    .join(' ')
+    .join(' ');
 
   if (data.length === 0) {
     return (
       <div className="table-empty">
         <p>{emptyMessage}</p>
       </div>
-    )
+    );
   }
 
   return (
@@ -119,5 +120,5 @@ export function Table<T>({
         </tbody>
       </table>
     </div>
-  )
+  );
 }

@@ -3,11 +3,11 @@
  * View and manage financial transactions
  */
 
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/transactions')({
   component: TransactionsPage,
-})
+});
 
 function TransactionsPage() {
   return (
@@ -29,5 +29,5 @@ function TransactionsPage() {
         </div>
       </main>
     </div>
-  )
+  );
 }

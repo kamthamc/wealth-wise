@@ -3,11 +3,11 @@
  * Financial reports and analytics
  */
 
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/reports')({
   component: ReportsPage,
-})
+});
 
 function ReportsPage() {
   return (
@@ -29,5 +29,5 @@ function ReportsPage() {
         </div>
       </main>
     </div>
-  )
+  );
 }

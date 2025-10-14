@@ -14,7 +14,6 @@
     "indentStyle": "space",
     "indentWidth": 2,
     "lineWidth": 80
-    
   },
   "linter": {
     "enabled": true,
@@ -28,7 +27,7 @@
       },
       "correctness": {
         "recommended": true,
-        "useUniqueElementIds": "info"
+        "useUniqueElementIds": "off"
       },
       "performance": {
         "recommended": true

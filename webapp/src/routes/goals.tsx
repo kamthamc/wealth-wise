@@ -3,11 +3,11 @@
  * Manage financial goals and savings targets
  */
 
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/goals')({
   component: GoalsPage,
-})
+});
 
 function GoalsPage() {
   return (
@@ -28,5 +28,5 @@ function GoalsPage() {
         </div>
       </main>
     </div>
-  )
+  );
 }

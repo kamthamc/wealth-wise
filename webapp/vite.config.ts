@@ -1,9 +1,9 @@
-import path from 'node:path'
-import { tanstackRouter } from '@tanstack/router-plugin/vite'
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
-import { VitePWA } from 'vite-plugin-pwa'
-import tsconfigPaths from 'vite-tsconfig-paths'
+import path from 'node:path';
+import { tanstackRouter } from '@tanstack/router-plugin/vite';
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
+import { VitePWA } from 'vite-plugin-pwa';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -56,17 +56,17 @@ export default defineConfig({
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
             if (id.includes('react') || id.includes('react-dom')) {
-              return 'react-vendor'
+              return 'react-vendor';
             }
             if (id.includes('@radix-ui')) {
-              return 'ui-vendor'
+              return 'ui-vendor';
             }
             if (id.includes('recharts')) {
-              return 'chart-vendor'
+              return 'chart-vendor';
             }
           }
         },
       },
     },
   },
-})
+});

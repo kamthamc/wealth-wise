@@ -3,35 +3,35 @@
  * Manages global app state like theme, loading states, and user preferences
  */
 
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 interface AppState {
   // Theme
-  theme: 'light' | 'dark' | 'system'
+  theme: 'light' | 'dark' | 'system';
 
   // Loading states
-  isInitializing: boolean
-  isDatabaseReady: boolean
+  isInitializing: boolean;
+  isDatabaseReady: boolean;
 
   // UI state
-  sidebarOpen: boolean
+  sidebarOpen: boolean;
 
   // User preferences
-  currency: string
-  locale: string
-  dateFormat: string
+  currency: string;
+  locale: string;
+  dateFormat: string;
 
   // Actions
-  setTheme: (theme: 'light' | 'dark' | 'system') => void
-  setInitializing: (isInitializing: boolean) => void
-  setDatabaseReady: (isDatabaseReady: boolean) => void
-  toggleSidebar: () => void
-  setSidebarOpen: (open: boolean) => void
-  setCurrency: (currency: string) => void
-  setLocale: (locale: string) => void
-  setDateFormat: (format: string) => void
-  reset: () => void
+  setTheme: (theme: 'light' | 'dark' | 'system') => void;
+  setInitializing: (isInitializing: boolean) => void;
+  setDatabaseReady: (isDatabaseReady: boolean) => void;
+  toggleSidebar: () => void;
+  setSidebarOpen: (open: boolean) => void;
+  setCurrency: (currency: string) => void;
+  setLocale: (locale: string) => void;
+  setDateFormat: (format: string) => void;
+  reset: () => void;
 }
 
 const initialState = {
@@ -42,7 +42,7 @@ const initialState = {
   currency: 'INR',
   locale: 'en-IN',
   dateFormat: 'dd/MM/yyyy',
-}
+};
 
 export const useAppStore = create<AppState>()(
   persist(
@@ -55,7 +55,8 @@ export const useAppStore = create<AppState>()(
 
       setDatabaseReady: (isDatabaseReady) => set({ isDatabaseReady }),
 
-      toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
+      toggleSidebar: () =>
+        set((state) => ({ sidebarOpen: !state.sidebarOpen })),
 
       setSidebarOpen: (open) => set({ sidebarOpen: open }),
 
@@ -79,13 +80,14 @@ export const useAppStore = create<AppState>()(
       }),
     }
   )
-)
+);
 
 /**
  * Selectors for computed values
  */
-export const selectIsReady = (state: AppState) => !state.isInitializing && state.isDatabaseReady
+export const selectIsReady = (state: AppState) =>
+  !state.isInitializing && state.isDatabaseReady;
 
-export const selectTheme = (state: AppState) => state.theme
+export const selectTheme = (state: AppState) => state.theme;
 
-export const selectCurrency = (state: AppState) => state.currency
+export const selectCurrency = (state: AppState) => state.currency;

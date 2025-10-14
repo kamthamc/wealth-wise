@@ -3,7 +3,7 @@
  * Defines all tables and their structures
  */
 
-export const DATABASE_VERSION = 1
+export const DATABASE_VERSION = 1;
 
 /**
  * SQL schema for the entire database
@@ -139,7 +139,7 @@ CREATE TRIGGER update_goals_updated_at BEFORE UPDATE ON goals
 
 CREATE TRIGGER update_settings_updated_at BEFORE UPDATE ON settings
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-`
+`;
 
 /**
  * Default categories to seed on first run
@@ -164,7 +164,7 @@ export const DEFAULT_CATEGORIES = [
   { name: 'Insurance', type: 'expense', icon: '🛡️', color: '#10b981' },
   { name: 'Savings', type: 'expense', icon: '🏦', color: '#10b981' },
   { name: 'Other Expense', type: 'expense', icon: '📝', color: '#6b7280' },
-] as const
+] as const;
 
 /**
  * Insert default categories SQL
@@ -173,7 +173,8 @@ export const SEED_CATEGORIES_SQL = `
 INSERT INTO categories (name, type, icon, color, is_default)
 VALUES
   ${DEFAULT_CATEGORIES.map(
-    (cat) => `('${cat.name}', '${cat.type}', '${cat.icon}', '${cat.color}', true)`
+    (cat) =>
+      `('${cat.name}', '${cat.type}', '${cat.icon}', '${cat.color}', true)`
   ).join(',\n  ')}
 ON CONFLICT (name) DO NOTHING;
-`
+`;

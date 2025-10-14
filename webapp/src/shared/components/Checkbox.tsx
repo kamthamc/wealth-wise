@@ -3,13 +3,14 @@
  * Accessible checkbox input with label
  */
 
-import type { InputHTMLAttributes } from 'react'
-import './Checkbox.css'
+import type { InputHTMLAttributes } from 'react';
+import './Checkbox.css';
 
-export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
-  label: string
-  error?: string
-  helperText?: string
+export interface CheckboxProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+  label: string;
+  error?: string;
+  helperText?: string;
 }
 
 export function Checkbox({
@@ -22,12 +23,13 @@ export function Checkbox({
   ...props
 }: CheckboxProps) {
   // Generate unique ID if not provided
-  const checkboxId = id || `checkbox-${Math.random().toString(36).slice(2, 11)}`
-  const errorId = `${checkboxId}-error`
-  const helperId = `${checkboxId}-helper`
+  const checkboxId =
+    id || `checkbox-${Math.random().toString(36).slice(2, 11)}`;
+  const errorId = `${checkboxId}-error`;
+  const helperId = `${checkboxId}-helper`;
 
-  const hasError = Boolean(error)
-  const hasHelper = Boolean(helperText)
+  const hasError = Boolean(error);
+  const hasHelper = Boolean(helperText);
 
   const classes = [
     'checkbox-wrapper',
@@ -36,7 +38,7 @@ export function Checkbox({
     className,
   ]
     .filter(Boolean)
-    .join(' ')
+    .join(' ');
 
   return (
     <div className={classes}>
@@ -48,7 +50,9 @@ export function Checkbox({
           disabled={disabled}
           aria-invalid={hasError}
           aria-describedby={
-            [hasError && errorId, hasHelper && helperId].filter(Boolean).join(' ') || undefined
+            [hasError && errorId, hasHelper && helperId]
+              .filter(Boolean)
+              .join(' ') || undefined
           }
           {...props}
         />
@@ -69,5 +73,5 @@ export function Checkbox({
         </span>
       )}
     </div>
-  )
+  );
 }

@@ -10,8 +10,13 @@ export {
   selectSelectedAccount,
   selectTotalBalance,
   useAccountStore,
-} from './accountStore'
-export { selectCurrency, selectIsReady, selectTheme, useAppStore } from './appStore'
+} from './accountStore';
+export {
+  selectCurrency,
+  selectIsReady,
+  selectTheme,
+  useAppStore,
+} from './appStore';
 export {
   selectActiveBudgets,
   selectBudgetById,
@@ -19,7 +24,7 @@ export {
   selectIsLoading as selectBudgetsLoading,
   selectSelectedBudget,
   useBudgetStore,
-} from './budgetStore'
+} from './budgetStore';
 export {
   selectActiveGoals,
   selectCompletedGoals,
@@ -28,7 +33,7 @@ export {
   selectIsLoading as selectGoalsLoading,
   selectSelectedGoal,
   useGoalStore,
-} from './goalStore'
+} from './goalStore';
 export {
   selectFilters,
   selectIsLoading as selectTransactionsLoading,
@@ -36,7 +41,7 @@ export {
   selectSelectedTransaction,
   selectTransactionById,
   useTransactionStore,
-} from './transactionStore'
+} from './transactionStore';
 
 // Utilities
-export { useInitializeStores, useIsAppReady, useResetStores } from './utils'
+export { useInitializeStores, useIsAppReady, useResetStores } from './utils';

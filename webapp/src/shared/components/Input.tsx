@@ -3,15 +3,15 @@
  * Accessible text input with label and error states
  */
 
-import type { InputHTMLAttributes } from 'react'
-import './Input.css'
+import type { InputHTMLAttributes } from 'react';
+import './Input.css';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label?: string
-  error?: string
-  helperText?: string
-  leftIcon?: React.ReactNode
-  rightIcon?: React.ReactNode
+  label?: string;
+  error?: string;
+  helperText?: string;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
 }
 
 export function Input({
@@ -27,12 +27,12 @@ export function Input({
   ...props
 }: InputProps) {
   // Generate unique ID if not provided
-  const inputId = id || `input-${Math.random().toString(36).slice(2, 11)}`
-  const errorId = `${inputId}-error`
-  const helperId = `${inputId}-helper`
+  const inputId = id || `input-${Math.random().toString(36).slice(2, 11)}`;
+  const errorId = `${inputId}-error`;
+  const helperId = `${inputId}-helper`;
 
-  const hasError = Boolean(error)
-  const hasHelper = Boolean(helperText)
+  const hasError = Boolean(error);
+  const hasHelper = Boolean(helperText);
 
   const classes = [
     'input-wrapper',
@@ -43,7 +43,7 @@ export function Input({
     className,
   ]
     .filter(Boolean)
-    .join(' ')
+    .join(' ');
 
   return (
     <div className={classes}>
@@ -72,7 +72,9 @@ export function Input({
           required={required}
           aria-invalid={hasError}
           aria-describedby={
-            [hasError && errorId, hasHelper && helperId].filter(Boolean).join(' ') || undefined
+            [hasError && errorId, hasHelper && helperId]
+              .filter(Boolean)
+              .join(' ') || undefined
           }
           {...props}
         />
@@ -96,5 +98,5 @@ export function Input({
         </span>
       )}
     </div>
-  )
+  );
 }

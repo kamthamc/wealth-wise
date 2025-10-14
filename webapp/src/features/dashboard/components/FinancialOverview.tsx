@@ -3,8 +3,8 @@
  * Display key financial statistics
  */
 
-import { StatCard } from '@/shared/components'
-import './FinancialOverview.css'
+import { StatCard } from '@/shared/components';
+import './FinancialOverview.css';
 
 export function FinancialOverview() {
   // TODO: Replace with real data from store
@@ -37,7 +37,7 @@ export function FinancialOverview() {
       variant: 'success' as const,
       icon: '🎯',
     },
-  ]
+  ];
 
   return (
     <section className="financial-overview">
@@ -56,5 +56,5 @@ export function FinancialOverview() {
         ))}
       </div>
     </section>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
 /**
  * Custom hook to match media queries and respond to changes
@@ -20,44 +20,48 @@ import { useEffect, useState } from 'react'
  */
 export function useMediaQuery(query: string): boolean {
   const [matches, setMatches] = useState(() => {
-    if (typeof window === 'undefined') return false
-    return window.matchMedia(query).matches
-  })
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia(query).matches;
+  });
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia(query)
+    const mediaQuery = window.matchMedia(query);
 
     // Update state if initial value was different
-    setMatches(mediaQuery.matches)
+    setMatches(mediaQuery.matches);
 
     // Create event listener
     const handleChange = (event: MediaQueryListEvent) => {
-      setMatches(event.matches)
-    }
+      setMatches(event.matches);
+    };
 
     // Add event listener (using addEventListener for better compatibility)
-    mediaQuery.addEventListener('change', handleChange)
+    mediaQuery.addEventListener('change', handleChange);
 
     return () => {
-      mediaQuery.removeEventListener('change', handleChange)
-    }
-  }, [query])
+      mediaQuery.removeEventListener('change', handleChange);
+    };
+  }, [query]);
 
-  return matches
+  return matches;
 }
 
 /**
  * Predefined hooks for common media queries
  */
-export const usePrefersDarkMode = () => useMediaQuery('(prefers-color-scheme: dark)')
-export const usePrefersReducedMotion = () => useMediaQuery('(prefers-reduced-motion: reduce)')
-export const usePrefersHighContrast = () => useMediaQuery('(prefers-contrast: high)')
+export const usePrefersDarkMode = () =>
+  useMediaQuery('(prefers-color-scheme: dark)');
+export const usePrefersReducedMotion = () =>
+  useMediaQuery('(prefers-reduced-motion: reduce)');
+export const usePrefersHighContrast = () =>
+  useMediaQuery('(prefers-contrast: high)');
 export const usePrefersReducedTransparency = () =>
-  useMediaQuery('(prefers-reduced-transparency: reduce)')
+  useMediaQuery('(prefers-reduced-transparency: reduce)');
 
 /**
  * Responsive breakpoint hooks
  */
-export const useIsMobile = () => useMediaQuery('(max-width: 768px)')
-export const useIsTablet = () => useMediaQuery('(min-width: 769px) and (max-width: 1024px)')
-export const useIsDesktop = () => useMediaQuery('(min-width: 1025px)')
+export const useIsMobile = () => useMediaQuery('(max-width: 768px)');
+export const useIsTablet = () =>
+  useMediaQuery('(min-width: 769px) and (max-width: 1024px)');
+export const useIsDesktop = () => useMediaQuery('(min-width: 1025px)');

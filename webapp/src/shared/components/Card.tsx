@@ -3,15 +3,15 @@
  * Container component for grouping related content
  */
 
-import type { HTMLAttributes, ReactNode } from 'react'
-import './Card.css'
+import type { HTMLAttributes, ReactNode } from 'react';
+import './Card.css';
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
-  variant?: 'default' | 'outlined' | 'elevated'
-  padding?: 'none' | 'small' | 'medium' | 'large'
-  interactive?: boolean
-  header?: ReactNode
-  footer?: ReactNode
+  variant?: 'default' | 'outlined' | 'elevated';
+  padding?: 'none' | 'small' | 'medium' | 'large';
+  interactive?: boolean;
+  header?: ReactNode;
+  footer?: ReactNode;
 }
 
 export function Card({
@@ -32,7 +32,7 @@ export function Card({
     className,
   ]
     .filter(Boolean)
-    .join(' ')
+    .join(' ');
 
   return (
     <div className={classes} {...props}>
@@ -40,5 +40,5 @@ export function Card({
       {children && <div className="card__content">{children}</div>}
       {footer && <div className="card__footer">{footer}</div>}
     </div>
-  )
+  );
 }

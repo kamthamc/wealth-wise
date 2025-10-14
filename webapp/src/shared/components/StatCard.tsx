@@ -3,22 +3,22 @@
  * Display key statistics with optional trend
  */
 
-import type { ReactNode } from 'react'
-import { Card } from './Card'
-import './StatCard.css'
+import type { ReactNode } from 'react';
+import { Card } from './Card';
+import './StatCard.css';
 
 export interface StatCardProps {
-  label: string
-  value: string | number
-  icon?: ReactNode
+  label: string;
+  value: string | number;
+  icon?: ReactNode;
   trend?: {
-    value: number
-    label?: string
-    isPositive?: boolean
-  }
-  description?: string
-  variant?: 'default' | 'primary' | 'success' | 'warning' | 'danger'
-  className?: string
+    value: number;
+    label?: string;
+    isPositive?: boolean;
+  };
+  description?: string;
+  variant?: 'default' | 'primary' | 'success' | 'warning' | 'danger';
+  className?: string;
 }
 
 export function StatCard({
@@ -30,7 +30,9 @@ export function StatCard({
   variant = 'default',
   className = '',
 }: StatCardProps) {
-  const classes = ['stat-card', `stat-card--${variant}`, className].filter(Boolean).join(' ')
+  const classes = ['stat-card', `stat-card--${variant}`, className]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <Card className={classes} padding="medium">
@@ -46,7 +48,9 @@ export function StatCard({
           {trend && (
             <span
               className={`stat-card__trend ${
-                trend.isPositive ? 'stat-card__trend--positive' : 'stat-card__trend--negative'
+                trend.isPositive
+                  ? 'stat-card__trend--positive'
+                  : 'stat-card__trend--negative'
               }`}
             >
               <span aria-hidden="true">{trend.isPositive ? '↑' : '↓'}</span>
@@ -55,9 +59,11 @@ export function StatCard({
               </span>
             </span>
           )}
-          {description && <span className="stat-card__description">{description}</span>}
+          {description && (
+            <span className="stat-card__description">{description}</span>
+          )}
         </div>
       )}
     </Card>
-  )
+  );
 }

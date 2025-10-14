@@ -3,21 +3,21 @@
  * Accessible dropdown select with label and error states
  */
 
-import type { SelectHTMLAttributes } from 'react'
-import './Select.css'
+import type { SelectHTMLAttributes } from 'react';
+import './Select.css';
 
 export interface SelectOption {
-  value: string
-  label: string
-  disabled?: boolean
+  value: string;
+  label: string;
+  disabled?: boolean;
 }
 
 export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
-  label?: string
-  error?: string
-  helperText?: string
-  options: SelectOption[]
-  placeholder?: string
+  label?: string;
+  error?: string;
+  helperText?: string;
+  options: SelectOption[];
+  placeholder?: string;
 }
 
 export function Select({
@@ -33,12 +33,12 @@ export function Select({
   ...props
 }: SelectProps) {
   // Generate unique ID if not provided
-  const selectId = id || `select-${Math.random().toString(36).slice(2, 11)}`
-  const errorId = `${selectId}-error`
-  const helperId = `${selectId}-helper`
+  const selectId = id || `select-${Math.random().toString(36).slice(2, 11)}`;
+  const errorId = `${selectId}-error`;
+  const helperId = `${selectId}-helper`;
 
-  const hasError = Boolean(error)
-  const hasHelper = Boolean(helperText)
+  const hasError = Boolean(error);
+  const hasHelper = Boolean(helperText);
 
   const classes = [
     'select-wrapper',
@@ -47,7 +47,7 @@ export function Select({
     className,
   ]
     .filter(Boolean)
-    .join(' ')
+    .join(' ');
 
   return (
     <div className={classes}>
@@ -70,7 +70,9 @@ export function Select({
           required={required}
           aria-invalid={hasError}
           aria-describedby={
-            [hasError && errorId, hasHelper && helperId].filter(Boolean).join(' ') || undefined
+            [hasError && errorId, hasHelper && helperId]
+              .filter(Boolean)
+              .join(' ') || undefined
           }
           {...props}
         >
@@ -80,7 +82,11 @@ export function Select({
             </option>
           )}
           {options.map((option) => (
-            <option key={option.value} value={option.value} disabled={option.disabled}>
+            <option
+              key={option.value}
+              value={option.value}
+              disabled={option.disabled}
+            >
               {option.label}
             </option>
           ))}
@@ -102,5 +108,5 @@ export function Select({
         </span>
       )}
     </div>
-  )
+  );
 }

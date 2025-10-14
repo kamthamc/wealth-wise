@@ -3,17 +3,22 @@
  * Display when there's no data to show
  */
 
-import type { ReactNode } from 'react'
-import './EmptyState.css'
+import type { ReactNode } from 'react';
+import './EmptyState.css';
 
 export interface EmptyStateProps {
-  icon?: ReactNode
-  title: string
-  description?: string
-  action?: ReactNode
+  icon?: ReactNode;
+  title: string;
+  description?: string;
+  action?: ReactNode;
 }
 
-export function EmptyState({ icon, title, description, action }: EmptyStateProps) {
+export function EmptyState({
+  icon,
+  title,
+  description,
+  action,
+}: EmptyStateProps) {
   return (
     <div className="empty-state">
       {icon && (
@@ -28,5 +33,5 @@ export function EmptyState({ icon, title, description, action }: EmptyStateProps
 
       {action && <div className="empty-state__action">{action}</div>}
     </div>
-  )
+  );
 }

@@ -1,12 +1,12 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react';
 
-type Direction = 'horizontal' | 'vertical' | 'both'
+type Direction = 'horizontal' | 'vertical' | 'both';
 
 interface UseKeyboardNavigationOptions {
-  direction?: Direction
-  enabled?: boolean
-  loop?: boolean
-  onSelect?: (index: number) => void
+  direction?: Direction;
+  enabled?: boolean;
+  loop?: boolean;
+  onSelect?: (index: number) => void;
 }
 
 /**
@@ -42,13 +42,13 @@ export function useKeyboardNavigation<T extends HTMLElement>({
   loop = true,
   onSelect,
 }: UseKeyboardNavigationOptions = {}) {
-  const containerRef = useRef<T>(null)
-  const focusedIndexRef = useRef<number>(0)
+  const containerRef = useRef<T>(null);
+  const focusedIndexRef = useRef<number>(0);
 
   useEffect(() => {
-    if (!enabled || !containerRef.current) return
+    if (!enabled || !containerRef.current) return;
 
-    const container = containerRef.current
+    const container = containerRef.current;
 
     const getFocusableChildren = (): HTMLElement[] => {
       const selector = [
@@ -58,103 +58,106 @@ export function useKeyboardNavigation<T extends HTMLElement>({
         '[role="menuitem"]',
         '[role="option"]',
         '[role="tab"]',
-      ].join(',')
+      ].join(',');
 
-      return Array.from(container.querySelectorAll<HTMLElement>(selector))
-    }
+      return Array.from(container.querySelectorAll<HTMLElement>(selector));
+    };
 
     const focusElement = (index: number) => {
-      const elements = getFocusableChildren()
-      if (elements.length === 0) return
+      const elements = getFocusableChildren();
+      if (elements.length === 0) return;
 
-      let targetIndex = index
+      let targetIndex = index;
 
       if (loop) {
         // Loop around if index is out of bounds
-        targetIndex = ((index % elements.length) + elements.length) % elements.length
+        targetIndex =
+          ((index % elements.length) + elements.length) % elements.length;
       } else {
         // Clamp to valid range
-        targetIndex = Math.max(0, Math.min(index, elements.length - 1))
+        targetIndex = Math.max(0, Math.min(index, elements.length - 1));
       }
 
-      focusedIndexRef.current = targetIndex
-      elements[targetIndex]?.focus()
-    }
+      focusedIndexRef.current = targetIndex;
+      elements[targetIndex]?.focus();
+    };
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      const elements = getFocusableChildren()
-      if (elements.length === 0) return
+      const elements = getFocusableChildren();
+      if (elements.length === 0) return;
 
-      const currentIndex = elements.indexOf(document.activeElement as HTMLElement)
-      if (currentIndex === -1) return
+      const currentIndex = elements.indexOf(
+        document.activeElement as HTMLElement
+      );
+      if (currentIndex === -1) return;
 
-      let handled = false
-      let newIndex = currentIndex
+      let handled = false;
+      let newIndex = currentIndex;
 
       switch (event.key) {
         case 'ArrowDown':
           if (direction === 'vertical' || direction === 'both') {
-            newIndex = currentIndex + 1
-            handled = true
+            newIndex = currentIndex + 1;
+            handled = true;
           }
-          break
+          break;
 
         case 'ArrowUp':
           if (direction === 'vertical' || direction === 'both') {
-            newIndex = currentIndex - 1
-            handled = true
+            newIndex = currentIndex - 1;
+            handled = true;
           }
-          break
+          break;
 
         case 'ArrowRight':
           if (direction === 'horizontal' || direction === 'both') {
-            newIndex = currentIndex + 1
-            handled = true
+            newIndex = currentIndex + 1;
+            handled = true;
           }
-          break
+          break;
 
         case 'ArrowLeft':
           if (direction === 'horizontal' || direction === 'both') {
-            newIndex = currentIndex - 1
-            handled = true
+            newIndex = currentIndex - 1;
+            handled = true;
           }
-          break
+          break;
 
         case 'Home':
-          newIndex = 0
-          handled = true
-          break
+          newIndex = 0;
+          handled = true;
+          break;
 
         case 'End':
-          newIndex = elements.length - 1
-          handled = true
-          break
+          newIndex = elements.length - 1;
+          handled = true;
+          break;
 
         case 'Enter':
         case ' ':
           if (onSelect) {
-            event.preventDefault()
-            onSelect(currentIndex)
-            handled = true
+            event.preventDefault();
+            onSelect(currentIndex);
+            handled = true;
           }
-          break
+          break;
       }
 
       if (handled) {
-        event.preventDefault()
-        focusElement(newIndex)
+        event.preventDefault();
+        focusElement(newIndex);
       }
-    }
+    };
 
-    container.addEventListener('keydown', handleKeyDown)
+    container.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      container.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [direction, enabled, loop, onSelect])
+      container.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [direction, enabled, loop, onSelect]);
 
   return {
     containerRef,
     focusedIndex: focusedIndexRef.current,
-  }
+  };
 }
