@@ -3,10 +3,11 @@
  * Application-wide styles and utilities
  */
 
-/* Import design tokens, reset, and layout utilities */
+/* Import design tokens, reset, layout utilities, and modal styles */
 @import "./tokens.css";
 @import "./reset.css";
 @import "./layout.css";
+@import "./modal.css";
 
 /* ============================================
    BASE STYLES
