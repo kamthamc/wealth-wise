@@ -1,0 +1,300 @@
+/**
+ * Reports Page Component
+ * Financial reports and analytics dashboard
+ */
+
+import { useMemo, useState } from 'react';
+import { useTransactionStore, useAccountStore } from '@/core/stores';
+import { Card, StatCard } from '@/shared/components';
+import { formatCurrency } from '@/shared/utils';
+import {
+  getDateRangeForPeriod,
+  calculateReportSummary,
+  calculateCategoryBreakdown,
+  calculateMonthlyTrends,
+  getPeriodLabel,
+  formatMonthLabel,
+} from '../utils/reportHelpers';
+import type { TimeRange } from '../types';
+import './ReportsPage.css';
+
+const TIME_RANGES: TimeRange[] = ['week', 'month', 'quarter', 'year'];
+
+export function ReportsPage() {
+  const { transactions } = useTransactionStore();
+  const { accounts } = useAccountStore();
+  const [selectedPeriod, setSelectedPeriod] = useState<TimeRange>('month');
+
+  const dateRange = useMemo(
+    () => getDateRangeForPeriod(selectedPeriod),
+    [selectedPeriod]
+  );
+
+  const summary = useMemo(
+    () => calculateReportSummary(transactions, dateRange),
+    [transactions, dateRange]
+  );
+
+  const expenseBreakdown = useMemo(
+    () => {
+      const filtered = transactions.filter(
+        (t) => t.date >= dateRange.start && t.date <= dateRange.end
+      );
+      return calculateCategoryBreakdown(filtered, 'expense');
+    },
+    [transactions, dateRange]
+  );
+
+  const incomeBreakdown = useMemo(
+    () => {
+      const filtered = transactions.filter(
+        (t) => t.date >= dateRange.start && t.date <= dateRange.end
+      );
+      return calculateCategoryBreakdown(filtered, 'income');
+    },
+    [transactions, dateRange]
+  );
+
+  const monthlyTrends = useMemo(
+    () => calculateMonthlyTrends(transactions, 6),
+    [transactions]
+  );
+
+  const accountBalances = useMemo(() => {
+    return accounts.map((account) => ({
+      id: account.id,
+      name: account.name,
+      type: account.type,
+      balance: account.balance,
+    }));
+  }, [accounts]);
+
+  return (
+    <div className="reports-page">
+      <div className="reports-page__header">
+        <h1 className="reports-page__title">Financial Reports</h1>
+        <p className="reports-page__description">
+          Analyze your financial data and track trends
+        </p>
+      </div>
+
+      {/* Period Selector */}
+      <div className="reports-page__period-selector">
+        {TIME_RANGES.map((period) => (
+          <button
+            key={period}
+            type="button"
+            className={`reports-page__period-button ${
+              selectedPeriod === period
+                ? 'reports-page__period-button--active'
+                : ''
+            }`}
+            onClick={() => setSelectedPeriod(period)}
+          >
+            {getPeriodLabel(period)}
+          </button>
+        ))}
+      </div>
+
+      {/* Summary Stats */}
+      <section className="reports-page__summary">
+        <h2 className="reports-page__section-title">Summary</h2>
+        <div className="reports-page__stats-grid">
+          <StatCard
+            label="Total Income"
+            value={formatCurrency(summary.totalIncome)}
+            icon="📈"
+            variant="success"
+          />
+          <StatCard
+            label="Total Expenses"
+            value={formatCurrency(summary.totalExpenses)}
+            icon="📉"
+            variant="danger"
+          />
+          <StatCard
+            label="Net Cash Flow"
+            value={formatCurrency(summary.netCashFlow)}
+            icon="💰"
+            variant={summary.netCashFlow >= 0 ? 'success' : 'danger'}
+          />
+          <StatCard
+            label="Savings Rate"
+            value={`${Math.round(summary.savingsRate)}%`}
+            icon="🎯"
+            variant={summary.savingsRate >= 20 ? 'success' : 'warning'}
+            description={
+              summary.savingsRate >= 50
+                ? 'Excellent!'
+                : summary.savingsRate >= 20
+                  ? 'Good'
+                  : 'Can improve'
+            }
+          />
+        </div>
+      </section>
+
+      {/* Expense Breakdown */}
+      <section className="reports-page__section">
+        <Card>
+          <h2 className="reports-page__section-title">Top Expense Categories</h2>
+          {expenseBreakdown.length > 0 ? (
+            <div className="reports-page__category-list">
+              {expenseBreakdown.slice(0, 10).map((category) => (
+                <div key={category.category} className="category-item">
+                  <div className="category-item__header">
+                    <span className="category-item__name">
+                      {category.category}
+                    </span>
+                    <span className="category-item__amount">
+                      {formatCurrency(category.amount)}
+                    </span>
+                  </div>
+                  <div className="category-item__bar-container">
+                    <div
+                      className="category-item__bar"
+                      style={{ width: `${category.percentage}%` }}
+                    />
+                  </div>
+                  <div className="category-item__footer">
+                    <span className="category-item__percentage">
+                      {Math.round(category.percentage)}%
+                    </span>
+                    <span className="category-item__count">
+                      {category.count} transaction{category.count !== 1 ? 's' : ''}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="reports-page__empty">No expense data for this period</p>
+          )}
+        </Card>
+      </section>
+
+      {/* Income Breakdown */}
+      <section className="reports-page__section">
+        <Card>
+          <h2 className="reports-page__section-title">Income Sources</h2>
+          {incomeBreakdown.length > 0 ? (
+            <div className="reports-page__category-list">
+              {incomeBreakdown.slice(0, 5).map((category) => (
+                <div key={category.category} className="category-item category-item--income">
+                  <div className="category-item__header">
+                    <span className="category-item__name">
+                      {category.category}
+                    </span>
+                    <span className="category-item__amount">
+                      {formatCurrency(category.amount)}
+                    </span>
+                  </div>
+                  <div className="category-item__bar-container">
+                    <div
+                      className="category-item__bar"
+                      style={{ width: `${category.percentage}%` }}
+                    />
+                  </div>
+                  <div className="category-item__footer">
+                    <span className="category-item__percentage">
+                      {Math.round(category.percentage)}%
+                    </span>
+                    <span className="category-item__count">
+                      {category.count} transaction{category.count !== 1 ? 's' : ''}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="reports-page__empty">No income data for this period</p>
+          )}
+        </Card>
+      </section>
+
+      {/* Monthly Trends */}
+      <section className="reports-page__section">
+        <Card>
+          <h2 className="reports-page__section-title">6-Month Trend</h2>
+          <div className="reports-page__trends">
+            {monthlyTrends.map((trend) => (
+              <div key={trend.month} className="trend-item">
+                <div className="trend-item__month">
+                  {formatMonthLabel(trend.month)}
+                </div>
+                <div className="trend-item__bars">
+                  <div className="trend-item__bar-row">
+                    <span className="trend-item__label">Income</span>
+                    <div className="trend-item__bar-bg">
+                      <div
+                        className="trend-item__bar trend-item__bar--income"
+                        style={{
+                          width: `${Math.min((trend.income / 100000) * 100, 100)}%`,
+                        }}
+                      />
+                    </div>
+                    <span className="trend-item__value">
+                      {formatCurrency(trend.income)}
+                    </span>
+                  </div>
+                  <div className="trend-item__bar-row">
+                    <span className="trend-item__label">Expenses</span>
+                    <div className="trend-item__bar-bg">
+                      <div
+                        className="trend-item__bar trend-item__bar--expense"
+                        style={{
+                          width: `${Math.min((trend.expenses / 100000) * 100, 100)}%`,
+                        }}
+                      />
+                    </div>
+                    <span className="trend-item__value">
+                      {formatCurrency(trend.expenses)}
+                    </span>
+                  </div>
+                </div>
+                <div className="trend-item__savings">
+                  Savings: {formatCurrency(trend.savings)} (
+                  {Math.round(trend.savingsRate)}%)
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </section>
+
+      {/* Account Balances */}
+      <section className="reports-page__section">
+        <Card>
+          <h2 className="reports-page__section-title">Account Balances</h2>
+          {accountBalances.length > 0 ? (
+            <div className="reports-page__accounts">
+              {accountBalances.map((account) => (
+                <div key={account.id} className="account-balance">
+                  <div className="account-balance__header">
+                    <span className="account-balance__name">{account.name}</span>
+                    <span className="account-balance__type">{account.type}</span>
+                  </div>
+                  <div className="account-balance__amount">
+                    {formatCurrency(account.balance)}
+                  </div>
+                </div>
+              ))}
+              <div className="account-balance account-balance--total">
+                <div className="account-balance__header">
+                  <span className="account-balance__name">Total Balance</span>
+                </div>
+                <div className="account-balance__amount">
+                  {formatCurrency(
+                    accountBalances.reduce((sum, a) => sum + a.balance, 0)
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <p className="reports-page__empty">No accounts available</p>
+          )}
+        </Card>
+      </section>
+    </div>
+  );
+}
