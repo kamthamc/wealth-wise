@@ -40,6 +40,14 @@ export {
 export { Select, type SelectOption, type SelectProps } from './Select';
 // Accessibility
 export { SkipLinks, SkipNavigation } from './SkipNavigation';
+export {
+  SkeletonLoader,
+  SkeletonText,
+  SkeletonCard,
+  SkeletonList,
+  SkeletonStats,
+  type SkeletonLoaderProps,
+} from './SkeletonLoader';
 export { Spinner, type SpinnerProps } from './Spinner';
 export { StatCard, type StatCardProps } from './StatCard';
 export { Table, type TableColumn, type TableProps } from './Table';

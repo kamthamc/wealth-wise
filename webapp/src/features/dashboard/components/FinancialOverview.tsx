@@ -5,13 +5,23 @@
 
 import { useMemo } from 'react';
 import { useAccountStore, useTransactionStore } from '@/core/stores';
-import { StatCard } from '@/shared/components';
+import { SkeletonStats, StatCard } from '@/shared/components';
 import { formatCurrency } from '@/shared/utils';
 import './FinancialOverview.css';
 
 export function FinancialOverview() {
-  const { accounts } = useAccountStore();
-  const { transactions } = useTransactionStore();
+  const { accounts, isLoading: accountsLoading } = useAccountStore();
+  const { transactions, isLoading: transactionsLoading } =
+    useTransactionStore();
+
+  // Show skeleton while loading
+  if (accountsLoading || transactionsLoading) {
+    return (
+      <div className="financial-overview">
+        <SkeletonStats count={4} />
+      </div>
+    );
+  }
 
   const stats = useMemo(() => {
     // Calculate total balance from all accounts
