@@ -3,8 +3,8 @@
  * Modal form for creating and editing transactions
  */
 
-import { useId, useState, useEffect } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
+import { useEffect, useId, useState } from 'react';
 import { useTransactionStore } from '@/core/stores';
 import { Button, CurrencyInput, Input } from '@/shared/components';
 import type { TransactionFormData, TransactionType } from '../types';
@@ -161,10 +161,10 @@ export function AddTransactionForm({
             onSubmit={handleSubmit}
           >
             {/* Transaction Type Selector */}
-            <div className="transaction-form__field">
-              <label className="transaction-form__label">
+            <fieldset className="transaction-form__field">
+              <legend className="transaction-form__label">
                 Transaction Type
-              </label>
+              </legend>
               <div className="transaction-form__type-selector">
                 {TRANSACTION_TYPES.map((type) => {
                   const isSelected = formData.type === type;
@@ -177,9 +177,7 @@ export function AddTransactionForm({
                           ? 'transaction-form__type-button--selected'
                           : ''
                       }`}
-                      onClick={() =>
-                        setFormData((prev) => ({ ...prev, type }))
-                      }
+                      onClick={() => setFormData((prev) => ({ ...prev, type }))}
                       aria-pressed={isSelected}
                     >
                       <span className="transaction-form__type-icon">
@@ -192,7 +190,7 @@ export function AddTransactionForm({
                   );
                 })}
               </div>
-            </div>
+            </fieldset>
 
             {/* Amount */}
             <div className="transaction-form__field">
@@ -283,9 +281,7 @@ export function AddTransactionForm({
                 required
                 aria-invalid={!!errors.description}
                 aria-describedby={
-                  errors.description
-                    ? `${formId}-description-error`
-                    : undefined
+                  errors.description ? `${formId}-description-error` : undefined
                 }
               />
               {errors.description && (

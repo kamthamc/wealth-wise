@@ -4,6 +4,6 @@
  */
 
 export { AccountCard } from './AccountCard';
+export { AccountDetails } from './AccountDetails';
 export { AccountsList } from './AccountsList';
 export { AddAccountModal } from './AddAccountModal';
-export { AccountDetails } from './AccountDetails';

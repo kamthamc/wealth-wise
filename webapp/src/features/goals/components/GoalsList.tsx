@@ -16,11 +16,11 @@ import { formatCurrency } from '@/shared/utils';
 import type { GoalFilters, GoalStatus } from '../types';
 import {
   calculateGoalProgress,
-  formatGoalPercentage,
   formatDaysRemaining,
+  formatGoalPercentage,
+  getGoalPriorityIcon,
   getGoalStatusIcon,
   getGoalStatusName,
-  getGoalPriorityIcon,
 } from '../utils/goalHelpers';
 import './GoalsList.css';
 
@@ -70,9 +70,16 @@ export function GoalsList() {
   const stats = useMemo(() => {
     const activeGoals = goals.filter((g) => g.status === 'active');
     const completedGoals = goals.filter((g) => g.status === 'completed');
-    const totalTarget = activeGoals.reduce((sum, g) => sum + g.target_amount, 0);
-    const totalCurrent = activeGoals.reduce((sum, g) => sum + g.current_amount, 0);
-    const overallProgress = totalTarget > 0 ? (totalCurrent / totalTarget) * 100 : 0;
+    const totalTarget = activeGoals.reduce(
+      (sum, g) => sum + g.target_amount,
+      0
+    );
+    const totalCurrent = activeGoals.reduce(
+      (sum, g) => sum + g.current_amount,
+      0
+    );
+    const overallProgress =
+      totalTarget > 0 ? (totalCurrent / totalTarget) * 100 : 0;
 
     return {
       totalGoals: goals.length,
@@ -88,9 +95,7 @@ export function GoalsList() {
     return (
       <div className="goals-page__loading">
         <Spinner size="large" />
-        <p style={{ color: 'var(--color-text-secondary)' }}>
-          Loading goals...
-        </p>
+        <p style={{ color: 'var(--color-text-secondary)' }}>Loading goals...</p>
       </div>
     );
   }
@@ -175,9 +180,7 @@ export function GoalsList() {
           <EmptyState
             icon="🎯"
             title={
-              searchQuery || filters.status
-                ? 'No goals found'
-                : 'No goals yet'
+              searchQuery || filters.status ? 'No goals found' : 'No goals yet'
             }
             description={
               searchQuery || filters.status
@@ -226,7 +229,8 @@ export function GoalsList() {
                   <span
                     className={`goal-card__status goal-card__status--${goal.status}`}
                   >
-                    {getGoalStatusIcon(goal.status)} {getGoalStatusName(goal.status)}
+                    {getGoalStatusIcon(goal.status)}{' '}
+                    {getGoalStatusName(goal.status)}
                   </span>
                 </div>
 
@@ -253,9 +257,15 @@ export function GoalsList() {
                     />
                   </div>
                   <div className="goal-card__progress-text">
-                    <span>{formatGoalPercentage(goal.current_amount, goal.target_amount)}</span>
+                    <span>
+                      {formatGoalPercentage(
+                        goal.current_amount,
+                        goal.target_amount
+                      )}
+                    </span>
                     <span className="goal-card__progress-label">
-                      {formatCurrency(goal.target_amount - goal.current_amount)} remaining
+                      {formatCurrency(goal.target_amount - goal.current_amount)}{' '}
+                      remaining
                     </span>
                   </div>
                 </div>
@@ -275,9 +285,7 @@ export function GoalsList() {
       )}
 
       {/* TODO: Add Goal Form Modal */}
-      {isFormOpen && (
-        <div>Goal form placeholder - to be implemented</div>
-      )}
+      {isFormOpen && <div>Goal form placeholder - to be implemented</div>}
     </div>
   );
 }

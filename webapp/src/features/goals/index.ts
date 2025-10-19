@@ -2,19 +2,24 @@
 export { GoalsList } from './components';
 
 // Types
-export type { GoalFormData, GoalFilters, GoalStats, GoalProgress } from './types';
+export type {
+  GoalFilters,
+  GoalFormData,
+  GoalProgress,
+  GoalStats,
+} from './types';
 
 // Utils
 export {
-  getGoalStatusIcon,
-  getGoalStatusName,
-  getGoalStatusColor,
+  calculateDaysRemaining,
+  calculateGoalProgress,
+  formatDaysRemaining,
+  formatGoalPercentage,
   getGoalPriorityIcon,
   getGoalPriorityName,
-  calculateGoalProgress,
   getGoalProgressColor,
-  formatGoalPercentage,
-  calculateDaysRemaining,
-  formatDaysRemaining,
+  getGoalStatusColor,
+  getGoalStatusIcon,
+  getGoalStatusName,
   validateGoalForm,
 } from './utils/goalHelpers';

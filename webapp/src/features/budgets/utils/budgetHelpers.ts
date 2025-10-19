@@ -118,10 +118,7 @@ export function validateBudgetForm(data: {
 /**
  * Calculate end date based on period
  */
-export function calculateEndDate(
-  startDate: Date,
-  period: BudgetPeriod
-): Date {
+export function calculateEndDate(startDate: Date, period: BudgetPeriod): Date {
   const endDate = new Date(startDate);
 
   switch (period) {

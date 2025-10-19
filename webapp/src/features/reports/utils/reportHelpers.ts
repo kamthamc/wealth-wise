@@ -3,15 +3,15 @@
  * Helper functions for report calculations and data processing
  */
 
+import type { Transaction } from '@/core/db/types';
 import type {
-  DateRange,
-  TimeRange,
-  IncomeExpenseData,
   CategoryBreakdown,
+  DateRange,
+  IncomeExpenseData,
   MonthlyTrend,
   ReportSummary,
+  TimeRange,
 } from '../types';
-import type { Transaction } from '@/core/db/types';
 
 /**
  * Get date range for a time period
@@ -19,7 +19,7 @@ import type { Transaction } from '@/core/db/types';
 export function getDateRangeForPeriod(period: TimeRange): DateRange {
   const end = new Date();
   end.setHours(23, 59, 59, 999);
-  
+
   const start = new Date();
   start.setHours(0, 0, 0, 0);
 
@@ -84,7 +84,7 @@ export function calculateIncomeExpenseData(
     const dateKey = t.date.toISOString().split('T')[0];
     if (dateKey) {
       const data = dayMap.get(dateKey);
-      
+
       if (data) {
         if (t.type === 'income') {
           data.income += t.amount;
@@ -198,7 +198,8 @@ export function calculateReportSummary(
   const savingsRate = totalIncome > 0 ? (netCashFlow / totalIncome) * 100 : 0;
 
   const categoryBreakdown = calculateCategoryBreakdown(filtered, 'expense');
-  const topCategory = categoryBreakdown.length > 0 ? categoryBreakdown[0] : null;
+  const topCategory =
+    categoryBreakdown.length > 0 ? categoryBreakdown[0] : null;
 
   const averageTransaction =
     filtered.length > 0

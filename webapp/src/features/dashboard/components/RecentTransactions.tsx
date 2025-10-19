@@ -3,9 +3,13 @@
  * Display recent financial transactions
  */
 
-import { useMemo } from 'react';
 import { Link } from '@tanstack/react-router';
+import { useMemo } from 'react';
 import { useTransactionStore } from '@/core/stores';
+import {
+  getTransactionIcon,
+  getTransactionTypeColor,
+} from '@/features/transactions';
 import {
   Badge,
   Card,
@@ -14,10 +18,6 @@ import {
   type TableColumn,
 } from '@/shared/components';
 import { formatCurrency } from '@/shared/utils';
-import {
-  getTransactionIcon,
-  getTransactionTypeColor,
-} from '@/features/transactions';
 import './RecentTransactions.css';
 
 import type { Transaction } from '@/core/db/types';

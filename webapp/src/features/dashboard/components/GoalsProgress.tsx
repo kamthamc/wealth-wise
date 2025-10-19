@@ -3,16 +3,16 @@
  * Display active financial goals with progress tracking
  */
 
-import { useMemo } from 'react';
 import { Link } from '@tanstack/react-router';
+import { useMemo } from 'react';
 import { useGoalStore } from '@/core/stores';
-import { Card, ProgressBar, EmptyState } from '@/shared/components';
-import { formatCurrency } from '@/shared/utils';
 import {
   calculateGoalProgress,
   formatGoalPercentage,
   getGoalPriorityIcon,
 } from '@/features/goals';
+import { Card, EmptyState, ProgressBar } from '@/shared/components';
+import { formatCurrency } from '@/shared/utils';
 import './GoalsProgress.css';
 
 export function GoalsProgress() {
@@ -21,7 +21,7 @@ export function GoalsProgress() {
   // Get active goals sorted by priority and progress
   const activeGoals = useMemo(() => {
     const priorityOrder = { high: 3, medium: 2, low: 1 };
-    
+
     return goals
       .filter((g) => g.status === 'active')
       .map((goal) => {
@@ -86,7 +86,9 @@ export function GoalsProgress() {
                         )}
                         <span className="goal-item__name">{goal.name}</span>
                       </div>
-                      <span className="goal-item__category">{goal.category}</span>
+                      <span className="goal-item__category">
+                        {goal.category}
+                      </span>
                     </div>
                     <div className="goal-item__amounts">
                       <span className="goal-item__current">
@@ -115,10 +117,13 @@ export function GoalsProgress() {
                     {goal.target_date && (
                       <span className="goal-item__deadline">
                         Due:{' '}
-                        {new Date(goal.target_date).toLocaleDateString('en-IN', {
-                          month: 'short',
-                          year: 'numeric',
-                        })}
+                        {new Date(goal.target_date).toLocaleDateString(
+                          'en-IN',
+                          {
+                            month: 'short',
+                            year: 'numeric',
+                          }
+                        )}
                       </span>
                     )}
                   </div>

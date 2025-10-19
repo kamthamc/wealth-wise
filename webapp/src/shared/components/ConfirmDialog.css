@@ -39,17 +39,17 @@
 }
 
 .confirm-dialog__title--danger::before {
-  content: '⚠️';
+  content: "⚠️";
   font-size: 1.5rem;
 }
 
 .confirm-dialog__title--warning::before {
-  content: '⚡';
+  content: "⚡";
   font-size: 1.5rem;
 }
 
 .confirm-dialog__title--default::before {
-  content: 'ℹ️';
+  content: "ℹ️";
   font-size: 1.5rem;
 }
 

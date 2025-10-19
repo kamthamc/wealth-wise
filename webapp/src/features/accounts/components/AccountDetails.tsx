@@ -15,13 +15,13 @@ import {
   StatCard,
 } from '@/shared/components';
 import { formatCurrency, formatRelativeTime } from '@/shared/utils';
+import type { AccountFormData } from '../types';
 import {
   formatAccountIdentifier,
   getAccountIcon,
   getAccountTypeName,
 } from '../utils/accountHelpers';
 import { AddAccountModal } from './AddAccountModal';
-import type { AccountFormData } from '../types';
 import './AccountDetails.css';
 
 export interface AccountDetailsProps {
@@ -30,13 +30,8 @@ export interface AccountDetailsProps {
 
 export function AccountDetails({ accountId }: AccountDetailsProps) {
   const navigate = useNavigate();
-  const {
-    accounts,
-    isLoading,
-    fetchAccounts,
-    updateAccount,
-    deleteAccount,
-  } = useAccountStore();
+  const { accounts, isLoading, fetchAccounts, updateAccount, deleteAccount } =
+    useAccountStore();
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -122,10 +117,7 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
           <Button variant="secondary" onClick={() => setIsEditModalOpen(true)}>
             ✏️ Edit Account
           </Button>
-          <Button
-            variant="danger"
-            onClick={() => setIsDeleteDialogOpen(true)}
-          >
+          <Button variant="danger" onClick={() => setIsDeleteDialogOpen(true)}>
             🗑️ Delete Account
           </Button>
         </div>

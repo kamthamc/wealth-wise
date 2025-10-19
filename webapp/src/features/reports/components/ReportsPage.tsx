@@ -4,18 +4,18 @@
  */
 
 import { useMemo, useState } from 'react';
-import { useTransactionStore, useAccountStore } from '@/core/stores';
+import { useAccountStore, useTransactionStore } from '@/core/stores';
 import { Card, StatCard } from '@/shared/components';
 import { formatCurrency } from '@/shared/utils';
+import type { TimeRange } from '../types';
 import {
-  getDateRangeForPeriod,
-  calculateReportSummary,
   calculateCategoryBreakdown,
   calculateMonthlyTrends,
-  getPeriodLabel,
+  calculateReportSummary,
   formatMonthLabel,
+  getDateRangeForPeriod,
+  getPeriodLabel,
 } from '../utils/reportHelpers';
-import type { TimeRange } from '../types';
 import './ReportsPage.css';
 
 const TIME_RANGES: TimeRange[] = ['week', 'month', 'quarter', 'year'];
@@ -35,25 +35,19 @@ export function ReportsPage() {
     [transactions, dateRange]
   );
 
-  const expenseBreakdown = useMemo(
-    () => {
-      const filtered = transactions.filter(
-        (t) => t.date >= dateRange.start && t.date <= dateRange.end
-      );
-      return calculateCategoryBreakdown(filtered, 'expense');
-    },
-    [transactions, dateRange]
-  );
+  const expenseBreakdown = useMemo(() => {
+    const filtered = transactions.filter(
+      (t) => t.date >= dateRange.start && t.date <= dateRange.end
+    );
+    return calculateCategoryBreakdown(filtered, 'expense');
+  }, [transactions, dateRange]);
 
-  const incomeBreakdown = useMemo(
-    () => {
-      const filtered = transactions.filter(
-        (t) => t.date >= dateRange.start && t.date <= dateRange.end
-      );
-      return calculateCategoryBreakdown(filtered, 'income');
-    },
-    [transactions, dateRange]
-  );
+  const incomeBreakdown = useMemo(() => {
+    const filtered = transactions.filter(
+      (t) => t.date >= dateRange.start && t.date <= dateRange.end
+    );
+    return calculateCategoryBreakdown(filtered, 'income');
+  }, [transactions, dateRange]);
 
   const monthlyTrends = useMemo(
     () => calculateMonthlyTrends(transactions, 6),
@@ -137,7 +131,9 @@ export function ReportsPage() {
       {/* Expense Breakdown */}
       <section className="reports-page__section">
         <Card>
-          <h2 className="reports-page__section-title">Top Expense Categories</h2>
+          <h2 className="reports-page__section-title">
+            Top Expense Categories
+          </h2>
           {expenseBreakdown.length > 0 ? (
             <div className="reports-page__category-list">
               {expenseBreakdown.slice(0, 10).map((category) => (
@@ -161,14 +157,17 @@ export function ReportsPage() {
                       {Math.round(category.percentage)}%
                     </span>
                     <span className="category-item__count">
-                      {category.count} transaction{category.count !== 1 ? 's' : ''}
+                      {category.count} transaction
+                      {category.count !== 1 ? 's' : ''}
                     </span>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="reports-page__empty">No expense data for this period</p>
+            <p className="reports-page__empty">
+              No expense data for this period
+            </p>
           )}
         </Card>
       </section>
@@ -180,7 +179,10 @@ export function ReportsPage() {
           {incomeBreakdown.length > 0 ? (
             <div className="reports-page__category-list">
               {incomeBreakdown.slice(0, 5).map((category) => (
-                <div key={category.category} className="category-item category-item--income">
+                <div
+                  key={category.category}
+                  className="category-item category-item--income"
+                >
                   <div className="category-item__header">
                     <span className="category-item__name">
                       {category.category}
@@ -200,14 +202,17 @@ export function ReportsPage() {
                       {Math.round(category.percentage)}%
                     </span>
                     <span className="category-item__count">
-                      {category.count} transaction{category.count !== 1 ? 's' : ''}
+                      {category.count} transaction
+                      {category.count !== 1 ? 's' : ''}
                     </span>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="reports-page__empty">No income data for this period</p>
+            <p className="reports-page__empty">
+              No income data for this period
+            </p>
           )}
         </Card>
       </section>
@@ -271,8 +276,12 @@ export function ReportsPage() {
               {accountBalances.map((account) => (
                 <div key={account.id} className="account-balance">
                   <div className="account-balance__header">
-                    <span className="account-balance__name">{account.name}</span>
-                    <span className="account-balance__type">{account.type}</span>
+                    <span className="account-balance__name">
+                      {account.name}
+                    </span>
+                    <span className="account-balance__type">
+                      {account.type}
+                    </span>
                   </div>
                   <div className="account-balance__amount">
                     {formatCurrency(account.balance)}

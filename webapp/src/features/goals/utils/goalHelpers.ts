@@ -3,7 +3,7 @@
  * Helper functions for goal management
  */
 
-import type { GoalPriority, GoalStatus, GoalProgress } from '../types';
+import type { GoalPriority, GoalProgress, GoalStatus } from '../types';
 
 /**
  * Get icon emoji for goal status
@@ -37,7 +37,10 @@ export function getGoalStatusName(status: GoalStatus): string {
 export function getGoalStatusColor(
   status: GoalStatus
 ): 'success' | 'warning' | 'danger' | 'default' {
-  const colors: Record<GoalStatus, 'success' | 'warning' | 'danger' | 'default'> = {
+  const colors: Record<
+    GoalStatus,
+    'success' | 'warning' | 'danger' | 'default'
+  > = {
     active: 'default',
     completed: 'success',
     paused: 'warning',
@@ -91,11 +94,14 @@ export function calculateGoalProgress(
 export function getGoalProgressColor(
   status: GoalProgress['status']
 ): 'success' | 'warning' | 'default' {
-  const colors: Record<GoalProgress['status'], 'success' | 'warning' | 'default'> = {
+  const colors: Record<
+    GoalProgress['status'],
+    'success' | 'warning' | 'default'
+  > = {
     'not-started': 'default',
     'in-progress': 'default',
     'near-completion': 'warning',
-    'completed': 'success',
+    completed: 'success',
   };
   return colors[status];
 }
@@ -117,13 +123,13 @@ export function formatGoalPercentage(
 export function calculateDaysRemaining(targetDate: Date): number {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  
+
   const target = new Date(targetDate);
   target.setHours(0, 0, 0, 0);
-  
+
   const diffTime = target.getTime() - today.getTime();
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  
+
   return diffDays;
 }
 
@@ -132,16 +138,16 @@ export function calculateDaysRemaining(targetDate: Date): number {
  */
 export function formatDaysRemaining(targetDate: Date): string {
   const days = calculateDaysRemaining(targetDate);
-  
+
   if (days < 0) return `${Math.abs(days)} days overdue`;
   if (days === 0) return 'Due today';
   if (days === 1) return '1 day left';
   if (days <= 30) return `${days} days left`;
-  
+
   const months = Math.floor(days / 30);
   if (months === 1) return '1 month left';
   if (months < 12) return `${months} months left`;
-  
+
   const years = Math.floor(months / 12);
   return years === 1 ? '1 year left' : `${years} years left`;
 }
@@ -175,7 +181,7 @@ export function validateGoalForm(data: {
     const targetDate = new Date(data.target_date);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     if (targetDate < today) {
       errors.target_date = 'Target date must be in the future';
     }

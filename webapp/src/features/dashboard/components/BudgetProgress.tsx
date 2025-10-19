@@ -3,12 +3,15 @@
  * Display budget progress for different categories
  */
 
-import { useMemo } from 'react';
 import { Link } from '@tanstack/react-router';
+import { useMemo } from 'react';
 import { useBudgetStore } from '@/core/stores';
-import { Card, ProgressBar, EmptyState } from '@/shared/components';
+import {
+  calculateBudgetProgress,
+  getBudgetPeriodIcon,
+} from '@/features/budgets';
+import { Card, EmptyState, ProgressBar } from '@/shared/components';
 import { formatCurrency } from '@/shared/utils';
-import { calculateBudgetProgress, getBudgetPeriodIcon } from '@/features/budgets';
 import './BudgetProgress.css';
 
 export function BudgetProgress() {

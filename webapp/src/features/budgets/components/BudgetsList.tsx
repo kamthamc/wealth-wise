@@ -175,9 +175,7 @@ export function BudgetsList() {
                 ? 'budgets-page__status-button--active'
                 : ''
             }`}
-            onClick={() =>
-              setFilters({ ...filters, is_active: undefined })
-            }
+            onClick={() => setFilters({ ...filters, is_active: undefined })}
           >
             All Status
           </button>
@@ -267,9 +265,12 @@ export function BudgetsList() {
                     />
                   </div>
                   <div className="budget-card__progress-text">
-                    <span>{formatBudgetPercentage(budget.spent, budget.amount)}</span>
+                    <span>
+                      {formatBudgetPercentage(budget.spent, budget.amount)}
+                    </span>
                     <span className="budget-card__progress-label">
-                      {formatCurrency(budget.spent)} of {formatCurrency(budget.amount)}
+                      {formatCurrency(budget.spent)} of{' '}
+                      {formatCurrency(budget.amount)}
                     </span>
                   </div>
                 </div>
@@ -298,9 +299,7 @@ export function BudgetsList() {
       )}
 
       {/* TODO: Add Budget Form Modal */}
-      {isFormOpen && (
-        <div>Budget form placeholder - to be implemented</div>
-      )}
+      {isFormOpen && <div>Budget form placeholder - to be implemented</div>}
     </div>
   );
 }

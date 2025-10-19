@@ -5,7 +5,7 @@
 
 import { useNavigate } from '@tanstack/react-router';
 import { useMemo, useState } from 'react';
-import { useTransactionStore, useAccountStore } from '@/core/stores';
+import { useAccountStore, useTransactionStore } from '@/core/stores';
 import {
   Button,
   EmptyState,
@@ -32,10 +32,7 @@ const FILTER_OPTIONS: (TransactionType | 'all')[] = [
 
 export function TransactionsList() {
   const navigate = useNavigate();
-  const {
-    transactions,
-    isLoading,
-  } = useTransactionStore();
+  const { transactions, isLoading } = useTransactionStore();
   const { accounts } = useAccountStore();
 
   const [filters, setFilters] = useState<TransactionFilters>({});
@@ -53,14 +50,16 @@ export function TransactionsList() {
 
     // Filter by account
     if (filters.account_id) {
-      filtered = filtered.filter((txn) => txn.account_id === filters.account_id);
+      filtered = filtered.filter(
+        (txn) => txn.account_id === filters.account_id
+      );
     }
 
     // Search by description
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (txn) => txn.description && txn.description.toLowerCase().includes(query)
+      filtered = filtered.filter((txn) =>
+        txn.description?.toLowerCase().includes(query)
       );
     }
 
@@ -204,8 +203,9 @@ export function TransactionsList() {
       ) : (
         <div className="transactions-page__list">
           {filteredTransactions.map((transaction) => (
-            <div
+            <button
               key={transaction.id}
+              type="button"
               className="transaction-item"
               onClick={() =>
                 navigate({ to: `/transactions/${transaction.id}` })
@@ -232,7 +232,7 @@ export function TransactionsList() {
                   'INR'
                 )}
               </div>
-            </div>
+            </button>
           ))}
         </div>
       )}

@@ -71,22 +71,28 @@ export function FinancialOverview() {
       {
         label: 'This Month Income',
         value: formatCurrency(income),
-        trend: prevIncome > 0 ? {
-          value: Math.abs(incomeTrend),
-          label: 'vs last month',
-          isPositive: incomeTrend >= 0,
-        } : undefined,
+        trend:
+          prevIncome > 0
+            ? {
+                value: Math.abs(incomeTrend),
+                label: 'vs last month',
+                isPositive: incomeTrend >= 0,
+              }
+            : undefined,
         variant: 'success' as const,
         icon: '📈',
       },
       {
         label: 'This Month Expenses',
         value: formatCurrency(expenses),
-        trend: prevExpenses > 0 ? {
-          value: Math.abs(expenseTrend),
-          label: 'vs last month',
-          isPositive: expenseTrend <= 0, // Lower expenses is positive
-        } : undefined,
+        trend:
+          prevExpenses > 0
+            ? {
+                value: Math.abs(expenseTrend),
+                label: 'vs last month',
+                isPositive: expenseTrend <= 0, // Lower expenses is positive
+              }
+            : undefined,
         variant: 'danger' as const,
         icon: '📉',
       },
@@ -99,11 +105,12 @@ export function FinancialOverview() {
             : savingsRate >= 20
               ? 'Good savings'
               : 'Try to save more',
-        variant: savingsRate >= 50
-          ? ('success' as const)
-          : savingsRate >= 20
-            ? ('default' as const)
-            : ('warning' as const),
+        variant:
+          savingsRate >= 50
+            ? ('success' as const)
+            : savingsRate >= 20
+              ? ('default' as const)
+              : ('warning' as const),
         icon: '🎯',
       },
     ];
