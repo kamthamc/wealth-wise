@@ -102,15 +102,21 @@ export function BudgetsList() {
   }
 
   return (
-    <div className="budgets-page">
+    <div className="page-container">
       {/* Header */}
-      <div className="budgets-page__header">
-        <h1 className="budgets-page__title">Budgets</h1>
-        <Button onClick={() => setIsFormOpen(true)}>+ Add Budget</Button>
+      <div className="page-header">
+        <div className="page-header-content">
+          <h1 className="page-title">Budgets</h1>
+          <p className="page-subtitle">Track and manage your spending limits</p>
+        </div>
+        <div className="page-actions">
+          <Button onClick={() => setIsFormOpen(true)}>+ Add Budget</Button>
+        </div>
       </div>
 
+      <div className="page-content">
       {/* Stats */}
-      <div className="budgets-page__stats">
+      <div className="stats-grid">
         <StatCard
           label="Total Budget"
           value={formatCurrency(stats.totalBudget)}
@@ -137,25 +143,23 @@ export function BudgetsList() {
       </div>
 
       {/* Controls */}
-      <div className="budgets-page__controls">
-        <div className="budgets-page__search">
-          <Input
-            type="search"
-            placeholder="🔍 Search budgets..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
+      <div className="filter-bar">
+        <Input
+          type="search"
+          placeholder="🔍 Search budgets..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
 
-        <div className="budgets-page__filters">
+        <div className="filter-group">
           {PERIOD_OPTIONS.map((period) => (
             <button
               key={period}
               type="button"
-              className={`budgets-page__filter-button ${
+              className={`filter-chip ${
                 (period === 'all' && !filters.period) ||
                 filters.period === period
-                  ? 'budgets-page__filter-button--active'
+                  ? 'active'
                   : ''
               }`}
               onClick={() =>
@@ -175,12 +179,12 @@ export function BudgetsList() {
           ))}
         </div>
 
-        <div className="budgets-page__status-filters">
+        <div className="filter-group">
           <button
             type="button"
-            className={`budgets-page__status-button ${
+            className={`filter-chip ${
               filters.is_active === undefined
-                ? 'budgets-page__status-button--active'
+                ? 'active'
                 : ''
             }`}
             onClick={() => setFilters({ ...filters, is_active: undefined })}
@@ -189,9 +193,9 @@ export function BudgetsList() {
           </button>
           <button
             type="button"
-            className={`budgets-page__status-button ${
+            className={`filter-chip ${
               filters.is_active === true
-                ? 'budgets-page__status-button--active'
+                ? 'active'
                 : ''
             }`}
             onClick={() => setFilters({ ...filters, is_active: true })}
@@ -200,9 +204,9 @@ export function BudgetsList() {
           </button>
           <button
             type="button"
-            className={`budgets-page__status-button ${
+            className={`filter-chip ${
               filters.is_active === false
-                ? 'budgets-page__status-button--active'
+                ? 'active'
                 : ''
             }`}
             onClick={() => setFilters({ ...filters, is_active: false })}
@@ -305,6 +309,7 @@ export function BudgetsList() {
           })}
         </div>
       )}
+      </div> {/* Close page-content */}
 
       {/* TODO: Add Budget Form Modal */}
       {isFormOpen && <div>Budget form placeholder - to be implemented</div>}

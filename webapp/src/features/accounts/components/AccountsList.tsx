@@ -138,15 +138,22 @@ export function AccountsList() {
   }
 
   return (
-    <div className="accounts-page">
+    <div className="page-container">
       {/* Header */}
-      <div className="accounts-page__header">
-        <h1 className="accounts-page__title">Accounts</h1>
-        <Button onClick={() => setIsAddModalOpen(true)}>+ Add Account</Button>
+      <div className="page-header">
+        <div className="page-header-content">
+          <h1 className="page-title">Accounts</h1>
+          <p className="page-subtitle">Manage your financial accounts and track balances</p>
+        </div>
+        <div className="page-actions">
+          <Button onClick={() => setIsAddModalOpen(true)}>+ Add Account</Button>
+        </div>
       </div>
 
+      <div className="page-content">{/* Content starts here */}
+
       {/* Stats */}
-      <div className="accounts-page__stats">
+      <div className="stats-grid">
         <StatCard
           label="Total Balance"
           value={formatCurrency(stats.totalBalance)}
@@ -167,24 +174,22 @@ export function AccountsList() {
       </div>
 
       {/* Controls */}
-      <div className="accounts-page__controls">
-        <div className="accounts-page__search">
-          <Input
-            type="search"
-            placeholder="🔍 Search accounts..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
+      <div className="filter-bar">
+        <Input
+          type="search"
+          placeholder="🔍 Search accounts..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
 
-        <div className="accounts-page__filters">
+        <div className="filter-group">
           {FILTER_OPTIONS.map((type) => (
             <button
               key={type}
               type="button"
-              className={`accounts-page__filter-button ${
+              className={`filter-chip ${
                 (type === 'all' && !filters.type) || filters.type === type
-                  ? 'accounts-page__filter-button--active'
+                  ? 'active'
                   : ''
               }`}
               onClick={() =>
@@ -237,7 +242,7 @@ export function AccountsList() {
           />
         </div>
       ) : (
-        <div className="accounts-page__grid">
+        <div className="cards-grid">
           {filteredAccounts.map((account) => (
             <AccountCard
               key={account.id}
@@ -249,6 +254,7 @@ export function AccountsList() {
           ))}
         </div>
       )}
+      </div> {/* Close page-content */}
 
       {/* Add/Edit Modal */}
       <AddAccountModal

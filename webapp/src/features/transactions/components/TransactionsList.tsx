@@ -111,15 +111,21 @@ export function TransactionsList() {
   }
 
   return (
-    <div className="transactions-page">
+    <div className="page-container">
       {/* Header */}
-      <div className="transactions-page__header">
-        <h1 className="transactions-page__title">Transactions</h1>
-        <Button onClick={() => setIsFormOpen(true)}>+ Add Transaction</Button>
+      <div className="page-header">
+        <div className="page-header-content">
+          <h1 className="page-title">Transactions</h1>
+          <p className="page-subtitle">Track your income and expenses</p>
+        </div>
+        <div className="page-actions">
+          <Button onClick={() => setIsFormOpen(true)}>+ Add Transaction</Button>
+        </div>
       </div>
 
+      <div className="page-content">
       {/* Stats */}
-      <div className="transactions-page__stats">
+      <div className="stats-grid">
         <StatCard
           label="Total Income"
           value={formatCurrency(stats.totalIncome)}
@@ -146,24 +152,22 @@ export function TransactionsList() {
       </div>
 
       {/* Controls */}
-      <div className="transactions-page__controls">
-        <div className="transactions-page__search">
-          <Input
-            type="search"
-            placeholder="🔍 Search transactions..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
+      <div className="filter-bar">
+        <Input
+          type="search"
+          placeholder="🔍 Search transactions..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
 
-        <div className="transactions-page__filters">
+        <div className="filter-group">
           {FILTER_OPTIONS.map((type) => (
             <button
               key={type}
               type="button"
-              className={`transactions-page__filter-button ${
+              className={`filter-chip ${
                 (type === 'all' && !filters.type) || filters.type === type
-                  ? 'transactions-page__filter-button--active'
+                  ? 'active'
                   : ''
               }`}
               onClick={() =>
@@ -252,6 +256,7 @@ export function TransactionsList() {
           ))}
         </div>
       )}
+      </div> {/* Close page-content */}
 
       {/* Add Transaction Form */}
       <AddTransactionForm
