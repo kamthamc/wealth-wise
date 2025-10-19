@@ -19,7 +19,11 @@
     "continue": "Continue",
     "learnMore": "Learn more",
     "viewAll": "View All",
-    "noResults": "No results found"
+    "noResults": "No results found",
+    "backButton": {
+      "label": "Back",
+      "ariaLabel": "Go back to previous page"
+    }
   },
   "emptyState": {
     "accounts": {
@@ -183,6 +187,19 @@
         "totalBalance": "Total Balance",
         "activeAccounts": "Active Accounts",
         "totalAccounts": "Total Accounts"
+      },
+      "modal": {
+        "addTitle": "Add New Account",
+        "editTitle": "Edit Account",
+        "addSubtitle": "Add a new financial account to track your money",
+        "editSubtitle": "Update your account information",
+        "nameLabel": "Account Name",
+        "namePlaceholder": "e.g., HDFC Savings",
+        "typeLabel": "Account Type",
+        "initialBalanceLabel": "Initial Balance",
+        "currentBalanceLabel": "Current Balance",
+        "addButton": "Add Account",
+        "saveButton": "Save Changes"
       }
     },
     "transactions": {
@@ -202,6 +219,57 @@
       "subtitle": "Track and manage your spending limits",
       "addButton": "+ Add Budget",
       "searchPlaceholder": "🔍 Search budgets..."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Configure your preferences and manage your data",
+    "appearance": {
+      "title": "Appearance",
+      "description": "Customize how WealthWise looks",
+      "theme": {
+        "label": "Theme",
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+      }
+    },
+    "localization": {
+      "title": "Localization",
+      "description": "Language, currency, and regional settings",
+      "language": {
+        "label": "Language"
+      },
+      "currency": {
+        "label": "Default Currency"
+      },
+      "dateFormat": {
+        "label": "Date Format"
+      }
+    },
+    "dataManagement": {
+      "title": "Data Management",
+      "description": "Export, import, and manage your financial data",
+      "export": {
+        "label": "Export Data",
+        "description": "Download your financial data as JSON",
+        "comingSoon": "Data export feature coming soon!"
+      },
+      "import": {
+        "label": "Import Data",
+        "description": "Import data from a previous export",
+        "comingSoon": "Data import feature coming soon!"
+      }
+    },
+    "categories": {
+      "title": "Categories",
+      "description": "Manage transaction categories",
+      "comingSoon": "Category management coming soon. You'll be able to add, edit, and organize custom categories for your transactions."
+    },
+    "privacy": {
+      "title": "Privacy & Security",
+      "description": "Manage your privacy and security settings",
+      "comingSoon": "Privacy settings coming soon. Features will include data encryption, biometric authentication, and privacy controls."
     }
   }
 }

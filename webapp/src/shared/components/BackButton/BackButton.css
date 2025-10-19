@@ -1,0 +1,103 @@
+/**
+ * BackButton styles
+ * WCAG 2.1 AA compliant with 40px touch target
+ */
+
+.back-button {
+  /* Layout */
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2); /* 8px */
+  
+  /* Sizing - WCAG touch target */
+  min-height: 40px;
+  padding: var(--space-2) var(--space-3); /* 8px 12px */
+  
+  /* Typography */
+  font-size: var(--text-base); /* 16px for accessibility */
+  font-weight: 500;
+  font-family: var(--font-sans);
+  
+  /* Colors */
+  color: var(--color-neutral-700);
+  background: transparent;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--radius-md);
+  
+  /* Interaction */
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  
+  /* Remove default button styles */
+  appearance: none;
+  text-decoration: none;
+}
+
+.back-button__icon {
+  flex-shrink: 0;
+  transition: transform var(--transition-normal);
+}
+
+.back-button__label {
+  /* Ensure text is readable */
+  line-height: 1.5;
+}
+
+/* Hover state */
+.back-button:hover {
+  background: var(--color-neutral-50);
+  border-color: var(--color-neutral-400);
+  color: var(--color-neutral-900);
+}
+
+.back-button:hover .back-button__icon {
+  transform: translateX(-2px);
+}
+
+/* Active state */
+.back-button:active {
+  transform: translateY(1px);
+}
+
+/* Focus state - WCAG 2.1 AA */
+.back-button:focus-visible {
+  outline: 3px solid var(--color-primary-500);
+  outline-offset: 2px;
+  border-color: var(--color-primary-500);
+}
+
+/* Disabled state */
+.back-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Dark mode */
+[data-theme='dark'] .back-button {
+  color: var(--color-neutral-300);
+  border-color: var(--color-neutral-700);
+}
+
+[data-theme='dark'] .back-button:hover {
+  background: var(--color-neutral-800);
+  border-color: var(--color-neutral-600);
+  color: var(--color-neutral-100);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .back-button,
+  .back-button__icon {
+    transition: none;
+  }
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .back-button {
+    /* Increase touch target on mobile */
+    min-height: 44px;
+    padding: var(--space-3) var(--space-4); /* 12px 16px */
+  }
+}

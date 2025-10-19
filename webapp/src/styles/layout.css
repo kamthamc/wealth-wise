@@ -198,6 +198,9 @@
     border-color var(--transition-fast),
     color var(--transition-fast);
   white-space: nowrap;
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
 }
 
 .filter-chip:hover {
@@ -209,6 +212,9 @@
   background: var(--color-primary-500);
   border-color: var(--color-primary-600);
   color: white;
+}
+.filter-chip span {
+    height: 100%;
 }
 
 .toolbar {

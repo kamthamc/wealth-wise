@@ -69,7 +69,8 @@ i18n
       
       // Request options
       requestOptions: {
-        cache: 'force-cache', // Cache translations
+        // Use no-cache in development, force-cache in production
+        cache: import.meta.env.DEV ? 'no-cache' : 'force-cache',
       },
     },
     
@@ -89,8 +90,8 @@ i18n
     
     // Performance optimizations
     load: 'currentOnly', // Only load current language
-    ns: ['translation'], // Single namespace
-    defaultNS: 'translation',
+    ns: ['wealthwise'], // Single namespace
+    defaultNS: 'wealthwise',
   });
 
 // Register custom language detector
