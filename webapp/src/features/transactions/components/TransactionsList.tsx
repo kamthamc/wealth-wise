@@ -24,6 +24,7 @@ import {
 } from '../utils/transactionHelpers';
 import { AddTransactionForm } from './AddTransactionForm';
 import './TransactionsList.css';
+import { QuickTransactionEntry } from './QuickTransactionEntry';
 
 const FILTER_OPTIONS: (TransactionType | 'all')[] = [
   'all',
@@ -259,10 +260,11 @@ export function TransactionsList() {
       </div> {/* Close page-content */}
 
       {/* Add Transaction Form */}
-      <AddTransactionForm
+      {isFormOpen && <QuickTransactionEntry onSuccess={() => setIsFormOpen(false)} />}
+      {/* <AddTransactionForm
         isOpen={isFormOpen}
         onClose={() => setIsFormOpen(false)}
-      />
+      /> */}
     </div>
   );
 }

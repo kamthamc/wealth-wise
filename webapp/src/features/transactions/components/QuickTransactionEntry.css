@@ -1,0 +1,298 @@
+/**
+ * Quick Transaction Entry Styles
+ * Fast transaction entry component styling
+ */
+
+.quick-transaction-entry {
+  background: var(--color-background-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.quick-transaction-entry__title {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.quick-transaction-entry__form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Type Selector */
+.quick-transaction-entry__type-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.type-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.type-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 12px;
+  background: var(--color-background);
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 88px;
+}
+
+.type-button:hover {
+  border-color: var(--color-border-strong);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.type-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.type-button--selected {
+  background: linear-gradient(135deg, var(--button-bg) 0%, var(--button-bg-hover) 100%);
+  border-color: var(--button-border);
+  color: white;
+}
+
+.type-button--red {
+  --button-bg: #ef4444;
+  --button-bg-hover: #dc2626;
+  --button-border: #dc2626;
+}
+
+.type-button--green {
+  --button-bg: #10b981;
+  --button-bg-hover: #059669;
+  --button-border: #059669;
+}
+
+.type-button--blue {
+  --button-bg: #3b82f6;
+  --button-bg-hover: #2563eb;
+  --button-border: #2563eb;
+}
+
+.type-button--selected .type-button__label {
+  color: white;
+  font-weight: 600;
+}
+
+.type-button__icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.type-button__label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+/* Form Fields */
+.quick-transaction-entry__field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quick-transaction-entry__label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.required {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.optional {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+}
+
+.quick-transaction-entry__input,
+.quick-transaction-entry__select {
+  padding: 12px 16px;
+  font-size: 16px;
+  color: var(--color-text-primary);
+  background: var(--color-background);
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  min-height: 48px;
+}
+
+.quick-transaction-entry__input:hover,
+.quick-transaction-entry__select:hover {
+  border-color: var(--color-border-strong);
+}
+
+.quick-transaction-entry__input:focus,
+.quick-transaction-entry__select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-alpha);
+}
+
+.quick-transaction-entry__input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.quick-transaction-entry__select::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.quick-transaction-entry__select--with-icon {
+  font-family: inherit;
+}
+
+.quick-transaction-entry__input--amount {
+  font-size: 24px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Hints and Errors */
+.quick-transaction-entry__hint {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.quick-transaction-entry__hint--warning {
+  color: #f59e0b;
+  font-weight: 500;
+}
+
+.quick-transaction-entry__error {
+  font-size: 12px;
+  color: #ef4444;
+  font-weight: 500;
+}
+
+/* Submit Button */
+.quick-transaction-entry__submit {
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 52px;
+  box-shadow: var(--shadow-sm);
+}
+
+.quick-transaction-entry__submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.quick-transaction-entry__submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.quick-transaction-entry__submit:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.quick-transaction-entry__submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .quick-transaction-entry {
+    padding: 20px;
+  }
+
+  .type-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .type-button {
+    flex-direction: row;
+    justify-content: center;
+    padding: 12px 16px;
+    min-height: 56px;
+  }
+
+  .type-button__icon {
+    font-size: 20px;
+  }
+
+  .quick-transaction-entry__input--amount {
+    font-size: 20px;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .quick-transaction-entry {
+    background: var(--color-background-elevated, #1e293b);
+    border-color: var(--color-border, #334155);
+  }
+
+  .type-button {
+    background: var(--color-background, #0f172a);
+    border-color: var(--color-border, #334155);
+  }
+
+  .type-button:hover {
+    border-color: var(--color-border-strong, #475569);
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .quick-transaction-entry {
+    border-width: 2px;
+  }
+
+  .quick-transaction-entry__input,
+  .quick-transaction-entry__select {
+    border-width: 2px;
+  }
+
+  .type-button--selected {
+    border-width: 3px;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .type-button,
+  .quick-transaction-entry__input,
+  .quick-transaction-entry__select,
+  .quick-transaction-entry__submit {
+    transition: none;
+  }
+
+  .type-button:hover,
+  .quick-transaction-entry__submit:hover:not(:disabled) {
+    transform: none;
+  }
+}
