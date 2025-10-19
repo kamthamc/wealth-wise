@@ -10,6 +10,7 @@ import * as RadioGroup from '@radix-ui/react-radio-group';
 import * as Select from '@radix-ui/react-select';
 import * as Dialog from '@radix-ui/react-dialog';
 import { BackButton } from '../../../shared/components/BackButton';
+import { CategoryManager } from './CategoryManager';
 import {
   exportData,
   downloadExportFile,
@@ -403,7 +404,7 @@ export function SettingsPage() {
           />
         </section>
 
-        {/* Categories Section - Coming Soon */}
+        {/* Categories Section */}
         <section className="section settings-section">
           <div className="section-header">
             <h2 className="section-header__title">
@@ -413,9 +414,7 @@ export function SettingsPage() {
               {t('settings.categories.description')}
             </p>
           </div>
-          <div className="settings-placeholder">
-            <p>{t('settings.categories.comingSoon')}</p>
-          </div>
+          <CategoryManager />
         </section>
 
         {/* Privacy Section */}
