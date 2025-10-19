@@ -5,6 +5,7 @@
 
 import { useNavigate } from '@tanstack/react-router';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Account } from '@/core/db/types';
 import { useAccountStore } from '@/core/stores';
 import {
@@ -36,6 +37,7 @@ const FILTER_OPTIONS: (AccountType | 'all')[] = [
 
 export function AccountsList() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const {
     accounts,
     isLoading,
@@ -142,11 +144,13 @@ export function AccountsList() {
       {/* Header */}
       <div className="page-header">
         <div className="page-header-content">
-          <h1 className="page-title">Accounts</h1>
-          <p className="page-subtitle">Manage your financial accounts and track balances</p>
+          <h1 className="page-title">{t('pages.accounts.title', 'Accounts')}</h1>
+          <p className="page-subtitle">{t('pages.accounts.subtitle', 'Manage your financial accounts and track balances')}</p>
         </div>
         <div className="page-actions">
-          <Button onClick={() => setIsAddModalOpen(true)}>+ Add Account</Button>
+          <Button onClick={() => setIsAddModalOpen(true)}>
+            {t('pages.accounts.addButton', '+ Add Account')}
+          </Button>
         </div>
       </div>
 
@@ -155,19 +159,19 @@ export function AccountsList() {
       {/* Stats */}
       <div className="stats-grid">
         <StatCard
-          label="Total Balance"
+          label={t('pages.accounts.stats.totalBalance', 'Total Balance')}
           value={formatCurrency(stats.totalBalance)}
           icon="💰"
           variant="primary"
         />
         <StatCard
-          label="Active Accounts"
+          label={t('pages.accounts.stats.activeAccounts', 'Active Accounts')}
           value={stats.activeAccounts.toString()}
           icon="✓"
           variant="success"
         />
         <StatCard
-          label="Total Accounts"
+          label={t('pages.accounts.stats.totalAccounts', 'Total Accounts')}
           value={stats.totalAccounts.toString()}
           icon="📊"
         />
@@ -177,7 +181,7 @@ export function AccountsList() {
       <div className="filter-bar">
         <Input
           type="search"
-          placeholder="🔍 Search accounts..."
+          placeholder={t('pages.accounts.searchPlaceholder', '🔍 Search accounts...')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
