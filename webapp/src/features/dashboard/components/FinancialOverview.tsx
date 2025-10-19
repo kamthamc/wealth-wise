@@ -14,16 +14,12 @@ export function FinancialOverview() {
   const { transactions, isLoading: transactionsLoading } =
     useTransactionStore();
 
-  // Show skeleton while loading
-  if (accountsLoading || transactionsLoading) {
-    return (
-      <div className="financial-overview">
-        <SkeletonStats count={4} />
-      </div>
-    );
-  }
-
+  
   const stats = useMemo(() => {
+    if (accountsLoading || transactionsLoading) {
+      return [];
+    }
+
     // Calculate total balance from all accounts
     const totalBalance = accounts.reduce(
       (sum, account) => sum + account.balance,
@@ -125,6 +121,16 @@ export function FinancialOverview() {
       },
     ];
   }, [accounts, transactions]);
+
+  // Show skeleton while loading
+  if (accountsLoading || transactionsLoading) {
+    return (
+      <div className="financial-overview">
+        <SkeletonStats count={4} />
+      </div>
+    );
+  }
+
 
   return (
     <section className="financial-overview">

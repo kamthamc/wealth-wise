@@ -6,4 +6,6 @@
 export { AccountCard } from './AccountCard';
 export { AccountDetails } from './AccountDetails';
 export { AccountsList } from './AccountsList';
+export { AccountsEmptyState } from './AccountsEmptyState';
+export { AccountTypeGuide } from './AccountTypeGuide';
 export { AddAccountModal } from './AddAccountModal';
