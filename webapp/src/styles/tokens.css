@@ -137,6 +137,7 @@
      SPACING
      ============================================ */
 
+  /* Base spacing scale */
   --space-1: 0.25rem; /* 4px */
   --space-2: 0.5rem; /* 8px */
   --space-3: 0.75rem; /* 12px */
@@ -149,6 +150,25 @@
   --space-16: 4rem; /* 64px */
   --space-20: 5rem; /* 80px */
   --space-24: 6rem; /* 96px */
+
+  /* Semantic spacing (for easier usage) */
+  --page-padding: var(--space-6); /* 24px - Main page container padding */
+  --page-padding-mobile: var(--space-4); /* 16px - Mobile page padding */
+  --section-gap: var(--space-8); /* 32px - Gap between major sections */
+  --card-padding: var(--space-4); /* 16px - Card internal padding */
+  --card-gap: var(--space-4); /* 16px - Gap between cards */
+  --header-padding: var(--space-6); /* 24px - Page header padding */
+  --header-gap: var(--space-4); /* 16px - Gap in page headers */
+  --form-gap: var(--space-4); /* 16px - Gap between form fields */
+  --button-gap: var(--space-2); /* 8px - Gap between buttons */
+  --filter-gap: var(--space-2); /* 8px - Gap between filter chips */
+  --stats-gap: var(--space-6); /* 24px - Gap between stats cards */
+  
+  /* Layout constraints */
+  --content-max-width: 1280px; /* Maximum content width */
+  --sidebar-width: 260px; /* Sidebar width */
+  --header-height: 72px; /* Page header height */
+  --topbar-height: 64px; /* Top navigation bar height */
 
   /* ============================================
      BORDER RADIUS
