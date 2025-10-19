@@ -10,6 +10,7 @@ import {
   AccountSelect,
   Button,
   CurrencyInput,
+  DatePicker,
   Input,
 } from '@/shared/components';
 import type { TransactionFormData, TransactionType } from '../types';
@@ -305,18 +306,22 @@ export function AddTransactionForm({
               >
                 Date *
               </label>
-              <Input
+              <DatePicker
                 id={`${formId}-date`}
-                type="date"
-                value={formData.date}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, date: e.target.value }))
+                value={formData.date ? new Date(formData.date) : undefined}
+                onChange={(date) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    date: date ? date.toISOString().split('T')[0] || '' : '',
+                  }))
                 }
+                placeholder="Select transaction date..."
                 required
-                aria-invalid={!!errors.date}
+                error={errors.date}
                 aria-describedby={
                   errors.date ? `${formId}-date-error` : undefined
                 }
+                dateFormat="PPP"
               />
               {errors.date && (
                 <span

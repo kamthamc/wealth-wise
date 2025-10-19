@@ -24,6 +24,7 @@ export { Checkbox, type CheckboxProps } from './Checkbox';
 export { ConfirmDialog, type ConfirmDialogProps } from './ConfirmDialog';
 export { CurrencyInput, type CurrencyInputProps } from './CurrencyInput';
 export { DateInput, type DateInputProps } from './DateInput';
+export { DatePicker, type DatePickerProps } from './DatePicker';
 export { Divider, type DividerProps } from './Divider';
 export { EmptyState, type EmptyStateProps } from './EmptyState';
 export { ErrorBoundary } from './ErrorBoundary';
