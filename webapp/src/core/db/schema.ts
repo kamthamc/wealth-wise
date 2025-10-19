@@ -10,12 +10,9 @@ export const DATABASE_VERSION = 1;
  * Following PostgreSQL syntax for PGlite compatibility
  */
 export const SCHEMA_SQL = `
--- Enable UUID extension
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 -- Accounts table
 CREATE TABLE IF NOT EXISTS accounts (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   type TEXT NOT NULL CHECK (type IN ('bank', 'credit_card', 'upi', 'brokerage', 'cash', 'wallet')),
   balance DECIMAL(15, 2) NOT NULL DEFAULT 0,
@@ -29,7 +26,7 @@ CREATE TABLE IF NOT EXISTS accounts (
 
 -- Transactions table
 CREATE TABLE IF NOT EXISTS transactions (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
   type TEXT NOT NULL CHECK (type IN ('income', 'expense', 'transfer')),
   category TEXT NOT NULL,
@@ -47,7 +44,7 @@ CREATE TABLE IF NOT EXISTS transactions (
 
 -- Budgets table
 CREATE TABLE IF NOT EXISTS budgets (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   category TEXT NOT NULL,
   amount DECIMAL(15, 2) NOT NULL,
@@ -63,7 +60,7 @@ CREATE TABLE IF NOT EXISTS budgets (
 
 -- Goals table
 CREATE TABLE IF NOT EXISTS goals (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   target_amount DECIMAL(15, 2) NOT NULL,
   current_amount DECIMAL(15, 2) NOT NULL DEFAULT 0,
@@ -79,7 +76,7 @@ CREATE TABLE IF NOT EXISTS goals (
 
 -- Goal contributions table (track deposits towards goals)
 CREATE TABLE IF NOT EXISTS goal_contributions (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   goal_id UUID NOT NULL REFERENCES goals(id) ON DELETE CASCADE,
   amount DECIMAL(15, 2) NOT NULL,
   date TIMESTAMP NOT NULL DEFAULT NOW(),
@@ -89,7 +86,7 @@ CREATE TABLE IF NOT EXISTS goal_contributions (
 
 -- Categories table (for organizing transactions)
 CREATE TABLE IF NOT EXISTS categories (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL UNIQUE,
   type TEXT NOT NULL CHECK (type IN ('income', 'expense')),
   icon TEXT,

@@ -11,6 +11,11 @@ import { useInitializeStores } from './core/stores';
 import { useTextDirection } from './core/i18n';
 import { SkipNavigation, Spinner, ToastProvider } from './shared/components';
 
+// Import database reset utilities (dev only)
+if (import.meta.env.DEV) {
+  import('./core/db/resetUtil');
+}
+
 function App() {
   // Initialize stores and database
   useInitializeStores();

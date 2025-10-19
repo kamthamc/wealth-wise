@@ -72,33 +72,43 @@ class DatabaseClient {
 
       // Check if database is already set up
       let versionResult: { rows: unknown[] };
+      let needsSchemaSetup = false;
+      
       try {
         versionResult = await this.db.query(
           "SELECT value FROM settings WHERE key = 'db_version'"
         );
       } catch (error) {
         // Database likely needs schema initialization or is corrupted
+        const errorMsg = String(error);
         console.warn(
-          '[DB] Cannot read settings table, assuming fresh database...',
+          '[DB] Cannot read settings table, checking error type...',
           error
         );
+        
+        // Check if it's a "relation does not exist" error
+        if (errorMsg.includes('relation') && errorMsg.includes('does not exist')) {
+          console.log('[DB] Schema missing - will create tables');
+          needsSchemaSetup = true;
+        }
+        
         // If query fails, it's likely a fresh database needing schema
         versionResult = { rows: [] };
       }
 
-      if (versionResult.rows.length === 0) {
-        // First time setup
-        console.log('[DB] First time setup - creating schema...');
+      if (versionResult.rows.length === 0 || needsSchemaSetup) {
+        // First time setup or recovery from missing schema
+        console.log('[DB] Setting up database schema...');
         await this.db.exec(SCHEMA_SQL);
         await this.db.exec(SEED_CATEGORIES_SQL);
 
         // Store database version
         await this.db.query(
-          "INSERT INTO settings (key, value) VALUES ('db_version', $1)",
+          "INSERT INTO settings (key, value) VALUES ('db_version', $1) ON CONFLICT (key) DO UPDATE SET value = $1",
           [DATABASE_VERSION.toString()]
         );
 
-        console.log('[DB] Database initialized successfully');
+        console.log('[DB] Database schema initialized successfully');
       } else {
         const versionRow = versionResult.rows[0] as { value: string };
         const currentVersion = Number.parseInt(versionRow.value, 10);
