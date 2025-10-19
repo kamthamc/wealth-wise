@@ -13,7 +13,9 @@ import {
   DatePicker,
   Input,
   useToast,
+  ValidationMessage,
 } from '@/shared/components';
+import { useValidation, validators } from '@/shared/hooks/useValidation';
 import type { TransactionFormData, TransactionType } from '../types';
 import {
   getTransactionIcon,
@@ -60,6 +62,37 @@ export function AddTransactionForm({
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Real-time validation
+  const amountValidation = useValidation(formData.amount, {
+    validate: validators.combine(
+      validators.required,
+      validators.positiveNumber,
+      validators.minAmount(0.01)
+    ),
+    debounceMs: 500,
+    validateOnlyAfterBlur: true,
+  });
+
+  const descriptionValidation = useValidation(formData.description, {
+    validate: validators.combine(
+      validators.required,
+      validators.minLength(3),
+      validators.maxLength(200)
+    ),
+    debounceMs: 300,
+    validateOnlyAfterBlur: true,
+  });
+
+  const accountValidation = useValidation(formData.account_id, {
+    validate: validators.required,
+    validateOnlyAfterBlur: true,
+  });
+
+  const dateValidation = useValidation(formData.date, {
+    validate: validators.required,
+    validateOnlyAfterBlur: true,
+  });
 
   // Load transaction data if editing
   useEffect(() => {
@@ -225,21 +258,23 @@ export function AddTransactionForm({
                 onChange={(value) =>
                   setFormData((prev) => ({ ...prev, amount: value || 0 }))
                 }
+                onBlur={amountValidation.onBlur}
                 currency="INR"
                 placeholder="0.00"
                 required
-                aria-invalid={!!errors.amount}
+                aria-invalid={!!amountValidation.message}
                 aria-describedby={
-                  errors.amount ? `${formId}-amount-error` : undefined
+                  amountValidation.message
+                    ? `${formId}-amount-validation`
+                    : undefined
                 }
               />
-              {errors.amount && (
-                <span
-                  id={`${formId}-amount-error`}
-                  className="transaction-form__error"
-                >
-                  {errors.amount}
-                </span>
+              {amountValidation.hasBlurred && (
+                <ValidationMessage
+                  state={amountValidation.state}
+                  message={amountValidation.message}
+                  fieldId={`${formId}-amount`}
+                />
               )}
             </div>
 
@@ -254,24 +289,31 @@ export function AddTransactionForm({
               <AccountSelect
                 id={`${formId}-account`}
                 value={formData.account_id}
-                onValueChange={(accountId) =>
-                  setFormData((prev) => ({ ...prev, account_id: accountId }))
-                }
+                onValueChange={(accountId) => {
+                  setFormData((prev) => ({ ...prev, account_id: accountId }));
+                  // Trigger validation after selection
+                  setTimeout(() => accountValidation.revalidate(), 0);
+                }}
                 accounts={accounts}
                 placeholder="Select an account..."
                 required
-                error={errors.account_id}
+                error={
+                  accountValidation.hasBlurred
+                    ? accountValidation.message
+                    : undefined
+                }
                 aria-describedby={
-                  errors.account_id ? `${formId}-account-error` : undefined
+                  accountValidation.message
+                    ? `${formId}-account-validation`
+                    : undefined
                 }
               />
-              {errors.account_id && (
-                <span
-                  id={`${formId}-account-error`}
-                  className="transaction-form__error"
-                >
-                  {errors.account_id}
-                </span>
+              {accountValidation.hasBlurred && (
+                <ValidationMessage
+                  state={accountValidation.state}
+                  message={accountValidation.message}
+                  fieldId={`${formId}-account`}
+                />
               )}
             </div>
 
@@ -293,20 +335,22 @@ export function AddTransactionForm({
                     description: e.target.value,
                   }))
                 }
+                onBlur={descriptionValidation.onBlur}
                 placeholder="What was this transaction for?"
                 required
-                aria-invalid={!!errors.description}
+                aria-invalid={!!descriptionValidation.message}
                 aria-describedby={
-                  errors.description ? `${formId}-description-error` : undefined
+                  descriptionValidation.message
+                    ? `${formId}-description-validation`
+                    : undefined
                 }
               />
-              {errors.description && (
-                <span
-                  id={`${formId}-description-error`}
-                  className="transaction-form__error"
-                >
-                  {errors.description}
-                </span>
+              {descriptionValidation.hasBlurred && (
+                <ValidationMessage
+                  state={descriptionValidation.state}
+                  message={descriptionValidation.message}
+                  fieldId={`${formId}-description`}
+                />
               )}
             </div>
 
@@ -321,27 +365,32 @@ export function AddTransactionForm({
               <DatePicker
                 id={`${formId}-date`}
                 value={formData.date ? new Date(formData.date) : undefined}
-                onChange={(date) =>
+                onChange={(date) => {
                   setFormData((prev) => ({
                     ...prev,
                     date: date ? date.toISOString().split('T')[0] || '' : '',
-                  }))
-                }
+                  }));
+                  // Trigger validation after selection
+                  setTimeout(() => dateValidation.revalidate(), 0);
+                }}
                 placeholder="Select transaction date..."
                 required
-                error={errors.date}
+                error={
+                  dateValidation.hasBlurred ? dateValidation.message : undefined
+                }
                 aria-describedby={
-                  errors.date ? `${formId}-date-error` : undefined
+                  dateValidation.message
+                    ? `${formId}-date-validation`
+                    : undefined
                 }
                 dateFormat="PPP"
               />
-              {errors.date && (
-                <span
-                  id={`${formId}-date-error`}
-                  className="transaction-form__error"
-                >
-                  {errors.date}
-                </span>
+              {dateValidation.hasBlurred && (
+                <ValidationMessage
+                  state={dateValidation.state}
+                  message={dateValidation.message}
+                  fieldId={`${formId}-date`}
+                />
               )}
             </div>
 
@@ -388,7 +437,13 @@ export function AddTransactionForm({
               type="submit"
               form={formId}
               variant="primary"
-              disabled={isSubmitting}
+              disabled={
+                isSubmitting ||
+                !amountValidation.isValid ||
+                !descriptionValidation.isValid ||
+                !accountValidation.isValid ||
+                !dateValidation.isValid
+              }
             >
               {isSubmitting
                 ? 'Saving...'
