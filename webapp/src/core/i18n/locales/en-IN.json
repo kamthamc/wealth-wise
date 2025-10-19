@@ -1,0 +1,176 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "filter": "Filter",
+    "clear": "Clear",
+    "apply": "Apply",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "continue": "Continue",
+    "learnMore": "Learn more",
+    "viewAll": "View All",
+    "noResults": "No results found"
+  },
+  "emptyState": {
+    "accounts": {
+      "title": "No accounts yet",
+      "description": "Start tracking your finances by adding your bank accounts, credit cards, and other financial accounts",
+      "action": "Add Your First Account",
+      "secondaryAction": "Learn about account types →",
+      "filtered": {
+        "title": "No accounts found",
+        "description": "Try adjusting your filters or search query to find what you're looking for"
+      }
+    },
+    "transactions": {
+      "title": "No transactions yet",
+      "description": "Start tracking your income and expenses by recording your first transaction",
+      "action": "Add Your First Transaction",
+      "secondaryAction": "Import from bank statement →",
+      "filtered": {
+        "title": "No transactions found",
+        "description": "Try adjusting your filters or search query to find the transactions you're looking for"
+      }
+    },
+    "budgets": {
+      "title": "No budgets yet",
+      "description": "Create budgets to track your spending and stay on top of your finances",
+      "action": "Create Your First Budget",
+      "filtered": {
+        "title": "No budgets found",
+        "description": "Try adjusting your filters to find the budgets you're looking for"
+      }
+    },
+    "goals": {
+      "title": "No goals yet",
+      "description": "Set financial goals to track your progress and achieve your dreams",
+      "action": "Create Your First Goal",
+      "filtered": {
+        "title": "No goals found",
+        "description": "Try adjusting your filters to find the goals you're looking for"
+      }
+    }
+  },
+  "toast": {
+    "success": {
+      "accountCreated": "Account created successfully",
+      "accountUpdated": "Account updated successfully",
+      "accountDeleted": "Account deleted successfully",
+      "transactionCreated": "Transaction added successfully",
+      "transactionUpdated": "Transaction updated successfully",
+      "transactionDeleted": "Transaction deleted successfully",
+      "budgetCreated": "Budget created successfully",
+      "budgetUpdated": "Budget updated successfully",
+      "budgetDeleted": "Budget deleted successfully",
+      "goalCreated": "Goal created successfully",
+      "goalUpdated": "Goal updated successfully",
+      "goalDeleted": "Goal deleted successfully"
+    },
+    "error": {
+      "generic": "Something went wrong. Please try again.",
+      "accountCreate": "Failed to create account",
+      "accountUpdate": "Failed to update account",
+      "accountDelete": "Failed to delete account",
+      "transactionCreate": "Failed to add transaction",
+      "transactionUpdate": "Failed to update transaction",
+      "transactionDelete": "Failed to delete transaction",
+      "budgetCreate": "Failed to create budget",
+      "budgetUpdate": "Failed to update budget",
+      "budgetDelete": "Failed to delete budget",
+      "goalCreate": "Failed to create goal",
+      "goalUpdate": "Failed to update goal",
+      "goalDelete": "Failed to delete goal"
+    }
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidEmail": "Please enter a valid email address",
+    "invalidAmount": "Please enter a valid amount",
+    "invalidDate": "Please enter a valid date",
+    "minAmount": "Amount must be at least {{min}}",
+    "maxAmount": "Amount cannot exceed {{max}}",
+    "minLength": "Must be at least {{min}} characters",
+    "maxLength": "Cannot exceed {{max}} characters",
+    "selectOption": "Please select an option",
+    "futureDate": "Date cannot be in the future",
+    "pastDate": "Date cannot be in the past"
+  },
+  "skeleton": {
+    "loading": "Loading content, please wait..."
+  },
+  "accountSelect": {
+    "placeholder": "Select an account",
+    "search": "Search accounts...",
+    "noResults": "No accounts found",
+    "balance": "Balance"
+  },
+  "datePicker": {
+    "placeholder": "Select date",
+    "today": "Today",
+    "selectDate": "Select a date"
+  },
+  "accounts": {
+    "title": "Accounts",
+    "search": "🔍 Search accounts...",
+    "addAccount": "Add Account",
+    "totalBalance": "Total Balance",
+    "activeAccounts": "Active Accounts",
+    "totalAccounts": "Total Accounts",
+    "types": {
+      "all": "All",
+      "bank": "Bank",
+      "credit_card": "Credit Card",
+      "upi": "UPI",
+      "brokerage": "Brokerage"
+    }
+  },
+  "transactions": {
+    "title": "Transactions",
+    "search": "🔍 Search transactions...",
+    "addTransaction": "Add Transaction",
+    "totalIncome": "Total Income",
+    "totalExpenses": "Total Expenses",
+    "netCashFlow": "Net Cash Flow",
+    "transactionCount": "Transactions",
+    "types": {
+      "all": "All",
+      "income": "Income",
+      "expense": "Expense",
+      "transfer": "Transfer"
+    },
+    "recentTransactions": "Recent Transactions"
+  },
+  "budgets": {
+    "title": "Budgets",
+    "addBudget": "Add Budget",
+    "totalBudget": "Total Budget",
+    "totalSpent": "Total Spent",
+    "remaining": "Remaining",
+    "budgetProgress": "Budget Progress",
+    "exceeded": "⚠️ Budget exceeded!",
+    "approaching": "⚡ Approaching limit"
+  },
+  "goals": {
+    "title": "Goals",
+    "addGoal": "Add Goal",
+    "activeGoals": "Active Goals",
+    "totalSaved": "Total Saved",
+    "goalsProgress": "Goals Progress",
+    "remaining": "remaining",
+    "due": "Due"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "financialOverview": "Financial Overview"
+  }
+}
