@@ -17,6 +17,7 @@
     "next": "Next",
     "previous": "Previous",
     "continue": "Continue",
+    "confirm": "Confirm",
     "learnMore": "Learn more",
     "viewAll": "View All",
     "noResults": "No results found",
@@ -253,12 +254,21 @@
       "export": {
         "label": "Export Data",
         "description": "Download your financial data as JSON",
-        "comingSoon": "Data export feature coming soon!"
+        "success": "Data exported successfully!",
+        "error": "Failed to export data. Please try again."
       },
       "import": {
         "label": "Import Data",
         "description": "Import data from a previous export",
-        "comingSoon": "Data import feature coming soon!"
+        "parseError": "Failed to parse import file. Please ensure it's a valid JSON export.",
+        "success": "Data imported successfully! Reloading application...",
+        "error": "Failed to import data. Please try again.",
+        "confirmTitle": "Confirm Data Import",
+        "confirmMessage": "This will import the following data. Existing data with the same IDs will be updated.",
+        "accounts": "Accounts",
+        "transactions": "Transactions",
+        "budgets": "Budgets",
+        "goals": "Goals"
       }
     },
     "categories": {
@@ -269,7 +279,15 @@
     "privacy": {
       "title": "Privacy & Security",
       "description": "Manage your privacy and security settings",
-      "comingSoon": "Privacy settings coming soon. Features will include data encryption, biometric authentication, and privacy controls."
+      "clearData": {
+        "label": "Clear All Data",
+        "description": "Permanently delete all your financial data",
+        "confirmTitle": "Clear All Data?",
+        "confirmMessage": "This will permanently delete all your accounts, transactions, budgets, and goals. This action cannot be undone.",
+        "confirm": "Yes, Delete Everything",
+        "success": "All data cleared successfully.",
+        "error": "Failed to clear data. Please try again."
+      }
     }
   }
 }

@@ -4,11 +4,20 @@
  * WCAG 2.1 AA compliant
  */
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import * as Select from '@radix-ui/react-select';
+import * as Dialog from '@radix-ui/react-dialog';
 import { BackButton } from '../../../shared/components/BackButton';
+import {
+  exportData,
+  downloadExportFile,
+  parseImportFile,
+  importData,
+  clearAllData,
+  type ExportData,
+} from '../../../core/services/dataExportService';
 import './SettingsPage.css';
 
 type Theme = 'light' | 'dark' | 'system';
@@ -17,6 +26,15 @@ type Currency = 'INR' | 'USD' | 'EUR' | 'GBP';
 
 export function SettingsPage() {
   const { t, i18n } = useTranslation();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // State
+  const [isExporting, setIsExporting] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
+  const [showClearDialog, setShowClearDialog] = useState(false);
+  const [showImportDialog, setShowImportDialog] = useState(false);
+  const [importFile, setImportFile] = useState<File | null>(null);
+  const [importDataState, setImportDataState] = useState<ExportData | null>(null);
   
   // Load from localStorage or use defaults
   const [theme, setTheme] = useState<Theme>(
@@ -56,14 +74,73 @@ export function SettingsPage() {
     localStorage.setItem('currency', value);
   };
 
-  const handleExportData = () => {
-    // TODO: Implement data export
-    alert(t('settings.dataManagement.export.comingSoon'));
+  const handleExportData = async () => {
+    try {
+      setIsExporting(true);
+      const data = await exportData();
+      downloadExportFile(data);
+      alert(t('settings.dataManagement.export.success'));
+    } catch (error) {
+      console.error('Export failed:', error);
+      alert(t('settings.dataManagement.export.error'));
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleImportFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setImportFile(file);
+      parseImportFile(file)
+        .then((data) => {
+          setImportDataState(data);
+          setShowImportDialog(true);
+        })
+        .catch((error) => {
+          console.error('Parse failed:', error);
+          alert(t('settings.dataManagement.import.parseError'));
+        });
+    }
+  };
+
+  const handleImportConfirm = async () => {
+    if (!importDataState) return;
+
+    try {
+      setIsImporting(true);
+      await importData(importDataState);
+      setShowImportDialog(false);
+      alert(t('settings.dataManagement.import.success'));
+      // Reload page to refresh all data
+      window.location.reload();
+    } catch (error) {
+      console.error('Import failed:', error);
+      alert(t('settings.dataManagement.import.error'));
+    } finally {
+      setIsImporting(false);
+    }
   };
 
   const handleImportData = () => {
-    // TODO: Implement data import
-    alert(t('settings.dataManagement.import.comingSoon'));
+    fileInputRef.current?.click();
+  };
+
+  const handleClearData = () => {
+    setShowClearDialog(true);
+  };
+
+  const handleClearConfirm = async () => {
+    try {
+      await clearAllData();
+      setShowClearDialog(false);
+      alert(t('settings.privacy.clearData.success'));
+      // Reload page to refresh all data
+      window.location.reload();
+    } catch (error) {
+      console.error('Clear data failed:', error);
+      alert(t('settings.privacy.clearData.error'));
+    }
   };
 
   return (
@@ -315,6 +392,15 @@ export function SettingsPage() {
               </span>
             </button>
           </div>
+
+          {/* Hidden file input */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".json"
+            style={{ display: 'none' }}
+            onChange={handleImportFileSelect}
+          />
         </section>
 
         {/* Categories Section - Coming Soon */}
@@ -332,7 +418,7 @@ export function SettingsPage() {
           </div>
         </section>
 
-        {/* Privacy Section - Coming Soon */}
+        {/* Privacy Section */}
         <section className="section settings-section">
           <div className="section-header">
             <h2 className="section-header__title">{t('settings.privacy.title')}</h2>
@@ -340,11 +426,96 @@ export function SettingsPage() {
               {t('settings.privacy.description')}
             </p>
           </div>
-          <div className="settings-placeholder">
-            <p>{t('settings.privacy.comingSoon')}</p>
+
+          <div className="settings-actions">
+            <button
+              type="button"
+              className="settings-action-button settings-action-button--danger"
+              onClick={handleClearData}
+            >
+              <span className="settings-action-icon">🗑️</span>
+              <span className="settings-action-text">
+                <span className="settings-action-title">
+                  {t('settings.privacy.clearData.label')}
+                </span>
+                <span className="settings-action-description">
+                  {t('settings.privacy.clearData.description')}
+                </span>
+              </span>
+            </button>
           </div>
         </section>
       </div>
+
+      {/* Import Confirmation Dialog */}
+      <Dialog.Root open={showImportDialog} onOpenChange={setShowImportDialog}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="dialog-overlay" />
+          <Dialog.Content className="dialog-content">
+            <Dialog.Title className="dialog-title">
+              {t('settings.dataManagement.import.confirmTitle')}
+            </Dialog.Title>
+            <Dialog.Description className="dialog-description">
+              {t('settings.dataManagement.import.confirmMessage')}
+            </Dialog.Description>
+
+            {importDataState && (
+              <div className="import-summary">
+                <p><strong>{t('settings.dataManagement.import.accounts')}:</strong> {importDataState.accounts.length}</p>
+                <p><strong>{t('settings.dataManagement.import.transactions')}:</strong> {importDataState.transactions.length}</p>
+                <p><strong>{t('settings.dataManagement.import.budgets')}:</strong> {importDataState.budgets.length}</p>
+                <p><strong>{t('settings.dataManagement.import.goals')}:</strong> {importDataState.goals.length}</p>
+              </div>
+            )}
+
+            <div className="dialog-actions">
+              <Dialog.Close asChild>
+                <button type="button" className="dialog-button dialog-button--secondary">
+                  {t('common.cancel')}
+                </button>
+              </Dialog.Close>
+              <button
+                type="button"
+                className="dialog-button dialog-button--primary"
+                onClick={handleImportConfirm}
+                disabled={isImporting}
+              >
+                {isImporting ? t('common.loading') : t('common.confirm')}
+              </button>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
+
+      {/* Clear Data Confirmation Dialog */}
+      <Dialog.Root open={showClearDialog} onOpenChange={setShowClearDialog}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="dialog-overlay" />
+          <Dialog.Content className="dialog-content">
+            <Dialog.Title className="dialog-title">
+              {t('settings.privacy.clearData.confirmTitle')}
+            </Dialog.Title>
+            <Dialog.Description className="dialog-description">
+              {t('settings.privacy.clearData.confirmMessage')}
+            </Dialog.Description>
+
+            <div className="dialog-actions">
+              <Dialog.Close asChild>
+                <button type="button" className="dialog-button dialog-button--secondary">
+                  {t('common.cancel')}
+                </button>
+              </Dialog.Close>
+              <button
+                type="button"
+                className="dialog-button dialog-button--danger"
+                onClick={handleClearConfirm}
+              >
+                {t('settings.privacy.clearData.confirm')}
+              </button>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </div>
   );
 }
