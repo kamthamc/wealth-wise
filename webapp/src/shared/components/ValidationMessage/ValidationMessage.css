@@ -1,0 +1,125 @@
+/* Validation Message Component Styles */
+
+.validation-message {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+  margin-top: var(--spacing-xs);
+  animation: validation-slide-in 0.2s ease-out;
+}
+
+/* State Variants */
+.validation-message--error {
+  color: var(--color-danger);
+  background-color: var(--color-danger-bg, rgba(239, 68, 68, 0.1));
+  border-left: 3px solid var(--color-danger);
+}
+
+.validation-message--success {
+  color: var(--color-success);
+  background-color: var(--color-success-bg, rgba(34, 197, 94, 0.1));
+  border-left: 3px solid var(--color-success);
+}
+
+.validation-message--warning {
+  color: var(--color-warning, #f59e0b);
+  background-color: var(--color-warning-bg, rgba(245, 158, 11, 0.1));
+  border-left: 3px solid var(--color-warning, #f59e0b);
+}
+
+.validation-message--info {
+  color: var(--color-info, #3b82f6);
+  background-color: var(--color-info-bg, rgba(59, 130, 246, 0.1));
+  border-left: 3px solid var(--color-info, #3b82f6);
+}
+
+/* Icon */
+.validation-message__icon {
+  font-size: 1em;
+  font-weight: 700;
+  flex-shrink: 0;
+  line-height: 1.4;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+}
+
+/* Text */
+.validation-message__text {
+  flex: 1;
+  font-weight: 500;
+}
+
+/* Animation */
+@keyframes validation-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Compact variant for inline usage */
+.validation-message--compact {
+  padding: 2px var(--spacing-xs);
+  margin-top: 2px;
+  font-size: var(--font-size-xs);
+  border-left-width: 2px;
+}
+
+.validation-message--compact .validation-message__icon {
+  width: 12px;
+  height: 12px;
+  font-size: 0.85em;
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .validation-message--error {
+    background-color: rgba(239, 68, 68, 0.15);
+  }
+
+  .validation-message--success {
+    background-color: rgba(34, 197, 94, 0.15);
+  }
+
+  .validation-message--warning {
+    background-color: rgba(245, 158, 11, 0.15);
+  }
+
+  .validation-message--info {
+    background-color: rgba(59, 130, 246, 0.15);
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .validation-message {
+    border: 1px solid currentColor;
+    font-weight: 600;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .validation-message {
+    animation: none;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .validation-message {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-xs);
+  }
+}

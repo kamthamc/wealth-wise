@@ -58,3 +58,7 @@ export {
   type ToastMessage,
   type ToastType,
 } from './ToastProvider';
+export {
+  ValidationMessage,
+  type ValidationMessageProps,
+} from './ValidationMessage';
