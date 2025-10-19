@@ -9,6 +9,7 @@ import {
   BudgetProgress,
   DashboardLayout,
   FinancialOverview,
+  GoalsProgress,
   RecentTransactions,
 } from '@/features/dashboard/components';
 import { Spinner } from '@/shared/components';
@@ -45,6 +46,7 @@ function DashboardPage() {
       <FinancialOverview />
       <RecentTransactions />
       <BudgetProgress />
+      <GoalsProgress />
     </DashboardLayout>
   );
 }

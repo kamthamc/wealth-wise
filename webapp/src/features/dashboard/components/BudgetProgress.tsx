@@ -3,49 +3,44 @@
  * Display budget progress for different categories
  */
 
-import { Card, ProgressBar } from '@/shared/components';
+import { useMemo } from 'react';
+import { Link } from '@tanstack/react-router';
+import { useBudgetStore } from '@/core/stores';
+import { Card, ProgressBar, EmptyState } from '@/shared/components';
+import { formatCurrency } from '@/shared/utils';
+import { calculateBudgetProgress, getBudgetPeriodIcon } from '@/features/budgets';
 import './BudgetProgress.css';
 
-interface BudgetItem {
-  id: string;
-  category: string;
-  spent: number;
-  limit: number;
-  icon: string;
-}
-
 export function BudgetProgress() {
-  // TODO: Replace with real data from store
-  const budgets: BudgetItem[] = [
-    {
-      id: '1',
-      category: 'Food & Dining',
-      spent: 12450,
-      limit: 15000,
-      icon: '🍽️',
-    },
-    {
-      id: '2',
-      category: 'Transportation',
-      spent: 4200,
-      limit: 5000,
-      icon: '🚗',
-    },
-    {
-      id: '3',
-      category: 'Entertainment',
-      spent: 2850,
-      limit: 3000,
-      icon: '🎬',
-    },
-    { id: '4', category: 'Shopping', spent: 8900, limit: 8000, icon: '🛍️' },
-    { id: '5', category: 'Utilities', spent: 3200, limit: 5000, icon: '💡' },
-  ];
+  const { budgets } = useBudgetStore();
 
-  const getVariant = (spent: number, limit: number) => {
-    const percentage = (spent / limit) * 100;
-    if (percentage >= 100) return 'danger';
-    if (percentage >= 80) return 'warning';
+  // Get active budgets sorted by progress percentage
+  const activeBudgets = useMemo(() => {
+    return budgets
+      .filter((b) => b.is_active)
+      .map((budget) => {
+        const percentage = (budget.spent / budget.amount) * 100;
+        const status = calculateBudgetProgress(
+          budget.spent,
+          budget.amount,
+          budget.alert_threshold
+        );
+        return {
+          ...budget,
+          percentage,
+          status,
+        };
+      })
+      .sort((a, b) => b.percentage - a.percentage)
+      .slice(0, 5); // Top 5 budgets
+  }, [budgets]);
+
+  const getVariant = (
+    status: ReturnType<typeof calculateBudgetProgress>
+  ): 'success' | 'warning' | 'danger' => {
+    if (status === 'over') return 'danger';
+    if (status === 'danger') return 'danger';
+    if (status === 'warning') return 'warning';
     return 'success';
   };
 
@@ -54,49 +49,56 @@ export function BudgetProgress() {
       <Card>
         <div className="budget-progress__header">
           <h2 className="budget-progress__title">Budget Progress</h2>
-          <span className="budget-progress__subtitle">This month</span>
+          <Link to="/budgets" className="budget-progress__link">
+            View All →
+          </Link>
         </div>
 
-        <div className="budget-progress__list">
-          {budgets.map((budget) => {
-            const percentage = (budget.spent / budget.limit) * 100;
-            const variant = getVariant(budget.spent, budget.limit);
+        {activeBudgets.length > 0 ? (
+          <div className="budget-progress__list">
+            {activeBudgets.map((budget) => {
+              const variant = getVariant(budget.status);
 
-            return (
-              <div key={budget.id} className="budget-item">
-                <div className="budget-item__header">
-                  <div className="budget-item__category">
-                    <span className="budget-item__icon">{budget.icon}</span>
-                    <span className="budget-item__name">{budget.category}</span>
+              return (
+                <div key={budget.id} className="budget-item">
+                  <div className="budget-item__header">
+                    <div className="budget-item__category">
+                      <span className="budget-item__icon">
+                        {getBudgetPeriodIcon(budget.period)}
+                      </span>
+                      <span className="budget-item__name">{budget.name}</span>
+                    </div>
+                    <span className="budget-item__amount">
+                      {formatCurrency(budget.spent)} /{' '}
+                      {formatCurrency(budget.amount)}
+                    </span>
                   </div>
-                  <span className="budget-item__amount">
-                    {new Intl.NumberFormat('en-IN', {
-                      style: 'currency',
-                      currency: 'INR',
-                      maximumFractionDigits: 0,
-                    }).format(budget.spent)}{' '}
-                    /{' '}
-                    {new Intl.NumberFormat('en-IN', {
-                      style: 'currency',
-                      currency: 'INR',
-                      maximumFractionDigits: 0,
-                    }).format(budget.limit)}
-                  </span>
+                  <ProgressBar
+                    value={budget.spent}
+                    max={budget.amount}
+                    variant={variant}
+                    size="medium"
+                    showValue
+                  />
+                  {budget.percentage >= 100 && (
+                    <p className="budget-item__warning">⚠️ Budget exceeded!</p>
+                  )}
+                  {budget.percentage >= 80 && budget.percentage < 100 && (
+                    <p className="budget-item__warning budget-item__warning--mild">
+                      ⚡ Approaching limit
+                    </p>
+                  )}
                 </div>
-                <ProgressBar
-                  value={budget.spent}
-                  max={budget.limit}
-                  variant={variant}
-                  size="medium"
-                  showValue
-                />
-                {percentage >= 100 && (
-                  <p className="budget-item__warning">⚠️ Budget exceeded!</p>
-                )}
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        ) : (
+          <EmptyState
+            icon="💰"
+            title="No budgets yet"
+            description="Create budgets to track your spending"
+          />
+        )}
       </Card>
     </section>
   );

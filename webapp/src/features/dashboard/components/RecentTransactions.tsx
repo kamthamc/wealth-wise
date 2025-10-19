@@ -3,6 +3,9 @@
  * Display recent financial transactions
  */
 
+import { useMemo } from 'react';
+import { Link } from '@tanstack/react-router';
+import { useTransactionStore } from '@/core/stores';
 import {
   Badge,
   Card,
@@ -10,61 +13,24 @@ import {
   Table,
   type TableColumn,
 } from '@/shared/components';
+import { formatCurrency } from '@/shared/utils';
+import {
+  getTransactionIcon,
+  getTransactionTypeColor,
+} from '@/features/transactions';
 import './RecentTransactions.css';
 
-interface Transaction {
-  id: string;
-  date: string;
-  description: string;
-  category: string;
-  amount: number;
-  type: 'income' | 'expense';
-}
+import type { Transaction } from '@/core/db/types';
 
 export function RecentTransactions() {
-  // TODO: Replace with real data from store
-  const transactions: Transaction[] = [
-    {
-      id: '1',
-      date: '2025-10-12',
-      description: 'Salary Credit',
-      category: 'Income',
-      amount: 85000,
-      type: 'income',
-    },
-    {
-      id: '2',
-      date: '2025-10-11',
-      description: 'Grocery Shopping',
-      category: 'Food & Dining',
-      amount: -2450,
-      type: 'expense',
-    },
-    {
-      id: '3',
-      date: '2025-10-10',
-      description: 'Electricity Bill',
-      category: 'Utilities',
-      amount: -1820,
-      type: 'expense',
-    },
-    {
-      id: '4',
-      date: '2025-10-09',
-      description: 'Freelance Project',
-      category: 'Income',
-      amount: 15000,
-      type: 'income',
-    },
-    {
-      id: '5',
-      date: '2025-10-08',
-      description: 'Netflix Subscription',
-      category: 'Entertainment',
-      amount: -649,
-      type: 'expense',
-    },
-  ];
+  const { transactions } = useTransactionStore();
+
+  // Get the 5 most recent transactions
+  const recentTransactions = useMemo(() => {
+    return transactions
+      .sort((a, b) => b.date.getTime() - a.date.getTime())
+      .slice(0, 5);
+  }, [transactions]);
 
   const columns: TableColumn<Transaction>[] = [
     {
@@ -76,7 +42,12 @@ export function RecentTransactions() {
     {
       key: 'description',
       header: 'Description',
-      accessor: (row) => row.description,
+      accessor: (row) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span>{getTransactionIcon(row.type)}</span>
+          <span>{row.description || 'Untitled transaction'}</span>
+        </div>
+      ),
       sortable: true,
     },
     {
@@ -84,28 +55,33 @@ export function RecentTransactions() {
       header: 'Category',
       accessor: (row) => (
         <Badge variant="default" size="small">
-          {row.category}
+          {row.category || 'Uncategorized'}
         </Badge>
       ),
     },
     {
       key: 'amount',
       header: 'Amount',
-      accessor: (row) => (
-        <span
-          className={`transaction-amount ${
-            row.type === 'income'
-              ? 'transaction-amount--income'
-              : 'transaction-amount--expense'
-          }`}
-        >
-          {row.type === 'income' ? '+' : ''}
-          {new Intl.NumberFormat('en-IN', {
-            style: 'currency',
-            currency: 'INR',
-          }).format(row.amount)}
-        </span>
-      ),
+      accessor: (row) => {
+        const variant = getTransactionTypeColor(row.type);
+        return (
+          <span
+            className={`transaction-amount transaction-amount--${variant}`}
+            style={{
+              color:
+                row.type === 'income'
+                  ? 'var(--color-success)'
+                  : row.type === 'expense'
+                    ? 'var(--color-danger)'
+                    : 'var(--color-primary)',
+              fontWeight: 600,
+            }}
+          >
+            {row.type === 'income' ? '+' : row.type === 'expense' ? '-' : ''}
+            {formatCurrency(row.amount)}
+          </span>
+        );
+      },
       align: 'right',
       sortable: true,
     },
@@ -116,15 +92,15 @@ export function RecentTransactions() {
       <Card>
         <div className="recent-transactions__header">
           <h2 className="recent-transactions__title">Recent Transactions</h2>
-          <a href="/transactions" className="recent-transactions__link">
+          <Link to="/transactions" className="recent-transactions__link">
             View All →
-          </a>
+          </Link>
         </div>
 
-        {transactions.length > 0 ? (
+        {recentTransactions.length > 0 ? (
           <Table
             columns={columns}
-            data={transactions}
+            data={recentTransactions}
             keyExtractor={(row) => row.id}
             hoverable
             compact
