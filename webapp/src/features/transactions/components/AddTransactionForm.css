@@ -1,0 +1,236 @@
+/* Add Transaction Form Styles */
+
+.transaction-form__overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  animation: fadeIn 200ms ease;
+}
+
+.transaction-form__content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  width: 90%;
+  max-width: 600px;
+  max-height: 85vh;
+  overflow-y: auto;
+  z-index: 1001;
+  animation: slideIn 200ms ease;
+}
+
+.transaction-form__header {
+  position: relative;
+  padding: var(--spacing-6) var(--spacing-6) var(--spacing-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.transaction-form__title {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--spacing-2) 0;
+  padding-right: var(--spacing-8);
+}
+
+.transaction-form__description {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.transaction-form__close {
+  position: absolute;
+  top: var(--spacing-6);
+  right: var(--spacing-6);
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--color-surface-hover);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: var(--font-size-xl);
+  line-height: 1;
+  transition: all 0.2s ease;
+}
+
+.transaction-form__close:hover {
+  background: var(--color-danger-subtle);
+  color: var(--color-danger);
+}
+
+.transaction-form__close:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.transaction-form__form {
+  padding: var(--spacing-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+}
+
+.transaction-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.transaction-form__label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.transaction-form__error {
+  font-size: var(--font-size-sm);
+  color: var(--color-danger);
+  margin-top: var(--spacing-1);
+}
+
+.transaction-form__submit-error {
+  padding: var(--spacing-3);
+  background: var(--color-danger-subtle);
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-md);
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+/* Transaction Type Selector */
+.transaction-form__type-selector {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-3);
+}
+
+.transaction-form__type-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-4);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.transaction-form__type-button:hover {
+  border-color: var(--color-primary);
+  background: var(--color-surface-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.transaction-form__type-button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.transaction-form__type-button--selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-subtle);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.transaction-form__type-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.transaction-form__type-name {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+/* Footer */
+.transaction-form__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4) var(--spacing-6) var(--spacing-6);
+  border-top: 1px solid var(--color-border);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .transaction-form__content {
+    width: 95%;
+    max-height: 90vh;
+  }
+
+  .transaction-form__header {
+    padding: var(--spacing-5) var(--spacing-5) var(--spacing-3);
+  }
+
+  .transaction-form__title {
+    font-size: var(--font-size-xl);
+  }
+
+  .transaction-form__form {
+    padding: var(--spacing-5);
+    gap: var(--spacing-4);
+  }
+
+  .transaction-form__type-selector {
+    grid-template-columns: 1fr;
+  }
+
+  .transaction-form__footer {
+    padding: var(--spacing-3) var(--spacing-5) var(--spacing-5);
+    flex-direction: column-reverse;
+  }
+
+  .transaction-form__footer button {
+    width: 100%;
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .transaction-form__overlay,
+  .transaction-form__content {
+    animation: none;
+  }
+
+  .transaction-form__type-button:hover {
+    transform: none;
+  }
+}
