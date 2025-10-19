@@ -19,6 +19,7 @@ export {
 } from './Button';
 export { Card, type CardProps } from './Card';
 // Form Components
+export { AccountSelect, type AccountSelectProps } from './AccountSelect';
 export { Checkbox, type CheckboxProps } from './Checkbox';
 export { ConfirmDialog, type ConfirmDialogProps } from './ConfirmDialog';
 export { CurrencyInput, type CurrencyInputProps } from './CurrencyInput';

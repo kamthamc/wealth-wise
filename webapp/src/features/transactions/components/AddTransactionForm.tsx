@@ -5,8 +5,13 @@
 
 import * as Dialog from '@radix-ui/react-dialog';
 import { useEffect, useId, useState } from 'react';
-import { useTransactionStore } from '@/core/stores';
-import { Button, CurrencyInput, Input } from '@/shared/components';
+import { useAccountStore, useTransactionStore } from '@/core/stores';
+import {
+  AccountSelect,
+  Button,
+  CurrencyInput,
+  Input,
+} from '@/shared/components';
 import type { TransactionFormData, TransactionType } from '../types';
 import {
   getTransactionIcon,
@@ -37,6 +42,7 @@ export function AddTransactionForm({
   const formId = useId();
   const { transactions, createTransaction, updateTransaction } =
     useTransactionStore();
+  const { accounts } = useAccountStore();
 
   // Form state
   const [formData, setFormData] = useState<TransactionFormData>({
@@ -232,19 +238,16 @@ export function AddTransactionForm({
               >
                 Account *
               </label>
-              <Input
+              <AccountSelect
                 id={`${formId}-account`}
-                type="text"
                 value={formData.account_id}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    account_id: e.target.value,
-                  }))
+                onValueChange={(accountId) =>
+                  setFormData((prev) => ({ ...prev, account_id: accountId }))
                 }
-                placeholder="Enter account ID"
+                accounts={accounts}
+                placeholder="Select an account..."
                 required
-                aria-invalid={!!errors.account_id}
+                error={errors.account_id}
                 aria-describedby={
                   errors.account_id ? `${formId}-account-error` : undefined
                 }
