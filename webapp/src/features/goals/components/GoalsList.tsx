@@ -9,7 +9,9 @@ import {
   Button,
   EmptyState,
   Input,
-  Spinner,
+  SkeletonList,
+  SkeletonStats,
+  SkeletonText,
   StatCard,
 } from '@/shared/components';
 import { formatCurrency } from '@/shared/utils';
@@ -93,9 +95,17 @@ export function GoalsList() {
 
   if (isLoading) {
     return (
-      <div className="goals-page__loading">
-        <Spinner size="large" />
-        <p style={{ color: 'var(--color-text-secondary)' }}>Loading goals...</p>
+      <div className="goals-page">
+        {/* Header */}
+        <div className="goals-page__header">
+          <SkeletonText width="150px" />
+        </div>
+
+        {/* Stats Skeleton */}
+        <SkeletonStats count={4} />
+
+        {/* List Skeleton */}
+        <SkeletonList items={6} />
       </div>
     );
   }

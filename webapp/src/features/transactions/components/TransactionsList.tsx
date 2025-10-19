@@ -10,7 +10,9 @@ import {
   Button,
   EmptyState,
   Input,
-  Spinner,
+  SkeletonList,
+  SkeletonStats,
+  SkeletonText,
   StatCard,
 } from '@/shared/components';
 import { formatCurrency, formatDate } from '@/shared/utils';
@@ -93,11 +95,17 @@ export function TransactionsList() {
 
   if (isLoading) {
     return (
-      <div className="transactions-page__loading">
-        <Spinner size="large" />
-        <p style={{ color: 'var(--color-text-secondary)' }}>
-          Loading transactions...
-        </p>
+      <div className="transactions-page">
+        {/* Header */}
+        <div className="transactions-page__header">
+          <SkeletonText width="220px" />
+        </div>
+
+        {/* Stats Skeleton */}
+        <SkeletonStats count={4} />
+
+        {/* List Skeleton */}
+        <SkeletonList items={10} />
       </div>
     );
   }
@@ -181,6 +189,7 @@ export function TransactionsList() {
         <div className="transactions-page__empty">
           <EmptyState
             icon="💳"
+            size={searchQuery || filters.type ? 'small' : 'medium'}
             title={
               searchQuery || filters.type
                 ? 'No transactions found'
@@ -188,14 +197,21 @@ export function TransactionsList() {
             }
             description={
               searchQuery || filters.type
-                ? 'Try adjusting your filters or search query'
-                : 'Get started by adding your first transaction'
+                ? 'Try adjusting your filters or search query to find the transactions you\'re looking for'
+                : 'Start tracking your income and expenses by recording your first transaction'
             }
             action={
               !searchQuery && !filters.type ? (
                 <Button onClick={() => setIsFormOpen(true)}>
                   Add Your First Transaction
                 </Button>
+              ) : undefined
+            }
+            secondaryAction={
+              !searchQuery && !filters.type ? (
+                <a href="#" onClick={(e) => e.preventDefault()}>
+                  Import from bank statement →
+                </a>
               ) : undefined
             }
           />

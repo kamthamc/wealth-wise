@@ -11,12 +11,17 @@ import {
   formatGoalPercentage,
   getGoalPriorityIcon,
 } from '@/features/goals';
-import { Card, EmptyState, ProgressBar } from '@/shared/components';
+import {
+  Card,
+  EmptyState,
+  ProgressBar,
+  SkeletonList,
+} from '@/shared/components';
 import { formatCurrency } from '@/shared/utils';
 import './GoalsProgress.css';
 
 export function GoalsProgress() {
-  const { goals } = useGoalStore();
+  const { goals, isLoading } = useGoalStore();
 
   // Get active goals sorted by priority and progress
   const activeGoals = useMemo(() => {
@@ -65,7 +70,9 @@ export function GoalsProgress() {
           </Link>
         </div>
 
-        {activeGoals.length > 0 ? (
+        {isLoading ? (
+          <SkeletonList items={5} />
+        ) : activeGoals.length > 0 ? (
           <div className="goals-progress__list">
             {activeGoals.map((goal) => {
               const variant = getVariant(goal.progressStatus);

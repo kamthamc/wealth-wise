@@ -10,12 +10,17 @@ import {
   calculateBudgetProgress,
   getBudgetPeriodIcon,
 } from '@/features/budgets';
-import { Card, EmptyState, ProgressBar } from '@/shared/components';
+import {
+  Card,
+  EmptyState,
+  ProgressBar,
+  SkeletonList,
+} from '@/shared/components';
 import { formatCurrency } from '@/shared/utils';
 import './BudgetProgress.css';
 
 export function BudgetProgress() {
-  const { budgets } = useBudgetStore();
+  const { budgets, isLoading } = useBudgetStore();
 
   // Get active budgets sorted by progress percentage
   const activeBudgets = useMemo(() => {
@@ -57,7 +62,9 @@ export function BudgetProgress() {
           </Link>
         </div>
 
-        {activeBudgets.length > 0 ? (
+        {isLoading ? (
+          <SkeletonList items={5} />
+        ) : activeBudgets.length > 0 ? (
           <div className="budget-progress__list">
             {activeBudgets.map((budget) => {
               const variant = getVariant(budget.status);

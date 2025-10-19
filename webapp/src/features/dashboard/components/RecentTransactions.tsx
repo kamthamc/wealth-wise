@@ -14,6 +14,7 @@ import {
   Badge,
   Card,
   EmptyState,
+  SkeletonList,
   Table,
   type TableColumn,
 } from '@/shared/components';
@@ -23,7 +24,7 @@ import './RecentTransactions.css';
 import type { Transaction } from '@/core/db/types';
 
 export function RecentTransactions() {
-  const { transactions } = useTransactionStore();
+  const { transactions, isLoading } = useTransactionStore();
 
   // Get the 5 most recent transactions
   const recentTransactions = useMemo(() => {
@@ -97,7 +98,9 @@ export function RecentTransactions() {
           </Link>
         </div>
 
-        {recentTransactions.length > 0 ? (
+        {isLoading ? (
+          <SkeletonList items={5} />
+        ) : recentTransactions.length > 0 ? (
           <Table
             columns={columns}
             data={recentTransactions}

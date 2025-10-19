@@ -12,7 +12,9 @@ import {
   ConfirmDialog,
   EmptyState,
   Input,
-  Spinner,
+  SkeletonCard,
+  SkeletonStats,
+  SkeletonText,
   StatCard,
 } from '@/shared/components';
 import { formatCurrency } from '@/shared/utils';
@@ -116,11 +118,21 @@ export function AccountsList() {
 
   if (isLoading) {
     return (
-      <div className="accounts-page__loading">
-        <Spinner size="large" />
-        <p style={{ color: 'var(--color-text-secondary)' }}>
-          Loading accounts...
-        </p>
+      <div className="accounts-page">
+        {/* Header */}
+        <div className="accounts-page__header">
+          <SkeletonText width="200px" />
+        </div>
+
+        {/* Stats Skeleton */}
+        <SkeletonStats count={3} />
+
+        {/* Grid Skeleton */}
+        <div className="accounts-page__grid">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
       </div>
     );
   }
@@ -197,6 +209,7 @@ export function AccountsList() {
         <div className="accounts-page__empty">
           <EmptyState
             icon="🏦"
+            size={searchQuery || filters.type ? 'small' : 'medium'}
             title={
               searchQuery || filters.type
                 ? 'No accounts found'
@@ -204,14 +217,21 @@ export function AccountsList() {
             }
             description={
               searchQuery || filters.type
-                ? 'Try adjusting your filters or search query'
-                : 'Get started by adding your first account'
+                ? 'Try adjusting your filters or search query to find what you\'re looking for'
+                : 'Start tracking your finances by adding your bank accounts, credit cards, and other financial accounts'
             }
             action={
               !searchQuery && !filters.type ? (
                 <Button onClick={() => setIsAddModalOpen(true)}>
                   Add Your First Account
                 </Button>
+              ) : undefined
+            }
+            secondaryAction={
+              !searchQuery && !filters.type ? (
+                <a href="#" onClick={(e) => e.preventDefault()}>
+                  Learn about account types →
+                </a>
               ) : undefined
             }
           />

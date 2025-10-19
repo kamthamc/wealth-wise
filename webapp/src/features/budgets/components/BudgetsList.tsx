@@ -9,7 +9,9 @@ import {
   Button,
   EmptyState,
   Input,
-  Spinner,
+  SkeletonList,
+  SkeletonStats,
+  SkeletonText,
   StatCard,
 } from '@/shared/components';
 import { formatCurrency } from '@/shared/utils';
@@ -84,11 +86,17 @@ export function BudgetsList() {
 
   if (isLoading) {
     return (
-      <div className="budgets-page__loading">
-        <Spinner size="large" />
-        <p style={{ color: 'var(--color-text-secondary)' }}>
-          Loading budgets...
-        </p>
+      <div className="budgets-page">
+        {/* Header */}
+        <div className="budgets-page__header">
+          <SkeletonText width="180px" />
+        </div>
+
+        {/* Stats Skeleton */}
+        <SkeletonStats count={3} />
+
+        {/* List Skeleton */}
+        <SkeletonList items={6} />
       </div>
     );
   }
