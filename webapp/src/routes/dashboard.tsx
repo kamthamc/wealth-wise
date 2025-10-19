@@ -10,7 +10,9 @@ import {
   DashboardLayout,
   FinancialOverview,
   GoalsProgress,
+  QuickActions,
   RecentTransactions,
+  WelcomeBanner,
 } from '@/features/dashboard/components';
 import { Spinner } from '@/shared/components';
 
@@ -43,6 +45,8 @@ function DashboardPage() {
 
   return (
     <DashboardLayout>
+      <WelcomeBanner />
+      <QuickActions />
       <FinancialOverview />
       <RecentTransactions />
       <BudgetProgress />
