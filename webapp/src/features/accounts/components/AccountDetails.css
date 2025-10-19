@@ -1,0 +1,292 @@
+/* Account Details Page Styles */
+
+.account-details {
+  padding: var(--spacing-6) var(--spacing-4);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header Section */
+.account-details__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-6);
+  gap: var(--spacing-4);
+  flex-wrap: wrap;
+}
+
+.account-details__back-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.account-details__actions {
+  display: flex;
+  gap: var(--spacing-3);
+}
+
+/* Info Card */
+.account-details__info-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-6);
+  margin-bottom: var(--spacing-6);
+  box-shadow: var(--shadow-md);
+}
+
+.account-details__info-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-6);
+  padding-bottom: var(--spacing-6);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.account-details__icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-xl);
+  background: var(--color-primary-subtle);
+  font-size: 2.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.account-details__icon {
+  display: block;
+}
+
+.account-details__title-section {
+  flex: 1;
+}
+
+.account-details__name {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--spacing-2) 0;
+  line-height: 1.2;
+}
+
+.account-details__type {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Balance Section */
+.account-details__balance-section {
+  text-align: center;
+  padding: var(--spacing-6) 0;
+  margin-bottom: var(--spacing-6);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.account-details__balance-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--spacing-2) 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.account-details__balance {
+  font-size: var(--font-size-4xl);
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+/* Meta Grid */
+.account-details__meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-5);
+}
+
+.account-details__meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.account-details__meta-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.account-details__meta-value {
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  font-weight: 500;
+  font-family: "Monaco", "Menlo", "Courier New", monospace;
+}
+
+.account-details__status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.account-details__status--active {
+  background: var(--color-success-subtle);
+  color: var(--color-success);
+}
+
+.account-details__status--inactive {
+  background: var(--color-danger-subtle);
+  color: var(--color-danger);
+}
+
+/* Statistics Section */
+.account-details__stats {
+  margin-bottom: var(--spacing-8);
+}
+
+.account-details__section-title {
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--spacing-5) 0;
+}
+
+.account-details__stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-4);
+}
+
+/* Transactions Section */
+.account-details__transactions {
+  margin-top: var(--spacing-8);
+}
+
+.account-details__section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-5);
+  gap: var(--spacing-4);
+  flex-wrap: wrap;
+}
+
+.account-details__transactions-empty {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-8);
+  text-align: center;
+}
+
+/* Loading State */
+.account-details__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-10);
+  gap: var(--spacing-4);
+  min-height: 400px;
+}
+
+/* Empty State */
+.account-details__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-10);
+  min-height: 400px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .account-details {
+    padding: var(--spacing-4) var(--spacing-3);
+  }
+
+  .account-details__header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .account-details__actions {
+    width: 100%;
+  }
+
+  .account-details__actions button {
+    flex: 1;
+  }
+
+  .account-details__info-card {
+    padding: var(--spacing-4);
+  }
+
+  .account-details__info-header {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .account-details__icon-wrapper {
+    width: 56px;
+    height: 56px;
+    font-size: 2rem;
+  }
+
+  .account-details__name {
+    font-size: var(--font-size-2xl);
+  }
+
+  .account-details__balance {
+    font-size: var(--font-size-3xl);
+  }
+
+  .account-details__meta-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-4);
+  }
+
+  .account-details__stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .account-details__section-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .account-details__section-header button {
+    width: 100%;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .account-details__header,
+  .account-details__actions {
+    display: none;
+  }
+
+  .account-details__info-card {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+}

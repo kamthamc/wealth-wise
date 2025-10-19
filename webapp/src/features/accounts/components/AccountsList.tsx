@@ -9,6 +9,7 @@ import type { Account } from '@/core/db/types';
 import { useAccountStore } from '@/core/stores';
 import {
   Button,
+  ConfirmDialog,
   EmptyState,
   Input,
   Spinner,
@@ -46,6 +47,7 @@ export function AccountsList() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState<Account | undefined>();
+  const [deletingAccount, setDeletingAccount] = useState<Account | undefined>();
 
   // Filter and search accounts
   const filteredAccounts = useMemo(() => {
@@ -99,14 +101,11 @@ export function AccountsList() {
     }
   };
 
-  const handleDeleteAccount = async (account: Account) => {
-    if (
-      window.confirm(
-        `Are you sure you want to delete "${account.name}"? This action cannot be undone.`
-      )
-    ) {
-      await deleteAccount(account.id);
+  const handleDeleteAccount = async () => {
+    if (deletingAccount) {
+      await deleteAccount(deletingAccount.id);
       await fetchAccounts();
+      setDeletingAccount(undefined);
     }
   };
 
@@ -225,7 +224,7 @@ export function AccountsList() {
               account={account}
               onClick={handleAccountClick}
               onEdit={setEditingAccount}
-              onDelete={handleDeleteAccount}
+              onDelete={setDeletingAccount}
             />
           ))}
         </div>
@@ -240,6 +239,18 @@ export function AccountsList() {
           setEditingAccount(undefined);
         }}
         onSubmit={editingAccount ? handleEditAccount : handleAddAccount}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={!!deletingAccount}
+        onClose={() => setDeletingAccount(undefined)}
+        onConfirm={handleDeleteAccount}
+        title="Delete Account?"
+        description={`Are you sure you want to delete "${deletingAccount?.name}"? This action cannot be undone and all associated data will be permanently removed.`}
+        confirmLabel="Delete Account"
+        cancelLabel="Cancel"
+        variant="danger"
       />
     </div>
   );
