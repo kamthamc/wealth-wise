@@ -12,6 +12,7 @@ import {
   CurrencyInput,
   DatePicker,
   Input,
+  useToast,
 } from '@/shared/components';
 import type { TransactionFormData, TransactionType } from '../types';
 import {
@@ -44,6 +45,7 @@ export function AddTransactionForm({
   const { transactions, createTransaction, updateTransaction } =
     useTransactionStore();
   const { accounts } = useAccountStore();
+  const toast = useToast();
 
   // Form state
   const [formData, setFormData] = useState<TransactionFormData>({
@@ -100,6 +102,10 @@ export function AddTransactionForm({
           category: formData.category_id || '',
           date: new Date(formData.date),
         });
+        toast.success(
+          'Transaction updated',
+          'Your transaction has been updated successfully'
+        );
       } else {
         await createTransaction({
           ...formData,
@@ -107,14 +113,20 @@ export function AddTransactionForm({
           date: new Date(formData.date),
           is_recurring: false,
         });
+        toast.success(
+          'Transaction added',
+          'Your transaction has been added successfully'
+        );
       }
       onClose();
       resetForm();
     } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to save transaction';
       setErrors({
-        submit:
-          error instanceof Error ? error.message : 'Failed to save transaction',
+        submit: errorMessage,
       });
+      toast.error('Failed to save', errorMessage);
     } finally {
       setIsSubmitting(false);
     }
