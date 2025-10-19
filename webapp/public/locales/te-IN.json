@@ -183,6 +183,19 @@
         "totalBalance": "మొత్తం బ్యాలెన్స్",
         "activeAccounts": "క్రియాశీల ఖాతాలు",
         "totalAccounts": "మొత్తం ఖాతాలు"
+      },
+      "modal": {
+        "addTitle": "కొత్త ఖాతా జోడించండి",
+        "editTitle": "ఖాతాను సవరించండి",
+        "addSubtitle": "మీ డబ్బును ట్రాక్ చేయడానికి కొత్త ఆర్థిక ఖాతాను జోడించండి",
+        "editSubtitle": "మీ ఖాతా సమాచారాన్ని అప్‌డేట్ చేయండి",
+        "nameLabel": "ఖాతా పేరు",
+        "namePlaceholder": "ఉదాహరణకు, HDFC సేవింగ్స్",
+        "typeLabel": "ఖాతా రకం",
+        "initialBalanceLabel": "ప్రారంభ బ్యాలెన్స్",
+        "currentBalanceLabel": "ప్రస్తుత బ్యాలెన్స్",
+        "addButton": "ఖాతా జోడించు",
+        "saveButton": "మార్పులను సేవ్ చేయండి"
       }
     },
     "transactions": {

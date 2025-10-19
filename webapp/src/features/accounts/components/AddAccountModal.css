@@ -48,24 +48,20 @@
   }
 }
 
-/* Modal Header */
-.account-modal__header {
-  padding: var(--space-6) var(--space-6) var(--space-4);
-  border-bottom: 1px solid var(--border-secondary);
-}
-
+/* Modal Title & Subtitle */
 .account-modal__title {
   font-size: var(--text-2xl);
   font-weight: var(--font-bold);
   color: var(--text-primary);
-  margin: 0;
+  margin: 0 0 var(--space-2) 0;
   line-height: var(--leading-tight);
 }
 
 .account-modal__subtitle {
   font-size: var(--text-sm);
   color: var(--text-secondary);
-  margin-top: var(--space-2);
+  margin: 0 0 var(--space-6) 0;
+  line-height: var(--leading-relaxed);
 }
 
 /* Modal Form */

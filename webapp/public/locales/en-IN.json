@@ -178,11 +178,39 @@
       "title": "Accounts",
       "subtitle": "Manage your financial accounts and track balances",
       "addButton": "+ Add Account",
-      "searchPlaceholder": "🔍 Search accounts...",
+      "search": "Search accounts...",
+      "filters": {
+        "all": "All",
+        "bank": "Bank Account",
+        "creditCard": "Credit Card",
+        "upi": "UPI Account",
+        "brokerage": "Brokerage",
+        "cash": "Cash",
+        "wallet": "Wallet"
+      },
       "stats": {
         "totalBalance": "Total Balance",
         "activeAccounts": "Active Accounts",
         "totalAccounts": "Total Accounts"
+      },
+      "empty": {
+        "title": "No accounts yet",
+        "description": "Start tracking your finances by adding your bank accounts, credit cards, and other financial accounts",
+        "action": "Add Your First Account",
+        "secondaryAction": "Learn about account types →"
+      },
+      "modal": {
+        "addTitle": "Add New Account",
+        "editTitle": "Edit Account",
+        "addSubtitle": "Add a new financial account to track your money",
+        "editSubtitle": "Update your account information",
+        "nameLabel": "Account Name",
+        "namePlaceholder": "e.g., HDFC Savings",
+        "typeLabel": "Account Type",
+        "initialBalanceLabel": "Initial Balance",
+        "currentBalanceLabel": "Current Balance",
+        "addButton": "Add Account",
+        "saveButton": "Save Changes"
       }
     },
     "transactions": {

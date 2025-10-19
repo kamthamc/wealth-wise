@@ -183,6 +183,19 @@
         "totalBalance": "कुल शेष राशि",
         "activeAccounts": "सक्रिय खाते",
         "totalAccounts": "कुल खाते"
+      },
+      "modal": {
+        "addTitle": "नया खाता जोड़ें",
+        "editTitle": "खाता संपादित करें",
+        "addSubtitle": "अपने पैसे को ट्रैक करने के लिए एक नया वित्तीय खाता जोड़ें",
+        "editSubtitle": "अपनी खाता जानकारी अपडेट करें",
+        "nameLabel": "खाता का नाम",
+        "namePlaceholder": "उदाहरण, HDFC बचत",
+        "typeLabel": "खाता प्रकार",
+        "initialBalanceLabel": "प्रारंभिक शेष",
+        "currentBalanceLabel": "वर्तमान शेष",
+        "addButton": "खाता जोड़ें",
+        "saveButton": "परिवर्तन सहेजें"
       }
     },
     "transactions": {

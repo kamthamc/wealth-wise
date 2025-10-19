@@ -5,6 +5,7 @@
 
 import * as Dialog from '@radix-ui/react-dialog';
 import { useId, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Account } from '@/core/db/types';
 import { Button, CurrencyInput, Input } from '@/shared/components';
 import type { AccountFormData, AccountType } from '../types';
@@ -37,6 +38,8 @@ export function AddAccountModal({
   onClose,
   onSubmit,
 }: AddAccountModalProps) {
+  const { t } = useTranslation();
+  
   const [formData, setFormData] = useState<AccountFormData>({
     name: account?.name || '',
     type: account?.type || 'bank',
@@ -50,7 +53,6 @@ export function AddAccountModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Generate unique IDs for form elements
-  const titleId = useId();
   const nameId = useId();
   const balanceId = useId();
 
@@ -98,13 +100,16 @@ export function AddAccountModal({
     <Dialog.Root open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <Dialog.Portal>
         <Dialog.Overlay className="modal-overlay" />
-        <Dialog.Content className="account-modal__content">
+        <Dialog.Content className="account-modal__content" aria-describedby={undefined}>
           <form onSubmit={handleSubmit} className="account-modal__form">
-            <Dialog.Title asChild>
-              <h2 id={titleId}>
-                {account ? 'Edit Account' : 'Add New Account'}
-              </h2>
+            <Dialog.Title className="account-modal__title">
+              {account ? t('pages.accounts.modal.editTitle') : t('pages.accounts.modal.addTitle')}
             </Dialog.Title>
+            <Dialog.Description className="account-modal__subtitle">
+              {account 
+                ? t('pages.accounts.modal.editSubtitle')
+                : t('pages.accounts.modal.addSubtitle')}
+            </Dialog.Description>
 
             {/* Account Name */}
             <div className="account-modal__form-group">
@@ -112,7 +117,7 @@ export function AddAccountModal({
                 htmlFor={nameId}
                 className="account-modal__label account-modal__label--required"
               >
-                Account Name
+                {t('pages.accounts.modal.nameLabel')}
               </label>
               <Input
                 id={nameId}
@@ -122,7 +127,7 @@ export function AddAccountModal({
                   setFormData({ ...formData, name: e.target.value });
                   setErrors({ ...errors, name: '' });
                 }}
-                placeholder="e.g., HDFC Savings"
+                placeholder={t('pages.accounts.modal.namePlaceholder')}
                 error={errors.name}
                 autoFocus
               />
@@ -131,12 +136,12 @@ export function AddAccountModal({
             {/* Account Type */}
             <div className="account-modal__form-group">
               <span className="account-modal__label account-modal__label--required">
-                Account Type
+                {t('pages.accounts.modal.typeLabel')}
               </span>
               <div
                 className="account-modal__type-grid"
                 role="radiogroup"
-                aria-label="Account type"
+                aria-label={t('pages.accounts.modal.typeLabel')}
               >
                 {ACCOUNT_TYPES.map((type) => (
                   <label
@@ -175,7 +180,7 @@ export function AddAccountModal({
                 htmlFor={balanceId}
                 className="account-modal__label account-modal__label--required"
               >
-                {account ? 'Current Balance' : 'Initial Balance'}
+                {account ? t('pages.accounts.modal.currentBalanceLabel') : t('pages.accounts.modal.initialBalanceLabel')}
               </label>
               <CurrencyInput
                 id={balanceId}
@@ -202,10 +207,10 @@ export function AddAccountModal({
                 onClick={handleClose}
                 disabled={isSubmitting}
               >
-                Cancel
+                {t('common.cancel')}
               </Button>
               <Button type="submit" isLoading={isSubmitting}>
-                {account ? 'Save Changes' : 'Add Account'}
+                {account ? t('pages.accounts.modal.saveButton') : t('pages.accounts.modal.addButton')}
               </Button>
             </div>
           </form>
