@@ -22,6 +22,7 @@ import {
   getBudgetPeriodIcon,
   getBudgetPeriodName,
 } from '../utils/budgetHelpers';
+import { AddBudgetForm } from './AddBudgetForm';
 import './BudgetsList.css';
 
 const PERIOD_OPTIONS: (BudgetPeriod | 'all')[] = [
@@ -38,6 +39,9 @@ export function BudgetsList() {
   const [filters, setFilters] = useState<BudgetFilters>({});
   const [searchQuery, setSearchQuery] = useState('');
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingBudgetId, setEditingBudgetId] = useState<string | undefined>(
+    undefined
+  );
 
   // Filter and search budgets
   const filteredBudgets = useMemo(() => {
@@ -84,6 +88,22 @@ export function BudgetsList() {
     };
   }, [budgets]);
 
+  // Handlers
+  const handleAddBudget = () => {
+    setEditingBudgetId(undefined);
+    setIsFormOpen(true);
+  };
+
+  const handleEditBudget = (budgetId: string) => {
+    setEditingBudgetId(budgetId);
+    setIsFormOpen(true);
+  };
+
+  const handleCloseForm = () => {
+    setIsFormOpen(false);
+    setEditingBudgetId(undefined);
+  };
+
   if (isLoading) {
     return (
       <div className="budgets-page">
@@ -110,7 +130,7 @@ export function BudgetsList() {
           <p className="page-subtitle">Track and manage your spending limits</p>
         </div>
         <div className="page-actions">
-          <Button onClick={() => setIsFormOpen(true)}>+ Add Budget</Button>
+          <Button onClick={handleAddBudget}>+ Add Budget</Button>
         </div>
       </div>
 
@@ -233,7 +253,7 @@ export function BudgetsList() {
             }
             action={
               !searchQuery && !filters.period ? (
-                <Button onClick={() => setIsFormOpen(true)}>
+                <Button onClick={handleAddBudget}>
                   Create Your First Budget
                 </Button>
               ) : undefined
@@ -259,13 +279,23 @@ export function BudgetsList() {
                       {budget.category}
                     </span>
                   </div>
-                  <div className="budget-card__period">
-                    <span className="budget-card__period-icon">
-                      {getBudgetPeriodIcon(budget.period)}
-                    </span>
-                    <span className="budget-card__period-name">
-                      {getBudgetPeriodName(budget.period)}
-                    </span>
+                  <div className="budget-card__actions">
+                    <button
+                      type="button"
+                      className="budget-card__edit-btn"
+                      onClick={() => handleEditBudget(budget.id)}
+                      aria-label={`Edit ${budget.name}`}
+                    >
+                      ✏️
+                    </button>
+                    <div className="budget-card__period">
+                      <span className="budget-card__period-icon">
+                        {getBudgetPeriodIcon(budget.period)}
+                      </span>
+                      <span className="budget-card__period-name">
+                        {getBudgetPeriodName(budget.period)}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
@@ -311,8 +341,12 @@ export function BudgetsList() {
       )}
       </div> {/* Close page-content */}
 
-      {/* TODO: Add Budget Form Modal */}
-      {isFormOpen && <div>Budget form placeholder - to be implemented</div>}
+      {/* Budget Form Modal */}
+      <AddBudgetForm
+        isOpen={isFormOpen}
+        onClose={handleCloseForm}
+        budgetId={editingBudgetId}
+      />
     </div>
   );
 }
