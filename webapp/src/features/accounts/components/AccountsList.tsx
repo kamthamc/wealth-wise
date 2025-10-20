@@ -4,7 +4,7 @@
  */
 
 import { useNavigate } from '@tanstack/react-router';
-import { BarChart3, CheckCircle, Coins, Landmark, Plus } from 'lucide-react';
+import { ArrowRightLeft, BarChart3, CheckCircle, Coins, Landmark, Plus } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Account } from '@/core/db/types';
@@ -23,6 +23,7 @@ import { formatCurrency } from '@/shared/utils';
 import type { AccountFilters, AccountFormData, AccountType } from '../types';
 import { getAccountIcon, getAccountTypeName } from '../utils/accountHelpers';
 import { AccountCard } from './AccountCard';
+import { AccountTransferWizard } from './AccountTransferWizard';
 import { AddAccountModal } from './AddAccountModal';
 import './AccountsList.css';
 
@@ -51,6 +52,7 @@ export function AccountsList() {
   const [filters, setFilters] = useState<AccountFilters>({});
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isTransferWizardOpen, setIsTransferWizardOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState<Account | undefined>();
   const [deletingAccount, setDeletingAccount] = useState<Account | undefined>();
 
@@ -156,6 +158,14 @@ export function AccountsList() {
           </p>
         </div>
         <div className="page-actions">
+          <Button
+            onClick={() => setIsTransferWizardOpen(true)}
+            variant="secondary"
+            size="medium"
+          >
+            <ArrowRightLeft size={18} />
+            {t('pages.accounts.transferButton', 'Transfer Money')}
+          </Button>
           <Button
             onClick={() => setIsAddModalOpen(true)}
             variant="primary"
@@ -296,6 +306,12 @@ export function AccountsList() {
         confirmLabel="Delete Account"
         cancelLabel="Cancel"
         variant="danger"
+      />
+
+      {/* Account Transfer Wizard */}
+      <AccountTransferWizard
+        isOpen={isTransferWizardOpen}
+        onClose={() => setIsTransferWizardOpen(false)}
       />
     </div>
   );

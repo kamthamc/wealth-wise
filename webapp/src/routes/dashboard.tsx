@@ -14,6 +14,7 @@ import {
   RecentTransactions,
   WelcomeBanner,
 } from '@/features/dashboard/components';
+import { QuickTransactionEntry } from '@/features/transactions';
 import { Spinner } from '@/shared/components';
 
 export const Route = createFileRoute('/dashboard')({
@@ -46,6 +47,7 @@ function DashboardPage() {
   return (
     <DashboardLayout>
       <WelcomeBanner />
+      <QuickTransactionEntry />
       <QuickActions />
       <FinancialOverview />
       <RecentTransactions />

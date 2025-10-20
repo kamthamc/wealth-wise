@@ -51,7 +51,6 @@ export function SettingsPage() {
   const [isImporting, setIsImporting] = useState(false);
   const [showClearDialog, setShowClearDialog] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
-  const [importFile, setImportFile] = useState<File | null>(null);
   const [importDataState, setImportDataState] = useState<ExportData | null>(
     null
   );
@@ -118,7 +117,6 @@ export function SettingsPage() {
   ) => {
     const file = event.target.files?.[0];
     if (file) {
-      setImportFile(file);
       parseImportFile(file)
         .then((data) => {
           setImportDataState(data);
@@ -318,11 +316,14 @@ export function SettingsPage() {
               type="button"
               className="settings-action-button"
               onClick={handleExportData}
+              disabled={isExporting}
             >
               <span className="settings-action-icon">💾</span>
               <span className="settings-action-text">
                 <span className="settings-action-title">
-                  {t('settings.dataManagement.export.label')}
+                  {isExporting 
+                    ? t('settings.dataManagement.export.exporting', 'Exporting...')
+                    : t('settings.dataManagement.export.label')}
                 </span>
                 <span className="settings-action-description">
                   {t('settings.dataManagement.export.description')}
@@ -334,11 +335,14 @@ export function SettingsPage() {
               type="button"
               className="settings-action-button"
               onClick={handleImportData}
+              disabled={isImporting}
             >
               <span className="settings-action-icon">📁</span>
               <span className="settings-action-text">
                 <span className="settings-action-title">
-                  {t('settings.dataManagement.import.label')}
+                  {isImporting
+                    ? t('settings.dataManagement.import.importing', 'Importing...')
+                    : t('settings.dataManagement.import.label')}
                 </span>
                 <span className="settings-action-description">
                   {t('settings.dataManagement.import.description')}
