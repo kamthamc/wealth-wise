@@ -6,15 +6,14 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useIsAppReady } from '@/core/stores';
 import {
+  AccountBreakdown,
   BudgetProgress,
   DashboardLayout,
-  FinancialOverview,
   GoalsProgress,
-  QuickActions,
+  NetWorthHero,
+  PerformanceInsights,
   RecentTransactions,
-  WelcomeBanner,
 } from '@/features/dashboard/components';
-import { QuickTransactionEntry } from '@/features/transactions';
 import { Spinner } from '@/shared/components';
 
 export const Route = createFileRoute('/dashboard')({
@@ -46,13 +45,30 @@ function DashboardPage() {
 
   return (
     <DashboardLayout>
-      <WelcomeBanner />
-      <QuickTransactionEntry />
-      <QuickActions />
-      <FinancialOverview />
+      {/* Primary Metric - Net Worth Hero */}
+      <NetWorthHero />
+
+      {/* Monthly Performance Overview */}
+      <PerformanceInsights />
+
+      {/* Asset Allocation */}
+      <AccountBreakdown />
+
+      {/* Recent Activity */}
       <RecentTransactions />
-      <BudgetProgress />
-      <GoalsProgress />
+
+      {/* Budget & Goals Progress */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+          gap: 'var(--space-6)',
+          marginTop: 'var(--space-6)',
+        }}
+      >
+        <BudgetProgress />
+        <GoalsProgress />
+      </div>
     </DashboardLayout>
   );
 }

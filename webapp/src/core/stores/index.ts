@@ -25,6 +25,7 @@ export {
   selectSelectedBudget,
   useBudgetStore,
 } from './budgetStore';
+export { useDepositStore } from './depositStore';
 export {
   selectActiveGoals,
   selectCompletedGoals,
@@ -34,6 +35,7 @@ export {
   selectSelectedGoal,
   useGoalStore,
 } from './goalStore';
+export { useInvestmentStore } from './investmentStore';
 export {
   selectFilters,
   selectIsLoading as selectTransactionsLoading,

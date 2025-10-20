@@ -3,8 +3,7 @@
  * Manage bank accounts, credit cards, and other accounts
  */
 
-import { createFileRoute } from '@tanstack/react-router';
-import { AccountsList } from '@/features/accounts';
+import { createFileRoute, Outlet } from '@tanstack/react-router';
 import { DashboardLayout } from '@/features/dashboard/components';
 
 export const Route = createFileRoute('/accounts')({
@@ -14,7 +13,7 @@ export const Route = createFileRoute('/accounts')({
 function AccountsPage() {
   return (
     <DashboardLayout>
-      <AccountsList />
+      <Outlet />
     </DashboardLayout>
   );
 }

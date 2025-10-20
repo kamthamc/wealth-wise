@@ -7,21 +7,33 @@ import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 import type { Account } from '@/core/db/types';
 import { useAccountStore, useTransactionStore } from '@/core/stores';
+import { DepositDetails } from '@/features/deposits';
+import { AddTransactionModal } from '@/features/transactions';
 import {
   Button,
   ConfirmDialog,
   EmptyState,
   Spinner,
   StatCard,
+  useToast,
 } from '@/shared/components';
-import { formatCurrency, formatDate, formatRelativeTime } from '@/shared/utils';
+import { 
+  formatCurrency, 
+  formatDate, 
+  formatRelativeTime,
+  calculateAccountBalance,
+} from '@/shared/utils';
 import type { AccountFormData } from '../types';
 import {
   formatAccountIdentifier,
   getAccountIcon,
   getAccountTypeName,
+  isDepositAccount,
 } from '../utils/accountHelpers';
+import { AccountActions } from './AccountActions';
+import { AccountCharts } from './AccountCharts';
 import { AddAccountModal } from './AddAccountModal';
+import { ImportTransactionsModal } from './ImportTransactionsModal';
 import './AccountDetails.css';
 
 export interface AccountDetailsProps {
@@ -29,23 +41,43 @@ export interface AccountDetailsProps {
 }
 
 export function AccountDetails({ accountId }: AccountDetailsProps) {
+  console.log('[AccountDetails] Component rendering, accountId:', accountId);
+  
   const navigate = useNavigate();
   const { accounts, isLoading, fetchAccounts, updateAccount, deleteAccount } =
     useAccountStore();
-  const { transactions } = useTransactionStore();
+  const { transactions, fetchTransactions } = useTransactionStore();
+  const toast = useToast();
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isCloseDialogOpen, setIsCloseDialogOpen] = useState(false);
+  const [isAddTransactionModalOpen, setIsAddTransactionModalOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [account, setAccount] = useState<Account | null>(null);
+
+  // Fetch transactions on mount
+  useEffect(() => {
+    console.log('[AccountDetails] Fetching transactions...');
+    fetchTransactions();
+  }, [fetchTransactions]);
 
   // Find the account from the store
   useEffect(() => {
+    console.log('[AccountDetails] Looking for account:', accountId);
+    console.log('[AccountDetails] Available accounts:', accounts.length);
+    console.log('[AccountDetails] Is loading:', isLoading);
+    
     const foundAccount = accounts.find((acc) => acc.id === accountId);
     if (foundAccount) {
+      console.log('[AccountDetails] Found account:', foundAccount.name);
       setAccount(foundAccount);
     } else if (!isLoading) {
+      console.log('[AccountDetails] Account not found, fetching...');
       // Account not found, might need to fetch
       fetchAccounts();
+    } else {
+      console.log('[AccountDetails] Still loading...');
     }
   }, [accountId, accounts, isLoading, fetchAccounts]);
 
@@ -55,6 +87,12 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
       .filter((txn) => txn.account_id === accountId)
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [transactions, accountId]);
+
+  // Calculate current balance based on initial balance + transactions
+  const currentBalance = useMemo(() => {
+    if (!account) return 0;
+    return calculateAccountBalance(account.balance, accountTransactions);
+  }, [account, accountTransactions]);
 
   // Calculate account statistics
   const accountStats = useMemo(() => {
@@ -67,17 +105,17 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
 
     const income = thisMonthTransactions
       .filter((txn) => txn.type === 'income')
-      .reduce((sum, txn) => sum + txn.amount, 0);
+      .reduce((sum, txn) => sum + (Number(txn.amount) || 0), 0);
 
     const expenses = thisMonthTransactions
       .filter((txn) => txn.type === 'expense')
-      .reduce((sum, txn) => sum + txn.amount, 0);
+      .reduce((sum, txn) => sum + (Number(txn.amount) || 0), 0);
 
     return {
       totalTransactions: accountTransactions.length,
-      thisMonthTotal: income - expenses,
-      thisMonthIncome: income,
-      thisMonthExpenses: expenses,
+      thisMonthTotal: Number(income - expenses) || 0,
+      thisMonthIncome: Number(income) || 0,
+      thisMonthExpenses: Number(expenses) || 0,
     };
   }, [accountTransactions]);
 
@@ -101,6 +139,134 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
 
   const handleBackToAccounts = () => {
     navigate({ to: '/accounts' });
+  };
+
+  const handleCloseAccount = async () => {
+    if (account) {
+      await updateAccount({
+        name: account.name,
+        type: account.type,
+        balance: account.balance,
+        currency: account.currency,
+        id: account.id,
+        is_active: false,
+      });
+      await fetchAccounts();
+      setIsCloseDialogOpen(false);
+    }
+  };
+
+  const handleReopenAccount = async () => {
+    if (account) {
+      await updateAccount({
+        name: account.name,
+        type: account.type,
+        balance: account.balance,
+        currency: account.currency,
+        id: account.id,
+        is_active: true,
+      });
+      await fetchAccounts();
+    }
+  };
+
+  const handleAddTransaction = () => {
+    setIsAddTransactionModalOpen(true);
+  };
+
+  const handleTransferMoney = () => {
+    // Will be implemented with transfer wizard
+    console.log('Transfer money clicked');
+  };
+
+  const handleDownloadStatement = () => {
+    // Generate PDF statement
+    if (!account) return;
+    
+    const fileName = `${account.name.replace(/\s+/g, '_')}_statement_${new Date().toISOString().split('T')[0]}.txt`;
+    const statementText = generateStatement(account, accountTransactions);
+    
+    const blob = new Blob([statementText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    toast.success('Statement downloaded', `Downloaded ${fileName}`);
+  };
+
+  const handleImportTransactions = () => {
+    setIsImportModalOpen(true);
+  };
+
+  const handleExportTransactions = () => {
+    if (!account) return;
+    
+    const fileName = `${account.name.replace(/\s+/g, '_')}_transactions_${new Date().toISOString().split('T')[0]}.csv`;
+    const csv = generateCSV(accountTransactions);
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    toast.success('Transactions exported', `Exported ${accountTransactions.length} transactions`);
+  };
+
+  // Helper function to generate statement
+  const generateStatement = (acc: Account, txns: typeof accountTransactions) => {
+    let statement = `ACCOUNT STATEMENT\n`;
+    statement += `================\n\n`;
+    statement += `Account Name: ${acc.name}\n`;
+    statement += `Account Type: ${getAccountTypeName(acc.type)}\n`;
+    statement += `Account Number: ${formatAccountIdentifier(acc.id)}\n`;
+    statement += `Current Balance: ${formatCurrency(acc.balance, acc.currency)}\n`;
+    statement += `Statement Date: ${new Date().toLocaleDateString()}\n\n`;
+    statement += `TRANSACTIONS\n`;
+    statement += `============\n\n`;
+    
+    if (txns.length === 0) {
+      statement += `No transactions found.\n`;
+    } else {
+      statement += `Date       | Description                | Type     | Amount\n`;
+      statement += `-----------+---------------------------+----------+-----------\n`;
+      
+      txns.forEach(txn => {
+        const date = formatDate(txn.date).padEnd(10);
+        const desc = (txn.description || '').substring(0, 25).padEnd(25);
+        const type = txn.type.padEnd(8);
+        const amount = formatCurrency(txn.amount, acc.currency);
+        statement += `${date} | ${desc} | ${type} | ${amount}\n`;
+      });
+    }
+    
+    return statement;
+  };
+
+  // Helper function to generate CSV
+  const generateCSV = (txns: typeof accountTransactions) => {
+    let csv = 'date,description,amount,type,category\n';
+    
+    txns.forEach(txn => {
+      const date = txn.date.toISOString().split('T')[0];
+      const description = `"${(txn.description || '').replace(/"/g, '""')}"`;
+      const amount = txn.amount;
+      const type = txn.type;
+      const category = txn.category || '';
+      
+      csv += `${date},${description},${amount},${type},${category}\n`;
+    });
+    
+    return csv;
   };
 
   // Loading state
@@ -133,172 +299,188 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
 
   const accountIcon = getAccountIcon(account.type);
   const accountTypeName = getAccountTypeName(account.type);
+  const isDeposit = isDepositAccount(account.type);
+  const isClosed = !account.is_active;
 
   return (
     <div className="account-details">
-      {/* Header */}
+      {/* Header with back button and quick actions */}
       <div className="account-details__header">
-        <Button
-          variant="secondary"
-          onClick={handleBackToAccounts}
-          className="account-details__back-button"
-        >
-          ← Back to Accounts
-        </Button>
-
-        <div className="account-details__actions">
-          <Button variant="secondary" onClick={() => setIsEditModalOpen(true)}>
-            ✏️ Edit Account
-          </Button>
-          <Button variant="danger" onClick={() => setIsDeleteDialogOpen(true)}>
-            🗑️ Delete Account
-          </Button>
-        </div>
-      </div>
-
-      {/* Account Info Card */}
-      <div className="account-details__info-card">
-        <div className="account-details__info-header">
-          <div className="account-details__icon-wrapper">
-            <span className="account-details__icon">{accountIcon}</span>
-          </div>
-          <div className="account-details__title-section">
-            <h1 className="account-details__name">{account.name}</h1>
-            <p className="account-details__type">{accountTypeName}</p>
-          </div>
-        </div>
-
-        <div className="account-details__balance-section">
-          <p className="account-details__balance-label">Current Balance</p>
-          <h2 className="account-details__balance">
-            {formatCurrency(account.balance, account.currency)}
-          </h2>
-        </div>
-
-        <div className="account-details__meta-grid">
-          <div className="account-details__meta-item">
-            <span className="account-details__meta-label">Account ID</span>
-            <span className="account-details__meta-value">
-              {formatAccountIdentifier(account.id)}
-            </span>
-          </div>
-          <div className="account-details__meta-item">
-            <span className="account-details__meta-label">Currency</span>
-            <span className="account-details__meta-value">
-              {account.currency}
-            </span>
-          </div>
-          <div className="account-details__meta-item">
-            <span className="account-details__meta-label">Status</span>
-            <span
-              className={`account-details__meta-value account-details__status ${
-                account.is_active
-                  ? 'account-details__status--active'
-                  : 'account-details__status--inactive'
-              }`}
-            >
-              {account.is_active ? '✓ Active' : '✗ Inactive'}
-            </span>
-          </div>
-          <div className="account-details__meta-item">
-            <span className="account-details__meta-label">Last Updated</span>
-            <span className="account-details__meta-value">
-              {formatRelativeTime(account.updated_at)}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Statistics Section */}
-      <div className="account-details__stats">
-        <h2 className="account-details__section-title">Account Statistics</h2>
-        <div className="account-details__stats-grid">
-          <StatCard
-            label="Current Balance"
-            value={formatCurrency(account.balance, account.currency)}
-            icon="💰"
-            variant="primary"
-          />
-          <StatCard
-            label="Total Transactions"
-            value={accountStats.totalTransactions.toString()}
-            icon="📊"
-          />
-          <StatCard
-            label="This Month"
-            value={formatCurrency(
-              accountStats.thisMonthTotal,
-              account.currency
-            )}
-            icon="📅"
-            variant={accountStats.thisMonthTotal >= 0 ? 'success' : 'danger'}
-            description={`₹${accountStats.thisMonthIncome.toFixed(2)} in, ₹${accountStats.thisMonthExpenses.toFixed(2)} out`}
-          />
-        </div>
-      </div>
-
-      {/* Recent Transactions Section */}
-      <div className="account-details__transactions">
-        <div className="account-details__section-header">
-          <h2 className="account-details__section-title">
-            Recent Transactions
-          </h2>
+        <div className="account-details__header-left">
           <Button
             variant="secondary"
-            onClick={() =>
-              navigate({ to: '/transactions', search: { accountId } })
-            }
+            onClick={handleBackToAccounts}
+            className="account-details__back-button"
           >
-            View All Transactions
+            ← Back
           </Button>
+          <div className="account-details__header-info">
+            <div className="account-details__header-icon">{accountIcon}</div>
+            <div>
+              <h1 className="account-details__header-title">{account.name}</h1>
+              <p className="account-details__header-subtitle">
+                {accountTypeName}
+                {isClosed && <span className="account-details__closed-badge"> • Closed</span>}
+              </p>
+            </div>
+          </div>
         </div>
 
-        {accountTransactions.length === 0 ? (
-          <div className="account-details__transactions-empty">
-            <EmptyState
-              icon="💳"
-              title="No Transactions Yet"
-              description="Transactions for this account will appear here once you start recording them."
-              action={
-                <Button onClick={() => navigate({ to: '/transactions' })}>
-                  Add First Transaction
-                </Button>
-              }
-            />
-          </div>
-        ) : (
-          <div className="account-details__transactions-list">
-            {accountTransactions.slice(0, 10).map((txn) => (
-              <div key={txn.id} className="transaction-item">
-                <div className="transaction-item__icon">
-                  {txn.type === 'income'
-                    ? '💰'
-                    : txn.type === 'expense'
-                      ? '💸'
-                      : '🔄'}
-                </div>
-                <div className="transaction-item__details">
-                  <div className="transaction-item__description">
-                    {txn.description}
-                  </div>
-                  <div className="transaction-item__date">
-                    {formatDate(txn.date)}
-                  </div>
-                </div>
-                <div
-                  className={`transaction-item__amount transaction-item__amount--${txn.type}`}
-                >
-                  {txn.type === 'income'
-                    ? '+'
-                    : txn.type === 'expense'
-                      ? '-'
-                      : ''}
-                  {formatCurrency(txn.amount, account.currency)}
-                </div>
+        <div className="account-details__header-actions">
+          <Button variant="secondary" onClick={() => setIsEditModalOpen(true)}>
+            Edit
+          </Button>
+          <Button variant="danger" onClick={() => setIsDeleteDialogOpen(true)}>
+            Delete
+          </Button>
+        </div>
+      </div>
+
+      <div className="account-details__container">
+        <div className="account-details__content">
+          {/* Balance Overview - Prominent display */}
+          <div className="account-details__balance-hero">
+            <div className="account-details__balance-card">
+              <p className="account-details__balance-label">Current Balance</p>
+              <h2 className="account-details__balance-value">
+                {formatCurrency(currentBalance, account.currency)}
+              </h2>
+              <div className="account-details__balance-meta">
+                <span>Initial: {formatCurrency(account.balance, account.currency)}</span>
+                <span>•</span>
+                <span>ID: {formatAccountIdentifier(account.id)}</span>
+                <span>•</span>
+                <span>Last updated {formatRelativeTime(account.updated_at)}</span>
               </div>
-            ))}
+            </div>
           </div>
-        )}
+
+          {/* Quick Actions */}
+          <AccountActions
+            accountId={account.id}
+            accountName={account.name}
+            isClosed={isClosed}
+            onAddTransaction={handleAddTransaction}
+            onTransferMoney={handleTransferMoney}
+            onDownloadStatement={handleDownloadStatement}
+            onImportTransactions={handleImportTransactions}
+            onExportTransactions={handleExportTransactions}
+            onCloseAccount={() => setIsCloseDialogOpen(true)}
+            onReopenAccount={handleReopenAccount}
+          />
+
+          {/* Deposit-specific details for FD, RD, PPF, NSC, etc. */}
+          {isDeposit && (
+            <DepositDetails
+              accountId={account.id}
+              accountName={account.name}
+              accountType={accountTypeName}
+            />
+          )}
+
+          {/* Charts and Visualizations - Always show for non-deposit accounts */}
+          {!isDeposit && (
+            <AccountCharts
+              transactions={accountTransactions}
+              currentBalance={currentBalance}
+              currency={account.currency}
+            />
+          )}
+
+          {/* Account Statistics */}
+          {!isDeposit && (
+            <div className="account-details__stats">
+              <h2 className="account-details__section-title">
+                Account Statistics
+              </h2>
+              <div className="account-details__stats-grid">
+                <StatCard
+                  label="Total Transactions"
+                  value={accountStats.totalTransactions.toString()}
+                  icon="📊"
+                />
+                <StatCard
+                  label="This Month"
+                  value={formatCurrency(
+                    accountStats.thisMonthTotal,
+                    account.currency
+                  )}
+                  icon="📅"
+                  variant={
+                    accountStats.thisMonthTotal >= 0 ? 'success' : 'danger'
+                  }
+                  description={`₹${(accountStats.thisMonthIncome || 0).toFixed(2)} in, ₹${(accountStats.thisMonthExpenses || 0).toFixed(2)} out`}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Recent Transactions Section */}
+          {!isDeposit && (
+            <div className="account-details__transactions">
+              <div className="account-details__section-header">
+                <h2 className="account-details__section-title">
+                  Recent Transactions
+                </h2>
+                <Button
+                  variant="secondary"
+                  onClick={() =>
+                    navigate({ to: '/transactions', search: { accountId } })
+                  }
+                >
+                  View All
+                </Button>
+              </div>
+
+              {accountTransactions.length === 0 ? (
+                <div className="account-details__transactions-empty">
+                  <EmptyState
+                    icon="💳"
+                    title="No Transactions Yet"
+                    description="Start tracking your finances by adding your first transaction."
+                    action={
+                      <Button onClick={handleAddTransaction}>
+                        Add Transaction
+                      </Button>
+                    }
+                  />
+                </div>
+              ) : (
+                <div className="account-details__transactions-list">
+                  {accountTransactions.slice(0, 10).map((txn) => (
+                    <div key={txn.id} className="transaction-item">
+                      <div className="transaction-item__icon">
+                        {txn.type === 'income'
+                          ? '💰'
+                          : txn.type === 'expense'
+                            ? '💸'
+                            : '🔄'}
+                      </div>
+                      <div className="transaction-item__details">
+                        <div className="transaction-item__description">
+                          {txn.description}
+                        </div>
+                        <div className="transaction-item__date">
+                          {formatDate(txn.date)}
+                        </div>
+                      </div>
+                      <div
+                        className={`transaction-item__amount transaction-item__amount--${txn.type}`}
+                      >
+                        {txn.type === 'income'
+                          ? '+'
+                          : txn.type === 'expense'
+                            ? '-'
+                            : ''}
+                        {formatCurrency(txn.amount, account.currency)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Edit Modal */}
@@ -319,6 +501,38 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
         confirmLabel="Delete Account"
         cancelLabel="Cancel"
         variant="danger"
+      />
+
+      {/* Close Account Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={isCloseDialogOpen}
+        onClose={() => setIsCloseDialogOpen(false)}
+        onConfirm={handleCloseAccount}
+        title="Close Account?"
+        description={`Are you sure you want to close "${account?.name}"? You can reopen it later if needed.`}
+        confirmLabel="Close Account"
+        cancelLabel="Cancel"
+        variant="danger"
+      />
+
+      {/* Add Transaction Modal */}
+      <AddTransactionModal
+        isOpen={isAddTransactionModalOpen}
+        onClose={() => setIsAddTransactionModalOpen(false)}
+        defaultAccountId={accountId}
+      />
+
+      {/* Import Transactions Modal */}
+      <ImportTransactionsModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        accountId={accountId}
+        accountName={account?.name || ''}
+        onImportSuccess={() => {
+          // Refresh transactions after successful import
+          fetchTransactions();
+          fetchAccounts(); // Also refresh accounts to update balances
+        }}
       />
     </div>
   );

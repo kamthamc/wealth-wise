@@ -1,8 +1,22 @@
 /* Account Details Page Styles */
 
 .account-details {
-  padding: var(--space-6) var(--space-4);
-  max-width: 1200px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-background);
+  overflow: hidden;
+}
+
+.account-details__container {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-6) var(--space-6);
+}
+
+.account-details__content {
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -11,9 +25,46 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--space-6);
+  padding: var(--space-5) var(--space-6);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
   gap: var(--space-4);
   flex-wrap: wrap;
+}
+
+.account-details__header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex: 1;
+}
+
+.account-details__header-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.account-details__header-icon {
+  font-size: 2.5rem;
+}
+
+.account-details__header-title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.account-details__header-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: var(--space-1) 0 0 0;
+}
+
+.account-details__closed-badge {
+  color: var(--color-danger);
+  font-weight: var(--font-weight-semibold);
 }
 
 .account-details__back-button {
@@ -22,9 +73,48 @@
   gap: var(--space-2);
 }
 
-.account-details__actions {
+.account-details__header-actions {
   display: flex;
   gap: var(--space-3);
+}
+
+/* Balance Hero Section */
+.account-details__balance-hero {
+  margin-bottom: var(--space-6);
+}
+
+.account-details__balance-card {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-8);
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  color: white;
+}
+
+.account-details__balance-label {
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.9;
+  margin-bottom: var(--space-2);
+}
+
+.account-details__balance-value {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.account-details__balance-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  font-size: var(--font-size-sm);
+  opacity: 0.85;
 }
 
 /* Info Card */

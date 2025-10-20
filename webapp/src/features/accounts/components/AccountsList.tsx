@@ -85,7 +85,7 @@ export function AccountsList() {
 
   // Calculate stats
   const stats = useMemo(() => {
-    const totalBalance = accounts.reduce((sum, acc) => sum + acc.balance, 0);
+    const totalBalance = accounts.reduce((sum, acc) => sum + +acc.balance, 0);
     const activeAccounts = accounts.filter((acc) => acc.is_active).length;
 
     return {
@@ -126,6 +126,10 @@ export function AccountsList() {
   const handleAccountClick = (account: Account) => {
     // Navigate to account details (we'll create this route later)
     navigate({ to: `/accounts/${account.id}` });
+    navigate({
+      to: `/accounts/$accountId`,
+      params: { accountId: account.id }
+    })
   };
 
   if (isLoading) {

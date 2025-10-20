@@ -22,7 +22,7 @@
   align-items: center;
   padding: 0 16px;
   gap: 16px;
-  z-index: 200;
+  /* z-index: 200; */
 }
 
 .app-layout__hamburger {
@@ -66,7 +66,7 @@
   border-right: 1px solid var(--border-primary);
   display: flex;
   flex-direction: column;
-  z-index: 100;
+  /* z-index: 100; */
   transition:
     width 0.3s ease,
     transform 0.3s ease;
@@ -128,7 +128,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 101;
+  /* z-index: 101; */
   transition: all 0.2s ease;
 }
 
@@ -298,7 +298,7 @@
     width: 280px;
     transform: translateX(-100%);
     top: 60px;
-    z-index: 201;
+    /* z-index: 201; */
   }
 
   .app-layout__sidebar--mobile-open {
@@ -314,7 +314,7 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 200;
+    /* z-index: 200; */
   }
 
   .app-layout__logo {

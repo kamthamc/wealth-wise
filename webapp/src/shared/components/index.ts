@@ -2,6 +2,18 @@
  * Export all shared components from a central location
  */
 
+// Chart Components
+export {
+  BarChart,
+  type BarChartDataPoint,
+  type BarChartProps,
+  GroupedBarChart,
+  type GroupedBarChartProps,
+  type GroupedBarDataPoint,
+  LineChart,
+  type LineChartDataPoint,
+  type LineChartProps,
+} from './Charts';
 // Form Components
 export { AccountSelect, type AccountSelectProps } from './AccountSelect';
 // Data Display Components
@@ -26,6 +38,7 @@ export { CurrencyInput, type CurrencyInputProps } from './CurrencyInput';
 export { DateInput, type DateInputProps } from './DateInput';
 export { DatePicker, type DatePickerProps } from './DatePicker';
 export { Divider, type DividerProps } from './Divider';
+export { DropdownSelect, type DropdownSelectOption, type DropdownSelectProps } from './DropdownSelect';
 export { EmptyState, type EmptyStateProps } from './EmptyState';
 export { ErrorBoundary } from './ErrorBoundary';
 export { Input, type InputProps } from './Input';

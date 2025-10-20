@@ -3,7 +3,8 @@
  * Fast transaction entry with smart defaults and autofill
  */
 
-import { ArrowLeftRight, TrendingDown, TrendingUp } from 'lucide-react';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { ArrowLeftRight, ChevronDown, TrendingDown, TrendingUp } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import {
@@ -254,22 +255,52 @@ export function QuickTransactionEntry({
               *
             </span>
           </label>
-          <select
-            id="quick-account"
-            value={accountId}
-            onChange={(e) => setAccountId(e.target.value)}
-            className="quick-transaction-entry__select quick-transaction-entry__select--with-icon"
-            autoComplete="off"
-            required
-            aria-required="true"
-          >
-            <option value="">🏦 Select account...</option>
-            {accounts.map((account) => (
-              <option key={account.id} value={account.id}>
-                {account.name} ({account.type})
-              </option>
-            ))}
-          </select>
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger asChild>
+              <button
+                type="button"
+                className="quick-transaction-entry__select quick-transaction-entry__select--with-icon"
+                aria-label="Select account"
+              >
+                {accountId ? (
+                  <>
+                    🏦{' '}
+                    {accounts.find((a) => a.id === accountId)?.name ||
+                      'Select account...'}
+                  </>
+                ) : (
+                  '🏦 Select account...'
+                )}
+                <ChevronDown size={16} style={{ marginLeft: 'auto' }} />
+              </button>
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content
+                className="quick-transaction-entry__dropdown-content"
+                align="start"
+                sideOffset={5}
+              >
+                {accounts.length === 0 ? (
+                  <DropdownMenu.Item
+                    className="quick-transaction-entry__dropdown-item"
+                    disabled
+                  >
+                    ⚠️ Please add an account first
+                  </DropdownMenu.Item>
+                ) : (
+                  accounts.map((account) => (
+                    <DropdownMenu.Item
+                      key={account.id}
+                      className="quick-transaction-entry__dropdown-item"
+                      onSelect={() => setAccountId(account.id)}
+                    >
+                      🏦 {account.name} ({account.type})
+                    </DropdownMenu.Item>
+                  ))
+                )}
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
           {accounts.length === 0 && (
             <span className="quick-transaction-entry__hint quick-transaction-entry__hint--warning">
               ⚠️ Please add an account first
@@ -286,20 +317,60 @@ export function QuickTransactionEntry({
             Category
             <span className="optional">(Optional)</span>
           </label>
-          <select
-            id="quick-category"
-            value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)}
-            className="quick-transaction-entry__select quick-transaction-entry__select--with-icon"
-            autoComplete="off"
-          >
-            <option value="">💭 Select category...</option>
-            {availableCategories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.icon} {category.name}
-              </option>
-            ))}
-          </select>
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger asChild>
+              <button
+                type="button"
+                className="quick-transaction-entry__select quick-transaction-entry__select--with-icon"
+                aria-label="Select category"
+              >
+                {categoryId ? (
+                  <>
+                    {availableCategories.find((c) => c.id === categoryId)?.icon}{' '}
+                    {availableCategories.find((c) => c.id === categoryId)?.name ||
+                      'Select category...'}
+                  </>
+                ) : (
+                  '💭 Select category...'
+                )}
+                <ChevronDown size={16} style={{ marginLeft: 'auto' }} />
+              </button>
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content
+                className="quick-transaction-entry__dropdown-content"
+                align="start"
+                sideOffset={5}
+              >
+                {availableCategories.length === 0 ? (
+                  <DropdownMenu.Item
+                    className="quick-transaction-entry__dropdown-item"
+                    disabled
+                  >
+                    No categories available for this transaction type
+                  </DropdownMenu.Item>
+                ) : (
+                  <>
+                    <DropdownMenu.Item
+                      className="quick-transaction-entry__dropdown-item"
+                      onSelect={() => setCategoryId('')}
+                    >
+                      💭 None
+                    </DropdownMenu.Item>
+                    {availableCategories.map((category) => (
+                      <DropdownMenu.Item
+                        key={category.id}
+                        className="quick-transaction-entry__dropdown-item"
+                        onSelect={() => setCategoryId(category.id)}
+                      >
+                        {category.icon} {category.name}
+                      </DropdownMenu.Item>
+                    ))}
+                  </>
+                )}
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
           {availableCategories.length === 0 && (
             <span className="quick-transaction-entry__hint">
               No categories available for this transaction type

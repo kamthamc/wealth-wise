@@ -182,7 +182,7 @@
     "accounts": {
       "title": "Accounts",
       "subtitle": "Manage your financial accounts and track balances",
-      "addButton": "+ Add Account",
+      "addButton": "Add Account",
       "searchPlaceholder": "🔍 Search accounts...",
       "stats": {
         "totalBalance": "Total Balance",

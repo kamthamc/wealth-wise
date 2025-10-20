@@ -11,7 +11,7 @@
   max-width: 420px;
   margin: 0;
   list-style: none;
-  z-index: 2147483647;
+  /* z-index: 2147483647; */
   outline: none;
 }
 

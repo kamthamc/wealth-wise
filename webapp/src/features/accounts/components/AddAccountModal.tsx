@@ -4,6 +4,7 @@
  */
 
 import * as Dialog from '@radix-ui/react-dialog';
+import * as Select from '@radix-ui/react-select';
 import {
   Banknote,
   CreditCard,
@@ -11,6 +12,11 @@ import {
   Smartphone,
   TrendingUp,
   Wallet,
+  Lock,
+  FileText,
+  PiggyBank,
+  ChevronDown,
+  Check,
 } from 'lucide-react';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -30,24 +36,42 @@ export interface AddAccountModalProps {
   onSubmit: (data: AccountFormData) => void | Promise<void>;
 }
 
-const ACCOUNT_TYPES: AccountType[] = [
-  'bank',
-  'credit_card',
-  'upi',
-  'brokerage',
-  'cash',
-  'wallet',
-];
-
-// Icon mapping for account types
+// Icon mapping for account types (small size for dropdown)
 const ACCOUNT_TYPE_ICONS: Record<AccountType, React.ReactNode> = {
-  bank: <Landmark size={32} />,
-  credit_card: <CreditCard size={32} />,
-  upi: <Smartphone size={32} />,
-  brokerage: <TrendingUp size={32} />,
-  cash: <Banknote size={32} />,
-  wallet: <Wallet size={32} />,
+  bank: <Landmark size={16} />,
+  credit_card: <CreditCard size={16} />,
+  upi: <Smartphone size={16} />,
+  brokerage: <TrendingUp size={16} />,
+  cash: <Banknote size={16} />,
+  wallet: <Wallet size={16} />,
+  fixed_deposit: <Lock size={16} />,
+  kvp: <FileText size={16} />,
+  nsc: <FileText size={16} />,
+  post_office: <Landmark size={16} />,
+  ppf: <Lock size={16} />,
+  recurring_deposit: <PiggyBank size={16} />,
+  scss: <Landmark size={16} />,
 };
+
+// Categorized account types
+const ACCOUNT_TYPE_CATEGORIES = [
+  {
+    label: 'Banking',
+    types: ['bank', 'credit_card', 'upi'] as AccountType[],
+  },
+  {
+    label: 'Investments',
+    types: ['brokerage'] as AccountType[],
+  },
+  {
+    label: 'Deposits & Savings',
+    types: ['fixed_deposit', 'recurring_deposit', 'ppf', 'nsc', 'kvp', 'scss', 'post_office'] as AccountType[],
+  },
+  {
+    label: 'Cash & Wallets',
+    types: ['cash', 'wallet'] as AccountType[],
+  },
+];
 
 export function AddAccountModal({
   account,
@@ -160,37 +184,52 @@ export function AddAccountModal({
               <span className="account-modal__label account-modal__label--required">
                 {t('pages.accounts.modal.typeLabel')}
               </span>
-              <div
-                className="account-modal__type-grid"
-                role="radiogroup"
-                aria-label={t('pages.accounts.modal.typeLabel')}
-              >
-                {ACCOUNT_TYPES.map((type) => (
-                  <label
-                    key={type}
-                    className={`account-modal__type-option ${
-                      formData.type === type
-                        ? 'account-modal__type-option--selected'
-                        : ''
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="account-type"
-                      value={type}
-                      checked={formData.type === type}
-                      onChange={() => handleTypeSelect(type)}
-                      className="sr-only"
-                    />
-                    <span className="account-modal__type-icon">
-                      {ACCOUNT_TYPE_ICONS[type]}
-                    </span>
-                    <span className="account-modal__type-name">
-                      {getAccountTypeName(type)}
-                    </span>
-                  </label>
-                ))}
-              </div>
+              <Select.Root value={formData.type} onValueChange={handleTypeSelect}>
+                <Select.Trigger className="account-modal__type-select">
+                  <Select.Value>
+                    <div className="account-modal__type-select-value">
+                      <span className="account-modal__type-select-icon">
+                        {ACCOUNT_TYPE_ICONS[formData.type]}
+                      </span>
+                      <span>{getAccountTypeName(formData.type)}</span>
+                    </div>
+                  </Select.Value>
+                  <Select.Icon className="account-modal__type-select-chevron">
+                    <ChevronDown size={16} />
+                  </Select.Icon>
+                </Select.Trigger>
+                <Select.Portal>
+                  <Select.Content className="account-modal__type-content" position="popper">
+                    <Select.Viewport className="account-modal__type-viewport">
+                      {ACCOUNT_TYPE_CATEGORIES.map((category, index) => (
+                        <div key={category.label}>
+                          {index > 0 && <Select.Separator className="account-modal__type-separator" />}
+                          <Select.Label className="account-modal__type-category-label">
+                            {category.label}
+                          </Select.Label>
+                          {category.types.map((type) => (
+                            <Select.Item
+                              key={type}
+                              value={type}
+                              className="account-modal__type-item"
+                            >
+                              <div className="account-modal__type-item-content">
+                                <span className="account-modal__type-item-icon">
+                                  {ACCOUNT_TYPE_ICONS[type]}
+                                </span>
+                                <Select.ItemText>{getAccountTypeName(type)}</Select.ItemText>
+                              </div>
+                              <Select.ItemIndicator className="account-modal__type-item-indicator">
+                                <Check size={16} />
+                              </Select.ItemIndicator>
+                            </Select.Item>
+                          ))}
+                        </div>
+                      ))}
+                    </Select.Viewport>
+                  </Select.Content>
+                </Select.Portal>
+              </Select.Root>
               {errors.type && (
                 <span className="account-modal__error">{errors.type}</span>
               )}

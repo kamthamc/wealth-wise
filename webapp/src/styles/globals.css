@@ -118,7 +118,7 @@ pre {
   padding: var(--space-2) var(--space-4);
   text-decoration: none;
   border-radius: var(--radius-md);
-  z-index: var(--z-tooltip);
+  /* z-index: var(--z-tooltip); */
 }
 
 .skip-link:focus {

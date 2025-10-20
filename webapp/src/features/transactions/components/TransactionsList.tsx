@@ -21,7 +21,7 @@ import {
   TrendingUp,
   X,
 } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { Transaction } from '@/core/db/types';
 import { useAccountStore, useTransactionStore } from '@/core/stores';
 import {
@@ -60,7 +60,7 @@ const FILTER_OPTIONS: SegmentedControlOption<TransactionType | 'all'>[] = [
 
 export function TransactionsList() {
   const navigate = useNavigate();
-  const { transactions, isLoading, unlinkTransaction } = useTransactionStore();
+  const { transactions, isLoading, unlinkTransaction, fetchTransactions } = useTransactionStore();
   const { accounts } = useAccountStore();
 
   // Filter states (applied filters)
@@ -93,6 +93,12 @@ export function TransactionsList() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [bulkCategory, setBulkCategory] = useState<string>('');
+
+  // Fetch transactions on mount
+  useEffect(() => {
+    console.log('[TransactionsList] Fetching transactions...');
+    fetchTransactions();
+  }, [fetchTransactions]);
 
   // Apply filters handler
   const applyFilters = () => {
@@ -296,10 +302,10 @@ export function TransactionsList() {
   const stats = useMemo(() => {
     const income = transactions
       .filter((t) => t.type === 'income')
-      .reduce((sum, t) => sum + t.amount, 0);
+      .reduce((sum, t) => sum + Number(t.amount), 0);
     const expenses = transactions
       .filter((t) => t.type === 'expense')
-      .reduce((sum, t) => sum + t.amount, 0);
+      .reduce((sum, t) => sum + Number(t.amount), 0);
 
     return {
       totalIncome: income,

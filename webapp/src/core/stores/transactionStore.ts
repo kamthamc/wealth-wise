@@ -72,12 +72,39 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
   fetchTransactions: async () => {
     set({ isLoading: true, error: null });
     try {
-      // TODO: Implement transaction repository and fetching with filters
-      // const transactions = await transactionRepository.findAll(get().filters)
+      const filters = get().filters;
+      let transactions: Transaction[] = [];
+
+      // Apply filters if specified
+      if (filters.accountId) {
+        transactions = await transactionRepository.findByAccount(filters.accountId);
+      } else if (filters.type) {
+        transactions = await transactionRepository.findByType(filters.type);
+      } else if (filters.category) {
+        transactions = await transactionRepository.findByCategory(filters.category);
+      } else if (filters.startDate && filters.endDate) {
+        transactions = await transactionRepository.findByDateRange(
+          filters.startDate.toISOString(),
+          filters.endDate.toISOString()
+        );
+      } else {
+        // No filters - get all transactions
+        transactions = await transactionRepository.findAll();
+      }
+
+      // Apply search filter if present
+      if (filters.search && transactions.length > 0) {
+        const searchLower = filters.search.toLowerCase();
+        transactions = transactions.filter(
+          (t) =>
+            t.description?.toLowerCase().includes(searchLower) ||
+            t.category?.toLowerCase().includes(searchLower)
+        );
+      }
 
       set({
-        transactions: [],
-        totalCount: 0,
+        transactions,
+        totalCount: transactions.length,
         isLoading: false,
       });
     } catch (error) {

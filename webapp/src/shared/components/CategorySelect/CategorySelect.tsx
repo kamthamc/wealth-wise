@@ -9,7 +9,7 @@ import {
   getAllCategories,
   getCategoriesByType,
 } from '@/core/services/categoryService';
-import { Select, type SelectOption } from '@/shared/components';
+import { DropdownSelect, type DropdownSelectOption } from '@/shared/components';
 
 export interface CategorySelectProps {
   /** Currently selected category ID */
@@ -72,22 +72,22 @@ export function CategorySelect({
     loadCategories();
   }, [type]);
 
-  const options: SelectOption[] = categories.map((category) => ({
+  const options: DropdownSelectOption[] = categories.map((category) => ({
     value: category.id,
     label: category.icon ? `${category.icon} ${category.name}` : category.name,
   }));
 
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newValue = e.target.value || undefined;
-    onChange(newValue);
+  const handleChange = (newValue: string) => {
+    onChange(newValue || undefined);
   };
 
   if (isLoading) {
     return (
-      <Select
+      <DropdownSelect
         label={label}
         options={[{ value: '', label: 'Loading categories...' }]}
         value=""
+        onChange={() => {}}
         disabled
         id={id}
       />
@@ -95,7 +95,7 @@ export function CategorySelect({
   }
 
   return (
-    <Select
+    <DropdownSelect
       label={label}
       options={options}
       value={value || ''}

@@ -50,7 +50,9 @@ export function AccountCard({
   };
 
   return (
-    <button type="button" className="account-card" onClick={handleCardClick}>
+    <div 
+    role='presentation'
+    className="account-card" onClick={handleCardClick}>
       <div className="account-card__header">
         <div className="account-card__icon-wrapper">
           <span className="account-card__icon">{accountIcon}</span>
@@ -94,6 +96,6 @@ export function AccountCard({
           Updated {formatRelativeTime(account.updated_at)}
         </span>
       </div>
-    </button>
+    </div>
   );
 }

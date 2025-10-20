@@ -207,7 +207,7 @@
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 50;
+  /* z-index: 50; */
   animation: fadeIn 150ms ease-out;
 }
 
@@ -224,7 +224,7 @@
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
-  z-index: 51;
+  /* z-index: 51; */
   animation: slideIn 200ms ease-out;
 }
 
