@@ -202,7 +202,7 @@ export function AddAccountModal({
                   <Select.Content className="account-modal__type-content" position="popper">
                     <Select.Viewport className="account-modal__type-viewport">
                       {ACCOUNT_TYPE_CATEGORIES.map((category, index) => (
-                        <div key={category.label}>
+                        <Select.Group key={category.label}>
                           {index > 0 && <Select.Separator className="account-modal__type-separator" />}
                           <Select.Label className="account-modal__type-category-label">
                             {category.label}
@@ -224,7 +224,7 @@ export function AddAccountModal({
                               </Select.ItemIndicator>
                             </Select.Item>
                           ))}
-                        </div>
+                        </Select.Group>
                       ))}
                     </Select.Viewport>
                   </Select.Content>
