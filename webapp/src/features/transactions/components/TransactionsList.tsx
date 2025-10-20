@@ -9,14 +9,17 @@ import {
   ArrowRightLeft,
   ArrowUpCircle,
   BarChart3,
+  Check,
   CreditCard,
   Link2,
   Link2Off,
   ListFilter,
   Plus,
   Search,
+  Trash2,
   TrendingDown,
   TrendingUp,
+  X,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import type { Transaction } from '@/core/db/types';
@@ -85,6 +88,11 @@ export function TransactionsList() {
   const [linkingTransaction, setLinkingTransaction] =
     useState<Transaction | null>(null);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  
+  // Bulk selection state
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const [bulkCategory, setBulkCategory] = useState<string>('');
 
   // Apply filters handler
   const applyFilters = () => {
@@ -107,6 +115,70 @@ export function TransactionsList() {
     setMonthFilter('all');
     setMinAmount('');
     setMaxAmount('');
+  };
+
+  // Bulk selection handlers
+  const toggleSelection = (id: string) => {
+    const newSelected = new Set(selectedIds);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedIds(newSelected);
+  };
+
+  const selectAll = () => {
+    setSelectedIds(new Set(filteredTransactions.map((t) => t.id)));
+  };
+
+  const clearSelection = () => {
+    setSelectedIds(new Set());
+    setIsSelectionMode(false);
+  };
+
+  // Bulk operation handlers
+  const handleBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
+
+    const confirmMessage = `Are you sure you want to delete ${selectedIds.size} ${selectedIds.size === 1 ? 'transaction' : 'transactions'}? This action cannot be undone.`;
+    if (!confirm(confirmMessage)) return;
+
+    try {
+      const deletePromises = Array.from(selectedIds).map((id) =>
+        useTransactionStore.getState().deleteTransaction(id)
+      );
+      await Promise.all(deletePromises);
+      clearSelection();
+      alert(`Successfully deleted ${selectedIds.size} ${selectedIds.size === 1 ? 'transaction' : 'transactions'}`);
+    } catch (error) {
+      console.error('Bulk delete failed:', error);
+      alert('Failed to delete transactions. Please try again.');
+    }
+  };
+
+  const handleBulkCategorize = async () => {
+    if (selectedIds.size === 0 || !bulkCategory) return;
+
+    try {
+      const updatePromises = Array.from(selectedIds).map((id) => {
+        const transaction = filteredTransactions.find((t) => t.id === id);
+        if (!transaction) return Promise.resolve(false);
+        
+        return useTransactionStore.getState().updateTransaction({
+          id,
+          category: bulkCategory,
+        });
+      });
+      
+      await Promise.all(updatePromises);
+      clearSelection();
+      setBulkCategory('');
+      alert(`Successfully categorized ${selectedIds.size} ${selectedIds.size === 1 ? 'transaction' : 'transactions'}`);
+    } catch (error) {
+      console.error('Bulk categorize failed:', error);
+      alert('Failed to categorize transactions. Please try again.');
+    }
   };
 
   // Get unique years and months from transactions
@@ -326,7 +398,87 @@ export function TransactionsList() {
             >
               {showAdvancedFilters ? 'Hide Filters' : 'More Filters'}
             </Button>
+            
+            {/* Toggle Selection Mode Button */}
+            <Button
+              variant={isSelectionMode ? 'primary' : 'secondary'}
+              size="small"
+              onClick={() => {
+                setIsSelectionMode(!isSelectionMode);
+                if (isSelectionMode) {
+                  clearSelection();
+                }
+              }}
+            >
+              {isSelectionMode ? 'Cancel Selection' : 'Select Items'}
+            </Button>
           </div>
+
+          {/* Bulk Actions Toolbar */}
+          {isSelectionMode && (
+            <div className="bulk-actions-toolbar">
+              <div className="bulk-actions-toolbar__info">
+                <span className="bulk-actions-toolbar__count">
+                  {selectedIds.size} selected
+                </span>
+                {selectedIds.size > 0 && (
+                  <button
+                    type="button"
+                    className="bulk-actions-toolbar__clear"
+                    onClick={clearSelection}
+                  >
+                    <X size={16} />
+                    Clear
+                  </button>
+                )}
+                <button
+                  type="button"
+                  className="bulk-actions-toolbar__select-all"
+                  onClick={selectAll}
+                >
+                  <Check size={16} />
+                  Select All ({filteredTransactions.length})
+                </button>
+              </div>
+              
+              {selectedIds.size > 0 && (
+                <div className="bulk-actions-toolbar__actions">
+                  <Select
+                    options={[
+                      { value: '', label: 'Select category...' },
+                      { value: 'Food & Dining', label: 'Food & Dining' },
+                      { value: 'Transportation', label: 'Transportation' },
+                      { value: 'Shopping', label: 'Shopping' },
+                      { value: 'Entertainment', label: 'Entertainment' },
+                      { value: 'Bills & Utilities', label: 'Bills & Utilities' },
+                      { value: 'Healthcare', label: 'Healthcare' },
+                      { value: 'Education', label: 'Education' },
+                      { value: 'Other', label: 'Other' },
+                    ]}
+                    value={bulkCategory}
+                    onChange={(e) => setBulkCategory(e.target.value)}
+                    placeholder="Categorize selected..."
+                  />
+                  <Button
+                    variant="secondary"
+                    size="small"
+                    onClick={handleBulkCategorize}
+                    disabled={!bulkCategory}
+                  >
+                    Apply Category
+                  </Button>
+                  <Button
+                    variant="danger"
+                    size="small"
+                    onClick={handleBulkDelete}
+                  >
+                    <Trash2 size={16} />
+                    Delete Selected
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Advanced Filters - Collapsible */}
           {showAdvancedFilters && (
@@ -475,12 +627,28 @@ export function TransactionsList() {
           <div className="transactions-page__list">
             {filteredTransactions.map((transaction) => (
               <div key={transaction.id} className="transaction-item-wrapper">
+                {/* Selection checkbox */}
+                {isSelectionMode && (
+                  <label className="transaction-item__checkbox">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.has(transaction.id)}
+                      onChange={() => toggleSelection(transaction.id)}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  </label>
+                )}
+                
                 <button
                   type="button"
-                  className="transaction-item"
-                  onClick={() =>
-                    navigate({ to: `/transactions/${transaction.id}` })
-                  }
+                  className={`transaction-item ${isSelectionMode ? 'transaction-item--selection-mode' : ''}`}
+                  onClick={() => {
+                    if (isSelectionMode) {
+                      toggleSelection(transaction.id);
+                    } else {
+                      navigate({ to: `/transactions/${transaction.id}` });
+                    }
+                  }}
                 >
                   <div className="transaction-item__icon">
                     {getTransactionIcon(transaction.type)}
