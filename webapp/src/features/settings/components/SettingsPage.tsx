@@ -321,8 +321,11 @@ export function SettingsPage() {
               <span className="settings-action-icon">💾</span>
               <span className="settings-action-text">
                 <span className="settings-action-title">
-                  {isExporting 
-                    ? t('settings.dataManagement.export.exporting', 'Exporting...')
+                  {isExporting
+                    ? t(
+                        'settings.dataManagement.export.exporting',
+                        'Exporting...'
+                      )
                     : t('settings.dataManagement.export.label')}
                 </span>
                 <span className="settings-action-description">
@@ -341,7 +344,10 @@ export function SettingsPage() {
               <span className="settings-action-text">
                 <span className="settings-action-title">
                   {isImporting
-                    ? t('settings.dataManagement.import.importing', 'Importing...')
+                    ? t(
+                        'settings.dataManagement.import.importing',
+                        'Importing...'
+                      )
                     : t('settings.dataManagement.import.label')}
                 </span>
                 <span className="settings-action-description">

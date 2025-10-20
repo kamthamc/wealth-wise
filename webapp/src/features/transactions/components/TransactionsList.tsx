@@ -88,7 +88,7 @@ export function TransactionsList() {
   const [linkingTransaction, setLinkingTransaction] =
     useState<Transaction | null>(null);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
-  
+
   // Bulk selection state
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isSelectionMode, setIsSelectionMode] = useState(false);
@@ -150,7 +150,9 @@ export function TransactionsList() {
       );
       await Promise.all(deletePromises);
       clearSelection();
-      alert(`Successfully deleted ${selectedIds.size} ${selectedIds.size === 1 ? 'transaction' : 'transactions'}`);
+      alert(
+        `Successfully deleted ${selectedIds.size} ${selectedIds.size === 1 ? 'transaction' : 'transactions'}`
+      );
     } catch (error) {
       console.error('Bulk delete failed:', error);
       alert('Failed to delete transactions. Please try again.');
@@ -164,17 +166,19 @@ export function TransactionsList() {
       const updatePromises = Array.from(selectedIds).map((id) => {
         const transaction = filteredTransactions.find((t) => t.id === id);
         if (!transaction) return Promise.resolve(false);
-        
+
         return useTransactionStore.getState().updateTransaction({
           id,
           category: bulkCategory,
         });
       });
-      
+
       await Promise.all(updatePromises);
       clearSelection();
       setBulkCategory('');
-      alert(`Successfully categorized ${selectedIds.size} ${selectedIds.size === 1 ? 'transaction' : 'transactions'}`);
+      alert(
+        `Successfully categorized ${selectedIds.size} ${selectedIds.size === 1 ? 'transaction' : 'transactions'}`
+      );
     } catch (error) {
       console.error('Bulk categorize failed:', error);
       alert('Failed to categorize transactions. Please try again.');
@@ -398,7 +402,7 @@ export function TransactionsList() {
             >
               {showAdvancedFilters ? 'Hide Filters' : 'More Filters'}
             </Button>
-            
+
             {/* Toggle Selection Mode Button */}
             <Button
               variant={isSelectionMode ? 'primary' : 'secondary'}
@@ -440,7 +444,7 @@ export function TransactionsList() {
                   Select All ({filteredTransactions.length})
                 </button>
               </div>
-              
+
               {selectedIds.size > 0 && (
                 <div className="bulk-actions-toolbar__actions">
                   <Select
@@ -450,7 +454,10 @@ export function TransactionsList() {
                       { value: 'Transportation', label: 'Transportation' },
                       { value: 'Shopping', label: 'Shopping' },
                       { value: 'Entertainment', label: 'Entertainment' },
-                      { value: 'Bills & Utilities', label: 'Bills & Utilities' },
+                      {
+                        value: 'Bills & Utilities',
+                        label: 'Bills & Utilities',
+                      },
                       { value: 'Healthcare', label: 'Healthcare' },
                       { value: 'Education', label: 'Education' },
                       { value: 'Other', label: 'Other' },
@@ -638,7 +645,7 @@ export function TransactionsList() {
                     />
                   </label>
                 )}
-                
+
                 <button
                   type="button"
                   className={`transaction-item ${isSelectionMode ? 'transaction-item--selection-mode' : ''}`}

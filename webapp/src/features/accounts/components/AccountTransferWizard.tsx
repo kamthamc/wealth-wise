@@ -7,11 +7,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { ArrowRight, Check, CheckCircle2 } from 'lucide-react';
 import { useState } from 'react';
 import { useAccountStore, useTransactionStore } from '@/core/stores';
-import {
-  Button,
-  Input,
-  Select,
-} from '@/shared/components';
+import { Button, Input, Select } from '@/shared/components';
 import { formatCurrency } from '@/shared/utils';
 import './AccountTransferWizard.css';
 
@@ -63,7 +59,8 @@ export function AccountTransferWizard({
   };
 
   // Validation
-  const canProceedFromAccounts = fromAccountId && toAccountId && fromAccountId !== toAccountId;
+  const canProceedFromAccounts =
+    fromAccountId && toAccountId && fromAccountId !== toAccountId;
   const canProceedFromAmount = amount && parseFloat(amount) > 0;
   const canProceedFromDetails = description.trim().length > 0;
 
@@ -74,7 +71,11 @@ export function AccountTransferWizard({
 
   // Handle transfer execution
   const handleTransfer = async () => {
-    if (!canProceedFromAccounts || !canProceedFromAmount || !canProceedFromDetails) {
+    if (
+      !canProceedFromAccounts ||
+      !canProceedFromAmount ||
+      !canProceedFromDetails
+    ) {
       return;
     }
 
@@ -117,7 +118,9 @@ export function AccountTransferWizard({
       await linkTransactions(withdrawalTransaction.id, depositTransaction.id);
 
       // Success!
-      alert(`Successfully transferred ${formatCurrency(transferAmount)} from ${fromAccount?.name} to ${toAccount?.name}`);
+      alert(
+        `Successfully transferred ${formatCurrency(transferAmount)} from ${fromAccount?.name} to ${toAccount?.name}`
+      );
       handleClose();
     } catch (error) {
       console.error('Transfer failed:', error);
@@ -152,7 +155,10 @@ export function AccountTransferWizard({
   };
 
   return (
-    <Dialog.Root open={isOpen} onOpenChange={(open: boolean) => !open && handleClose()}>
+    <Dialog.Root
+      open={isOpen}
+      onOpenChange={(open: boolean) => !open && handleClose()}
+    >
       <Dialog.Portal>
         <Dialog.Overlay className="transfer-wizard__overlay" />
         <Dialog.Content className="transfer-wizard__content">
@@ -162,7 +168,8 @@ export function AccountTransferWizard({
               Transfer Money Between Accounts
             </Dialog.Title>
             <Dialog.Description className="transfer-wizard__description">
-              Move funds from one account to another with automatic dual-entry bookkeeping
+              Move funds from one account to another with automatic dual-entry
+              bookkeeping
             </Dialog.Description>
             <Dialog.Close
               className="transfer-wizard__close"
@@ -192,7 +199,11 @@ export function AccountTransferWizard({
             <div className="transfer-wizard__step-divider" />
             <div
               className={`transfer-wizard__step ${currentStep === 'details' ? 'transfer-wizard__step--active' : ''} ${currentStep === 'confirm' ? 'transfer-wizard__step--completed' : ''}`}
-              onClick={() => canProceedFromAccounts && canProceedFromAmount && goToStep('details')}
+              onClick={() =>
+                canProceedFromAccounts &&
+                canProceedFromAmount &&
+                goToStep('details')
+              }
             >
               <span className="transfer-wizard__step-number">3</span>
               <span className="transfer-wizard__step-label">Details</span>
@@ -237,9 +248,7 @@ export function AccountTransferWizard({
                 </div>
 
                 <div className="transfer-wizard__field">
-                  <label className="transfer-wizard__label">
-                    To Account *
-                  </label>
+                  <label className="transfer-wizard__label">To Account *</label>
                   <Select
                     options={[
                       { value: '', label: 'Select destination account...' },
@@ -253,11 +262,13 @@ export function AccountTransferWizard({
                   />
                 </div>
 
-                {fromAccountId && toAccountId && fromAccountId === toAccountId && (
-                  <div className="transfer-wizard__error">
-                    ⚠️ Source and destination accounts must be different
-                  </div>
-                )}
+                {fromAccountId &&
+                  toAccountId &&
+                  fromAccountId === toAccountId && (
+                    <div className="transfer-wizard__error">
+                      ⚠️ Source and destination accounts must be different
+                    </div>
+                  )}
               </div>
             )}
 
@@ -302,7 +313,8 @@ export function AccountTransferWizard({
 
                 {fromAccount && transferAmount > fromAccount.balance && (
                   <div className="transfer-wizard__warning">
-                    ⚠️ Transfer amount exceeds available balance in {fromAccount.name}
+                    ⚠️ Transfer amount exceeds available balance in{' '}
+                    {fromAccount.name}
                   </div>
                 )}
               </div>
@@ -370,27 +382,47 @@ export function AccountTransferWizard({
 
                   <div className="transfer-wizard__confirm-details">
                     <div className="transfer-wizard__confirm-row">
-                      <span className="transfer-wizard__confirm-label">From:</span>
-                      <span className="transfer-wizard__confirm-value">{fromAccount?.name}</span>
-                    </div>
-                    <div className="transfer-wizard__confirm-row">
-                      <span className="transfer-wizard__confirm-label">To:</span>
-                      <span className="transfer-wizard__confirm-value">{toAccount?.name}</span>
-                    </div>
-                    <div className="transfer-wizard__confirm-row">
-                      <span className="transfer-wizard__confirm-label">Description:</span>
-                      <span className="transfer-wizard__confirm-value">{description}</span>
-                    </div>
-                    <div className="transfer-wizard__confirm-row">
-                      <span className="transfer-wizard__confirm-label">Date:</span>
+                      <span className="transfer-wizard__confirm-label">
+                        From:
+                      </span>
                       <span className="transfer-wizard__confirm-value">
-                        {new Date(date || new Date().toISOString()).toLocaleDateString()}
+                        {fromAccount?.name}
+                      </span>
+                    </div>
+                    <div className="transfer-wizard__confirm-row">
+                      <span className="transfer-wizard__confirm-label">
+                        To:
+                      </span>
+                      <span className="transfer-wizard__confirm-value">
+                        {toAccount?.name}
+                      </span>
+                    </div>
+                    <div className="transfer-wizard__confirm-row">
+                      <span className="transfer-wizard__confirm-label">
+                        Description:
+                      </span>
+                      <span className="transfer-wizard__confirm-value">
+                        {description}
+                      </span>
+                    </div>
+                    <div className="transfer-wizard__confirm-row">
+                      <span className="transfer-wizard__confirm-label">
+                        Date:
+                      </span>
+                      <span className="transfer-wizard__confirm-value">
+                        {new Date(
+                          date || new Date().toISOString()
+                        ).toLocaleDateString()}
                       </span>
                     </div>
                     {notes && (
                       <div className="transfer-wizard__confirm-row">
-                        <span className="transfer-wizard__confirm-label">Notes:</span>
-                        <span className="transfer-wizard__confirm-value">{notes}</span>
+                        <span className="transfer-wizard__confirm-label">
+                          Notes:
+                        </span>
+                        <span className="transfer-wizard__confirm-value">
+                          {notes}
+                        </span>
                       </div>
                     )}
                   </div>
@@ -404,7 +436,9 @@ export function AccountTransferWizard({
                       <span>
                         {formatCurrency(fromAccount?.balance || 0)} →{' '}
                         <strong>
-                          {formatCurrency((fromAccount?.balance || 0) - transferAmount)}
+                          {formatCurrency(
+                            (fromAccount?.balance || 0) - transferAmount
+                          )}
                         </strong>
                       </span>
                     </div>
@@ -413,7 +447,9 @@ export function AccountTransferWizard({
                       <span>
                         {formatCurrency(toAccount?.balance || 0)} →{' '}
                         <strong>
-                          {formatCurrency((toAccount?.balance || 0) + transferAmount)}
+                          {formatCurrency(
+                            (toAccount?.balance || 0) + transferAmount
+                          )}
                         </strong>
                       </span>
                     </div>
@@ -421,7 +457,8 @@ export function AccountTransferWizard({
                 </div>
 
                 <div className="transfer-wizard__info">
-                  ℹ️ This will create two linked transactions: a withdrawal from {fromAccount?.name} and a deposit to {toAccount?.name}
+                  ℹ️ This will create two linked transactions: a withdrawal from{' '}
+                  {fromAccount?.name} and a deposit to {toAccount?.name}
                 </div>
               </div>
             )}
@@ -451,11 +488,10 @@ export function AccountTransferWizard({
                   <ArrowRight size={20} />
                 </Button>
               ) : (
-                <Button
-                  onClick={handleTransfer}
-                  disabled={isProcessing}
-                >
-                  {isProcessing ? 'Processing...' : (
+                <Button onClick={handleTransfer} disabled={isProcessing}>
+                  {isProcessing ? (
+                    'Processing...'
+                  ) : (
                     <>
                       <Check size={20} />
                       Complete Transfer

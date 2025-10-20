@@ -4,7 +4,14 @@
  */
 
 import { useNavigate } from '@tanstack/react-router';
-import { ArrowRightLeft, BarChart3, CheckCircle, Coins, Landmark, Plus } from 'lucide-react';
+import {
+  ArrowRightLeft,
+  BarChart3,
+  CheckCircle,
+  Coins,
+  Landmark,
+  Plus,
+} from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Account } from '@/core/db/types';
@@ -307,7 +314,6 @@ export function AccountsList() {
         cancelLabel="Cancel"
         variant="danger"
       />
-
       {/* Account Transfer Wizard */}
       <AccountTransferWizard
         isOpen={isTransferWizardOpen}
