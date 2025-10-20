@@ -12,13 +12,13 @@
 .account-type-guide__title {
   font-size: var(--font-size-lg, 1.125rem);
   font-weight: var(--font-weight-semibold, 600);
-  color: var(--color-text-primary, #1a1a1a);
+  color: var(--text-primary, #1a1a1a);
   margin: 0;
 }
 
 .account-type-guide__description {
   font-size: var(--font-size-sm, 0.875rem);
-  color: var(--color-text-secondary, #6b7280);
+  color: var(--text-secondary, #6b7280);
   margin: 0;
 }
 
@@ -42,7 +42,7 @@
   cursor: pointer;
   transition: all var(--transition-normal, 0.2s ease);
   text-align: left;
-  
+
   /* WCAG 2.1 AA - Minimum touch target */
   min-height: 120px;
 }
@@ -67,7 +67,7 @@
 .account-type-card--selected {
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   border-color: #1e40af;
-  color: var(--color-text-inverse, #ffffff);
+  color: var(--text-inverse, #ffffff);
 }
 
 .account-type-card--selected:hover {
@@ -77,7 +77,7 @@
 .account-type-card--selected .account-type-card__title,
 .account-type-card--selected .account-type-card__description,
 .account-type-card--selected .account-type-card__example {
-  color: var(--color-text-inverse, #ffffff);
+  color: var(--text-inverse, #ffffff);
 }
 
 .account-type-card--selected .account-type-card__icon {
@@ -91,7 +91,7 @@
   right: var(--space-2, 0.5rem);
   padding: var(--space-1, 0.25rem) var(--space-2, 0.5rem);
   background: var(--color-warning, #f59e0b);
-  color: var(--color-text-inverse, #ffffff);
+  color: var(--text-inverse, #ffffff);
   font-size: var(--font-size-xs, 0.75rem);
   font-weight: var(--font-weight-medium, 500);
   border-radius: var(--radius-sm, 4px);
@@ -116,7 +116,7 @@
   border-radius: var(--radius-full, 9999px);
   font-size: 0.875rem;
   font-weight: var(--font-weight-bold, 700);
-  color: var(--color-text-inverse, #ffffff);
+  color: var(--text-inverse, #ffffff);
 }
 
 /* Icon */
@@ -145,13 +145,13 @@
 .account-type-card__title {
   font-size: var(--font-size-base, 1rem);
   font-weight: var(--font-weight-semibold, 600);
-  color: var(--color-text-primary, #1a1a1a);
+  color: var(--text-primary, #1a1a1a);
   margin: 0;
 }
 
 .account-type-card__description {
   font-size: var(--font-size-sm, 0.875rem);
-  color: var(--color-text-secondary, #6b7280);
+  color: var(--text-secondary, #6b7280);
   margin: 0;
   line-height: 1.4;
 }
@@ -167,7 +167,7 @@
 .account-type-card__example {
   padding: var(--space-1, 0.25rem) var(--space-2, 0.5rem);
   background: var(--color-background-tertiary, #e9ecef);
-  color: var(--color-text-secondary, #6b7280);
+  color: var(--text-secondary, #6b7280);
   font-size: var(--font-size-xs, 0.75rem);
   border-radius: var(--radius-sm, 4px);
   white-space: nowrap;
@@ -179,20 +179,20 @@
 }
 
 /* Dark mode */
-[data-theme='dark'] .account-type-card {
+[data-theme="dark"] .account-type-card {
   background: var(--color-background-secondary, #2a2a2a);
   border-color: var(--color-border, #3a3a3a);
 }
 
-[data-theme='dark'] .account-type-card:hover {
+[data-theme="dark"] .account-type-card:hover {
   background: var(--color-background-tertiary, #3a3a3a);
 }
 
-[data-theme='dark'] .account-type-card__icon {
+[data-theme="dark"] .account-type-card__icon {
   background: var(--color-background-primary, #1a1a1a);
 }
 
-[data-theme='dark'] .account-type-card__example {
+[data-theme="dark"] .account-type-card__example {
   background: var(--color-background-primary, #1a1a1a);
 }
 

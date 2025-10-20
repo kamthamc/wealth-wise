@@ -28,10 +28,21 @@
   },
   "emptyState": {
     "accounts": {
-      "title": "No accounts yet",
-      "description": "Start tracking your finances by adding your bank accounts, credit cards, and other financial accounts",
+      "title": "No Accounts Yet",
+      "description": "Start tracking your finances by adding your first account. Connect your bank, wallet, or credit card to get started.",
       "action": "Add Your First Account",
       "secondaryAction": "Learn about account types →",
+      "benefits": {
+        "title": "Why add accounts?",
+        "trackMoney": "Track all your money in one place",
+        "recordTransactions": "Record income and expenses easily",
+        "insights": "Get insights into your spending habits",
+        "goals": "Set and achieve financial goals"
+      },
+      "tip": {
+        "label": "Tip:",
+        "message": "Start with your primary bank account or most-used digital wallet for best results."
+      },
       "filtered": {
         "title": "No accounts found",
         "description": "Try adjusting your filters or search query to find what you're looking for"

@@ -5,7 +5,7 @@
 
 import * as Toast from '@radix-ui/react-toast';
 import { AlertCircle, CheckCircle, Info, X, XCircle } from 'lucide-react';
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useCallback, useContext, useState } from 'react';
 import './ToastProvider.css';
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning';

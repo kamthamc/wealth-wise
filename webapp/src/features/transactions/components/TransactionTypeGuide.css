@@ -11,13 +11,13 @@
   margin: 0 0 8px 0;
   font-size: 18px;
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
 }
 
 .transaction-type-guide__subtitle {
   margin: 0 0 24px 0;
   font-size: 14px;
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
 }
 
 /* Type Cards Grid */
@@ -71,7 +71,11 @@
 
 /* Selected State */
 .type-card--selected {
-  background: linear-gradient(135deg, var(--card-accent) 0%, var(--card-accent-dark) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--card-accent) 0%,
+    var(--card-accent-dark) 100%
+  );
   border-color: var(--card-accent);
   color: white;
   box-shadow: var(--shadow-lg);
@@ -113,7 +117,7 @@
   margin: 0 0 8px 0;
   font-size: 20px;
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
 }
 
 /* Description */
@@ -121,7 +125,7 @@
   margin: 0 0 16px 0;
   font-size: 14px;
   line-height: 1.5;
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
 }
 
 /* Examples */
@@ -137,7 +141,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--color-text-tertiary);
+  color: var(--text-tertiary);
 }
 
 .examples-list {
@@ -148,11 +152,11 @@
   padding: 0;
   list-style: none;
   font-size: 13px;
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
 }
 
 .examples-list li::before {
-  content: '• ';
+  content: "• ";
   margin-right: 6px;
   color: var(--card-accent);
 }

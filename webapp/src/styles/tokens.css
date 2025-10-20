@@ -8,17 +8,17 @@
      COLOR PALETTE
      ============================================ */
 
-  /* Primary - Teal (Trust & Professionalism) */
-  --color-primary-50: #e6f7f7;
-  --color-primary-100: #b3e6e6;
-  --color-primary-200: #80d5d5;
-  --color-primary-300: #4dc4c4;
-  --color-primary-400: #1ab3b3;
-  --color-primary-500: #00a0a0;
-  --color-primary-600: #008080;
-  --color-primary-700: #006060;
-  --color-primary-800: #004040;
-  --color-primary-900: #002020;
+  /* Primary - Professional Blue (Trust, Stability & Calm) */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
 
   /* Success - Green (Growth & Positive) */
   --color-success-50: #e8f5e9;
@@ -80,15 +80,15 @@
   --color-gray-800: #424242;
   --color-gray-900: #212121;
 
-  /* Semantic Colors (Light Mode) */
+  /* Semantic Colors (Light Mode) - Softer backgrounds */
   --bg-primary: #ffffff;
-  --bg-secondary: #f5f5f5;
-  --bg-tertiary: #fafafa;
-  --text-primary: #212121;
-  --text-secondary: #616161;
-  --text-tertiary: #9e9e9e;
-  --border-primary: #e0e0e0;
-  --border-secondary: #eeeeee;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
+  --border-primary: #e2e8f0;
+  --border-secondary: #f1f5f9;
 
   /* Financial-Specific Colors */
   --color-income: var(--color-success-500);
@@ -96,25 +96,40 @@
   --color-transfer: var(--color-info-500);
   --color-investment: var(--color-primary-500);
 
+  /* Focus States - Enhanced for better visibility and contrast */
+  --focus-ring-color: #0077cc; /* Brighter blue for better contrast */
+  --focus-ring-width: 3px; /* Thicker for better visibility */
+  --focus-ring-offset: 2px;
+  --focus-ring-style: solid;
+  --focus-ring: var(--focus-ring-width) var(--focus-ring-style)
+    var(--focus-ring-color);
+  --focus-ring-offset-shadow: 0 0 0 var(--focus-ring-offset) var(--bg-primary);
+  --focus-ring-shadow: 0 0 0
+    calc(var(--focus-ring-width) + var(--focus-ring-offset))
+    rgba(0, 119, 204, 0.3);
+
   /* ============================================
-     TYPOGRAPHY
+     TYPOGRAPHY - Optimized for Financial Data
      ============================================ */
 
   /* Font Families */
   --font-sans:
     "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
     "Helvetica Neue", sans-serif;
-  --font-mono: "JetBrains Mono", "Fira Code", "Consolas", "Monaco", monospace;
+  --font-mono:
+    "JetBrains Mono", "SF Mono", "Roboto Mono", "Consolas", "Monaco", monospace;
+  --font-numbers: "Tabular Nums", "SF Mono", "Roboto Mono", monospace;
 
-  /* Font Sizes (Fluid Typography) */
-  --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem); /* 12-14px */
-  --text-sm: clamp(0.875rem, 0.8rem + 0.375vw, 1rem); /* 14-16px */
-  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem); /* 16-18px */
-  --text-lg: clamp(1.125rem, 1rem + 0.625vw, 1.25rem); /* 18-20px */
-  --text-xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem); /* 20-24px */
-  --text-2xl: clamp(1.5rem, 1.3rem + 1vw, 2rem); /* 24-32px */
-  --text-3xl: clamp(1.875rem, 1.6rem + 1.375vw, 2.5rem); /* 30-40px */
-  --text-4xl: clamp(2.25rem, 1.9rem + 1.75vw, 3rem); /* 36-48px */
+  /* Font Sizes (Optimized for readability) */
+  --text-xs: 0.75rem; /* 12px - Small labels */
+  --text-sm: 0.875rem; /* 14px - Secondary text */
+  --text-base: 1rem; /* 16px - Body text */
+  --text-lg: 1.125rem; /* 18px - Emphasized text */
+  --text-xl: 1.25rem; /* 20px - Small headings */
+  --text-2xl: 1.5rem; /* 24px - Medium headings */
+  --text-3xl: 1.875rem; /* 30px - Large headings */
+  --text-4xl: 2.25rem; /* 36px - Hero text */
+  --text-5xl: 3rem; /* 48px - Display numbers */
 
   /* Font Weights */
   --font-light: 300;
@@ -122,14 +137,25 @@
   --font-medium: 500;
   --font-semibold: 600;
   --font-bold: 700;
+  --font-extrabold: 800;
 
-  /* Line Heights */
+  /* Line Heights - Tighter for financial data */
+  --leading-none: 1;
   --leading-tight: 1.25;
+  --leading-snug: 1.375;
   --leading-normal: 1.5;
-  --leading-relaxed: 1.75;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
 
   /* Letter Spacing */
+  --tracking-tighter: -0.05em;
   --tracking-tight: -0.025em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+
+  /* Number formatting */
+  font-variant-numeric: tabular-nums;
   --tracking-normal: 0;
   --tracking-wide: 0.025em;
 
@@ -151,6 +177,15 @@
   --space-20: 5rem; /* 80px */
   --space-24: 6rem; /* 96px */
 
+  /* spacing with size fallback */
+  --space-xs: var(--space-2); /* 8px */
+  --space-sm: var(--space-3); /* 12px */
+  --space-md: var(--space-4); /* 16px */
+  --space-lg: var(--space-6); /* 24px */
+  --space-xl: var(--space-8); /* 32px */
+  --space-2xl: var(--space-10); /* 40px */
+  --space-3xl: var(--space-12); /* 48px */
+
   /* Semantic spacing (for easier usage) */
   --page-padding: var(--space-6); /* 24px - Main page container padding */
   --page-padding-mobile: var(--space-4); /* 16px - Mobile page padding */
@@ -163,7 +198,7 @@
   --button-gap: var(--space-2); /* 8px - Gap between buttons */
   --filter-gap: var(--space-2); /* 8px - Gap between filter chips */
   --stats-gap: var(--space-6); /* 24px - Gap between stats cards */
-  
+
   /* Layout constraints */
   --content-max-width: 1280px; /* Maximum content width */
   --sidebar-width: 260px; /* Sidebar width */
@@ -217,19 +252,19 @@
 }
 
 /* ============================================
-   DARK MODE
+   DARK MODE - Softer, easier on eyes
    ============================================ */
 
 [data-theme="dark"] {
-  /* Semantic Colors (Dark Mode) */
-  --bg-primary: #1a1a1a;
-  --bg-secondary: #2a2a2a;
-  --bg-tertiary: #3a3a3a;
-  --text-primary: #ffffff;
-  --text-secondary: #b0b0b0;
-  --text-tertiary: #808080;
-  --border-primary: #404040;
-  --border-secondary: #303030;
+  /* Semantic Colors (Dark Mode) - Warmer, less harsh */
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #94a3b8;
+  --border-primary: #334155;
+  --border-secondary: #1e293b;
 
   /* Adjust shadows for dark mode */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
@@ -244,14 +279,15 @@
 /* Respect system preference */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg-primary: #1a1a1a;
-    --bg-secondary: #2a2a2a;
-    --bg-tertiary: #3a3a3a;
-    --text-primary: #ffffff;
-    --text-secondary: #b0b0b0;
-    --text-tertiary: #808080;
-    --border-primary: #404040;
-    --border-secondary: #303030;
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-tertiary: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-tertiary: #94a3b8;
+    --border-primary: #334155;
+    --border-secondary: #1e293b;
+    --color-focus: #3b82f6;
 
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
     --shadow-md:

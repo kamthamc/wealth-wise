@@ -3,6 +3,8 @@
  * Helpful guide when user has no accounts
  */
 
+import { CheckCircle, Landmark } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import './AccountsEmptyState.css';
 
 export interface AccountsEmptyStateProps {
@@ -10,56 +12,73 @@ export interface AccountsEmptyStateProps {
 }
 
 export function AccountsEmptyState({ onAddAccount }: AccountsEmptyStateProps) {
+  const { t } = useTranslation();
+
   return (
-    <div className="accounts-empty-state" role="region" aria-labelledby="empty-state-title">
+    <div
+      className="accounts-empty-state"
+      role="region"
+      aria-labelledby="empty-state-title"
+    >
       <div className="accounts-empty-state__icon" aria-hidden="true">
-        🏦
+        <Landmark size={48} />
       </div>
 
       <h2 id="empty-state-title" className="accounts-empty-state__title">
-        No Accounts Yet
+        {t('emptyState.accounts.title')}
       </h2>
 
       <p className="accounts-empty-state__description">
-        Start tracking your finances by adding your first account.
-        Connect your bank, wallet, or credit card to get started.
+        {t('emptyState.accounts.description')}
       </p>
 
       <div className="accounts-empty-state__benefits">
         <h3 className="accounts-empty-state__benefits-title">
-          Why add accounts?
+          {t('emptyState.accounts.benefits.title')}
         </h3>
         <ul className="accounts-empty-state__benefits-list">
           <li className="accounts-empty-state__benefit">
-            <span className="accounts-empty-state__benefit-icon" aria-hidden="true">
-              ✓
+            <span
+              className="accounts-empty-state__benefit-icon"
+              aria-hidden="true"
+            >
+              <CheckCircle size={20} />
             </span>
             <span className="accounts-empty-state__benefit-text">
-              Track all your money in one place
+              {t('emptyState.accounts.benefits.trackMoney')}
             </span>
           </li>
           <li className="accounts-empty-state__benefit">
-            <span className="accounts-empty-state__benefit-icon" aria-hidden="true">
-              ✓
+            <span
+              className="accounts-empty-state__benefit-icon"
+              aria-hidden="true"
+            >
+              <CheckCircle size={20} />
             </span>
             <span className="accounts-empty-state__benefit-text">
-              Record income and expenses easily
+              {t('emptyState.accounts.benefits.recordTransactions')}
             </span>
           </li>
           <li className="accounts-empty-state__benefit">
-            <span className="accounts-empty-state__benefit-icon" aria-hidden="true">
-              ✓
+            <span
+              className="accounts-empty-state__benefit-icon"
+              aria-hidden="true"
+            >
+              <CheckCircle size={20} />
             </span>
             <span className="accounts-empty-state__benefit-text">
-              Get insights into your spending habits
+              {t('emptyState.accounts.benefits.insights')}
             </span>
           </li>
           <li className="accounts-empty-state__benefit">
-            <span className="accounts-empty-state__benefit-icon" aria-hidden="true">
-              ✓
+            <span
+              className="accounts-empty-state__benefit-icon"
+              aria-hidden="true"
+            >
+              <CheckCircle size={20} />
             </span>
             <span className="accounts-empty-state__benefit-text">
-              Set and achieve financial goals
+              {t('emptyState.accounts.benefits.goals')}
             </span>
           </li>
         </ul>
@@ -69,18 +88,18 @@ export function AccountsEmptyState({ onAddAccount }: AccountsEmptyStateProps) {
         type="button"
         className="accounts-empty-state__button"
         onClick={onAddAccount}
-        aria-label="Add your first account"
+        aria-label={t('emptyState.accounts.action')}
       >
         <span className="accounts-empty-state__button-icon" aria-hidden="true">
           +
         </span>
-        Add Your First Account
+        {t('emptyState.accounts.action')}
       </button>
 
       <div className="accounts-empty-state__tips">
         <p className="accounts-empty-state__tip">
-          <strong>Tip:</strong> Start with your primary bank account or most-used
-          digital wallet for best results.
+          <strong>{t('emptyState.accounts.tip.label')}</strong>{' '}
+          {t('emptyState.accounts.tip.message')}
         </p>
       </div>
     </div>

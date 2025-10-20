@@ -3,9 +3,14 @@
  * Fast transaction entry with smart defaults and autofill
  */
 
+import { ArrowLeftRight, TrendingDown, TrendingUp } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
+import {
+  type Category,
+  getAllCategories,
+} from '@/core/services/categoryService';
 import { useAccountStore, useTransactionStore } from '@/core/stores';
-import { getAllCategories, type Category } from '@/core/services/categoryService';
 import { useToast } from '@/shared/components';
 import type { TransactionType } from '../types';
 import './QuickTransactionEntry.css';
@@ -19,11 +24,31 @@ interface QuickTransactionEntryProps {
   onSuccess?: () => void;
 }
 
-const TRANSACTION_TYPES = [
-  { value: 'expense', label: 'Expense', icon: '💸', color: 'red' },
-  { value: 'income', label: 'Income', icon: '💰', color: 'green' },
-  { value: 'transfer', label: 'Transfer', icon: '🔄', color: 'blue' },
-] as const;
+const TRANSACTION_TYPES: Array<{
+  value: TransactionType;
+  label: string;
+  icon: ReactNode;
+  color: string;
+}> = [
+  {
+    value: 'expense',
+    label: 'Expense',
+    icon: <TrendingDown size={20} />,
+    color: 'red',
+  },
+  {
+    value: 'income',
+    label: 'Income',
+    icon: <TrendingUp size={20} />,
+    color: 'green',
+  },
+  {
+    value: 'transfer',
+    label: 'Transfer',
+    icon: <ArrowLeftRight size={20} />,
+    color: 'blue',
+  },
+];
 
 export function QuickTransactionEntry({
   defaultType = 'expense',
@@ -118,9 +143,15 @@ export function QuickTransactionEntry({
         <div className="quick-transaction-entry__type-selector">
           <label className="quick-transaction-entry__label">
             Transaction Type
-            <span className="required" aria-label="required">*</span>
+            <span className="required" aria-label="required">
+              *
+            </span>
           </label>
-          <div className="type-buttons" role="radiogroup" aria-label="Transaction type">
+          <div
+            className="type-buttons"
+            role="radiogroup"
+            aria-label="Transaction type"
+          >
             {TRANSACTION_TYPES.map((txnType) => (
               <button
                 key={txnType.value}
@@ -144,9 +175,14 @@ export function QuickTransactionEntry({
 
         {/* Amount Input */}
         <div className="quick-transaction-entry__field">
-          <label htmlFor="quick-amount" className="quick-transaction-entry__label">
+          <label
+            htmlFor="quick-amount"
+            className="quick-transaction-entry__label"
+          >
             Amount
-            <span className="required" aria-label="required">*</span>
+            <span className="required" aria-label="required">
+              *
+            </span>
           </label>
           <input
             id="quick-amount"
@@ -161,10 +197,18 @@ export function QuickTransactionEntry({
             autoComplete="transaction-amount"
             required
             aria-required="true"
-            aria-describedby={amount && Number.parseFloat(amount) <= 0 ? 'amount-error' : undefined}
+            aria-describedby={
+              amount && Number.parseFloat(amount) <= 0
+                ? 'amount-error'
+                : undefined
+            }
           />
           {amount && Number.parseFloat(amount) <= 0 && (
-            <span id="amount-error" className="quick-transaction-entry__error" role="alert">
+            <span
+              id="amount-error"
+              className="quick-transaction-entry__error"
+              role="alert"
+            >
               Amount must be greater than zero
             </span>
           )}
@@ -172,9 +216,14 @@ export function QuickTransactionEntry({
 
         {/* Description Input */}
         <div className="quick-transaction-entry__field">
-          <label htmlFor="quick-description" className="quick-transaction-entry__label">
+          <label
+            htmlFor="quick-description"
+            className="quick-transaction-entry__label"
+          >
             Description
-            <span className="required" aria-label="required">*</span>
+            <span className="required" aria-label="required">
+              *
+            </span>
           </label>
           <input
             id="quick-description"
@@ -196,9 +245,14 @@ export function QuickTransactionEntry({
 
         {/* Account Selector */}
         <div className="quick-transaction-entry__field">
-          <label htmlFor="quick-account" className="quick-transaction-entry__label">
+          <label
+            htmlFor="quick-account"
+            className="quick-transaction-entry__label"
+          >
             Account
-            <span className="required" aria-label="required">*</span>
+            <span className="required" aria-label="required">
+              *
+            </span>
           </label>
           <select
             id="quick-account"
@@ -225,7 +279,10 @@ export function QuickTransactionEntry({
 
         {/* Category Selector */}
         <div className="quick-transaction-entry__field">
-          <label htmlFor="quick-category" className="quick-transaction-entry__label">
+          <label
+            htmlFor="quick-category"
+            className="quick-transaction-entry__label"
+          >
             Category
             <span className="optional">(Optional)</span>
           </label>
@@ -254,10 +311,14 @@ export function QuickTransactionEntry({
         <button
           type="submit"
           className="quick-transaction-entry__submit"
-          disabled={isSubmitting || !amount || !accountId || !description.trim()}
+          disabled={
+            isSubmitting || !amount || !accountId || !description.trim()
+          }
           aria-busy={isSubmitting}
         >
-          {isSubmitting ? 'Adding...' : `Add ${TRANSACTION_TYPES.find(t => t.value === type)?.label}`}
+          {isSubmitting
+            ? 'Adding...'
+            : `Add ${TRANSACTION_TYPES.find((t) => t.value === type)?.label}`}
         </button>
       </form>
     </div>

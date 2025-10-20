@@ -186,10 +186,16 @@ export function AddGoalForm({ isOpen, onClose, goalId }: AddGoalFormProps) {
           id: goalId,
           ...goalInput,
         });
-        toast.success('Goal updated', 'Your goal has been updated successfully');
+        toast.success(
+          'Goal updated',
+          'Your goal has been updated successfully'
+        );
       } else {
         await createGoal(goalInput);
-        toast.success('Goal created', 'Your goal has been created successfully');
+        toast.success(
+          'Goal created',
+          'Your goal has been created successfully'
+        );
       }
       onClose();
       resetForm();
@@ -241,7 +247,10 @@ export function AddGoalForm({ isOpen, onClose, goalId }: AddGoalFormProps) {
                 ? 'Update your financial goal details'
                 : 'Set a savings target and track your progress'}
             </Dialog.Description>
-            <Dialog.Close className="goal-form__close" aria-label="Close dialog">
+            <Dialog.Close
+              className="goal-form__close"
+              aria-label="Close dialog"
+            >
               ✕
             </Dialog.Close>
           </div>
@@ -356,7 +365,9 @@ export function AddGoalForm({ isOpen, onClose, goalId }: AddGoalFormProps) {
               <DatePicker
                 id={`${formId}-date`}
                 value={
-                  formData.target_date ? new Date(formData.target_date) : undefined
+                  formData.target_date
+                    ? new Date(formData.target_date)
+                    : undefined
                 }
                 onChange={(date) => {
                   setFormData((prev) => ({
@@ -441,7 +452,10 @@ export function AddGoalForm({ isOpen, onClose, goalId }: AddGoalFormProps) {
                         : ''
                     }`}
                     onClick={() =>
-                      setFormData((prev) => ({ ...prev, icon: iconOption.emoji }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        icon: iconOption.emoji,
+                      }))
                     }
                     aria-label={`${iconOption.name} icon`}
                     aria-pressed={formData.icon === iconOption.emoji}

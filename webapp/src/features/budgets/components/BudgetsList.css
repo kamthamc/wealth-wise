@@ -1,7 +1,7 @@
 /* Budgets List Page Styles */
 
 .budgets-page {
-  padding: var(--spacing-6) var(--spacing-4);
+  padding: var(--space-6) var(--space-4);
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -10,30 +10,30 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--spacing-6);
-  gap: var(--spacing-4);
+  margin-bottom: var(--space-6);
+  gap: var(--space-4);
   flex-wrap: wrap;
 }
 
 .budgets-page__title {
   font-size: var(--font-size-3xl);
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   margin: 0;
 }
 
 .budgets-page__stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--spacing-4);
-  margin-bottom: var(--spacing-6);
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 
 .budgets-page__controls {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-3);
-  margin-bottom: var(--spacing-5);
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
 }
 
 .budgets-page__search {
@@ -42,29 +42,29 @@
 
 .budgets-page__filters {
   display: flex;
-  gap: var(--spacing-2);
+  gap: var(--space-2);
   flex-wrap: wrap;
 }
 
 .budgets-page__filter-button {
-  padding: var(--spacing-2) var(--spacing-4);
+  padding: var(--space-2) var(--space-4);
   border: 2px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-surface);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   font-weight: 600;
   font-size: var(--font-size-sm);
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: var(--spacing-2);
+  gap: var(--space-2);
 }
 
 .budgets-page__filter-button:hover {
   border-color: var(--color-primary);
   background: var(--color-surface-hover);
-  color: var(--color-text-primary);
+  color: var(--text-primary);
 }
 
 .budgets-page__filter-button--active {
@@ -85,16 +85,16 @@
 
 .budgets-page__status-filters {
   display: flex;
-  gap: var(--spacing-2);
+  gap: var(--space-2);
   flex-wrap: wrap;
 }
 
 .budgets-page__status-button {
-  padding: var(--spacing-2) var(--spacing-3);
+  padding: var(--space-2) var(--space-3);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-surface);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   font-size: var(--font-size-sm);
   font-weight: 500;
   cursor: pointer;
@@ -103,7 +103,7 @@
 
 .budgets-page__status-button:hover {
   background: var(--color-surface-hover);
-  color: var(--color-text-primary);
+  color: var(--text-primary);
 }
 
 .budgets-page__status-button--active {
@@ -116,14 +116,14 @@
 .budgets-page__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: var(--spacing-4);
+  gap: var(--space-4);
 }
 
 .budgets-page__empty {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-10);
+  padding: var(--space-10);
   min-height: 300px;
 }
 
@@ -132,8 +132,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-10);
-  gap: var(--spacing-4);
+  padding: var(--space-10);
+  gap: var(--space-4);
   min-height: 400px;
 }
 
@@ -141,8 +141,8 @@
 .budget-card {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
-  padding: var(--spacing-5);
+  gap: var(--space-4);
+  padding: var(--space-5);
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
@@ -159,13 +159,13 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: var(--spacing-3);
+  gap: var(--space-3);
 }
 
 .budget-card__title-section {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-1);
+  gap: var(--space-1);
   flex: 1;
   min-width: 0;
 }
@@ -173,7 +173,7 @@
 .budget-card__name {
   font-size: var(--font-size-lg);
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -182,7 +182,7 @@
 
 .budget-card__category {
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -191,7 +191,7 @@
 .budget-card__actions {
   display: flex;
   align-items: center;
-  gap: var(--spacing-2);
+  gap: var(--space-2);
   flex-shrink: 0;
 }
 
@@ -223,8 +223,8 @@
 .budget-card__period {
   display: flex;
   align-items: center;
-  gap: var(--spacing-2);
-  padding: var(--spacing-1) var(--spacing-3);
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
   background: var(--color-surface-hover);
   border-radius: var(--radius-md);
   flex-shrink: 0;
@@ -238,14 +238,14 @@
 .budget-card__period-name {
   font-size: var(--font-size-sm);
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
 }
 
 /* Progress Bar */
 .budget-card__progress {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2);
+  gap: var(--space-2);
 }
 
 .budget-card__progress-bar {
@@ -284,11 +284,11 @@
 
 .budget-card__progress-text > span:first-child {
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
 }
 
 .budget-card__progress-label {
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
 }
 
 /* Footer */
@@ -296,19 +296,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: var(--spacing-3);
+  padding-top: var(--space-3);
   border-top: 1px solid var(--color-border);
 }
 
 .budget-card__remaining {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-1);
+  gap: var(--space-1);
 }
 
 .budget-card__remaining-label {
   font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -333,13 +333,13 @@
 }
 
 .budget-card__inactive-badge {
-  padding: var(--spacing-1) var(--spacing-2);
+  padding: var(--space-1) var(--space-2);
   background: var(--color-surface-hover);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   font-size: var(--font-size-xs);
   font-weight: 600;
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -347,7 +347,7 @@
 /* Responsive */
 @media (max-width: 768px) {
   .budgets-page {
-    padding: var(--spacing-4) var(--spacing-3);
+    padding: var(--space-4) var(--space-3);
   }
 
   .budgets-page__header {

@@ -4,6 +4,57 @@
  */
 
 /* ============================================
+   GLOBAL FOCUS STYLES
+   ============================================ */
+
+/* Remove default outline */
+*:focus {
+  outline: none;
+}
+
+/* Enhanced focus visible styles for keyboard navigation */
+*:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-sm);
+  transition:
+    outline 0.2s ease,
+    outline-offset 0.2s ease;
+}
+
+/* Button focus */
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-offset-shadow), var(--focus-ring-shadow);
+}
+
+/* Input focus */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 0;
+  border-color: var(--focus-ring-color);
+  box-shadow: 0 0 0 3px rgba(0, 160, 160, 0.1);
+}
+
+/* Screen reader only - hide visually but keep accessible */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ============================================
    PAGE LAYOUTS
    ============================================ */
 
@@ -178,6 +229,33 @@
   flex-wrap: wrap;
 }
 
+.filter-bar__search {
+  position: relative;
+  flex: 1;
+  min-width: 250px;
+}
+
+.filter-bar__search-icon {
+  position: absolute;
+  left: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+.filter-bar__search input {
+  padding-left: var(--space-10);
+}
+
+.filter-bar__controls {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
 .filter-group {
   display: flex;
   align-items: center;
@@ -214,7 +292,7 @@
   color: white;
 }
 .filter-chip span {
-    height: 100%;
+  height: 100%;
 }
 
 .toolbar {

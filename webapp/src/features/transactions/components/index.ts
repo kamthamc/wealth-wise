@@ -3,7 +3,7 @@
  */
 
 export { AddTransactionForm } from './AddTransactionForm';
-export { TransactionsList } from './TransactionsList';
 export { QuickTransactionEntry } from './QuickTransactionEntry';
 export { TransactionsEmptyState } from './TransactionsEmptyState';
+export { TransactionsList } from './TransactionsList';
 export { TransactionTypeGuide } from './TransactionTypeGuide';

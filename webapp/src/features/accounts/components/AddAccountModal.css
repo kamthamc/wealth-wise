@@ -68,7 +68,9 @@
 .account-modal__form {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6); /* Increased from spacing-5 to space-6 for better breathing room */
+  gap: var(
+    --space-6
+  ); /* Increased from spacing-5 to space-6 for better breathing room */
   padding: var(--space-6);
 }
 
@@ -79,7 +81,9 @@
 }
 
 .account-modal__label {
-  font-size: var(--text-base); /* Increased from font-size-sm for better readability */
+  font-size: var(
+    --text-base
+  ); /* Increased from font-size-sm for better readability */
   font-weight: var(--font-semibold);
   color: var(--text-primary);
   line-height: var(--leading-normal);
@@ -125,45 +129,73 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-3); /* Increased from spacing-2 */
-  padding: var(--space-5); /* Increased from spacing-4 */
-  min-height: 120px; /* Ensure consistent height */
+  gap: var(--space-3);
+  padding: var(--space-5);
+  min-height: 130px;
   border: 2px solid var(--border-primary);
   border-radius: var(--radius-lg);
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: center;
+  position: relative;
 }
 
 .account-modal__type-option:hover {
   border-color: var(--color-primary-500);
-  background: var(--bg-tertiary);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  background: var(--color-primary-50);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
 }
 
 .account-modal__type-option--selected {
   border-color: var(--color-primary-600);
-  border-width: 3px; /* Thicker border for selected state */
-  background: var(--color-primary-50);
-  box-shadow: 0 0 0 3px rgba(0, 160, 160, 0.1); /* Glow effect */
+  border-width: 3px;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-50) 0%,
+    var(--color-primary-100) 100%
+  );
+  box-shadow:
+    0 0 0 4px rgba(0, 160, 160, 0.15),
+    var(--shadow-md);
+  transform: scale(1.02);
+}
+
+.account-modal__type-option--selected .account-modal__type-icon {
+  color: var(--color-primary-700);
+}
+
+.account-modal__type-option--selected .account-modal__type-name {
+  color: var(--color-primary-900);
+  font-weight: var(--font-bold);
 }
 
 .account-modal__type-option:focus-visible {
-  outline: 3px solid var(--color-primary-500);
-  outline-offset: 3px;
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-offset-shadow), var(--focus-ring-shadow);
 }
 
 .account-modal__type-icon {
-  font-size: 2.5rem; /* Larger icons */
+  color: var(--text-secondary);
   line-height: 1;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.account-modal__type-option:hover .account-modal__type-icon {
+  color: var(--color-primary-600);
+  transform: scale(1.1);
 }
 
 .account-modal__type-name {
-  font-size: var(--text-base); /* Increased from font-size-sm */
+  font-size: var(--text-base);
   font-weight: var(--font-semibold);
   color: var(--text-primary);
+  transition: all 0.2s ease;
   line-height: var(--leading-tight);
 }
 

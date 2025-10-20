@@ -6,7 +6,11 @@
 // Client and initialization
 export { db } from './client';
 // Repositories
-export { accountRepository } from './repositories';
+export {
+  accountRepository,
+  budgetRepository,
+  transactionRepository,
+} from './repositories';
 // Schema and migrations
 export { DATABASE_VERSION, SCHEMA_SQL, SEED_CATEGORIES_SQL } from './schema';
 // Types

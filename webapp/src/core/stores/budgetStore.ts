@@ -4,7 +4,8 @@
  */
 
 import { create } from 'zustand';
-import type { Budget, CreateBudgetInput, UpdateBudgetInput } from '@/core/db';
+import { budgetRepository } from '@/core/db';
+import type { Budget, CreateBudgetInput, UpdateBudgetInput } from '../db/types';
 
 interface BudgetState {
   // Data
@@ -54,15 +55,13 @@ export const useBudgetStore = create<BudgetState>((set, get) => ({
     }
   },
 
-  createBudget: async (_input) => {
+  createBudget: async (input) => {
     set({ isLoading: true, error: null });
     try {
-      // TODO: Implement budget repository
-      // const budget = await budgetRepository.create(_input)
-      // await get().fetchBudgets()
-
+      const budget = await budgetRepository.create(input);
+      await get().fetchBudgets();
       set({ isLoading: false });
-      return null;
+      return budget;
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Failed to create budget';
@@ -71,15 +70,15 @@ export const useBudgetStore = create<BudgetState>((set, get) => ({
     }
   },
 
-  updateBudget: async (_input) => {
+  updateBudget: async (input) => {
     set({ isLoading: true, error: null });
     try {
-      // TODO: Implement budget repository
-      // const budget = await budgetRepository.update(_input)
-      // await get().fetchBudgets()
-
+      const budget = await budgetRepository.update(input);
+      if (budget) {
+        await get().fetchBudgets();
+      }
       set({ isLoading: false });
-      return null;
+      return budget;
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Failed to update budget';
@@ -88,15 +87,15 @@ export const useBudgetStore = create<BudgetState>((set, get) => ({
     }
   },
 
-  deleteBudget: async (_id) => {
+  deleteBudget: async (id) => {
     set({ isLoading: true, error: null });
     try {
-      // TODO: Implement budget repository
-      // const success = await budgetRepository.delete(_id)
-      // await get().fetchBudgets()
-
+      const success = await budgetRepository.delete(id);
+      if (success) {
+        await get().fetchBudgets();
+      }
       set({ isLoading: false });
-      return false;
+      return success;
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Failed to delete budget';

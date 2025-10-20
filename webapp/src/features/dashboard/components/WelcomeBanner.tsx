@@ -3,8 +3,8 @@
  * Onboarding guide for first-time users
  */
 
-import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
 import { useAccountStore } from '@/core/stores';
 import './WelcomeBanner.css';
 
@@ -65,8 +65,8 @@ export function WelcomeBanner() {
                 1
               </span>
               <span className="welcome-banner__step-text">
-                <strong>Add your first account</strong> (bank, wallet, or
-                credit card)
+                <strong>Add your first account</strong> (bank, wallet, or credit
+                card)
               </span>
             </li>
             <li className="welcome-banner__step">

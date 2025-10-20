@@ -79,11 +79,23 @@ export function SkeletonLoader({
   if (variant === 'card') {
     return (
       <div className="skeleton-card">
-        <div className={`skeleton skeleton--rectangle skeleton--${animation}`} style={{ height: '160px' }} />
+        <div
+          className={`skeleton skeleton--rectangle skeleton--${animation}`}
+          style={{ height: '160px' }}
+        />
         <div className="skeleton-card__content">
-          <div className={`skeleton skeleton--heading skeleton--${animation}`} style={{ width: '70%' }} />
-          <div className={`skeleton skeleton--text skeleton--${animation}`} style={{ width: '90%' }} />
-          <div className={`skeleton skeleton--text skeleton--${animation}`} style={{ width: '60%' }} />
+          <div
+            className={`skeleton skeleton--heading skeleton--${animation}`}
+            style={{ width: '70%' }}
+          />
+          <div
+            className={`skeleton skeleton--text skeleton--${animation}`}
+            style={{ width: '90%' }}
+          />
+          <div
+            className={`skeleton skeleton--text skeleton--${animation}`}
+            style={{ width: '60%' }}
+          />
         </div>
       </div>
     );
@@ -94,12 +106,24 @@ export function SkeletonLoader({
       <>
         {Array.from({ length: count }).map((_, index) => (
           <div key={index} className="skeleton-list-item">
-            <div className={`skeleton skeleton--circle skeleton--${animation}`} style={{ width: '48px', height: '48px' }} />
+            <div
+              className={`skeleton skeleton--circle skeleton--${animation}`}
+              style={{ width: '48px', height: '48px' }}
+            />
             <div className="skeleton-list-item__content">
-              <div className={`skeleton skeleton--text skeleton--${animation}`} style={{ width: '40%' }} />
-              <div className={`skeleton skeleton--text skeleton--${animation}`} style={{ width: '60%' }} />
+              <div
+                className={`skeleton skeleton--text skeleton--${animation}`}
+                style={{ width: '40%' }}
+              />
+              <div
+                className={`skeleton skeleton--text skeleton--${animation}`}
+                style={{ width: '60%' }}
+              />
             </div>
-            <div className={`skeleton skeleton--text skeleton--${animation}`} style={{ width: '80px' }} />
+            <div
+              className={`skeleton skeleton--text skeleton--${animation}`}
+              style={{ width: '80px' }}
+            />
           </div>
         ))}
       </>
@@ -109,9 +133,18 @@ export function SkeletonLoader({
   if (variant === 'stat-card') {
     return (
       <div className="skeleton-stat-card">
-        <div className={`skeleton skeleton--text skeleton--${animation}`} style={{ width: '60%' }} />
-        <div className={`skeleton skeleton--heading skeleton--${animation}`} style={{ width: '80%', marginTop: '8px' }} />
-        <div className={`skeleton skeleton--text skeleton--${animation}`} style={{ width: '40%', marginTop: '4px' }} />
+        <div
+          className={`skeleton skeleton--text skeleton--${animation}`}
+          style={{ width: '60%' }}
+        />
+        <div
+          className={`skeleton skeleton--heading skeleton--${animation}`}
+          style={{ width: '80%', marginTop: '8px' }}
+        />
+        <div
+          className={`skeleton skeleton--text skeleton--${animation}`}
+          style={{ width: '40%', marginTop: '4px' }}
+        />
       </div>
     );
   }
@@ -131,7 +164,13 @@ export function SkeletonLoader({
 }
 
 // Compound components for common patterns
-export function SkeletonText({ lines = 3, width }: { lines?: number; width?: string }) {
+export function SkeletonText({
+  lines = 3,
+  width,
+}: {
+  lines?: number;
+  width?: string;
+}) {
   return (
     <div className="skeleton-text-block">
       {Array.from({ length: lines }).map((_, index) => (

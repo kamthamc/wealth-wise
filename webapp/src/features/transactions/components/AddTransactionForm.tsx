@@ -9,6 +9,7 @@ import { useAccountStore, useTransactionStore } from '@/core/stores';
 import {
   AccountSelect,
   Button,
+  CategorySelect,
   CurrencyInput,
   DatePicker,
   Input,
@@ -396,23 +397,23 @@ export function AddTransactionForm({
 
             {/* Category (Optional) */}
             <div className="transaction-form__field">
-              <label
-                htmlFor={`${formId}-category`}
-                className="transaction-form__label"
-              >
-                Category
-              </label>
-              <Input
+              <CategorySelect
                 id={`${formId}-category`}
-                type="text"
-                value={formData.category_id || ''}
-                onChange={(e) =>
+                value={formData.category_id}
+                onChange={(categoryId) =>
                   setFormData((prev) => ({
                     ...prev,
-                    category_id: e.target.value || undefined,
+                    category_id: categoryId,
                   }))
                 }
-                placeholder="Optional category ID"
+                type={
+                  formData.type === 'income'
+                    ? 'income'
+                    : formData.type === 'expense'
+                      ? 'expense'
+                      : 'all'
+                }
+                placeholder="Select a category (optional)"
               />
             </div>
 

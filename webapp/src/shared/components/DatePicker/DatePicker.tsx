@@ -4,10 +4,10 @@
  */
 
 import * as Popover from '@radix-ui/react-popover';
+import { format } from 'date-fns';
 import { Calendar } from 'lucide-react';
 import { useState } from 'react';
 import { DayPicker } from 'react-day-picker';
-import { format } from 'date-fns';
 import 'react-day-picker/style.css';
 import './DatePicker.css';
 
@@ -141,7 +141,9 @@ export function DatePicker({
               mode="single"
               selected={value}
               onSelect={handleSelect}
-              disabled={disabledMatcher.length > 0 ? disabledMatcher : undefined}
+              disabled={
+                disabledMatcher.length > 0 ? disabledMatcher : undefined
+              }
               defaultMonth={value}
               showOutsideDays
               className="date-picker__calendar"
@@ -151,8 +153,10 @@ export function DatePicker({
                 month_caption: 'date-picker__month-caption',
                 caption_label: 'date-picker__caption-label',
                 nav: 'date-picker__nav',
-                button_previous: 'date-picker__nav-button date-picker__nav-button--prev',
-                button_next: 'date-picker__nav-button date-picker__nav-button--next',
+                button_previous:
+                  'date-picker__nav-button date-picker__nav-button--prev',
+                button_next:
+                  'date-picker__nav-button date-picker__nav-button--next',
                 month_grid: 'date-picker__month-grid',
                 weekdays: 'date-picker__weekdays',
                 weekday: 'date-picker__weekday',

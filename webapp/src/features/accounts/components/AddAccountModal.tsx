@@ -4,13 +4,20 @@
  */
 
 import * as Dialog from '@radix-ui/react-dialog';
+import {
+  Banknote,
+  CreditCard,
+  Landmark,
+  Smartphone,
+  TrendingUp,
+  Wallet,
+} from 'lucide-react';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Account } from '@/core/db/types';
 import { Button, CurrencyInput, Input } from '@/shared/components';
 import type { AccountFormData, AccountType } from '../types';
 import {
-  getAccountIcon,
   getAccountTypeName,
   validateAccountForm,
 } from '../utils/accountHelpers';
@@ -32,6 +39,16 @@ const ACCOUNT_TYPES: AccountType[] = [
   'wallet',
 ];
 
+// Icon mapping for account types
+const ACCOUNT_TYPE_ICONS: Record<AccountType, React.ReactNode> = {
+  bank: <Landmark size={32} />,
+  credit_card: <CreditCard size={32} />,
+  upi: <Smartphone size={32} />,
+  brokerage: <TrendingUp size={32} />,
+  cash: <Banknote size={32} />,
+  wallet: <Wallet size={32} />,
+};
+
 export function AddAccountModal({
   account,
   isOpen,
@@ -39,7 +56,7 @@ export function AddAccountModal({
   onSubmit,
 }: AddAccountModalProps) {
   const { t } = useTranslation();
-  
+
   const [formData, setFormData] = useState<AccountFormData>({
     name: account?.name || '',
     type: account?.type || 'bank',
@@ -100,13 +117,18 @@ export function AddAccountModal({
     <Dialog.Root open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <Dialog.Portal>
         <Dialog.Overlay className="modal-overlay" />
-        <Dialog.Content className="account-modal__content" aria-describedby={undefined}>
+        <Dialog.Content
+          className="account-modal__content"
+          aria-describedby={undefined}
+        >
           <form onSubmit={handleSubmit} className="account-modal__form">
             <Dialog.Title className="account-modal__title">
-              {account ? t('pages.accounts.modal.editTitle') : t('pages.accounts.modal.addTitle')}
+              {account
+                ? t('pages.accounts.modal.editTitle')
+                : t('pages.accounts.modal.addTitle')}
             </Dialog.Title>
             <Dialog.Description className="account-modal__subtitle">
-              {account 
+              {account
                 ? t('pages.accounts.modal.editSubtitle')
                 : t('pages.accounts.modal.addSubtitle')}
             </Dialog.Description>
@@ -158,10 +180,10 @@ export function AddAccountModal({
                       value={type}
                       checked={formData.type === type}
                       onChange={() => handleTypeSelect(type)}
-                      style={{ position: 'absolute', opacity: 0 }}
+                      className="sr-only"
                     />
                     <span className="account-modal__type-icon">
-                      {getAccountIcon(type)}
+                      {ACCOUNT_TYPE_ICONS[type]}
                     </span>
                     <span className="account-modal__type-name">
                       {getAccountTypeName(type)}
@@ -180,7 +202,9 @@ export function AddAccountModal({
                 htmlFor={balanceId}
                 className="account-modal__label account-modal__label--required"
               >
-                {account ? t('pages.accounts.modal.currentBalanceLabel') : t('pages.accounts.modal.initialBalanceLabel')}
+                {account
+                  ? t('pages.accounts.modal.currentBalanceLabel')
+                  : t('pages.accounts.modal.initialBalanceLabel')}
               </label>
               <CurrencyInput
                 id={balanceId}
@@ -210,7 +234,9 @@ export function AddAccountModal({
                 {t('common.cancel')}
               </Button>
               <Button type="submit" isLoading={isSubmitting}>
-                {account ? t('pages.accounts.modal.saveButton') : t('pages.accounts.modal.addButton')}
+                {account
+                  ? t('pages.accounts.modal.saveButton')
+                  : t('pages.accounts.modal.addButton')}
               </Button>
             </div>
           </form>

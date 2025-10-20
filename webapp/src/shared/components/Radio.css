@@ -1,16 +1,16 @@
 .radio-group {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  gap: var(--space-sm);
 }
 
 .radio-group-label {
   font-size: var(--font-size-sm);
   font-weight: 600;
-  color: var(--color-text);
+  color: var(--text);
   display: flex;
   align-items: center;
-  gap: var(--spacing-2xs);
+  gap: var(--space-2xs);
 }
 
 .radio-group-label__required {
@@ -21,13 +21,13 @@
 .radio-group-options {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  gap: var(--space-sm);
 }
 
 .radio-wrapper {
   display: flex;
   align-items: flex-start;
-  gap: var(--spacing-sm);
+  gap: var(--space-sm);
 }
 
 .radio-input {
@@ -76,7 +76,7 @@
 
 .radio-label {
   font-size: var(--font-size-base);
-  color: var(--color-text);
+  color: var(--text);
   cursor: pointer;
   user-select: none;
 }
@@ -103,7 +103,7 @@
 
 .radio-group-helper {
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
 }
 
 /* Respect reduced motion */

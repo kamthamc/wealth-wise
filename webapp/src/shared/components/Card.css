@@ -23,15 +23,15 @@
 }
 
 .card--padding-small {
-  padding: var(--spacing-4);
+  padding: var(--space-4);
 }
 
 .card--padding-medium {
-  padding: var(--spacing-5);
+  padding: var(--space-5);
 }
 
 .card--padding-large {
-  padding: var(--spacing-6);
+  padding: var(--space-6);
 }
 
 /* Interactive */
@@ -56,31 +56,31 @@
 
 /* Header, Content, Footer */
 .card__header {
-  padding-bottom: var(--spacing-md);
+  padding-bottom: var(--space-md);
   border-bottom: 1px solid var(--color-border);
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--space-md);
 }
 
 .card__footer {
-  padding-top: var(--spacing-md);
+  padding-top: var(--space-md);
   border-top: 1px solid var(--color-border);
-  margin-top: var(--spacing-md);
+  margin-top: var(--space-md);
 }
 
 /* When card has no padding, add padding to sections */
 .card--padding-none .card__header {
-  padding: var(--spacing-md);
-  padding-bottom: var(--spacing-md);
+  padding: var(--space-md);
+  padding-bottom: var(--space-md);
   margin-bottom: 0;
 }
 
 .card--padding-none .card__content {
-  padding: var(--spacing-md);
+  padding: var(--space-md);
 }
 
 .card--padding-none .card__footer {
-  padding: var(--spacing-md);
-  padding-top: var(--spacing-md);
+  padding: var(--space-md);
+  padding-top: var(--space-md);
   margin-top: 0;
 }
 

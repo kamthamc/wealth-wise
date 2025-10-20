@@ -17,10 +17,10 @@
 }
 
 .table th {
-  padding: var(--spacing-4);
+  padding: var(--space-4);
   font-weight: 700;
   font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   text-align: left;
   white-space: nowrap;
   text-transform: uppercase;
@@ -40,7 +40,7 @@
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-2xs);
+  gap: var(--space-2xs);
   font-weight: 600;
 }
 
@@ -59,9 +59,9 @@
 }
 
 .table-cell {
-  padding: var(--spacing-4);
+  padding: var(--space-4);
   border-bottom: 1px solid var(--color-border);
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   font-variant-numeric: tabular-nums;
 }
 
@@ -87,14 +87,14 @@
 /* Compact mode */
 .table--compact th,
 .table--compact .table-cell {
-  padding: var(--spacing-sm);
+  padding: var(--space-sm);
 }
 
 /* Empty state */
 .table-empty {
-  padding: var(--spacing-2xl);
+  padding: var(--space-2xl);
   text-align: center;
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
 }
@@ -107,7 +107,7 @@
 
   .table th,
   .table-cell {
-    padding: var(--spacing-sm);
+    padding: var(--space-sm);
   }
 }
 

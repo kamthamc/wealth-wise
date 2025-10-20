@@ -25,10 +25,7 @@ export interface UseValidationOptions<T> {
 /**
  * Hook for debounced field validation
  */
-export function useValidation<T>(
-  value: T,
-  options: UseValidationOptions<T>
-) {
+export function useValidation<T>(value: T, options: UseValidationOptions<T>) {
   const {
     validate,
     debounceMs = 500,
@@ -101,9 +98,7 @@ export const validators = {
       const isValid = value.length >= min;
       return {
         isValid,
-        message: isValid
-          ? undefined
-          : `Must be at least ${min} characters`,
+        message: isValid ? undefined : `Must be at least ${min} characters`,
         state: isValid ? 'success' : 'error',
       };
     },

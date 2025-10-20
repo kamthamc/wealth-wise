@@ -4,11 +4,12 @@
  */
 
 import { create } from 'zustand';
+import { transactionRepository } from '@/core/db';
 import type {
   CreateTransactionInput,
   Transaction,
   UpdateTransactionInput,
-} from '@/core/db';
+} from '../db/types';
 
 interface TransactionState {
   // Data
@@ -41,6 +42,11 @@ interface TransactionState {
     input: UpdateTransactionInput
   ) => Promise<Transaction | null>;
   deleteTransaction: (id: string) => Promise<boolean>;
+  linkTransactions: (
+    transactionId1: string,
+    transactionId2: string
+  ) => Promise<boolean>;
+  unlinkTransaction: (transactionId: string) => Promise<boolean>;
   selectTransaction: (id: string | null) => void;
   setFilters: (filters: TransactionState['filters']) => void;
   clearFilters: () => void;
@@ -81,15 +87,13 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
     }
   },
 
-  createTransaction: async (_input) => {
+  createTransaction: async (input) => {
     set({ isLoading: true, error: null });
     try {
-      // TODO: Implement transaction repository
-      // const transaction = await transactionRepository.create(_input)
-      // await get().fetchTransactions()
-
+      const transaction = await transactionRepository.create(input);
+      await get().fetchTransactions();
       set({ isLoading: false });
-      return null;
+      return transaction;
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Failed to create transaction';
@@ -98,15 +102,15 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
     }
   },
 
-  updateTransaction: async (_input) => {
+  updateTransaction: async (input) => {
     set({ isLoading: true, error: null });
     try {
-      // TODO: Implement transaction repository
-      // const transaction = await transactionRepository.update(_input)
-      // await get().fetchTransactions()
-
+      const transaction = await transactionRepository.update(input);
+      if (transaction) {
+        await get().fetchTransactions();
+      }
       set({ isLoading: false });
-      return null;
+      return transaction;
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Failed to update transaction';
@@ -115,18 +119,74 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
     }
   },
 
-  deleteTransaction: async (_id) => {
+  deleteTransaction: async (id) => {
     set({ isLoading: true, error: null });
     try {
-      // TODO: Implement transaction repository
-      // const success = await transactionRepository.delete(_id)
-      // await get().fetchTransactions()
-
+      const success = await transactionRepository.delete(id);
+      if (success) {
+        await get().fetchTransactions();
+      }
       set({ isLoading: false });
-      return false;
+      return success;
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Failed to delete transaction';
+      set({ error: errorMessage, isLoading: false });
+      return false;
+    }
+  },
+
+  linkTransactions: async (transactionId1, transactionId2) => {
+    set({ isLoading: true, error: null });
+    try {
+      // Update both transactions to link them
+      const { transactions } = get();
+      const updatedTransactions = transactions.map((txn) => {
+        if (txn.id === transactionId1) {
+          return { ...txn, linked_transaction_id: transactionId2 };
+        }
+        if (txn.id === transactionId2) {
+          return { ...txn, linked_transaction_id: transactionId1 };
+        }
+        return txn;
+      });
+
+      set({ transactions: updatedTransactions, isLoading: false });
+      return true;
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to link transactions';
+      set({ error: errorMessage, isLoading: false });
+      return false;
+    }
+  },
+
+  unlinkTransaction: async (transactionId) => {
+    set({ isLoading: true, error: null });
+    try {
+      const { transactions } = get();
+      const transaction = transactions.find((txn) => txn.id === transactionId);
+
+      if (!transaction?.linked_transaction_id) {
+        set({ isLoading: false });
+        return false;
+      }
+
+      // Unlink both transactions
+      const linkedId = transaction.linked_transaction_id;
+      const updatedTransactions = transactions.map((txn) => {
+        if (txn.id === transactionId || txn.id === linkedId) {
+          const { linked_transaction_id, ...rest } = txn as any;
+          return rest;
+        }
+        return txn;
+      });
+
+      set({ transactions: updatedTransactions, isLoading: false });
+      return true;
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to unlink transaction';
       set({ error: errorMessage, isLoading: false });
       return false;
     }

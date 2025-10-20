@@ -3,25 +3,46 @@
  * Manage transaction categories with add, edit, delete operations
  */
 
-import { useEffect, useState } from 'react';
+import * as AlertDialog from '@radix-ui/react-alert-dialog';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as RadioGroup from '@radix-ui/react-radio-group';
+import { useEffect, useState } from 'react';
 import {
-  getAllCategories,
-  createCategory,
-  updateCategory,
-  deleteCategory,
   type Category,
   type CreateCategoryInput,
+  createCategory,
+  deleteCategory,
+  getAllCategories,
+  updateCategory,
 } from '@/core/services/categoryService';
 import './CategoryManager.css';
 
 // Available icons for categories
 const CATEGORY_ICONS = [
-  '💼', '💻', '📈', '🏢', '🏠', '💰', // Income
-  '🍔', '🛒', '🚗', '🛍️', '🎬', '📄', // Expense 1
-  '🏥', '📚', '✈️', '🛡️', '📱', '💸', // Expense 2
-  '⚡', '🎮', '🎵', '🎨', '🏋️', '☕', // Additional
+  '💼',
+  '💻',
+  '📈',
+  '🏢',
+  '🏠',
+  '💰', // Income
+  '🍔',
+  '🛒',
+  '🚗',
+  '🛍️',
+  '🎬',
+  '📄', // Expense 1
+  '🏥',
+  '📚',
+  '✈️',
+  '🛡️',
+  '📱',
+  '💸', // Expense 2
+  '⚡',
+  '🎮',
+  '🎵',
+  '🎨',
+  '🏋️',
+  '☕', // Additional
 ];
 
 // Available colors for categories
@@ -41,9 +62,26 @@ export function CategoryManager() {
   const [isLoading, setIsLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-  const [selectedType, setSelectedType] = useState<'income' | 'expense'>('income');
+  const [selectedType, setSelectedType] = useState<'income' | 'expense'>(
+    'income'
+  );
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
+  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(
+    null
+  );
+
+  // Alert Dialog state
+  const [alertDialog, setAlertDialog] = useState<{
+    isOpen: boolean;
+    title: string;
+    description: string;
+    variant: 'success' | 'error';
+  }>({
+    isOpen: false,
+    title: '',
+    description: '',
+    variant: 'success',
+  });
 
   // Form state
   const [formData, setFormData] = useState<CreateCategoryInput>({
@@ -58,6 +96,19 @@ export function CategoryManager() {
     loadCategories();
   }, []);
 
+  const showAlert = (
+    title: string,
+    description: string,
+    variant: 'success' | 'error' = 'success'
+  ) => {
+    setAlertDialog({
+      isOpen: true,
+      title,
+      description,
+      variant,
+    });
+  };
+
   const loadCategories = async () => {
     try {
       setIsLoading(true);
@@ -65,14 +116,20 @@ export function CategoryManager() {
       setCategories(data);
     } catch (error) {
       console.error('Failed to load categories:', error);
-      alert('Failed to load categories');
+      showAlert(
+        'Error',
+        'Failed to load categories. Please try again.',
+        'error'
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   // Filter categories by type
-  const filteredCategories = categories.filter((cat) => cat.type === selectedType);
+  const filteredCategories = categories.filter(
+    (cat) => cat.type === selectedType
+  );
 
   // Handlers
   const handleAddCategory = () => {
@@ -110,10 +167,14 @@ export function CategoryManager() {
       await loadCategories();
       setIsDeleteDialogOpen(false);
       setCategoryToDelete(null);
-      alert('Category deleted successfully');
+      showAlert('Success', 'Category deleted successfully', 'success');
     } catch (error) {
       console.error('Failed to delete category:', error);
-      alert('Failed to delete category. Default categories cannot be deleted.');
+      showAlert(
+        'Error',
+        'Failed to delete category. Default categories cannot be deleted.',
+        'error'
+      );
     }
   };
 
@@ -121,24 +182,24 @@ export function CategoryManager() {
     e.preventDefault();
 
     if (!formData.name.trim()) {
-      alert('Please enter a category name');
+      showAlert('Validation Error', 'Please enter a category name', 'error');
       return;
     }
 
     try {
       if (editingCategory) {
         await updateCategory(editingCategory.id, formData);
-        alert('Category updated successfully');
+        showAlert('Success', 'Category updated successfully', 'success');
       } else {
         await createCategory(formData);
-        alert('Category created successfully');
+        showAlert('Success', 'Category created successfully', 'success');
       }
       await loadCategories();
       setIsFormOpen(false);
       setEditingCategory(null);
     } catch (error) {
       console.error('Failed to save category:', error);
-      alert('Failed to save category');
+      showAlert('Error', 'Failed to save category. Please try again.', 'error');
     }
   };
 
@@ -194,7 +255,10 @@ export function CategoryManager() {
       <div className="category-manager__grid">
         {filteredCategories.map((category) => (
           <div key={category.id} className="category-card">
-            <div className="category-card__icon" style={{ backgroundColor: category.color }}>
+            <div
+              className="category-card__icon"
+              style={{ backgroundColor: category.color }}
+            >
               {category.icon}
             </div>
             <div className="category-card__content">
@@ -290,7 +354,9 @@ export function CategoryManager() {
                     >
                       <RadioGroup.Indicator className="category-form__radio-indicator" />
                     </RadioGroup.Item>
-                    <label className="category-form__radio-label">💰 Income</label>
+                    <label className="category-form__radio-label">
+                      💰 Income
+                    </label>
                   </div>
                   <div className="category-form__radio-item">
                     <RadioGroup.Item
@@ -299,7 +365,9 @@ export function CategoryManager() {
                     >
                       <RadioGroup.Indicator className="category-form__radio-indicator" />
                     </RadioGroup.Item>
-                    <label className="category-form__radio-label">💸 Expense</label>
+                    <label className="category-form__radio-label">
+                      💸 Expense
+                    </label>
                   </div>
                 </RadioGroup.Root>
               </div>
@@ -365,11 +433,17 @@ export function CategoryManager() {
               {/* Actions */}
               <div className="category-form__actions">
                 <Dialog.Close asChild>
-                  <button type="button" className="category-form__btn category-form__btn--secondary">
+                  <button
+                    type="button"
+                    className="category-form__btn category-form__btn--secondary"
+                  >
                     Cancel
                   </button>
                 </Dialog.Close>
-                <button type="submit" className="category-form__btn category-form__btn--primary">
+                <button
+                  type="submit"
+                  className="category-form__btn category-form__btn--primary"
+                >
                   {editingCategory ? 'Update' : 'Create'}
                 </button>
               </div>
@@ -379,7 +453,10 @@ export function CategoryManager() {
       </Dialog.Root>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog.Root open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <Dialog.Root
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
         <Dialog.Portal>
           <Dialog.Overlay className="category-dialog__overlay" />
           <Dialog.Content className="category-dialog__content category-dialog__content--small">
@@ -387,8 +464,8 @@ export function CategoryManager() {
               Delete Category?
             </Dialog.Title>
             <Dialog.Description className="category-dialog__description">
-              Are you sure you want to delete "{categoryToDelete?.name}"? This action cannot be
-              undone.
+              Are you sure you want to delete "{categoryToDelete?.name}"? This
+              action cannot be undone.
             </Dialog.Description>
 
             <div className="category-form__actions">
@@ -411,6 +488,41 @@ export function CategoryManager() {
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
+
+      {/* Alert Dialog for Success/Error Messages */}
+      <AlertDialog.Root
+        open={alertDialog.isOpen}
+        onOpenChange={(isOpen: boolean) =>
+          setAlertDialog({ ...alertDialog, isOpen })
+        }
+      >
+        <AlertDialog.Portal>
+          <AlertDialog.Overlay className="category-dialog__overlay" />
+          <AlertDialog.Content className="category-dialog__content category-dialog__content--small">
+            <AlertDialog.Title className="category-dialog__title">
+              {alertDialog.title}
+            </AlertDialog.Title>
+            <AlertDialog.Description className="category-dialog__description">
+              {alertDialog.description}
+            </AlertDialog.Description>
+
+            <div className="category-form__actions">
+              <AlertDialog.Action asChild>
+                <button
+                  type="button"
+                  className={`category-form__btn ${
+                    alertDialog.variant === 'error'
+                      ? 'category-form__btn--danger'
+                      : 'category-form__btn--primary'
+                  }`}
+                >
+                  OK
+                </button>
+              </AlertDialog.Action>
+            </div>
+          </AlertDialog.Content>
+        </AlertDialog.Portal>
+      </AlertDialog.Root>
     </div>
   );
 }

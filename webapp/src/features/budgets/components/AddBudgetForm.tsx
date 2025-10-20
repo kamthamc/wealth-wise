@@ -10,6 +10,7 @@ import { useEffect, useId, useState } from 'react';
 import { useBudgetStore } from '@/core/stores';
 import {
   Button,
+  CategorySelect,
   DatePicker,
   Input,
   useToast,
@@ -104,12 +105,14 @@ export function AddBudgetForm({
           category: budget.category,
           amount: budget.amount,
           period: budget.period,
-          start_date: budget.start_date instanceof Date 
-            ? budget.start_date.toISOString().split('T')[0] || '' 
-            : budget.start_date,
-          end_date: budget.end_date instanceof Date 
-            ? budget.end_date.toISOString().split('T')[0] 
-            : budget.end_date,
+          start_date:
+            budget.start_date instanceof Date
+              ? budget.start_date.toISOString().split('T')[0] || ''
+              : budget.start_date,
+          end_date:
+            budget.end_date instanceof Date
+              ? budget.end_date.toISOString().split('T')[0]
+              : budget.end_date,
           alert_threshold: budget.alert_threshold,
           is_active: budget.is_active,
         });
@@ -127,7 +130,10 @@ export function AddBudgetForm({
       !amountValidation.isValid ||
       !startDateValidation.isValid
     ) {
-      toast.error('Validation failed', 'Please fix all errors before submitting');
+      toast.error(
+        'Validation failed',
+        'Please fix all errors before submitting'
+      );
       return;
     }
 
@@ -223,10 +229,7 @@ export function AddBudgetForm({
           >
             {/* Budget Name */}
             <div className="budget-form__field">
-              <label
-                htmlFor={`${formId}-name`}
-                className="budget-form__label"
-              >
+              <label htmlFor={`${formId}-name`} className="budget-form__label">
                 Budget Name *
               </label>
               <Input
@@ -257,36 +260,23 @@ export function AddBudgetForm({
 
             {/* Category */}
             <div className="budget-form__field">
-              <label
-                htmlFor={`${formId}-category`}
-                className="budget-form__label"
-              >
-                Category *
-              </label>
-              <Input
+              <CategorySelect
                 id={`${formId}-category`}
-                type="text"
                 value={formData.category}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, category: e.target.value }))
+                onChange={(categoryId) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    category: categoryId || '',
+                  }))
                 }
-                onBlur={categoryValidation.onBlur}
-                placeholder="e.g., Food & Dining"
+                type="expense"
                 required
-                aria-invalid={!!categoryValidation.message}
-                aria-describedby={
-                  categoryValidation.message
-                    ? `${formId}-category-validation`
+                error={
+                  categoryValidation.hasBlurred
+                    ? categoryValidation.message
                     : undefined
                 }
               />
-              {categoryValidation.hasBlurred && (
-                <ValidationMessage
-                  state={categoryValidation.state}
-                  message={categoryValidation.message}
-                  fieldId={`${formId}-category`}
-                />
-              )}
             </div>
 
             {/* Budget Amount */}
@@ -340,10 +330,7 @@ export function AddBudgetForm({
                 aria-label="Budget period"
               >
                 {BUDGET_PERIODS.map((period) => (
-                  <div
-                    key={period.value}
-                    className="budget-form__radio-item"
-                  >
+                  <div key={period.value} className="budget-form__radio-item">
                     <RadioGroup.Item
                       className="budget-form__radio-button"
                       value={period.value}
@@ -376,7 +363,9 @@ export function AddBudgetForm({
               <DatePicker
                 id={`${formId}-start-date`}
                 value={
-                  formData.start_date ? new Date(formData.start_date) : undefined
+                  formData.start_date
+                    ? new Date(formData.start_date)
+                    : undefined
                 }
                 onChange={(date) => {
                   setFormData((prev) => ({
@@ -420,11 +409,15 @@ export function AddBudgetForm({
               </label>
               <DatePicker
                 id={`${formId}-end-date`}
-                value={formData.end_date ? new Date(formData.end_date) : undefined}
+                value={
+                  formData.end_date ? new Date(formData.end_date) : undefined
+                }
                 onChange={(date) =>
                   setFormData((prev) => ({
                     ...prev,
-                    end_date: date ? date.toISOString().split('T')[0] : undefined,
+                    end_date: date
+                      ? date.toISOString().split('T')[0]
+                      : undefined,
                   }))
                 }
                 placeholder="No end date (ongoing)"
@@ -447,7 +440,10 @@ export function AddBudgetForm({
                 className="budget-form__slider"
                 value={[formData.alert_threshold]}
                 onValueChange={([value]: number[]) =>
-                  setFormData((prev) => ({ ...prev, alert_threshold: value ?? 80 }))
+                  setFormData((prev) => ({
+                    ...prev,
+                    alert_threshold: value ?? 80,
+                  }))
                 }
                 min={0}
                 max={100}
@@ -460,7 +456,8 @@ export function AddBudgetForm({
                 <Slider.Thumb className="budget-form__slider-thumb" />
               </Slider.Root>
               <p className="budget-form__help-text">
-                Get notified when spending reaches this percentage of your budget
+                Get notified when spending reaches this percentage of your
+                budget
               </p>
             </div>
           </form>

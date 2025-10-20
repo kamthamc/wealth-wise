@@ -1,92 +1,62 @@
 /* Reports Page Styles */
 
 .reports-page {
-  padding: var(--spacing-6) var(--spacing-4);
+  padding: var(--space-6) var(--space-4);
   max-width: 1400px;
   margin: 0 auto;
 }
 
 .reports-page__header {
-  margin-bottom: var(--spacing-6);
+  margin-bottom: var(--space-6);
 }
 
 .reports-page__title {
-  font-size: var(--font-size-3xl);
-  font-weight: 700;
-  color: var(--color-text-primary);
-  margin: 0 0 var(--spacing-2) 0;
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-2) 0;
 }
 
 .reports-page__description {
-  font-size: var(--font-size-base);
-  color: var(--color-text-secondary);
+  font-size: var(--text-base);
+  color: var(--text-secondary);
   margin: 0;
 }
 
-/* Period Selector */
+/* Period Selector - Using SegmentedControl */
 .reports-page__period-selector {
   display: flex;
-  gap: var(--spacing-2);
-  margin-bottom: var(--spacing-6);
-  flex-wrap: wrap;
-}
-
-.reports-page__period-button {
-  padding: var(--spacing-2) var(--spacing-4);
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  color: var(--color-text-secondary);
-  font-weight: 600;
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.reports-page__period-button:hover {
-  border-color: var(--color-primary);
-  background: var(--color-surface-hover);
-  color: var(--color-text-primary);
-}
-
-.reports-page__period-button--active {
-  border-color: var(--color-primary);
-  background: var(--color-primary);
-  color: white;
-}
-
-.reports-page__period-button:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
+  justify-content: center;
+  margin-bottom: var(--space-8);
 }
 
 /* Summary Section */
 .reports-page__summary {
-  margin-bottom: var(--spacing-6);
+  margin-bottom: var(--space-8);
 }
 
 .reports-page__section-title {
-  font-size: var(--font-size-xl);
-  font-weight: 700;
-  color: var(--color-text-primary);
-  margin: 0 0 var(--spacing-4) 0;
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-4) 0;
 }
 
 .reports-page__stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--spacing-4);
+  gap: var(--space-4);
 }
 
 /* Sections */
 .reports-page__section {
-  margin-bottom: var(--spacing-6);
+  margin-bottom: var(--space-8);
 }
 
 .reports-page__empty {
   text-align: center;
-  color: var(--color-text-secondary);
-  padding: var(--spacing-8);
+  color: var(--text-secondary);
+  padding: var(--space-8);
   font-style: italic;
 }
 
@@ -94,13 +64,13 @@
 .reports-page__category-list {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-5);
+  gap: var(--space-5);
 }
 
 .category-item {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2);
+  gap: var(--space-2);
 }
 
 .category-item__header {
@@ -112,20 +82,20 @@
 .category-item__name {
   font-size: var(--font-size-base);
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
 }
 
 .category-item__amount {
   font-size: var(--font-size-base);
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   font-variant-numeric: tabular-nums;
 }
 
 .category-item__bar-container {
   width: 100%;
   height: 8px;
-  background: var(--color-surface-hover);
+  background: var(--bg-tertiary);
   border-radius: var(--radius-full);
   overflow: hidden;
 }
@@ -145,7 +115,7 @@
   display: flex;
   justify-content: space-between;
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
 }
 
 .category-item__percentage {
@@ -156,22 +126,22 @@
 .reports-page__trends {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-5);
+  gap: var(--space-5);
 }
 
 .trend-item {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2);
-  padding: var(--spacing-3);
-  background: var(--color-surface-hover);
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--bg-tertiary);
   border-radius: var(--radius-md);
 }
 
 .trend-item__month {
   font-size: var(--font-size-sm);
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -179,26 +149,26 @@
 .trend-item__bars {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2);
+  gap: var(--space-2);
 }
 
 .trend-item__bar-row {
   display: grid;
   grid-template-columns: 80px 1fr 120px;
-  gap: var(--spacing-3);
+  gap: var(--space-3);
   align-items: center;
 }
 
 .trend-item__label {
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   font-weight: 600;
 }
 
 .trend-item__bar-bg {
   width: 100%;
   height: 24px;
-  background: var(--color-surface);
+  background: var(--bg-primary);
   border-radius: var(--radius-md);
   overflow: hidden;
 }
@@ -220,16 +190,16 @@
 .trend-item__value {
   font-size: var(--font-size-sm);
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
 .trend-item__savings {
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   text-align: center;
-  padding-top: var(--spacing-2);
+  padding-top: var(--space-2);
   border-top: 1px solid var(--color-border);
   font-weight: 600;
 }
@@ -238,17 +208,17 @@
 .reports-page__accounts {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: var(--spacing-4);
+  gap: var(--space-4);
 }
 
 .account-balance {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2);
-  padding: var(--spacing-4);
-  background: var(--color-surface-hover);
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--bg-tertiary);
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-primary);
 }
 
 .account-balance--total {
@@ -266,23 +236,23 @@
 .account-balance__name {
   font-size: var(--font-size-base);
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
 }
 
 .account-balance__type {
   font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  background: var(--color-surface);
-  padding: var(--spacing-1) var(--spacing-2);
+  background: var(--bg-primary);
+  padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-sm);
 }
 
 .account-balance__amount {
   font-size: var(--font-size-xl);
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   font-variant-numeric: tabular-nums;
 }
 
@@ -294,7 +264,7 @@
 /* Responsive */
 @media (max-width: 768px) {
   .reports-page {
-    padding: var(--spacing-4) var(--spacing-3);
+    padding: var(--space-4) var(--space-3);
   }
 
   .reports-page__title {
@@ -313,7 +283,7 @@
 
   .trend-item__bar-row {
     grid-template-columns: 60px 1fr 100px;
-    gap: var(--spacing-2);
+    gap: var(--space-2);
   }
 
   .reports-page__accounts {

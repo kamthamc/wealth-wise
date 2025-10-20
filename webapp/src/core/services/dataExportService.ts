@@ -64,14 +64,14 @@ export function downloadExportFile(data: ExportData): void {
   const jsonString = JSON.stringify(data, null, 2);
   const blob = new Blob([jsonString], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
-  
+
   const link = document.createElement('a');
   link.href = url;
   link.download = `wealthwise-backup-${new Date().toISOString().split('T')[0]}.json`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-  
+
   // Clean up the URL object
   URL.revokeObjectURL(url);
 }
@@ -294,27 +294,27 @@ export async function importData(data: ExportData): Promise<void> {
 export function parseImportFile(file: File): Promise<ExportData> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    
+
     reader.onload = (event) => {
       try {
         const data = JSON.parse(event.target?.result as string);
-        
+
         // Basic validation
         if (!data.version || !data.exportDate) {
           reject(new Error('Invalid file format'));
           return;
         }
-        
+
         resolve(data);
       } catch (error) {
         reject(new Error('Failed to parse file'));
       }
     };
-    
+
     reader.onerror = () => {
       reject(new Error('Failed to read file'));
     };
-    
+
     reader.readAsText(file);
   });
 }
@@ -325,7 +325,7 @@ export function parseImportFile(file: File): Promise<ExportData> {
 export async function clearAllData(): Promise<void> {
   try {
     await db.query('BEGIN');
-    
+
     // Truncate all tables in correct order (respecting foreign keys)
     await db.query('TRUNCATE goal_contributions CASCADE');
     await db.query('TRUNCATE goals CASCADE');
@@ -333,7 +333,7 @@ export async function clearAllData(): Promise<void> {
     await db.query('TRUNCATE transactions CASCADE');
     await db.query('TRUNCATE accounts CASCADE');
     await db.query('TRUNCATE categories CASCADE');
-    
+
     await db.query('COMMIT');
   } catch (error) {
     await db.query('ROLLBACK');

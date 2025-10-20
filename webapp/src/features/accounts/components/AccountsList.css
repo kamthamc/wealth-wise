@@ -1,7 +1,7 @@
 /* Accounts List Page Styles */
 
 .accounts-page {
-  padding: var(--spacing-6) var(--spacing-4);
+  padding: var(--space-6) var(--space-4);
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -10,31 +10,53 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--spacing-6);
-  gap: var(--spacing-4);
+  margin-bottom: var(--space-6);
+  gap: var(--space-4);
   flex-wrap: wrap;
 }
 
 .accounts-page__title {
   font-size: var(--font-size-3xl);
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   margin: 0;
 }
 
 .accounts-page__stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--spacing-4);
-  margin-bottom: var(--spacing-6);
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 
 .accounts-page__controls {
   display: flex;
-  gap: var(--spacing-3);
+  gap: var(--space-3);
   align-items: center;
   flex-wrap: wrap;
-  margin-bottom: var(--spacing-5);
+  margin-bottom: var(--space-5);
+}
+
+.search-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 280px;
+  max-width: 500px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.search-input {
+  width: 100%;
+  padding-left: 40px !important;
 }
 
 .accounts-page__search {
@@ -44,29 +66,29 @@
 
 .accounts-page__filters {
   display: flex;
-  gap: var(--spacing-2);
+  gap: var(--space-2);
   flex-wrap: wrap;
 }
 
 .accounts-page__filter-button {
-  padding: var(--spacing-2) var(--spacing-4);
+  padding: var(--space-2) var(--space-4);
   border: 2px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-surface);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   font-weight: 600;
   font-size: var(--font-size-sm);
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: var(--spacing-2);
+  gap: var(--space-2);
 }
 
 .accounts-page__filter-button:hover {
   border-color: var(--color-primary);
   background: var(--color-surface-hover);
-  color: var(--color-text-primary);
+  color: var(--text-primary);
 }
 
 .accounts-page__filter-button--active {
@@ -88,7 +110,7 @@
 .accounts-page__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: var(--spacing-5);
+  gap: var(--space-5);
 }
 
 .accounts-page__empty {
@@ -97,9 +119,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-10);
+  padding: var(--space-10);
   text-align: center;
-  gap: var(--spacing-4);
+  gap: var(--space-4);
 }
 
 .accounts-page__empty-icon {
@@ -110,13 +132,13 @@
 .accounts-page__empty-title {
   font-size: var(--font-size-xl);
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   margin: 0;
 }
 
 .accounts-page__empty-text {
   font-size: var(--font-size-base);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   margin: 0;
   max-width: 400px;
 }
@@ -126,14 +148,14 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-10);
-  gap: var(--spacing-4);
+  padding: var(--space-10);
+  gap: var(--space-4);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .accounts-page {
-    padding: var(--spacing-4) var(--spacing-3);
+    padding: var(--space-4) var(--space-3);
   }
 
   .accounts-page__header {
@@ -147,7 +169,7 @@
 
   .accounts-page__grid {
     grid-template-columns: 1fr;
-    gap: var(--spacing-4);
+    gap: var(--space-4);
   }
 
   .accounts-page__stats {

@@ -3,6 +3,7 @@
  * Display key financial statistics
  */
 
+import { Coins, Target, TrendingUp } from 'lucide-react';
 import { useMemo } from 'react';
 import { useAccountStore, useTransactionStore } from '@/core/stores';
 import { SkeletonStats, StatCard } from '@/shared/components';
@@ -14,7 +15,6 @@ export function FinancialOverview() {
   const { transactions, isLoading: transactionsLoading } =
     useTransactionStore();
 
-  
   const stats = useMemo(() => {
     if (accountsLoading || transactionsLoading) {
       return [];
@@ -72,7 +72,7 @@ export function FinancialOverview() {
         value: formatCurrency(totalBalance),
         description: `Across ${accounts.length} account${accounts.length !== 1 ? 's' : ''}`,
         variant: 'primary' as const,
-        icon: '💰',
+        icon: <Coins size={24} />,
       },
       {
         label: 'This Month Income',
@@ -86,7 +86,7 @@ export function FinancialOverview() {
               }
             : undefined,
         variant: 'success' as const,
-        icon: '📈',
+        icon: <TrendingUp size={24} />,
       },
       {
         label: 'This Month Expenses',
@@ -100,7 +100,7 @@ export function FinancialOverview() {
               }
             : undefined,
         variant: 'danger' as const,
-        icon: '📉',
+        icon: <TrendingUp size={24} className="rotate-180" />,
       },
       {
         label: 'Savings Rate',
@@ -117,7 +117,7 @@ export function FinancialOverview() {
             : savingsRate >= 20
               ? ('default' as const)
               : ('warning' as const),
-        icon: '🎯',
+        icon: <Target size={24} />,
       },
     ];
   }, [accounts, transactions]);
@@ -130,7 +130,6 @@ export function FinancialOverview() {
       </div>
     );
   }
-
 
   return (
     <section className="financial-overview">

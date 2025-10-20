@@ -6,6 +6,7 @@
 import * as Select from '@radix-ui/react-select';
 import { Check, ChevronDown, Search } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Account } from '@/core/db/types';
 import { formatCurrency } from '@/shared/utils';
 import './AccountSelect.css';
@@ -74,6 +75,7 @@ export function AccountSelect({
   'aria-label': ariaLabel,
   'aria-describedby': ariaDescribedBy,
 }: AccountSelectProps) {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
 
   // Find selected account for display
@@ -168,7 +170,7 @@ export function AccountSelect({
             <Select.Viewport className="account-select__viewport">
               {filteredAccounts.length === 0 ? (
                 <div className="account-select__empty">
-                  No accounts found
+                  {t('accountSelect.noResults')}
                 </div>
               ) : (
                 filteredAccounts.map((account) => (

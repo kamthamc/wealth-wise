@@ -23,7 +23,8 @@
 }
 
 @keyframes floatAnimation {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -36,7 +37,7 @@
   margin: 0 0 16px 0;
   font-size: 28px;
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   letter-spacing: -0.02em;
 }
 
@@ -44,7 +45,7 @@
   margin: 0 0 32px 0;
   font-size: 16px;
   line-height: 1.6;
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   max-width: 480px;
 }
 
@@ -77,7 +78,7 @@
 
 .benefit-item__text {
   font-size: 15px;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   font-weight: 500;
 }
 
@@ -87,7 +88,11 @@
   font-size: 16px;
   font-weight: 600;
   color: white;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-primary-dark) 100%
+  );
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -135,12 +140,12 @@
   margin: 0;
   font-size: 14px;
   line-height: 1.6;
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   text-align: left;
 }
 
 .tip-text strong {
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   font-weight: 600;
 }
 

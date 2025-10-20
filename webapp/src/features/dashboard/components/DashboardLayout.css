@@ -2,13 +2,10 @@
   width: 100%;
   min-height: 100vh;
   background-color: var(--color-background);
-  display: flex;
-  flex-direction: column;
 }
 
 .dashboard-layout__main {
-  flex: 1;
-  padding: var(--spacing-6) var(--spacing-4);
+  padding: 32px 24px;
 }
 
 .dashboard-layout__content {
@@ -17,16 +14,16 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-6);
+  gap: 32px;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .dashboard-layout__main {
-    padding: var(--spacing-4) var(--spacing-3);
+    padding: 20px 16px;
   }
 
   .dashboard-layout__content {
-    gap: var(--spacing-4);
+    gap: 20px;
   }
 }

@@ -73,7 +73,7 @@ class DatabaseClient {
       // Check if database is already set up
       let versionResult: { rows: unknown[] };
       let needsSchemaSetup = false;
-      
+
       try {
         versionResult = await this.db.query(
           "SELECT value FROM settings WHERE key = 'db_version'"
@@ -85,13 +85,16 @@ class DatabaseClient {
           '[DB] Cannot read settings table, checking error type...',
           error
         );
-        
+
         // Check if it's a "relation does not exist" error
-        if (errorMsg.includes('relation') && errorMsg.includes('does not exist')) {
+        if (
+          errorMsg.includes('relation') &&
+          errorMsg.includes('does not exist')
+        ) {
           console.log('[DB] Schema missing - will create tables');
           needsSchemaSetup = true;
         }
-        
+
         // If query fails, it's likely a fresh database needing schema
         versionResult = { rows: [] };
       }
@@ -282,29 +285,30 @@ class DatabaseClient {
     }
 
     // Delete all databases
-    const deletePromises = allPossibleNames.map((name) =>
-      new Promise<void>((resolve) => {
-        try {
-          const request = indexedDB.deleteDatabase(name);
-          request.onsuccess = () => {
-            console.log(`[DB] Deleted: ${name}`);
+    const deletePromises = allPossibleNames.map(
+      (name) =>
+        new Promise<void>((resolve) => {
+          try {
+            const request = indexedDB.deleteDatabase(name);
+            request.onsuccess = () => {
+              console.log(`[DB] Deleted: ${name}`);
+              resolve();
+            };
+            request.onerror = () => {
+              console.warn(`[DB] Error deleting ${name}`);
+              resolve(); // Continue anyway
+            };
+            request.onblocked = () => {
+              console.warn(`[DB] Blocked: ${name}`);
+              setTimeout(() => resolve(), 1000);
+            };
+            // Timeout fallback
+            setTimeout(() => resolve(), 2000);
+          } catch (error) {
+            console.warn(`[DB] Exception deleting ${name}:`, error);
             resolve();
-          };
-          request.onerror = () => {
-            console.warn(`[DB] Error deleting ${name}`);
-            resolve(); // Continue anyway
-          };
-          request.onblocked = () => {
-            console.warn(`[DB] Blocked: ${name}`);
-            setTimeout(() => resolve(), 1000);
-          };
-          // Timeout fallback
-          setTimeout(() => resolve(), 2000);
-        } catch (error) {
-          console.warn(`[DB] Exception deleting ${name}:`, error);
-          resolve();
-        }
-      })
+          }
+        })
     );
 
     await Promise.all(deletePromises);

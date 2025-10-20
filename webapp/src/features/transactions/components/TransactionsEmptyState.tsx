@@ -3,6 +3,7 @@
  * Engaging empty state for transactions page
  */
 
+import { ArrowLeftRight, CheckCircle } from 'lucide-react';
 import './TransactionsEmptyState.css';
 
 interface TransactionsEmptyStateProps {
@@ -10,12 +11,14 @@ interface TransactionsEmptyStateProps {
   onAddTransaction: () => void;
 }
 
-export function TransactionsEmptyState({ onAddTransaction }: TransactionsEmptyStateProps) {
+export function TransactionsEmptyState({
+  onAddTransaction,
+}: TransactionsEmptyStateProps) {
   return (
     <div className="transactions-empty-state">
       {/* Animated Icon */}
       <div className="transactions-empty-state__icon" aria-hidden="true">
-        💸
+        <ArrowLeftRight size={48} />
       </div>
 
       {/* Main Message */}
@@ -23,26 +26,39 @@ export function TransactionsEmptyState({ onAddTransaction }: TransactionsEmptySt
         Start Tracking Your Money
       </h2>
       <p className="transactions-empty-state__description">
-        Record every income and expense to gain complete control of your finances
+        Record every income and expense to gain complete control of your
+        finances
       </p>
 
       {/* Benefits List */}
       <div className="transactions-empty-state__benefits">
         <div className="benefit-item">
-          <span className="benefit-item__icon" aria-hidden="true">✅</span>
+          <span className="benefit-item__icon" aria-hidden="true">
+            <CheckCircle size={20} />
+          </span>
           <span className="benefit-item__text">See where your money goes</span>
         </div>
         <div className="benefit-item">
-          <span className="benefit-item__icon" aria-hidden="true">✅</span>
+          <span className="benefit-item__icon" aria-hidden="true">
+            <CheckCircle size={20} />
+          </span>
           <span className="benefit-item__text">Track spending by category</span>
         </div>
         <div className="benefit-item">
-          <span className="benefit-item__icon" aria-hidden="true">✅</span>
-          <span className="benefit-item__text">Identify savings opportunities</span>
+          <span className="benefit-item__icon" aria-hidden="true">
+            <CheckCircle size={20} />
+          </span>
+          <span className="benefit-item__text">
+            Identify savings opportunities
+          </span>
         </div>
         <div className="benefit-item">
-          <span className="benefit-item__icon" aria-hidden="true">✅</span>
-          <span className="benefit-item__text">Make informed financial decisions</span>
+          <span className="benefit-item__icon" aria-hidden="true">
+            ✅
+          </span>
+          <span className="benefit-item__text">
+            Make informed financial decisions
+          </span>
         </div>
       </div>
 
@@ -57,9 +73,12 @@ export function TransactionsEmptyState({ onAddTransaction }: TransactionsEmptySt
 
       {/* Helpful Tip */}
       <div className="transactions-empty-state__tip">
-        <span className="tip-icon" aria-hidden="true">💡</span>
+        <span className="tip-icon" aria-hidden="true">
+          💡
+        </span>
         <p className="tip-text">
-          <strong>Tip:</strong> Record transactions as they happen to build a complete financial picture
+          <strong>Tip:</strong> Record transactions as they happen to build a
+          complete financial picture
         </p>
       </div>
     </div>

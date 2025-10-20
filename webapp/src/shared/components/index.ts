@@ -2,6 +2,8 @@
  * Export all shared components from a central location
  */
 
+// Form Components
+export { AccountSelect, type AccountSelectProps } from './AccountSelect';
 // Data Display Components
 export {
   Badge,
@@ -9,7 +11,6 @@ export {
   type BadgeSize,
   type BadgeVariant,
 } from './Badge';
-
 // Base Components
 export {
   Button,
@@ -18,8 +19,7 @@ export {
   type ButtonVariant,
 } from './Button';
 export { Card, type CardProps } from './Card';
-// Form Components
-export { AccountSelect, type AccountSelectProps } from './AccountSelect';
+export { CategorySelect, type CategorySelectProps } from './CategorySelect';
 export { Checkbox, type CheckboxProps } from './Checkbox';
 export { ConfirmDialog, type ConfirmDialogProps } from './ConfirmDialog';
 export { CurrencyInput, type CurrencyInputProps } from './CurrencyInput';
@@ -29,6 +29,11 @@ export { Divider, type DividerProps } from './Divider';
 export { EmptyState, type EmptyStateProps } from './EmptyState';
 export { ErrorBoundary } from './ErrorBoundary';
 export { Input, type InputProps } from './Input';
+// Layout Components
+export { AppLayout } from './Layout/AppLayout';
+// Logo & Branding
+export { LogoIcon } from './LogoIcon';
+export { PageHeader } from './PageHeader/PageHeader';
 export { Pagination, type PaginationProps } from './Pagination';
 export { ProgressBar, type ProgressBarProps } from './ProgressBar';
 export {
@@ -37,31 +42,33 @@ export {
   type RadioGroupProps,
   type RadioOption,
 } from './Radio';
-export { Select, type SelectOption, type SelectProps } from './Select';
-// Accessibility
-export { SkipLinks, SkipNavigation } from './SkipNavigation';
 export {
-  SkeletonLoader,
-  SkeletonText,
+  SegmentedControl,
+  type SegmentedControlOption,
+  type SegmentedControlProps,
+} from './SegmentedControl';
+export { Select, type SelectOption, type SelectProps } from './Select';
+export {
   SkeletonCard,
   SkeletonList,
-  SkeletonStats,
+  SkeletonLoader,
   type SkeletonLoaderProps,
+  SkeletonStats,
+  SkeletonText,
 } from './SkeletonLoader';
+// Accessibility
+export { SkipLinks, SkipNavigation } from './SkipNavigation';
 export { Spinner, type SpinnerProps } from './Spinner';
 export { StatCard, type StatCardProps } from './StatCard';
 export { Table, type TableColumn, type TableProps } from './Table';
 export { TextArea, type TextAreaProps } from './TextArea';
 export {
-  ToastProvider,
-  useToast,
   type ToastMessage,
+  ToastProvider,
   type ToastType,
+  useToast,
 } from './ToastProvider';
 export {
   ValidationMessage,
   type ValidationMessageProps,
 } from './ValidationMessage';
-
-// Layout Components
-export { AppLayout } from './Layout/AppLayout';

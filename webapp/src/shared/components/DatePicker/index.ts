@@ -3,5 +3,5 @@
  * Radix Popover + React Day Picker
  */
 
-export { DatePicker } from './DatePicker';
 export type { DatePickerProps } from './DatePicker';
+export { DatePicker } from './DatePicker';

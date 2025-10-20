@@ -3,19 +3,32 @@
  * Main budgets management page
  */
 
+import {
+  BarChart3,
+  Calendar,
+  CalendarDays,
+  CalendarRange,
+  PiggyBank,
+  Plus,
+  Search,
+  TrendingDown,
+  Wallet,
+} from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useBudgetStore } from '@/core/stores';
 import {
   Button,
   EmptyState,
   Input,
+  SegmentedControl,
+  type SegmentedControlOption,
   SkeletonList,
   SkeletonStats,
   SkeletonText,
   StatCard,
 } from '@/shared/components';
 import { formatCurrency } from '@/shared/utils';
-import type { BudgetFilters, BudgetPeriod } from '../types';
+import type { BudgetPeriod } from '../types';
 import {
   calculateBudgetProgress,
   formatBudgetPercentage,
@@ -25,18 +38,17 @@ import {
 import { AddBudgetForm } from './AddBudgetForm';
 import './BudgetsList.css';
 
-const PERIOD_OPTIONS: (BudgetPeriod | 'all')[] = [
-  'all',
-  'daily',
-  'weekly',
-  'monthly',
-  'yearly',
+// Period filter options with icons
+const PERIOD_OPTIONS: SegmentedControlOption<BudgetPeriod | 'all'>[] = [
+  { value: 'all', label: 'All Periods', icon: <Calendar size={16} /> },
+  { value: 'weekly', label: 'Weekly', icon: <CalendarDays size={16} /> },
+  { value: 'monthly', label: 'Monthly', icon: <CalendarRange size={16} /> },
 ];
 
 export function BudgetsList() {
   const { budgets, isLoading } = useBudgetStore();
 
-  const [filters, setFilters] = useState<BudgetFilters>({});
+  const [periodFilter, setPeriodFilter] = useState<BudgetPeriod | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingBudgetId, setEditingBudgetId] = useState<string | undefined>(
@@ -48,16 +60,12 @@ export function BudgetsList() {
     let filtered = budgets;
 
     // Filter by period
-    if (filters.period) {
-      filtered = filtered.filter((budget) => budget.period === filters.period);
+    if (periodFilter !== 'all') {
+      filtered = filtered.filter((budget) => budget.period === periodFilter);
     }
 
-    // Filter by active status
-    if (filters.is_active !== undefined) {
-      filtered = filtered.filter(
-        (budget) => budget.is_active === filters.is_active
-      );
-    }
+    // Only show active budgets by default
+    filtered = filtered.filter((budget) => budget.is_active);
 
     // Search by name or category
     if (searchQuery) {
@@ -70,7 +78,7 @@ export function BudgetsList() {
     }
 
     return filtered;
-  }, [budgets, filters, searchQuery]);
+  }, [budgets, periodFilter, searchQuery]);
 
   // Calculate stats
   const stats = useMemo(() => {
@@ -133,214 +141,165 @@ export function BudgetsList() {
           <Button onClick={handleAddBudget}>+ Add Budget</Button>
         </div>
       </div>
-
       <div className="page-content">
-      {/* Stats */}
-      <div className="stats-grid">
-        <StatCard
-          label="Total Budget"
-          value={formatCurrency(stats.totalBudget)}
-          icon="💰"
-        />
-        <StatCard
-          label="Total Spent"
-          value={formatCurrency(stats.totalSpent)}
-          icon="💸"
-          variant="danger"
-        />
-        <StatCard
-          label="Remaining"
-          value={formatCurrency(stats.remainingBudget)}
-          icon="📊"
-          variant={stats.remainingBudget >= 0 ? 'success' : 'danger'}
-        />
-        <StatCard
-          label="Over Budget"
-          value={stats.overBudgetCount.toString()}
-          icon="⚠️"
-          variant={stats.overBudgetCount > 0 ? 'danger' : 'success'}
-        />
-      </div>
-
-      {/* Controls */}
-      <div className="filter-bar">
-        <Input
-          type="search"
-          placeholder="🔍 Search budgets..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-
-        <div className="filter-group">
-          {PERIOD_OPTIONS.map((period) => (
-            <button
-              key={period}
-              type="button"
-              className={`filter-chip ${
-                (period === 'all' && !filters.period) ||
-                filters.period === period
-                  ? 'active'
-                  : ''
-              }`}
-              onClick={() =>
-                setFilters({
-                  ...filters,
-                  period: period === 'all' ? undefined : period,
-                })
-              }
-            >
-              {period !== 'all' && (
-                <span className="budgets-page__filter-icon">
-                  {getBudgetPeriodIcon(period)}
-                </span>
-              )}
-              {period === 'all' ? 'All' : getBudgetPeriodName(period)}
-            </button>
-          ))}
-        </div>
-
-        <div className="filter-group">
-          <button
-            type="button"
-            className={`filter-chip ${
-              filters.is_active === undefined
-                ? 'active'
-                : ''
-            }`}
-            onClick={() => setFilters({ ...filters, is_active: undefined })}
-          >
-            All Status
-          </button>
-          <button
-            type="button"
-            className={`filter-chip ${
-              filters.is_active === true
-                ? 'active'
-                : ''
-            }`}
-            onClick={() => setFilters({ ...filters, is_active: true })}
-          >
-            Active
-          </button>
-          <button
-            type="button"
-            className={`filter-chip ${
-              filters.is_active === false
-                ? 'active'
-                : ''
-            }`}
-            onClick={() => setFilters({ ...filters, is_active: false })}
-          >
-            Inactive
-          </button>
-        </div>
-      </div>
-
-      {/* Budgets List */}
-      {filteredBudgets.length === 0 ? (
-        <div className="budgets-page__empty">
-          <EmptyState
-            icon="💰"
-            title={
-              searchQuery || filters.period
-                ? 'No budgets found'
-                : 'No budgets yet'
-            }
-            description={
-              searchQuery || filters.period
-                ? 'Try adjusting your filters or search query'
-                : 'Create your first budget to start tracking spending'
-            }
-            action={
-              !searchQuery && !filters.period ? (
-                <Button onClick={handleAddBudget}>
-                  Create Your First Budget
-                </Button>
-              ) : undefined
-            }
+        {/* Stats */}
+        <div className="stats-grid">
+          <StatCard
+            label="Total Budget"
+            value={formatCurrency(stats.totalBudget)}
+            icon={<Wallet size={24} />}
+          />
+          <StatCard
+            label="Total Spent"
+            value={formatCurrency(stats.totalSpent)}
+            icon={<TrendingDown size={24} />}
+            variant="danger"
+          />
+          <StatCard
+            label="Remaining"
+            value={formatCurrency(stats.remainingBudget)}
+            icon={<BarChart3 size={24} />}
+            variant={stats.remainingBudget >= 0 ? 'success' : 'danger'}
+          />
+          <StatCard
+            label="Over Budget"
+            value={stats.overBudgetCount.toString()}
+            icon={<PiggyBank size={24} />}
+            variant={stats.overBudgetCount > 0 ? 'danger' : 'success'}
           />
         </div>
-      ) : (
-        <div className="budgets-page__grid">
-          {filteredBudgets.map((budget) => {
-            const status = calculateBudgetProgress(
-              budget.spent,
-              budget.amount,
-              budget.alert_threshold
-            );
-            const percentage = (budget.spent / budget.amount) * 100;
 
-            return (
-              <div key={budget.id} className="budget-card">
-                <div className="budget-card__header">
-                  <div className="budget-card__title-section">
-                    <h3 className="budget-card__name">{budget.name}</h3>
-                    <span className="budget-card__category">
-                      {budget.category}
-                    </span>
-                  </div>
-                  <div className="budget-card__actions">
-                    <button
-                      type="button"
-                      className="budget-card__edit-btn"
-                      onClick={() => handleEditBudget(budget.id)}
-                      aria-label={`Edit ${budget.name}`}
-                    >
-                      ✏️
-                    </button>
-                    <div className="budget-card__period">
-                      <span className="budget-card__period-icon">
-                        {getBudgetPeriodIcon(budget.period)}
+        {/* Controls */}
+        <div className="filter-bar">
+          <div className="filter-bar__search">
+            <div className="filter-bar__search-icon">
+              <Search size={20} />
+            </div>
+            <Input
+              type="search"
+              placeholder="Search budgets..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          <div className="filter-bar__controls">
+            <SegmentedControl
+              options={PERIOD_OPTIONS}
+              value={periodFilter}
+              onChange={setPeriodFilter}
+              size="medium"
+              aria-label="Filter budgets by period"
+            />
+          </div>
+        </div>
+
+        {/* Budgets List */}
+        {filteredBudgets.length === 0 ? (
+          <div className="budgets-page__empty">
+            <EmptyState
+              icon={<PiggyBank size={48} />}
+              title={
+                searchQuery || periodFilter !== 'all'
+                  ? 'No budgets found'
+                  : 'No budgets yet'
+              }
+              description={
+                searchQuery || periodFilter !== 'all'
+                  ? 'Try adjusting your filters or search query'
+                  : 'Create your first budget to track and manage your spending'
+              }
+              action={
+                !searchQuery && periodFilter === 'all' ? (
+                  <Button onClick={handleAddBudget}>
+                    <Plus size={20} />
+                    Create Your First Budget
+                  </Button>
+                ) : undefined
+              }
+            />
+          </div>
+        ) : (
+          <div className="budgets-page__grid">
+            {filteredBudgets.map((budget) => {
+              const status = calculateBudgetProgress(
+                budget.spent,
+                budget.amount,
+                budget.alert_threshold
+              );
+              const percentage = (budget.spent / budget.amount) * 100;
+
+              return (
+                <div key={budget.id} className="budget-card">
+                  <div className="budget-card__header">
+                    <div className="budget-card__title-section">
+                      <h3 className="budget-card__name">{budget.name}</h3>
+                      <span className="budget-card__category">
+                        {budget.category}
                       </span>
-                      <span className="budget-card__period-name">
-                        {getBudgetPeriodName(budget.period)}
+                    </div>
+                    <div className="budget-card__actions">
+                      <button
+                        type="button"
+                        className="budget-card__edit-btn"
+                        onClick={() => handleEditBudget(budget.id)}
+                        aria-label={`Edit ${budget.name}`}
+                      >
+                        ✏️
+                      </button>
+                      <div className="budget-card__period">
+                        <span className="budget-card__period-icon">
+                          {getBudgetPeriodIcon(budget.period)}
+                        </span>
+                        <span className="budget-card__period-name">
+                          {getBudgetPeriodName(budget.period)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="budget-card__progress">
+                    <div className="budget-card__progress-bar">
+                      <div
+                        className={`budget-card__progress-fill budget-card__progress-fill--${status}`}
+                        style={{ width: `${Math.min(percentage, 100)}%` }}
+                      />
+                    </div>
+                    <div className="budget-card__progress-text">
+                      <span>
+                        {formatBudgetPercentage(budget.spent, budget.amount)}
+                      </span>
+                      <span className="budget-card__progress-label">
+                        {formatCurrency(budget.spent)} of{' '}
+                        {formatCurrency(budget.amount)}
                       </span>
                     </div>
                   </div>
-                </div>
 
-                <div className="budget-card__progress">
-                  <div className="budget-card__progress-bar">
-                    <div
-                      className={`budget-card__progress-fill budget-card__progress-fill--${status}`}
-                      style={{ width: `${Math.min(percentage, 100)}%` }}
-                    />
-                  </div>
-                  <div className="budget-card__progress-text">
-                    <span>
-                      {formatBudgetPercentage(budget.spent, budget.amount)}
-                    </span>
-                    <span className="budget-card__progress-label">
-                      {formatCurrency(budget.spent)} of{' '}
-                      {formatCurrency(budget.amount)}
-                    </span>
+                  <div className="budget-card__footer">
+                    <div className="budget-card__remaining">
+                      <span className="budget-card__remaining-label">
+                        Remaining:
+                      </span>
+                      <span
+                        className={`budget-card__remaining-amount budget-card__remaining-amount--${status}`}
+                      >
+                        {formatCurrency(budget.amount - budget.spent)}
+                      </span>
+                    </div>
+                    {!budget.is_active && (
+                      <span className="budget-card__inactive-badge">
+                        Inactive
+                      </span>
+                    )}
                   </div>
                 </div>
-
-                <div className="budget-card__footer">
-                  <div className="budget-card__remaining">
-                    <span className="budget-card__remaining-label">
-                      Remaining:
-                    </span>
-                    <span
-                      className={`budget-card__remaining-amount budget-card__remaining-amount--${status}`}
-                    >
-                      {formatCurrency(budget.amount - budget.spent)}
-                    </span>
-                  </div>
-                  {!budget.is_active && (
-                    <span className="budget-card__inactive-badge">
-                      Inactive
-                    </span>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-      </div> {/* Close page-content */}
-
+              );
+            })}
+          </div>
+        )}
+      </div>{' '}
+      {/* Close page-content */}
       {/* Budget Form Modal */}
       <AddBudgetForm
         isOpen={isFormOpen}

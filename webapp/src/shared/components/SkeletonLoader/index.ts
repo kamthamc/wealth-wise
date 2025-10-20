@@ -3,11 +3,11 @@
  * Loading placeholders with shimmer animation
  */
 
+export type { SkeletonLoaderProps } from './SkeletonLoader';
 export {
-  SkeletonLoader,
-  SkeletonText,
   SkeletonCard,
   SkeletonList,
+  SkeletonLoader,
   SkeletonStats,
+  SkeletonText,
 } from './SkeletonLoader';
-export type { SkeletonLoaderProps } from './SkeletonLoader';

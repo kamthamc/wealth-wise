@@ -1,21 +1,21 @@
 /* Goals Progress Component Styles */
 
 .goals-progress {
-  margin-bottom: var(--spacing-6);
+  margin-bottom: var(--space-6);
 }
 
 .goals-progress__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-4);
-  padding: 0 var(--spacing-2);
+  margin-bottom: var(--space-4);
+  padding: 0 var(--space-2);
 }
 
 .goals-progress__title {
   font-size: var(--font-size-xl);
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -35,27 +35,27 @@
 .goals-progress__list {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-5);
+  gap: var(--space-5);
 }
 
 /* Goal Item */
 .goal-item {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-3);
+  gap: var(--space-3);
 }
 
 .goal-item__header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: var(--spacing-3);
+  gap: var(--space-3);
 }
 
 .goal-item__info {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-1);
+  gap: var(--space-1);
   flex: 1;
   min-width: 0;
 }
@@ -63,7 +63,7 @@
 .goal-item__title-row {
   display: flex;
   align-items: center;
-  gap: var(--spacing-2);
+  gap: var(--space-2);
 }
 
 .goal-item__icon {
@@ -79,7 +79,7 @@
 .goal-item__name {
   font-size: var(--font-size-base);
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -87,26 +87,26 @@
 
 .goal-item__category {
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
 }
 
 .goal-item__amounts {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: var(--spacing-1);
+  gap: var(--space-1);
 }
 
 .goal-item__current {
   font-size: var(--font-size-base);
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   font-variant-numeric: tabular-nums;
 }
 
 .goal-item__target {
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   font-variant-numeric: tabular-nums;
 }
 
@@ -115,7 +115,7 @@
   justify-content: space-between;
   align-items: center;
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
 }
 
 .goal-item__remaining {
@@ -140,6 +140,6 @@
   .goal-item__footer {
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--spacing-1);
+    gap: var(--space-1);
   }
 }

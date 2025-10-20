@@ -3,14 +3,14 @@
 .financial-overview__title {
   font-size: var(--font-size-xl);
   font-weight: 700;
-  color: var(--color-text-primary);
-  margin: 0 0 var(--spacing-5) 0;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-5) 0;
 }
 
 .financial-overview__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--spacing-4);
+  gap: var(--space-4);
 }
 
 .financial-overview__icon {
@@ -21,12 +21,12 @@
 @media (max-width: 768px) {
   .financial-overview__grid {
     grid-template-columns: 1fr;
-    gap: var(--spacing-3);
+    gap: var(--space-3);
   }
 
   .financial-overview__title {
     font-size: var(--font-size-xl);
-    margin-bottom: var(--spacing-4);
+    margin-bottom: var(--space-4);
   }
 }
 

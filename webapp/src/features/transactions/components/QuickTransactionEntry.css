@@ -15,7 +15,7 @@
   margin: 0 0 20px 0;
   font-size: 18px;
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
 }
 
 .quick-transaction-entry__form {
@@ -63,7 +63,11 @@
 }
 
 .type-button--selected {
-  background: linear-gradient(135deg, var(--button-bg) 0%, var(--button-bg-hover) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--button-bg) 0%,
+    var(--button-bg-hover) 100%
+  );
   border-color: var(--button-border);
   color: white;
 }
@@ -99,7 +103,7 @@
 .type-button__label {
   font-size: 14px;
   font-weight: 500;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
 }
 
 /* Form Fields */
@@ -115,7 +119,7 @@
   gap: 6px;
   font-size: 14px;
   font-weight: 500;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
 }
 
 .required {
@@ -126,14 +130,14 @@
 .optional {
   font-size: 12px;
   font-weight: 400;
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
 }
 
 .quick-transaction-entry__input,
 .quick-transaction-entry__select {
   padding: 12px 16px;
   font-size: 16px;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   background: var(--color-background);
   border: 2px solid var(--color-border);
   border-radius: 8px;
@@ -154,11 +158,11 @@
 }
 
 .quick-transaction-entry__input::placeholder {
-  color: var(--color-text-tertiary);
+  color: var(--text-tertiary);
 }
 
 .quick-transaction-entry__select::placeholder {
-  color: var(--color-text-tertiary);
+  color: var(--text-tertiary);
 }
 
 .quick-transaction-entry__select--with-icon {
@@ -174,7 +178,7 @@
 /* Hints and Errors */
 .quick-transaction-entry__hint {
   font-size: 12px;
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
 }
 
 .quick-transaction-entry__hint--warning {
@@ -194,7 +198,11 @@
   font-size: 16px;
   font-weight: 600;
   color: white;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-primary-dark) 100%
+  );
   border: none;
   border-radius: 8px;
   cursor: pointer;

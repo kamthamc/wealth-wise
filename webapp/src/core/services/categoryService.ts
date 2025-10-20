@@ -167,7 +167,12 @@ export function getDefaultCategories(): CreateCategoryInput[] {
     // Income categories
     { name: 'Salary', type: 'income', icon: '💼', color: '#10B981' },
     { name: 'Freelance', type: 'income', icon: '💻', color: '#10B981' },
-    { name: 'Investment Returns', type: 'income', icon: '📈', color: '#10B981' },
+    {
+      name: 'Investment Returns',
+      type: 'income',
+      icon: '📈',
+      color: '#10B981',
+    },
     { name: 'Business', type: 'income', icon: '🏢', color: '#10B981' },
     { name: 'Rental Income', type: 'income', icon: '🏠', color: '#10B981' },
     { name: 'Other Income', type: 'income', icon: '💰', color: '#10B981' },
@@ -178,7 +183,12 @@ export function getDefaultCategories(): CreateCategoryInput[] {
     { name: 'Transportation', type: 'expense', icon: '🚗', color: '#EF4444' },
     { name: 'Shopping', type: 'expense', icon: '🛍️', color: '#EF4444' },
     { name: 'Entertainment', type: 'expense', icon: '🎬', color: '#EF4444' },
-    { name: 'Bills & Utilities', type: 'expense', icon: '📄', color: '#EF4444' },
+    {
+      name: 'Bills & Utilities',
+      type: 'expense',
+      icon: '📄',
+      color: '#EF4444',
+    },
     { name: 'Healthcare', type: 'expense', icon: '🏥', color: '#EF4444' },
     { name: 'Education', type: 'expense', icon: '📚', color: '#EF4444' },
     { name: 'Travel', type: 'expense', icon: '✈️', color: '#EF4444' },
@@ -195,7 +205,7 @@ export function getDefaultCategories(): CreateCategoryInput[] {
 export async function initializeDefaultCategories(): Promise<void> {
   try {
     const defaultCategories = getDefaultCategories();
-    
+
     for (const category of defaultCategories) {
       await db.query(
         `INSERT INTO categories (name, type, icon, color, is_default)

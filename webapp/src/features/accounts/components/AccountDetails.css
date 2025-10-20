@@ -1,7 +1,7 @@
 /* Account Details Page Styles */
 
 .account-details {
-  padding: var(--spacing-6) var(--spacing-4);
+  padding: var(--space-6) var(--space-4);
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -11,20 +11,20 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--spacing-6);
-  gap: var(--spacing-4);
+  margin-bottom: var(--space-6);
+  gap: var(--space-4);
   flex-wrap: wrap;
 }
 
 .account-details__back-button {
   display: flex;
   align-items: center;
-  gap: var(--spacing-2);
+  gap: var(--space-2);
 }
 
 .account-details__actions {
   display: flex;
-  gap: var(--spacing-3);
+  gap: var(--space-3);
 }
 
 /* Info Card */
@@ -32,17 +32,17 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
-  padding: var(--spacing-6);
-  margin-bottom: var(--spacing-6);
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
   box-shadow: var(--shadow-md);
 }
 
 .account-details__info-header {
   display: flex;
   align-items: center;
-  gap: var(--spacing-4);
-  margin-bottom: var(--spacing-6);
-  padding-bottom: var(--spacing-6);
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-6);
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -70,14 +70,14 @@
 .account-details__name {
   font-size: var(--font-size-3xl);
   font-weight: 700;
-  color: var(--color-text-primary);
-  margin: 0 0 var(--spacing-2) 0;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-2) 0;
   line-height: 1.2;
 }
 
 .account-details__type {
   font-size: var(--font-size-base);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   margin: 0;
   font-weight: 500;
 }
@@ -85,15 +85,15 @@
 /* Balance Section */
 .account-details__balance-section {
   text-align: center;
-  padding: var(--spacing-6) 0;
-  margin-bottom: var(--spacing-6);
+  padding: var(--space-6) 0;
+  margin-bottom: var(--space-6);
   border-bottom: 1px solid var(--color-border);
 }
 
 .account-details__balance-label {
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  margin: 0 0 var(--spacing-2) 0;
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-2) 0;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 600;
@@ -112,18 +112,18 @@
 .account-details__meta-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--spacing-5);
+  gap: var(--space-5);
 }
 
 .account-details__meta-item {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2);
+  gap: var(--space-2);
 }
 
 .account-details__meta-label {
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -131,7 +131,7 @@
 
 .account-details__meta-value {
   font-size: var(--font-size-base);
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   font-weight: 500;
   font-family: "Monaco", "Menlo", "Courier New", monospace;
 }
@@ -139,8 +139,8 @@
 .account-details__status {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-1);
-  padding: var(--spacing-1) var(--spacing-3);
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
   border-radius: var(--radius-full);
   font-size: var(--font-size-sm);
   font-weight: 600;
@@ -158,33 +158,33 @@
 
 /* Statistics Section */
 .account-details__stats {
-  margin-bottom: var(--spacing-8);
+  margin-bottom: var(--space-8);
 }
 
 .account-details__section-title {
   font-size: var(--font-size-2xl);
   font-weight: 600;
-  color: var(--color-text-primary);
-  margin: 0 0 var(--spacing-5) 0;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-5) 0;
 }
 
 .account-details__stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--spacing-4);
+  gap: var(--space-4);
 }
 
 /* Transactions Section */
 .account-details__transactions {
-  margin-top: var(--spacing-8);
+  margin-top: var(--space-8);
 }
 
 .account-details__section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--spacing-5);
-  gap: var(--spacing-4);
+  margin-bottom: var(--space-5);
+  gap: var(--space-4);
   flex-wrap: wrap;
 }
 
@@ -192,8 +192,76 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-8);
+  padding: var(--space-8);
   text-align: center;
+}
+
+/* Transactions List */
+.account-details__transactions-list {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.transaction-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  transition: background-color 0.2s ease;
+}
+
+.transaction-item:last-child {
+  border-bottom: none;
+}
+
+.transaction-item:hover {
+  background-color: var(--color-surface-hover);
+}
+
+.transaction-item__icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.transaction-item__details {
+  flex: 1;
+  min-width: 0;
+}
+
+.transaction-item__description {
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.transaction-item__date {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-top: var(--space-1);
+}
+
+.transaction-item__amount {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.transaction-item__amount--income {
+  color: var(--color-success);
+}
+
+.transaction-item__amount--expense {
+  color: var(--color-danger);
+}
+
+.transaction-item__amount--transfer {
+  color: var(--text-secondary);
 }
 
 /* Loading State */
@@ -202,8 +270,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-10);
-  gap: var(--spacing-4);
+  padding: var(--space-10);
+  gap: var(--space-4);
   min-height: 400px;
 }
 
@@ -212,14 +280,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-10);
+  padding: var(--space-10);
   min-height: 400px;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .account-details {
-    padding: var(--spacing-4) var(--spacing-3);
+    padding: var(--space-4) var(--space-3);
   }
 
   .account-details__header {
@@ -236,7 +304,7 @@
   }
 
   .account-details__info-card {
-    padding: var(--spacing-4);
+    padding: var(--space-4);
   }
 
   .account-details__info-header {
@@ -261,7 +329,7 @@
 
   .account-details__meta-grid {
     grid-template-columns: 1fr;
-    gap: var(--spacing-4);
+    gap: var(--space-4);
   }
 
   .account-details__stats-grid {

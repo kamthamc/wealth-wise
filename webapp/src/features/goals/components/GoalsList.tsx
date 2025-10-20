@@ -3,19 +3,30 @@
  * Main goals management page
  */
 
+import {
+  CheckCircle2,
+  DollarSign,
+  Flag,
+  Plus,
+  Search,
+  Target,
+  TrendingUp,
+} from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useGoalStore } from '@/core/stores';
 import {
   Button,
   EmptyState,
   Input,
+  SegmentedControl,
+  type SegmentedControlOption,
   SkeletonList,
   SkeletonStats,
   SkeletonText,
   StatCard,
 } from '@/shared/components';
 import { formatCurrency } from '@/shared/utils';
-import type { GoalFilters, GoalStatus } from '../types';
+import type { GoalStatus } from '../types';
 import {
   calculateGoalProgress,
   formatDaysRemaining,
@@ -24,20 +35,20 @@ import {
   getGoalStatusIcon,
   getGoalStatusName,
 } from '../utils/goalHelpers';
+import { AddGoalForm } from './AddGoalForm';
 import './GoalsList.css';
 
-const STATUS_OPTIONS: (GoalStatus | 'all')[] = [
-  'all',
-  'active',
-  'completed',
-  'paused',
-  'cancelled',
+// Status filter options with icons
+const STATUS_OPTIONS: SegmentedControlOption<GoalStatus | 'all'>[] = [
+  { value: 'all', label: 'All', icon: <Flag size={16} /> },
+  { value: 'active', label: 'Active', icon: <Target size={16} /> },
+  { value: 'completed', label: 'Completed', icon: <CheckCircle2 size={16} /> },
 ];
 
 export function GoalsList() {
   const { goals, isLoading } = useGoalStore();
 
-  const [filters, setFilters] = useState<GoalFilters>({});
+  const [statusFilter, setStatusFilter] = useState<GoalStatus | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [isFormOpen, setIsFormOpen] = useState(false);
 
@@ -46,13 +57,8 @@ export function GoalsList() {
     let filtered = goals;
 
     // Filter by status
-    if (filters.status) {
-      filtered = filtered.filter((goal) => goal.status === filters.status);
-    }
-
-    // Filter by priority
-    if (filters.priority) {
-      filtered = filtered.filter((goal) => goal.priority === filters.priority);
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter((goal) => goal.status === statusFilter);
     }
 
     // Search by name or category
@@ -66,7 +72,7 @@ export function GoalsList() {
     }
 
     return filtered;
-  }, [goals, filters, searchQuery]);
+  }, [goals, statusFilter, searchQuery]);
 
   // Calculate stats
   const stats = useMemo(() => {
@@ -123,23 +129,23 @@ export function GoalsList() {
         <StatCard
           label="Active Goals"
           value={stats.activeGoals.toString()}
-          icon="🎯"
+          icon={<Target size={24} />}
         />
         <StatCard
           label="Completed"
           value={stats.completedGoals.toString()}
-          icon="✅"
+          icon={<CheckCircle2 size={24} />}
           variant="success"
         />
         <StatCard
           label="Total Target"
           value={formatCurrency(stats.totalTargetAmount)}
-          icon="💰"
+          icon={<DollarSign size={24} />}
         />
         <StatCard
           label="Overall Progress"
           value={`${Math.round(stats.overallProgress)}%`}
-          icon="📊"
+          icon={<TrendingUp size={24} />}
           variant={stats.overallProgress >= 80 ? 'success' : 'default'}
         />
       </div>
@@ -147,40 +153,25 @@ export function GoalsList() {
       {/* Controls */}
       <div className="goals-page__controls">
         <div className="goals-page__search">
+          <div className="goals-page__search-icon">
+            <Search size={20} />
+          </div>
           <Input
             type="search"
-            placeholder="🔍 Search goals..."
+            placeholder="Search goals..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
 
         <div className="goals-page__filters">
-          {STATUS_OPTIONS.map((status) => (
-            <button
-              key={status}
-              type="button"
-              className={`goals-page__filter-button ${
-                (status === 'all' && !filters.status) ||
-                filters.status === status
-                  ? 'goals-page__filter-button--active'
-                  : ''
-              }`}
-              onClick={() =>
-                setFilters({
-                  ...filters,
-                  status: status === 'all' ? undefined : status,
-                })
-              }
-            >
-              {status !== 'all' && (
-                <span className="goals-page__filter-icon">
-                  {getGoalStatusIcon(status)}
-                </span>
-              )}
-              {status === 'all' ? 'All' : getGoalStatusName(status)}
-            </button>
-          ))}
+          <SegmentedControl
+            options={STATUS_OPTIONS}
+            value={statusFilter}
+            onChange={setStatusFilter}
+            size="medium"
+            aria-label="Filter goals by status"
+          />
         </div>
       </div>
 
@@ -188,18 +179,21 @@ export function GoalsList() {
       {filteredGoals.length === 0 ? (
         <div className="goals-page__empty">
           <EmptyState
-            icon="🎯"
+            icon={<Target size={48} />}
             title={
-              searchQuery || filters.status ? 'No goals found' : 'No goals yet'
+              searchQuery || statusFilter !== 'all'
+                ? 'No goals found'
+                : 'No goals yet'
             }
             description={
-              searchQuery || filters.status
+              searchQuery || statusFilter !== 'all'
                 ? 'Try adjusting your filters or search query'
-                : 'Set your first financial goal and start saving'
+                : 'Set your first financial goal and start saving toward it'
             }
             action={
-              !searchQuery && !filters.status ? (
+              !searchQuery && statusFilter === 'all' ? (
                 <Button onClick={() => setIsFormOpen(true)}>
+                  <Plus size={20} />
                   Create Your First Goal
                 </Button>
               ) : undefined
@@ -294,8 +288,8 @@ export function GoalsList() {
         </div>
       )}
 
-      {/* TODO: Add Goal Form Modal */}
-      {isFormOpen && <div>Goal form placeholder - to be implemented</div>}
+      {/* Goal Form Modal */}
+      <AddGoalForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} />
     </div>
   );
 }

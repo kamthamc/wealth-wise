@@ -1,13 +1,13 @@
 .checkbox-wrapper {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: var(--space-xs);
 }
 
 .checkbox-container {
   display: flex;
   align-items: flex-start;
-  gap: var(--spacing-sm);
+  gap: var(--space-sm);
 }
 
 .checkbox-input {
@@ -58,7 +58,7 @@
 
 .checkbox-label {
   font-size: var(--font-size-base);
-  color: var(--color-text);
+  color: var(--text);
   cursor: pointer;
   user-select: none;
 }
@@ -81,13 +81,13 @@
 .checkbox-error {
   font-size: var(--font-size-sm);
   color: var(--color-danger);
-  margin-left: calc(20px + var(--spacing-sm));
+  margin-left: calc(20px + var(--space-sm));
 }
 
 .checkbox-helper {
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  margin-left: calc(20px + var(--spacing-sm));
+  color: var(--text-secondary);
+  margin-left: calc(20px + var(--space-sm));
 }
 
 /* Respect reduced motion */

@@ -107,11 +107,11 @@
 .transaction-form__error {
   font-size: var(--font-size-sm);
   color: var(--color-danger);
-  margin-top: var(--spacing-1);
+  margin-top: var(--space-1);
 }
 
 .transaction-form__submit-error {
-  padding: var(--spacing-3);
+  padding: var(--space-3);
   background: var(--color-danger-subtle);
   border: 1px solid var(--color-danger);
   border-radius: var(--radius-md);
@@ -124,19 +124,19 @@
 .transaction-form__type-selector {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-3);
+  gap: var(--space-3);
 }
 
 .transaction-form__type-button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-2);
-  padding: var(--spacing-4);
+  gap: var(--space-2);
+  padding: var(--space-4);
   border: 2px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -174,8 +174,8 @@
 .transaction-form__footer {
   display: flex;
   justify-content: flex-end;
-  gap: var(--spacing-3);
-  padding: var(--spacing-4) var(--spacing-6) var(--spacing-6);
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6) var(--space-6);
   border-top: 1px solid var(--color-border);
 }
 
@@ -208,7 +208,7 @@
   }
 
   .transaction-form__header {
-    padding: var(--spacing-5) var(--spacing-5) var(--spacing-3);
+    padding: var(--space-5) var(--space-5) var(--space-3);
   }
 
   .transaction-form__title {
@@ -216,8 +216,8 @@
   }
 
   .transaction-form__form {
-    padding: var(--spacing-5);
-    gap: var(--spacing-4);
+    padding: var(--space-5);
+    gap: var(--space-4);
   }
 
   .transaction-form__type-selector {
@@ -225,7 +225,7 @@
   }
 
   .transaction-form__footer {
-    padding: var(--spacing-3) var(--spacing-5) var(--spacing-5);
+    padding: var(--space-3) var(--space-5) var(--space-5);
     flex-direction: column-reverse;
   }
 

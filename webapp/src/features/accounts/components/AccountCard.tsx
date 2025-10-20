@@ -3,11 +3,11 @@
  * Displays account information in a card format
  */
 
+import { Edit2, Trash2 } from 'lucide-react';
 import type { Account } from '@/core/db/types';
 import { Badge } from '@/shared/components';
 import { formatCurrency, formatRelativeTime } from '@/shared/utils';
 import {
-  formatAccountIdentifier,
   getAccountIcon,
   getAccountTypeColor,
   getAccountTypeName,
@@ -51,49 +51,11 @@ export function AccountCard({
 
   return (
     <button type="button" className="account-card" onClick={handleCardClick}>
-      <div className="account-card-header">
-        <div className="account-card-icon-wrapper">
-          <span className="account-card-icon">{accountIcon}</span>
+      <div className="account-card__header">
+        <div className="account-card__icon-wrapper">
+          <span className="account-card__icon">{accountIcon}</span>
           <Badge variant={accountColor}>{accountTypeName}</Badge>
         </div>
-        <div className="account-card-actions">
-          <button
-            type="button"
-            onClick={handleEdit}
-            className="account-card-action-btn"
-            aria-label="Edit account"
-          >
-            ✏️
-          </button>
-          <button
-            type="button"
-            onClick={handleDelete}
-            className="account-card-action-btn account-card-delete-btn"
-            aria-label="Delete account"
-          >
-            🗑️
-          </button>
-        </div>
-      </div>
-
-      <div className="account-card__content">
-        <h3 className="account-card__name">{account.name}</h3>
-      </div>
-
-      <p className="account-card__balance">
-        {formatCurrency(account.balance, account.currency)}
-      </p>
-
-      <div className="account-card__footer">
-        <div className="account-card__meta">
-          <span className="account-card__account-number">
-            ID: {formatAccountIdentifier(account.id)}
-          </span>
-          <span className="account-card__updated">
-            Updated {formatRelativeTime(account.updated_at)}
-          </span>
-        </div>
-
         <div className="account-card__actions">
           {onEdit && (
             <button
@@ -103,7 +65,7 @@ export function AccountCard({
               aria-label={`Edit ${account.name}`}
               title="Edit account"
             >
-              ✏️
+              <Edit2 size={16} />
             </button>
           )}
           {onDelete && (
@@ -114,10 +76,23 @@ export function AccountCard({
               aria-label={`Delete ${account.name}`}
               title="Delete account"
             >
-              🗑️
+              <Trash2 size={16} />
             </button>
           )}
         </div>
+      </div>
+
+      <div className="account-card__content">
+        <h3 className="account-card__name">{account.name}</h3>
+        <p className="account-card__balance">
+          {formatCurrency(account.balance, account.currency)}
+        </p>
+      </div>
+
+      <div className="account-card__footer">
+        <span className="account-card__updated">
+          Updated {formatRelativeTime(account.updated_at)}
+        </span>
       </div>
     </button>
   );

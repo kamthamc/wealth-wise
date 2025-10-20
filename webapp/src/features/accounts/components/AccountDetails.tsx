@@ -4,9 +4,9 @@
  */
 
 import { useNavigate } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { Account } from '@/core/db/types';
-import { useAccountStore } from '@/core/stores';
+import { useAccountStore, useTransactionStore } from '@/core/stores';
 import {
   Button,
   ConfirmDialog,
@@ -14,7 +14,7 @@ import {
   Spinner,
   StatCard,
 } from '@/shared/components';
-import { formatCurrency, formatRelativeTime } from '@/shared/utils';
+import { formatCurrency, formatDate, formatRelativeTime } from '@/shared/utils';
 import type { AccountFormData } from '../types';
 import {
   formatAccountIdentifier,
@@ -32,6 +32,7 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
   const navigate = useNavigate();
   const { accounts, isLoading, fetchAccounts, updateAccount, deleteAccount } =
     useAccountStore();
+  const { transactions } = useTransactionStore();
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -47,6 +48,38 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
       fetchAccounts();
     }
   }, [accountId, accounts, isLoading, fetchAccounts]);
+
+  // Filter transactions for this account
+  const accountTransactions = useMemo(() => {
+    return transactions
+      .filter((txn) => txn.account_id === accountId)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }, [transactions, accountId]);
+
+  // Calculate account statistics
+  const accountStats = useMemo(() => {
+    const now = new Date();
+    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    const thisMonthTransactions = accountTransactions.filter(
+      (txn) => new Date(txn.date) >= firstDayOfMonth
+    );
+
+    const income = thisMonthTransactions
+      .filter((txn) => txn.type === 'income')
+      .reduce((sum, txn) => sum + txn.amount, 0);
+
+    const expenses = thisMonthTransactions
+      .filter((txn) => txn.type === 'expense')
+      .reduce((sum, txn) => sum + txn.amount, 0);
+
+    return {
+      totalTransactions: accountTransactions.length,
+      thisMonthTotal: income - expenses,
+      thisMonthIncome: income,
+      thisMonthExpenses: expenses,
+    };
+  }, [accountTransactions]);
 
   const handleEditAccount = async (data: AccountFormData) => {
     if (account) {
@@ -188,16 +221,18 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
           />
           <StatCard
             label="Total Transactions"
-            value="0"
+            value={accountStats.totalTransactions.toString()}
             icon="📊"
-            description="Coming soon"
           />
           <StatCard
             label="This Month"
-            value="₹0"
+            value={formatCurrency(
+              accountStats.thisMonthTotal,
+              account.currency
+            )}
             icon="📅"
-            variant="success"
-            description="Coming soon"
+            variant={accountStats.thisMonthTotal >= 0 ? 'success' : 'danger'}
+            description={`₹${accountStats.thisMonthIncome.toFixed(2)} in, ₹${accountStats.thisMonthExpenses.toFixed(2)} out`}
           />
         </div>
       </div>
@@ -208,18 +243,62 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
           <h2 className="account-details__section-title">
             Recent Transactions
           </h2>
-          <Button variant="secondary" disabled>
+          <Button
+            variant="secondary"
+            onClick={() =>
+              navigate({ to: '/transactions', search: { accountId } })
+            }
+          >
             View All Transactions
           </Button>
         </div>
 
-        <div className="account-details__transactions-empty">
-          <EmptyState
-            icon="💳"
-            title="No Transactions Yet"
-            description="Transactions for this account will appear here. This feature is coming soon!"
-          />
-        </div>
+        {accountTransactions.length === 0 ? (
+          <div className="account-details__transactions-empty">
+            <EmptyState
+              icon="💳"
+              title="No Transactions Yet"
+              description="Transactions for this account will appear here once you start recording them."
+              action={
+                <Button onClick={() => navigate({ to: '/transactions' })}>
+                  Add First Transaction
+                </Button>
+              }
+            />
+          </div>
+        ) : (
+          <div className="account-details__transactions-list">
+            {accountTransactions.slice(0, 10).map((txn) => (
+              <div key={txn.id} className="transaction-item">
+                <div className="transaction-item__icon">
+                  {txn.type === 'income'
+                    ? '💰'
+                    : txn.type === 'expense'
+                      ? '💸'
+                      : '🔄'}
+                </div>
+                <div className="transaction-item__details">
+                  <div className="transaction-item__description">
+                    {txn.description}
+                  </div>
+                  <div className="transaction-item__date">
+                    {formatDate(txn.date)}
+                  </div>
+                </div>
+                <div
+                  className={`transaction-item__amount transaction-item__amount--${txn.type}`}
+                >
+                  {txn.type === 'income'
+                    ? '+'
+                    : txn.type === 'expense'
+                      ? '-'
+                      : ''}
+                  {formatCurrency(txn.amount, account.currency)}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Edit Modal */}

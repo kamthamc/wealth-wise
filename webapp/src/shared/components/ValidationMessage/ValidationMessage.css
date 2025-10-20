@@ -3,12 +3,12 @@
 .validation-message {
   display: flex;
   align-items: flex-start;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-xs) var(--spacing-sm);
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
   border-radius: var(--radius-sm);
   font-size: var(--font-size-sm);
   line-height: 1.4;
-  margin-top: var(--spacing-xs);
+  margin-top: var(--space-xs);
   animation: validation-slide-in 0.2s ease-out;
 }
 
@@ -70,7 +70,7 @@
 
 /* Compact variant for inline usage */
 .validation-message--compact {
-  padding: 2px var(--spacing-xs);
+  padding: 2px var(--space-xs);
   margin-top: 2px;
   font-size: var(--font-size-xs);
   border-left-width: 2px;
@@ -120,6 +120,6 @@
 @media (max-width: 768px) {
   .validation-message {
     font-size: var(--font-size-xs);
-    padding: var(--spacing-xs);
+    padding: var(--space-xs);
   }
 }

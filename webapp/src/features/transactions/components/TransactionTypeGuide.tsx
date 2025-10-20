@@ -3,6 +3,13 @@
  * Visual guide for understanding transaction types
  */
 
+import {
+  ArrowLeftRight,
+  CheckCircle,
+  TrendingDown,
+  TrendingUp,
+} from 'lucide-react';
+import type { ReactNode } from 'react';
 import './TransactionTypeGuide.css';
 
 interface TransactionTypeGuideProps {
@@ -14,7 +21,7 @@ interface TransactionTypeGuideProps {
 
 interface TransactionTypeInfo {
   type: 'income' | 'expense' | 'transfer';
-  icon: string;
+  icon: ReactNode;
   label: string;
   description: string;
   examples: string[];
@@ -24,15 +31,20 @@ interface TransactionTypeInfo {
 const TRANSACTION_TYPES: TransactionTypeInfo[] = [
   {
     type: 'income',
-    icon: '💰',
+    icon: <TrendingUp size={32} />,
     label: 'Income',
     description: 'Money coming into your accounts',
-    examples: ['Salary', 'Freelance payment', 'Investment returns', 'Gifts received'],
+    examples: [
+      'Salary',
+      'Freelance payment',
+      'Investment returns',
+      'Gifts received',
+    ],
     color: 'green',
   },
   {
     type: 'expense',
-    icon: '💸',
+    icon: <TrendingDown size={32} />,
     label: 'Expense',
     description: 'Money going out of your accounts',
     examples: ['Rent', 'Groceries', 'Utilities', 'Shopping', 'Transportation'],
@@ -40,7 +52,7 @@ const TRANSACTION_TYPES: TransactionTypeInfo[] = [
   },
   {
     type: 'transfer',
-    icon: '🔄',
+    icon: <ArrowLeftRight size={32} />,
     label: 'Transfer',
     description: 'Moving money between your accounts',
     examples: ['Bank to wallet', 'Savings to checking', 'Cash withdrawal'],
@@ -48,7 +60,10 @@ const TRANSACTION_TYPES: TransactionTypeInfo[] = [
   },
 ];
 
-export function TransactionTypeGuide({ onSelectType, selectedType }: TransactionTypeGuideProps) {
+export function TransactionTypeGuide({
+  onSelectType,
+  selectedType,
+}: TransactionTypeGuideProps) {
   return (
     <div className="transaction-type-guide">
       <h3 className="transaction-type-guide__title">Choose Transaction Type</h3>
@@ -94,7 +109,7 @@ export function TransactionTypeGuide({ onSelectType, selectedType }: Transaction
               {/* Selected Indicator */}
               {isSelected && (
                 <div className="type-card__selected-badge" aria-hidden="true">
-                  ✓ Selected
+                  <CheckCircle size={16} /> Selected
                 </div>
               )}
             </button>

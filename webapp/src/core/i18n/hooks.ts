@@ -42,10 +42,7 @@ export function useLocalizedCurrency() {
 export function useLocalizedDate() {
   const { locale } = useAppStore();
 
-  return (
-    date: Date | string,
-    options?: Intl.DateTimeFormatOptions
-  ) => {
+  return (date: Date | string, options?: Intl.DateTimeFormatOptions) => {
     const dateObj = typeof date === 'string' ? new Date(date) : date;
     return new Intl.DateTimeFormat(locale, options).format(dateObj);
   };
@@ -67,10 +64,10 @@ export function useLocalizedNumber() {
  */
 export function useTextDirection(): 'ltr' | 'rtl' {
   const { locale } = useAppStore();
-  
+
   // RTL languages
   const rtlLanguages = ['ar', 'he', 'fa', 'ur'];
   const languageCode = locale.split('-')[0] || 'en';
-  
+
   return rtlLanguages.includes(languageCode) ? 'rtl' : 'ltr';
 }

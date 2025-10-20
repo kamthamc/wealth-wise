@@ -4,39 +4,58 @@
  * WCAG 2.1 AA compliant
  */
 
-import { useState, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
-import * as RadioGroup from '@radix-ui/react-radio-group';
-import * as Select from '@radix-ui/react-select';
 import * as Dialog from '@radix-ui/react-dialog';
-import { BackButton } from '../../../shared/components/BackButton';
-import { CategoryManager } from './CategoryManager';
+import * as Select from '@radix-ui/react-select';
+import { Calendar, Monitor, Moon, Sun } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-  exportData,
-  downloadExportFile,
-  parseImportFile,
-  importData,
+  SegmentedControl,
+  type SegmentedControlOption,
+} from '@/shared/components';
+import {
   clearAllData,
+  downloadExportFile,
   type ExportData,
+  exportData,
+  importData,
+  parseImportFile,
 } from '../../../core/services/dataExportService';
+import { CategoryManager } from './CategoryManager';
 import './SettingsPage.css';
 
 type Theme = 'light' | 'dark' | 'system';
 type DateFormat = 'DD/MM/YYYY' | 'MM/DD/YYYY' | 'YYYY-MM-DD';
 type Currency = 'INR' | 'USD' | 'EUR' | 'GBP';
 
+// Theme options with icons
+const THEME_OPTIONS: SegmentedControlOption<Theme>[] = [
+  { value: 'light', label: 'Light', icon: <Sun size={16} /> },
+  { value: 'dark', label: 'Dark', icon: <Moon size={16} /> },
+  { value: 'system', label: 'System', icon: <Monitor size={16} /> },
+];
+
+// Date format options
+const DATE_FORMAT_OPTIONS: SegmentedControlOption<DateFormat>[] = [
+  { value: 'DD/MM/YYYY', label: 'DD/MM/YYYY', icon: <Calendar size={16} /> },
+  { value: 'MM/DD/YYYY', label: 'MM/DD/YYYY', icon: <Calendar size={16} /> },
+  { value: 'YYYY-MM-DD', label: 'YYYY-MM-DD', icon: <Calendar size={16} /> },
+];
+
 export function SettingsPage() {
   const { t, i18n } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   // State
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [showClearDialog, setShowClearDialog] = useState(false);
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [importFile, setImportFile] = useState<File | null>(null);
-  const [importDataState, setImportDataState] = useState<ExportData | null>(null);
-  
+  const [importDataState, setImportDataState] = useState<ExportData | null>(
+    null
+  );
+
   // Load from localStorage or use defaults
   const [theme, setTheme] = useState<Theme>(
     (localStorage.getItem('theme') as Theme) || 'system'
@@ -51,11 +70,16 @@ export function SettingsPage() {
   const handleThemeChange = (value: Theme) => {
     setTheme(value);
     localStorage.setItem('theme', value);
-    
-    // Apply theme to document
+
+    // Apply theme to document immediately (live update)
     if (value === 'system') {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+      const prefersDark = window.matchMedia(
+        '(prefers-color-scheme: dark)'
+      ).matches;
+      document.documentElement.setAttribute(
+        'data-theme',
+        prefersDark ? 'dark' : 'light'
+      );
     } else {
       document.documentElement.setAttribute('data-theme', value);
     }
@@ -89,7 +113,9 @@ export function SettingsPage() {
     }
   };
 
-  const handleImportFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImportFileSelect = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
       setImportFile(file);
@@ -148,7 +174,6 @@ export function SettingsPage() {
     <div className="page-container">
       <div className="page-header">
         <div className="page-header__content">
-          <BackButton to="/" />
           <div className="page-header__text">
             <h1 className="page-header__title">{t('settings.title')}</h1>
             <p className="page-header__subtitle">{t('settings.description')}</p>
@@ -160,7 +185,9 @@ export function SettingsPage() {
         {/* Appearance Section */}
         <section className="section settings-section">
           <div className="section-header">
-            <h2 className="section-header__title">{t('settings.appearance.title')}</h2>
+            <h2 className="section-header__title">
+              {t('settings.appearance.title')}
+            </h2>
             <p className="section-header__description">
               {t('settings.appearance.description')}
             </p>
@@ -170,58 +197,22 @@ export function SettingsPage() {
             <label className="settings-field__label" id="theme-label">
               {t('settings.appearance.theme.label')}
             </label>
-            <RadioGroup.Root
-              className="settings-radio-group"
+            <SegmentedControl
+              options={THEME_OPTIONS}
               value={theme}
-              onValueChange={handleThemeChange}
+              onChange={handleThemeChange}
+              size="medium"
               aria-labelledby="theme-label"
-            >
-              <div className="settings-radio-item">
-                <RadioGroup.Item
-                  className="settings-radio-button"
-                  value="light"
-                  id="theme-light"
-                >
-                  <RadioGroup.Indicator className="settings-radio-indicator" />
-                </RadioGroup.Item>
-                <label className="settings-radio-label" htmlFor="theme-light">
-                  ☀️ {t('settings.appearance.theme.light')}
-                </label>
-              </div>
-
-              <div className="settings-radio-item">
-                <RadioGroup.Item
-                  className="settings-radio-button"
-                  value="dark"
-                  id="theme-dark"
-                >
-                  <RadioGroup.Indicator className="settings-radio-indicator" />
-                </RadioGroup.Item>
-                <label className="settings-radio-label" htmlFor="theme-dark">
-                  🌙 {t('settings.appearance.theme.dark')}
-                </label>
-              </div>
-
-              <div className="settings-radio-item">
-                <RadioGroup.Item
-                  className="settings-radio-button"
-                  value="system"
-                  id="theme-system"
-                >
-                  <RadioGroup.Indicator className="settings-radio-indicator" />
-                </RadioGroup.Item>
-                <label className="settings-radio-label" htmlFor="theme-system">
-                  💻 {t('settings.appearance.theme.system')}
-                </label>
-              </div>
-            </RadioGroup.Root>
+            />
           </div>
         </section>
 
         {/* Localization Section */}
         <section className="section settings-section">
           <div className="section-header">
-            <h2 className="section-header__title">{t('settings.localization.title')}</h2>
+            <h2 className="section-header__title">
+              {t('settings.localization.title')}
+            </h2>
             <p className="section-header__description">
               {t('settings.localization.description')}
             </p>
@@ -301,51 +292,13 @@ export function SettingsPage() {
             <label className="settings-field__label" id="date-format-label">
               {t('settings.localization.dateFormat.label')}
             </label>
-            <RadioGroup.Root
-              className="settings-radio-group"
+            <SegmentedControl
+              options={DATE_FORMAT_OPTIONS}
               value={dateFormat}
-              onValueChange={handleDateFormatChange}
+              onChange={handleDateFormatChange}
+              size="medium"
               aria-labelledby="date-format-label"
-            >
-              <div className="settings-radio-item">
-                <RadioGroup.Item
-                  className="settings-radio-button"
-                  value="DD/MM/YYYY"
-                  id="date-dd-mm-yyyy"
-                >
-                  <RadioGroup.Indicator className="settings-radio-indicator" />
-                </RadioGroup.Item>
-                <label className="settings-radio-label" htmlFor="date-dd-mm-yyyy">
-                  DD/MM/YYYY (31/12/2024)
-                </label>
-              </div>
-
-              <div className="settings-radio-item">
-                <RadioGroup.Item
-                  className="settings-radio-button"
-                  value="MM/DD/YYYY"
-                  id="date-mm-dd-yyyy"
-                >
-                  <RadioGroup.Indicator className="settings-radio-indicator" />
-                </RadioGroup.Item>
-                <label className="settings-radio-label" htmlFor="date-mm-dd-yyyy">
-                  MM/DD/YYYY (12/31/2024)
-                </label>
-              </div>
-
-              <div className="settings-radio-item">
-                <RadioGroup.Item
-                  className="settings-radio-button"
-                  value="YYYY-MM-DD"
-                  id="date-yyyy-mm-dd"
-                >
-                  <RadioGroup.Indicator className="settings-radio-indicator" />
-                </RadioGroup.Item>
-                <label className="settings-radio-label" htmlFor="date-yyyy-mm-dd">
-                  YYYY-MM-DD (2024-12-31)
-                </label>
-              </div>
-            </RadioGroup.Root>
+            />
           </div>
         </section>
 
@@ -420,7 +373,9 @@ export function SettingsPage() {
         {/* Privacy Section */}
         <section className="section settings-section">
           <div className="section-header">
-            <h2 className="section-header__title">{t('settings.privacy.title')}</h2>
+            <h2 className="section-header__title">
+              {t('settings.privacy.title')}
+            </h2>
             <p className="section-header__description">
               {t('settings.privacy.description')}
             </p>
@@ -460,16 +415,37 @@ export function SettingsPage() {
 
             {importDataState && (
               <div className="import-summary">
-                <p><strong>{t('settings.dataManagement.import.accounts')}:</strong> {importDataState.accounts.length}</p>
-                <p><strong>{t('settings.dataManagement.import.transactions')}:</strong> {importDataState.transactions.length}</p>
-                <p><strong>{t('settings.dataManagement.import.budgets')}:</strong> {importDataState.budgets.length}</p>
-                <p><strong>{t('settings.dataManagement.import.goals')}:</strong> {importDataState.goals.length}</p>
+                <p>
+                  <strong>
+                    {t('settings.dataManagement.import.accounts')}:
+                  </strong>{' '}
+                  {importDataState.accounts.length}
+                </p>
+                <p>
+                  <strong>
+                    {t('settings.dataManagement.import.transactions')}:
+                  </strong>{' '}
+                  {importDataState.transactions.length}
+                </p>
+                <p>
+                  <strong>
+                    {t('settings.dataManagement.import.budgets')}:
+                  </strong>{' '}
+                  {importDataState.budgets.length}
+                </p>
+                <p>
+                  <strong>{t('settings.dataManagement.import.goals')}:</strong>{' '}
+                  {importDataState.goals.length}
+                </p>
               </div>
             )}
 
             <div className="dialog-actions">
               <Dialog.Close asChild>
-                <button type="button" className="dialog-button dialog-button--secondary">
+                <button
+                  type="button"
+                  className="dialog-button dialog-button--secondary"
+                >
                   {t('common.cancel')}
                 </button>
               </Dialog.Close>
@@ -500,7 +476,10 @@ export function SettingsPage() {
 
             <div className="dialog-actions">
               <Dialog.Close asChild>
-                <button type="button" className="dialog-button dialog-button--secondary">
+                <button
+                  type="button"
+                  className="dialog-button dialog-button--secondary"
+                >
                   {t('common.cancel')}
                 </button>
               </Dialog.Close>

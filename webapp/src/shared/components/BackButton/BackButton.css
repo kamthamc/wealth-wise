@@ -8,26 +8,26 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2); /* 8px */
-  
+
   /* Sizing - WCAG touch target */
   min-height: 40px;
   padding: var(--space-2) var(--space-3); /* 8px 12px */
-  
+
   /* Typography */
   font-size: var(--text-base); /* 16px for accessibility */
   font-weight: 500;
   font-family: var(--font-sans);
-  
+
   /* Colors */
   color: var(--color-neutral-700);
   background: transparent;
   border: 1px solid var(--color-neutral-300);
   border-radius: var(--radius-md);
-  
+
   /* Interaction */
   cursor: pointer;
   transition: all var(--transition-normal);
-  
+
   /* Remove default button styles */
   appearance: none;
   text-decoration: none;
@@ -74,12 +74,12 @@
 }
 
 /* Dark mode */
-[data-theme='dark'] .back-button {
+[data-theme="dark"] .back-button {
   color: var(--color-neutral-300);
   border-color: var(--color-neutral-700);
 }
 
-[data-theme='dark'] .back-button:hover {
+[data-theme="dark"] .back-button:hover {
   background: var(--color-neutral-800);
   border-color: var(--color-neutral-600);
   color: var(--color-neutral-100);

@@ -4,13 +4,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--spacing-5);
+  margin-bottom: var(--space-5);
 }
 
 .recent-transactions__title {
   font-size: var(--font-size-lg);
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -51,7 +51,7 @@
   .recent-transactions__header {
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--spacing-sm);
+    gap: var(--space-sm);
   }
 
   .recent-transactions__title {

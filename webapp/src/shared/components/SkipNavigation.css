@@ -3,7 +3,7 @@
   top: -100%;
   left: 0;
   z-index: 9999;
-  padding: var(--spacing-md) var(--spacing-lg);
+  padding: var(--space-md) var(--space-lg);
   background-color: var(--color-primary);
   color: var(--color-background);
   text-decoration: none;
@@ -22,7 +22,7 @@
 .skip-links {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: var(--space-xs);
   position: absolute;
   top: 0;
   left: 0;

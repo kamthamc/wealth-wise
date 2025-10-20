@@ -55,6 +55,7 @@ export interface Transaction {
   receipt_url?: string;
   is_recurring: boolean;
   recurring_frequency?: RecurringFrequency;
+  linked_transaction_id?: string; // For linking transfer transactions
   created_at: Date;
   updated_at: Date;
 }
