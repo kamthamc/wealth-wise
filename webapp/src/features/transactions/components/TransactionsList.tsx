@@ -60,7 +60,8 @@ const FILTER_OPTIONS: SegmentedControlOption<TransactionType | 'all'>[] = [
 
 export function TransactionsList() {
   const navigate = useNavigate();
-  const { transactions, isLoading, unlinkTransaction, fetchTransactions } = useTransactionStore();
+  const { transactions, isLoading, unlinkTransaction, fetchTransactions } =
+    useTransactionStore();
   const { accounts } = useAccountStore();
 
   // Filter states (applied filters)

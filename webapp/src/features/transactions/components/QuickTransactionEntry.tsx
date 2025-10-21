@@ -4,7 +4,12 @@
  */
 
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { ArrowLeftRight, ChevronDown, TrendingDown, TrendingUp } from 'lucide-react';
+import {
+  ArrowLeftRight,
+  ChevronDown,
+  TrendingDown,
+  TrendingUp,
+} from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import {
@@ -327,8 +332,8 @@ export function QuickTransactionEntry({
                 {categoryId ? (
                   <>
                     {availableCategories.find((c) => c.id === categoryId)?.icon}{' '}
-                    {availableCategories.find((c) => c.id === categoryId)?.name ||
-                      'Select category...'}
+                    {availableCategories.find((c) => c.id === categoryId)
+                      ?.name || 'Select category...'}
                   </>
                 ) : (
                   '💭 Select category...'

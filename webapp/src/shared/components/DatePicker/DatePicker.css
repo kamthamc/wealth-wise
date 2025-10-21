@@ -27,7 +27,7 @@
 
 .date-picker__trigger:hover {
   border-color: var(--color-primary);
-  background: var(--color-surface-hover);
+  background: var(--bg-primary-hover);
 }
 
 .date-picker__trigger:focus-visible {
@@ -50,7 +50,7 @@
 .date-picker__trigger[disabled] {
   opacity: 0.5;
   cursor: not-allowed;
-  background: var(--color-surface-disabled);
+  background: var(--bg-primary-disabled);
 }
 
 .date-picker__icon {
@@ -146,7 +146,7 @@
 }
 
 .date-picker__nav-button:hover {
-  background: var(--color-surface-hover);
+  background: var(--bg-primary-hover);
   border-color: var(--color-primary);
   color: var(--text-primary);
 }

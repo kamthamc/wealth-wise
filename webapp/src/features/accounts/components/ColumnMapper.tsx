@@ -1,11 +1,19 @@
-import { useState, useEffect } from 'react';
 import * as Select from '@radix-ui/react-select';
-import { ChevronDown, Check, AlertCircle } from 'lucide-react';
+import { AlertCircle, Check, ChevronDown } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import './ColumnMapper.css';
 
 interface ColumnMapping {
   csvColumn: string;
-  systemField: 'date' | 'description' | 'amount' | 'amount_debit' | 'amount_credit' | 'type' | 'category' | 'skip';
+  systemField:
+    | 'date'
+    | 'description'
+    | 'amount'
+    | 'amount_debit'
+    | 'amount_credit'
+    | 'type'
+    | 'category'
+    | 'skip';
   valueMapping?: Record<string, string>; // For mapping credit/debit to income/expense
 }
 
@@ -20,7 +28,11 @@ const SYSTEM_FIELDS = [
   { value: 'date', label: 'Date', required: true },
   { value: 'description', label: 'Description', required: true },
   { value: 'amount', label: 'Amount', required: true },
-  { value: 'amount_debit', label: 'Amount (Debit/Withdrawal)', required: false },
+  {
+    value: 'amount_debit',
+    label: 'Amount (Debit/Withdrawal)',
+    required: false,
+  },
   { value: 'amount_credit', label: 'Amount (Credit/Deposit)', required: false },
   { value: 'type', label: 'Type (Income/Expense)', required: false }, // Made optional
   { value: 'category', label: 'Category', required: false },
@@ -48,50 +60,80 @@ const TYPE_MAPPINGS = {
   charge: 'expense',
 };
 
-export function ColumnMapper({ csvHeaders, sampleData, onMappingComplete, onCancel }: ColumnMapperProps) {
+export function ColumnMapper({
+  csvHeaders,
+  sampleData,
+  onMappingComplete,
+  onCancel,
+}: ColumnMapperProps) {
   const [mappings, setMappings] = useState<ColumnMapping[]>([]);
-  const [valueMappings, setValueMappings] = useState<Record<string, Record<string, string>>>({});
+  const [valueMappings, setValueMappings] = useState<
+    Record<string, Record<string, string>>
+  >({});
   const [autoDetected, setAutoDetected] = useState(false);
 
   useEffect(() => {
     // Auto-detect columns based on common patterns
     const detected = csvHeaders.map((header) => {
       const lowerHeader = header.toLowerCase().trim();
-      
+
       let systemField: ColumnMapping['systemField'] = 'skip';
-      
+
       // Date detection
-      if (lowerHeader.includes('date') || lowerHeader.includes('txn') || lowerHeader === 'dt') {
+      if (
+        lowerHeader.includes('date') ||
+        lowerHeader.includes('txn') ||
+        lowerHeader === 'dt'
+      ) {
         systemField = 'date';
       }
       // Description detection
-      else if (lowerHeader.includes('description') || lowerHeader.includes('narration') || 
-               lowerHeader.includes('particulars') || lowerHeader.includes('details') ||
-               lowerHeader.includes('remarks')) {
+      else if (
+        lowerHeader.includes('description') ||
+        lowerHeader.includes('narration') ||
+        lowerHeader.includes('particulars') ||
+        lowerHeader.includes('details') ||
+        lowerHeader.includes('remarks')
+      ) {
         systemField = 'description';
       }
       // Debit/Withdrawal amount detection (HDFC, ICICI format)
-      else if (lowerHeader.includes('withdrawal') || lowerHeader.includes('debit amt') ||
-               (lowerHeader.includes('debit') && lowerHeader.includes('amt'))) {
+      else if (
+        lowerHeader.includes('withdrawal') ||
+        lowerHeader.includes('debit amt') ||
+        (lowerHeader.includes('debit') && lowerHeader.includes('amt'))
+      ) {
         systemField = 'amount_debit';
       }
       // Credit/Deposit amount detection (HDFC, ICICI format)
-      else if (lowerHeader.includes('deposit') || lowerHeader.includes('credit amt') ||
-               (lowerHeader.includes('credit') && lowerHeader.includes('amt'))) {
+      else if (
+        lowerHeader.includes('deposit') ||
+        lowerHeader.includes('credit amt') ||
+        (lowerHeader.includes('credit') && lowerHeader.includes('amt'))
+      ) {
         systemField = 'amount_credit';
       }
       // General amount detection
-      else if (lowerHeader.includes('amount') || lowerHeader.includes('amt') || 
-               lowerHeader === 'value') {
+      else if (
+        lowerHeader.includes('amount') ||
+        lowerHeader.includes('amt') ||
+        lowerHeader === 'value'
+      ) {
         systemField = 'amount';
       }
       // Type detection
-      else if (lowerHeader.includes('type') || lowerHeader.includes('transaction type') ||
-               lowerHeader === 'cr/dr') {
+      else if (
+        lowerHeader.includes('type') ||
+        lowerHeader.includes('transaction type') ||
+        lowerHeader === 'cr/dr'
+      ) {
         systemField = 'type';
       }
       // Category detection
-      else if (lowerHeader.includes('category') || lowerHeader.includes('tag')) {
+      else if (
+        lowerHeader.includes('category') ||
+        lowerHeader.includes('tag')
+      ) {
         systemField = 'category';
       }
 
@@ -106,19 +148,22 @@ export function ColumnMapper({ csvHeaders, sampleData, onMappingComplete, onCanc
 
     // Auto-detect type mappings from sample data
     const typeMapping: Record<string, string> = {};
-    const typeColumn = detected.find(m => m.systemField === 'type')?.csvColumn;
-    
+    const typeColumn = detected.find(
+      (m) => m.systemField === 'type'
+    )?.csvColumn;
+
     if (typeColumn && sampleData.length > 0) {
       const uniqueValues = new Set<string>();
-      sampleData.forEach(row => {
+      sampleData.forEach((row) => {
         const value = row[typeColumn]?.toLowerCase().trim();
         if (value) uniqueValues.add(value);
       });
 
-      uniqueValues.forEach(value => {
+      uniqueValues.forEach((value) => {
         // Try to map using common patterns
         if (TYPE_MAPPINGS[value as keyof typeof TYPE_MAPPINGS]) {
-          typeMapping[value] = TYPE_MAPPINGS[value as keyof typeof TYPE_MAPPINGS];
+          typeMapping[value] =
+            TYPE_MAPPINGS[value as keyof typeof TYPE_MAPPINGS];
         }
       });
 
@@ -128,16 +173,21 @@ export function ColumnMapper({ csvHeaders, sampleData, onMappingComplete, onCanc
     }
   }, [csvHeaders, sampleData]);
 
-  const updateMapping = (csvColumn: string, systemField: ColumnMapping['systemField']) => {
-    setMappings(prev =>
-      prev.map(m =>
-        m.csvColumn === csvColumn ? { ...m, systemField } : m
-      )
+  const updateMapping = (
+    csvColumn: string,
+    systemField: ColumnMapping['systemField']
+  ) => {
+    setMappings((prev) =>
+      prev.map((m) => (m.csvColumn === csvColumn ? { ...m, systemField } : m))
     );
   };
 
-  const updateValueMapping = (csvColumn: string, csvValue: string, systemValue: string) => {
-    setValueMappings(prev => ({
+  const updateValueMapping = (
+    csvColumn: string,
+    csvValue: string,
+    systemValue: string
+  ) => {
+    setValueMappings((prev) => ({
       ...prev,
       [csvColumn]: {
         ...prev[csvColumn],
@@ -148,7 +198,7 @@ export function ColumnMapper({ csvHeaders, sampleData, onMappingComplete, onCanc
 
   const getUniqueValues = (column: string): string[] => {
     const values = new Set<string>();
-    sampleData.forEach(row => {
+    sampleData.forEach((row) => {
       const value = row[column]?.trim();
       if (value) values.add(value);
     });
@@ -156,7 +206,7 @@ export function ColumnMapper({ csvHeaders, sampleData, onMappingComplete, onCanc
   };
 
   const handleComplete = () => {
-    const finalMappings = mappings.map(m => ({
+    const finalMappings = mappings.map((m) => ({
       ...m,
       valueMapping: valueMappings[m.csvColumn],
     }));
@@ -164,18 +214,26 @@ export function ColumnMapper({ csvHeaders, sampleData, onMappingComplete, onCanc
   };
 
   // Get mapped fields first
-  const mappedFields = mappings.map(m => m.systemField).filter(f => f !== 'skip');
-  
+  const mappedFields = mappings
+    .map((m) => m.systemField)
+    .filter((f) => f !== 'skip');
+
   // Check if we have separate debit/credit columns (HDFC format)
-  const hasSeparateAmountColumns = mappedFields.includes('amount_debit') && mappedFields.includes('amount_credit');
-  
+  const hasSeparateAmountColumns =
+    mappedFields.includes('amount_debit') &&
+    mappedFields.includes('amount_credit');
+
   // Build required fields list
-  let effectiveRequiredFields = SYSTEM_FIELDS.filter(f => f.required).map(f => f.value);
-  
+  let effectiveRequiredFields = SYSTEM_FIELDS.filter((f) => f.required).map(
+    (f) => f.value
+  );
+
   // If we have separate debit/credit columns, we don't need 'type' column
   // and we don't need general 'amount' column
   if (hasSeparateAmountColumns) {
-    effectiveRequiredFields = effectiveRequiredFields.filter(f => f !== 'amount');
+    effectiveRequiredFields = effectiveRequiredFields.filter(
+      (f) => f !== 'amount'
+    );
     // Add amount_debit and amount_credit as required
     if (!effectiveRequiredFields.includes('amount_debit' as any)) {
       effectiveRequiredFields.push('amount_debit' as any);
@@ -184,16 +242,20 @@ export function ColumnMapper({ csvHeaders, sampleData, onMappingComplete, onCanc
       effectiveRequiredFields.push('amount_credit' as any);
     }
   }
-  
-  const missingRequired = effectiveRequiredFields.filter(f => !mappedFields.includes(f));
+
+  const missingRequired = effectiveRequiredFields.filter(
+    (f) => !mappedFields.includes(f)
+  );
   const canComplete = missingRequired.length === 0;
 
-  const typeColumn = mappings.find(m => m.systemField === 'type')?.csvColumn;
+  const typeColumn = mappings.find((m) => m.systemField === 'type')?.csvColumn;
   const typeValues = typeColumn ? getUniqueValues(typeColumn) : [];
-  const needsTypeMapping = typeValues.length > 0 && typeValues.some(v => {
-    const lower = v.toLowerCase();
-    return lower !== 'income' && lower !== 'expense' && lower !== 'transfer';
-  });
+  const needsTypeMapping =
+    typeValues.length > 0 &&
+    typeValues.some((v) => {
+      const lower = v.toLowerCase();
+      return lower !== 'income' && lower !== 'expense' && lower !== 'transfer';
+    });
 
   return (
     <div className="column-mapper">
@@ -204,8 +266,8 @@ export function ColumnMapper({ csvHeaders, sampleData, onMappingComplete, onCanc
             <span className="auto-detected">
               <Check size={16} /> Columns auto-detected
             </span>
-          )}
-          {' '}Match your CSV columns to system fields
+          )}{' '}
+          Match your CSV columns to system fields
         </p>
       </div>
 
@@ -215,34 +277,40 @@ export function ColumnMapper({ csvHeaders, sampleData, onMappingComplete, onCanc
           <div>
             <strong>Missing required fields:</strong>
             <div style={{ marginTop: '4px' }}>
-              {missingRequired.map(field => {
-                const fieldLabel = SYSTEM_FIELDS.find(f => f.value === field)?.label || field;
+              {missingRequired.map((field) => {
+                const fieldLabel =
+                  SYSTEM_FIELDS.find((f) => f.value === field)?.label || field;
                 return <div key={field}>• {fieldLabel}</div>;
               })}
             </div>
             <div style={{ marginTop: '8px', fontSize: '0.9em', opacity: 0.9 }}>
-              {hasSeparateAmountColumns 
+              {hasSeparateAmountColumns
                 ? 'Tip: Using separate debit/credit columns. No "Type" field needed.'
                 : 'Tip: Map your CSV columns to the required fields above to continue.'}
             </div>
           </div>
         </div>
       )}
-      
+
       {hasSeparateAmountColumns && missingRequired.length === 0 && (
-        <div className="mapping-info" style={{ 
-          padding: '12px', 
-          background: '#e3f2fd', 
-          border: '1px solid #90caf9',
-          borderRadius: '8px',
-          marginBottom: '16px',
-          display: 'flex',
-          gap: '8px',
-          color: '#1565c0'
-        }}>
+        <div
+          className="mapping-info"
+          style={{
+            padding: '12px',
+            background: '#e3f2fd',
+            border: '1px solid #90caf9',
+            borderRadius: '8px',
+            marginBottom: '16px',
+            display: 'flex',
+            gap: '8px',
+            color: '#1565c0',
+          }}
+        >
           <Check size={16} style={{ flexShrink: 0, marginTop: '2px' }} />
           <span>
-            <strong>Separate debit/credit columns detected.</strong> Transaction types will be automatically assigned based on which column has a value.
+            <strong>Separate debit/credit columns detected.</strong> Transaction
+            types will be automatically assigned based on which column has a
+            value.
           </span>
         </div>
       )}
@@ -263,7 +331,12 @@ export function ColumnMapper({ csvHeaders, sampleData, onMappingComplete, onCanc
             <div className="system-field">
               <Select.Root
                 value={mapping.systemField}
-                onValueChange={(value) => updateMapping(mapping.csvColumn, value as ColumnMapping['systemField'])}
+                onValueChange={(value) =>
+                  updateMapping(
+                    mapping.csvColumn,
+                    value as ColumnMapping['systemField']
+                  )
+                }
               >
                 <Select.Trigger className="select-trigger">
                   <Select.Value />
@@ -276,10 +349,16 @@ export function ColumnMapper({ csvHeaders, sampleData, onMappingComplete, onCanc
                   <Select.Content className="select-content">
                     <Select.Viewport>
                       {SYSTEM_FIELDS.map((field) => (
-                        <Select.Item key={field.value} value={field.value} className="select-item">
+                        <Select.Item
+                          key={field.value}
+                          value={field.value}
+                          className="select-item"
+                        >
                           <Select.ItemText>
                             {field.label}
-                            {field.required && <span className="required-badge">Required</span>}
+                            {field.required && (
+                              <span className="required-badge">Required</span>
+                            )}
                           </Select.ItemText>
                           <Select.ItemIndicator className="select-indicator">
                             <Check size={16} />
@@ -307,13 +386,17 @@ export function ColumnMapper({ csvHeaders, sampleData, onMappingComplete, onCanc
         <div className="value-mapping-section">
           <h4>Map Transaction Types</h4>
           <p>Your CSV uses different values. Map them to our system:</p>
-          
+
           <div className="value-mapping-grid">
-            {typeValues.map(csvValue => {
+            {typeValues.map((csvValue) => {
               const lower = csvValue.toLowerCase();
-              const isStandard = lower === 'income' || lower === 'expense' || lower === 'transfer';
-              const currentMapping = valueMappings[typeColumn]?.[csvValue] || 
-                                    (isStandard ? lower : '');
+              const isStandard =
+                lower === 'income' ||
+                lower === 'expense' ||
+                lower === 'transfer';
+              const currentMapping =
+                valueMappings[typeColumn]?.[csvValue] ||
+                (isStandard ? lower : '');
 
               return (
                 <div key={csvValue} className="value-mapping-row">
@@ -324,7 +407,9 @@ export function ColumnMapper({ csvHeaders, sampleData, onMappingComplete, onCanc
                   <div className="system-value">
                     <Select.Root
                       value={currentMapping}
-                      onValueChange={(value) => updateValueMapping(typeColumn, csvValue, value)}
+                      onValueChange={(value) =>
+                        updateValueMapping(typeColumn, csvValue, value)
+                      }
                     >
                       <Select.Trigger className="select-trigger small">
                         <Select.Value placeholder="Select..." />
@@ -340,13 +425,19 @@ export function ColumnMapper({ csvHeaders, sampleData, onMappingComplete, onCanc
                                 <Check size={14} />
                               </Select.ItemIndicator>
                             </Select.Item>
-                            <Select.Item value="expense" className="select-item">
+                            <Select.Item
+                              value="expense"
+                              className="select-item"
+                            >
                               <Select.ItemText>Expense</Select.ItemText>
                               <Select.ItemIndicator>
                                 <Check size={14} />
                               </Select.ItemIndicator>
                             </Select.Item>
-                            <Select.Item value="transfer" className="select-item">
+                            <Select.Item
+                              value="transfer"
+                              className="select-item"
+                            >
                               <Select.ItemText>Transfer</Select.ItemText>
                               <Select.ItemIndicator>
                                 <Check size={14} />

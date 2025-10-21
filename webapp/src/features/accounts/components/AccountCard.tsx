@@ -50,9 +50,7 @@ export function AccountCard({
   };
 
   return (
-    <div 
-    role='presentation'
-    className="account-card" onClick={handleCardClick}>
+    <div role="button" className="account-card" onClick={handleCardClick}>
       <div className="account-card__header">
         <div className="account-card__icon-wrapper">
           <span className="account-card__icon">{accountIcon}</span>

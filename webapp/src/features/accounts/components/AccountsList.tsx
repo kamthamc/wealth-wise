@@ -21,6 +21,7 @@ import {
   ConfirmDialog,
   EmptyState,
   Input,
+  MultiSelectFilter,
   SkeletonCard,
   SkeletonStats,
   SkeletonText,
@@ -28,20 +29,61 @@ import {
 } from '@/shared/components';
 import { formatCurrency } from '@/shared/utils';
 import type { AccountFilters, AccountFormData, AccountType } from '../types';
-import { getAccountIcon, getAccountTypeName } from '../utils/accountHelpers';
+import { getAccountIcon } from '../utils/accountHelpers';
 import { AccountCard } from './AccountCard';
 import { AccountTransferWizard } from './AccountTransferWizard';
 import { AddAccountModal } from './AddAccountModal';
 import './AccountsList.css';
 
-const FILTER_OPTIONS: (AccountType | 'all')[] = [
-  'all',
-  'bank',
-  'credit_card',
-  'upi',
-  'brokerage',
-  'cash',
-  'wallet',
+const ACCOUNT_TYPE_OPTIONS: Array<{
+  value: AccountType;
+  label: string;
+  icon: React.ReactNode;
+}> = [
+  // Banking
+  { value: 'bank', label: 'Bank Account', icon: getAccountIcon('bank') },
+  {
+    value: 'credit_card',
+    label: 'Credit Card',
+    icon: getAccountIcon('credit_card'),
+  },
+  { value: 'upi', label: 'UPI Wallet', icon: getAccountIcon('upi') },
+
+  // Investments
+  { value: 'brokerage', label: 'Brokerage', icon: getAccountIcon('brokerage') },
+
+  // Deposits & Savings
+  {
+    value: 'fixed_deposit',
+    label: 'Fixed Deposit',
+    icon: getAccountIcon('fixed_deposit'),
+  },
+  {
+    value: 'recurring_deposit',
+    label: 'Recurring Deposit',
+    icon: getAccountIcon('recurring_deposit'),
+  },
+  { value: 'ppf', label: 'Public Provident Fund', icon: getAccountIcon('ppf') },
+  {
+    value: 'nsc',
+    label: 'National Savings Certificate',
+    icon: getAccountIcon('nsc'),
+  },
+  { value: 'kvp', label: 'Kisan Vikas Patra', icon: getAccountIcon('kvp') },
+  {
+    value: 'scss',
+    label: 'Senior Citizen Savings Scheme',
+    icon: getAccountIcon('scss'),
+  },
+  {
+    value: 'post_office',
+    label: 'Post Office Savings',
+    icon: getAccountIcon('post_office'),
+  },
+
+  // Cash & Wallets
+  { value: 'cash', label: 'Cash', icon: getAccountIcon('cash') },
+  { value: 'wallet', label: 'Wallet', icon: getAccountIcon('wallet') },
 ];
 
 export function AccountsList() {
@@ -63,13 +105,29 @@ export function AccountsList() {
   const [editingAccount, setEditingAccount] = useState<Account | undefined>();
   const [deletingAccount, setDeletingAccount] = useState<Account | undefined>();
 
+  // Account options for multi-select filter
+  const accountOptions = useMemo(
+    () =>
+      accounts.map((account) => ({
+        value: account.id,
+        label: account.name,
+        icon: getAccountIcon(account.type),
+      })),
+    [accounts]
+  );
+
   // Filter and search accounts
   const filteredAccounts = useMemo(() => {
     let filtered = accounts;
 
-    // Filter by type
-    if (filters.type) {
-      filtered = filtered.filter((acc) => acc.type === filters.type);
+    // Filter by types (multi-select)
+    if (filters.types && filters.types.length > 0) {
+      filtered = filtered.filter((acc) => filters.types?.includes(acc.type));
+    }
+
+    // Filter by specific account IDs (multi-select)
+    if (filters.accountIds && filters.accountIds.length > 0) {
+      filtered = filtered.filter((acc) => filters.accountIds?.includes(acc.id));
     }
 
     // Search by name
@@ -103,7 +161,6 @@ export function AccountsList() {
     setIsAddModalOpen(false);
     await fetchAccounts();
   };
-
   const handleEditAccount = async (data: AccountFormData) => {
     if (editingAccount) {
       await updateAccount({
@@ -128,8 +185,8 @@ export function AccountsList() {
     navigate({ to: `/accounts/${account.id}` });
     navigate({
       to: `/accounts/$accountId`,
-      params: { accountId: account.id }
-    })
+      params: { accountId: account.id },
+    });
   };
 
   if (isLoading) {
@@ -223,31 +280,24 @@ export function AccountsList() {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
 
-          <div className="filter-group">
-            {FILTER_OPTIONS.map((type) => (
-              <button
-                key={type}
-                type="button"
-                className={`filter-chip ${
-                  (type === 'all' && !filters.type) || filters.type === type
-                    ? 'active'
-                    : ''
-                }`}
-                onClick={() =>
-                  setFilters({
-                    type: type === 'all' ? undefined : type,
-                  })
-                }
-              >
-                {type !== 'all' && (
-                  <span className="accounts-page__filter-icon">
-                    {getAccountIcon(type)}
-                  </span>
-                )}
-                {type === 'all' ? 'All' : getAccountTypeName(type)}
-              </button>
-            ))}
-          </div>
+          <MultiSelectFilter
+            options={ACCOUNT_TYPE_OPTIONS}
+            selected={filters.types || []}
+            onChange={(types) => setFilters({ ...filters, types })}
+            label="Account Types"
+            placeholder="All account types"
+            searchPlaceholder="Search account types..."
+          />
+
+          <MultiSelectFilter
+            options={accountOptions}
+            selected={filters.accountIds || []}
+            onChange={(accountIds) => setFilters({ ...filters, accountIds })}
+            label="Specific Accounts"
+            placeholder="All accounts"
+            searchPlaceholder="Search accounts..."
+            maxDisplay={2}
+          />
         </div>
 
         {/* Accounts Grid */}
@@ -255,29 +305,47 @@ export function AccountsList() {
           <div className="accounts-page__empty">
             <EmptyState
               icon={<Landmark size={48} />}
-              size={searchQuery || filters.type ? 'small' : 'medium'}
+              size={
+                searchQuery ||
+                (filters.types && filters.types.length > 0) ||
+                (filters.accountIds && filters.accountIds.length > 0)
+                  ? 'small'
+                  : 'medium'
+              }
               title={
-                searchQuery || filters.type
+                searchQuery ||
+                (filters.types && filters.types.length > 0) ||
+                (filters.accountIds && filters.accountIds.length > 0)
                   ? t('emptyState.accounts.filtered.title')
                   : t('emptyState.accounts.title')
               }
               description={
-                searchQuery || filters.type
+                searchQuery ||
+                (filters.types && filters.types.length > 0) ||
+                (filters.accountIds && filters.accountIds.length > 0)
                   ? t('emptyState.accounts.filtered.description')
                   : t('emptyState.accounts.description')
               }
               action={
-                !searchQuery && !filters.type ? (
+                !searchQuery &&
+                (!filters.types || filters.types.length === 0) &&
+                (!filters.accountIds || filters.accountIds.length === 0) ? (
                   <Button onClick={() => setIsAddModalOpen(true)}>
                     Add Your First Account
                   </Button>
                 ) : undefined
               }
               secondaryAction={
-                !searchQuery && !filters.type ? (
-                  <a href="#" onClick={(e) => e.preventDefault()}>
+                !searchQuery &&
+                (!filters.types || filters.types.length === 0) &&
+                (!filters.accountIds || filters.accountIds.length === 0) ? (
+                  <button
+                    type="button"
+                    className="link-button"
+                    onClick={(e) => e.preventDefault()}
+                  >
                     Learn about account types →
-                  </a>
+                  </button>
                 ) : undefined
               }
             />

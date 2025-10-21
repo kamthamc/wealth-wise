@@ -14,8 +14,8 @@
   justify-content: space-between;
   gap: var(--space-2);
   padding: var(--space-3) var(--space-4);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
   border-radius: var(--radius-md);
   font-size: var(--font-size-base);
   color: var(--text-primary);
@@ -27,7 +27,7 @@
 
 .account-select__trigger:hover {
   border-color: var(--color-primary);
-  background: var(--color-surface-hover);
+  background: var(--bg-primary-hover);
 }
 
 .account-select__trigger:focus-visible {
@@ -50,7 +50,7 @@
 .account-select__trigger[data-disabled] {
   opacity: 0.5;
   cursor: not-allowed;
-  background: var(--color-surface-disabled);
+  background: var(--bg-primary-disabled);
 }
 
 /* Selected Value Display */
@@ -109,8 +109,8 @@
 
 /* Dropdown Content */
 .account-select__content {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-xl);
   overflow: hidden;
@@ -135,8 +135,8 @@
 .account-select__search {
   position: relative;
   padding: var(--space-3);
-  border-bottom: 1px solid var(--color-border);
-  background: var(--color-surface);
+  border-bottom: 1px solid var(--border-primary);
+  background: var(--bg-primary);
   position: sticky;
   top: 0;
   /* z-index: 1; */
@@ -154,8 +154,8 @@
 .account-select__search-input {
   width: 100%;
   padding: var(--space-2) var(--space-3) var(--space-2) calc(var(--space-7));
-  background: var(--color-surface-hover);
-  border: 1px solid var(--color-border);
+  background: var(--bg-primary-hover);
+  border: 1px solid var(--border-primary);
   border-radius: var(--radius-sm);
   font-size: var(--font-size-sm);
   color: var(--text-primary);
@@ -165,7 +165,7 @@
 .account-select__search-input:focus {
   outline: none;
   border-color: var(--color-primary);
-  background: var(--color-surface);
+  background: var(--bg-primary);
 }
 
 .account-select__search-input::placeholder {
@@ -240,12 +240,12 @@
 }
 
 .account-select__viewport::-webkit-scrollbar-track {
-  background: var(--color-surface-hover);
+  background: var(--bg-primary-hover);
   border-radius: var(--radius-sm);
 }
 
 .account-select__viewport::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+  background: var(--border-primary);
   border-radius: var(--radius-sm);
 }
 

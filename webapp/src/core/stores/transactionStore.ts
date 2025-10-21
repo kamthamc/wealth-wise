@@ -4,6 +4,7 @@
  */
 
 import { create } from 'zustand';
+import { transactionCache } from '@/core/cache';
 import { transactionRepository } from '@/core/db';
 import type {
   CreateTransactionInput,
@@ -77,11 +78,15 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
 
       // Apply filters if specified
       if (filters.accountId) {
-        transactions = await transactionRepository.findByAccount(filters.accountId);
+        transactions = await transactionRepository.findByAccount(
+          filters.accountId
+        );
       } else if (filters.type) {
         transactions = await transactionRepository.findByType(filters.type);
       } else if (filters.category) {
-        transactions = await transactionRepository.findByCategory(filters.category);
+        transactions = await transactionRepository.findByCategory(
+          filters.category
+        );
       } else if (filters.startDate && filters.endDate) {
         transactions = await transactionRepository.findByDateRange(
           filters.startDate.toISOString(),
@@ -118,6 +123,12 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const transaction = await transactionRepository.create(input);
+
+      // Invalidate cache for the affected account
+      if (transaction.account_id) {
+        transactionCache.invalidateAccount(transaction.account_id);
+      }
+
       await get().fetchTransactions();
       set({ isLoading: false });
       return transaction;
@@ -134,6 +145,10 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
     try {
       const transaction = await transactionRepository.update(input);
       if (transaction) {
+        // Invalidate cache for the affected account
+        if (transaction.account_id) {
+          transactionCache.invalidateAccount(transaction.account_id);
+        }
         await get().fetchTransactions();
       }
       set({ isLoading: false });
@@ -149,10 +164,17 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
   deleteTransaction: async (id) => {
     set({ isLoading: true, error: null });
     try {
+      // Get transaction to find account ID before deleting
+      const transaction = get().transactions.find((t) => t.id === id);
+
       const success = await transactionRepository.delete(id);
-      if (success) {
+
+      if (success && transaction?.account_id) {
+        // Invalidate cache for the affected account
+        transactionCache.invalidateAccount(transaction.account_id);
         await get().fetchTransactions();
       }
+
       set({ isLoading: false });
       return success;
     } catch (error) {

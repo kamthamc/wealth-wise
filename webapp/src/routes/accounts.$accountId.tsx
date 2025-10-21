@@ -16,12 +16,15 @@ export const Route = createFileRoute('/accounts/$accountId')({
   onCatch: (context) => {
     const { message, name, stack } = context;
     console.error('[Route] onCatch error:', { message, name, stack });
-  }
+  },
 });
 
 function AccountDetailsPage() {
   const { accountId } = Route.useParams();
-  console.log('[Route] AccountDetailsPage rendering with accountId:', accountId);
+  console.log(
+    '[Route] AccountDetailsPage rendering with accountId:',
+    accountId
+  );
 
   return (
     <DashboardLayout>

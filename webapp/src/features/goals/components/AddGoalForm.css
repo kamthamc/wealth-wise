@@ -58,7 +58,7 @@
 .goal-form__header {
   position: relative;
   padding: 24px;
-  border-bottom: 1px solid var(--color-border, #e5e7eb);
+  border-bottom: 1px solid var(--border-primary, #e5e7eb);
 }
 
 .goal-form__title {
@@ -146,7 +146,7 @@
   align-items: center;
   gap: 12px;
   padding: 12px;
-  border: 2px solid var(--color-border, #e5e7eb);
+  border: 2px solid var(--border-primary, #e5e7eb);
   border-radius: 8px;
   background-color: var(--color-bg-primary, #ffffff);
   cursor: pointer;
@@ -159,7 +159,7 @@
 }
 
 .goal-form__radio-item:hover {
-  border-color: var(--color-border-hover, #d1d5db);
+  border-color: var(--border-primary-hover, #d1d5db);
   background-color: var(--color-bg-secondary, #f9fafb);
 }
 
@@ -167,7 +167,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  border: 2px solid var(--color-border, #d1d5db);
+  border: 2px solid var(--border-primary, #d1d5db);
   background-color: var(--color-bg-primary, #ffffff);
   display: flex;
   align-items: center;
@@ -218,7 +218,7 @@
 .goal-form__icon-button {
   position: relative;
   aspect-ratio: 1;
-  border: 2px solid var(--color-border, #e5e7eb);
+  border: 2px solid var(--border-primary, #e5e7eb);
   border-radius: 8px;
   background-color: var(--color-bg-primary, #ffffff);
   cursor: pointer;
@@ -230,7 +230,7 @@
 }
 
 .goal-form__icon-button:hover {
-  border-color: var(--color-border-hover, #d1d5db);
+  border-color: var(--border-primary-hover, #d1d5db);
   background-color: var(--color-bg-secondary, #f9fafb);
   transform: scale(1.05);
 }
@@ -257,7 +257,7 @@
   justify-content: flex-end;
   gap: 12px;
   padding: 16px 24px;
-  border-top: 1px solid var(--color-border, #e5e7eb);
+  border-top: 1px solid var(--border-primary, #e5e7eb);
   background-color: var(--color-bg-secondary, #f9fafb);
 }
 
@@ -275,7 +275,7 @@
   }
 
   .goal-form__header {
-    border-bottom-color: var(--color-border, #374151);
+    border-bottom-color: var(--border-primary, #374151);
   }
 
   .goal-form__title {
@@ -304,7 +304,7 @@
   }
 
   .goal-form__radio-item {
-    border-color: var(--color-border, #374151);
+    border-color: var(--border-primary, #374151);
     background-color: var(--color-bg-secondary, #111827);
   }
 
@@ -314,12 +314,12 @@
   }
 
   .goal-form__radio-item:hover {
-    border-color: var(--color-border-hover, #4b5563);
+    border-color: var(--border-primary-hover, #4b5563);
     background-color: var(--color-bg-tertiary, #1f2937);
   }
 
   .goal-form__radio-button {
-    border-color: var(--color-border, #4b5563);
+    border-color: var(--border-primary, #4b5563);
     background-color: var(--color-bg-secondary, #111827);
   }
 
@@ -328,12 +328,12 @@
   }
 
   .goal-form__icon-button {
-    border-color: var(--color-border, #374151);
+    border-color: var(--border-primary, #374151);
     background-color: var(--color-bg-secondary, #111827);
   }
 
   .goal-form__icon-button:hover {
-    border-color: var(--color-border-hover, #4b5563);
+    border-color: var(--border-primary-hover, #4b5563);
     background-color: var(--color-bg-tertiary, #1f2937);
   }
 
@@ -343,7 +343,7 @@
   }
 
   .goal-form__footer {
-    border-top-color: var(--color-border, #374151);
+    border-top-color: var(--border-primary, #374151);
     background-color: var(--color-bg-secondary, #111827);
   }
 }

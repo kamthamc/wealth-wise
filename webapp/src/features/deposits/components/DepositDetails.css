@@ -14,13 +14,13 @@
   background: var(--color-bg-primary);
   border-radius: var(--radius-md);
   padding: var(--space-lg);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-primary);
 }
 
 .deposit-details__title {
   font-size: var(--font-size-xl);
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   margin-bottom: var(--space-md);
 }
 
@@ -38,12 +38,12 @@
   padding: var(--space-md);
   background: var(--color-bg-secondary);
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-primary);
   transition: all 0.2s ease;
 }
 
 .stat-card:hover {
-  border-color: var(--color-border-hover);
+  border-color: var(--border-primary-hover);
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
@@ -72,13 +72,13 @@
 
 .stat-card__label {
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
 }
 
 .stat-card__value {
   font-size: var(--font-size-xl);
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
 }
 
 /* Progress Section */
@@ -86,7 +86,7 @@
   background: var(--color-bg-primary);
   border-radius: var(--radius-md);
   padding: var(--space-lg);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-primary);
 }
 
 .progress-header {
@@ -99,7 +99,7 @@
 .progress-header h3 {
   font-size: var(--font-size-lg);
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
 }
 
 .progress-percentage {
@@ -137,7 +137,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-xs);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   font-size: var(--font-size-sm);
 }
 
@@ -152,16 +152,16 @@
   background: var(--color-bg-primary);
   border-radius: var(--radius-md);
   padding: var(--space-lg);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-primary);
 }
 
 .info-card h4 {
   font-size: var(--font-size-md);
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   margin-bottom: var(--space-md);
   padding-bottom: var(--space-sm);
-  border-bottom: 2px solid var(--color-border);
+  border-bottom: 2px solid var(--border-primary);
 }
 
 .info-card__content {
@@ -179,13 +179,13 @@
 
 .info-label {
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
 }
 
 .info-value {
   font-size: var(--font-size-sm);
   font-weight: 500;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   text-align: right;
 }
 
@@ -204,13 +204,13 @@
   background: var(--color-bg-primary);
   border-radius: var(--radius-md);
   padding: var(--space-lg);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-primary);
 }
 
 .deposit-details__options h4 {
   font-size: var(--font-size-md);
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   margin-bottom: var(--space-md);
 }
 
@@ -225,8 +225,8 @@
   background: var(--color-bg-tertiary);
   border-radius: var(--radius-md);
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  border: 1px solid var(--color-border);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-primary);
 }
 
 .option-badge--active {
@@ -240,7 +240,7 @@
   background: var(--color-bg-primary);
   border-radius: var(--radius-md);
   padding: var(--space-lg);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-primary);
 }
 
 .deposit-details__payments h3 {
@@ -249,7 +249,7 @@
   gap: var(--space-sm);
   font-size: var(--font-size-lg);
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   margin-bottom: var(--space-md);
 }
 
@@ -271,14 +271,14 @@
 .payments-table__header {
   font-weight: 600;
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   background: var(--color-bg-tertiary);
   border-radius: var(--radius-sm);
 }
 
 .payments-table__row {
   font-size: var(--font-size-sm);
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   background: var(--color-bg-secondary);
   border-radius: var(--radius-sm);
   transition: background 0.2s ease;
@@ -344,12 +344,12 @@
   gap: var(--space-md);
   padding: var(--space-xl);
   text-align: center;
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
 }
 
 .deposit-details__empty h3 {
   font-size: var(--font-size-lg);
-  color: var(--color-text-primary);
+  color: var(--text-primary);
 }
 
 /* Responsive Design */
@@ -378,6 +378,6 @@
   .payments-table__row span::before {
     content: attr(data-label);
     font-weight: 600;
-    color: var(--color-text-secondary);
+    color: var(--text-secondary);
   }
 }

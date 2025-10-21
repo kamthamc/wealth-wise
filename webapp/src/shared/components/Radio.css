@@ -35,11 +35,11 @@
   height: 20px;
   margin-top: 2px;
   cursor: pointer;
-  border: 2px solid var(--color-border);
+  border: 2px solid var(--border-primary);
   border-radius: 50%;
   transition: all var(--transition-fast);
   appearance: none;
-  background-color: var(--color-background);
+  background-color: var(--bg);
   position: relative;
   flex-shrink: 0;
 }

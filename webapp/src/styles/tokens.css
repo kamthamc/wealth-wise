@@ -90,6 +90,39 @@
   --border-primary: #e2e8f0;
   --border-secondary: #f1f5f9;
 
+  /* Sucess/Failure/Warning colors */
+  --color-success: var(--color-success-600);
+  --color-success-subtle: var(--color-success-500);
+  --color-success-bg: var(--color-success-50);
+  --color-danger: var(--color-danger-600);
+  --color-danger-subtle: var(--color-danger-500);
+  --color-danger-bg: var(--color-danger-50);
+  --color-warning: var(--color-warning-600);
+  --color-warning-subtle: var(--color-warning-500);
+  --color-warning-bg: var(--color-warning-50);
+
+  /* Elevated semantic colors using darkening utility functions */
+  --bg-primary-elevated: color-mix(in srgb, var(--bg-primary) 90%, black);
+  --bg-secondary-elevated: color-mix(in srgb, var(--bg-secondary) 90%, black);
+  --bg-tertiary-elevated: color-mix(in srgb, var(--bg-tertiary) 90%, black);
+  --text-primary-elevated: color-mix(in srgb, var(--text-primary) 80%, black);
+  --text-secondary-elevated: color-mix(
+    in srgb,
+    var(--text-secondary) 70%,
+    black
+  );
+  --text-tertiary-elevated: color-mix(in srgb, var(--text-tertiary) 60%, black);
+  --border-primary-elevated: color-mix(
+    in srgb,
+    var(--border-primary) 90%,
+    black
+  );
+  --border-secondary-elevated: color-mix(
+    in srgb,
+    var(--border-secondary) 90%,
+    black
+  );
+
   /* Financial-Specific Colors */
   --color-income: var(--color-success-500);
   --color-expense: var(--color-danger-500);
@@ -156,8 +189,6 @@
 
   /* Number formatting */
   font-variant-numeric: tabular-nums;
-  --tracking-normal: 0;
-  --tracking-wide: 0.025em;
 
   /* ============================================
      SPACING

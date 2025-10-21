@@ -236,7 +236,7 @@
 }
 
 .goal-card__progress-fill--not-started {
-  background: var(--color-border);
+  background: var(--border-primary);
 }
 
 .goal-card__progress-fill--in-progress {

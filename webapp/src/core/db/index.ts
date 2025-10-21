@@ -11,6 +11,7 @@ export {
   budgetRepository,
   transactionRepository,
 } from './repositories';
+export { depositDetailsRepository } from './repositories/depositDetails';
 // Schema and migrations
 export { DATABASE_VERSION, SCHEMA_SQL, SEED_CATEGORIES_SQL } from './schema';
 // Types
@@ -29,14 +30,18 @@ export type {
   CreateGoalContributionInput,
   CreateGoalInput,
   CreateTransactionInput,
+  DepositDetails,
+  DepositStatus,
   Goal,
   GoalContribution,
   GoalFilters,
   GoalPriority,
   GoalStatus,
+  InterestPayoutFrequency,
   MonthlyTrend,
   RecurringFrequency,
   Setting,
+  TaxDeductionSection,
   Transaction,
   TransactionFilters,
   TransactionSummary,

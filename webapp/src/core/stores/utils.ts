@@ -5,6 +5,7 @@
 
 import { useEffect } from 'react';
 import { db } from '@/core/db';
+import { depositInterestService } from '../services/depositInterestService';
 import { useAccountStore } from './accountStore';
 import { useAppStore } from './appStore';
 
@@ -75,6 +76,24 @@ export function useInitializeStores() {
           } catch (error) {
             console.warn('[App] Failed to fetch initial data:', error);
             // Continue anyway - data can be loaded later
+          }
+
+          // Process pending deposit interest payments (non-blocking)
+          console.log('[App] Processing pending deposit interest...');
+          try {
+            const result =
+              await depositInterestService.processAllPendingInterest();
+            if (result.processed > 0) {
+              console.log(
+                `[App] Processed ${result.processed} interest payments (₹${result.totalInterest.toFixed(2)})`
+              );
+            }
+            if (result.errors.length > 0) {
+              console.warn('[App] Interest processing errors:', result.errors);
+            }
+          } catch (error) {
+            console.warn('[App] Failed to process deposit interest:', error);
+            // Continue anyway - can be processed later
           }
         }
 

@@ -17,7 +17,7 @@
   width: 90%;
   max-width: 700px;
   max-height: 90vh;
-  background: var(--color-surface);
+  background: var(--bg-primary);
   border-radius: var(--radius-xl);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   /* z-index: 51; */
@@ -30,7 +30,7 @@
 /* Header */
 .transfer-wizard__header {
   padding: var(--space-6);
-  border-bottom: 2px solid var(--color-border);
+  border-bottom: 2px solid var(--border-primary);
   position: relative;
 }
 
@@ -55,7 +55,7 @@
   height: 32px;
   border-radius: var(--radius-md);
   border: none;
-  background: var(--color-surface-hover);
+  background: var(--bg-primary-hover);
   color: var(--text-secondary);
   font-size: 20px;
   cursor: pointer;
@@ -75,8 +75,8 @@
   display: flex;
   align-items: center;
   padding: var(--space-6);
-  background: var(--color-background);
-  border-bottom: 2px solid var(--color-border);
+  background: var(--bg);
+  border-bottom: 2px solid var(--border-primary);
 }
 
 .transfer-wizard__step {
@@ -105,8 +105,8 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--color-surface);
-  border: 2px solid var(--color-border);
+  background: var(--bg-primary);
+  border: 2px solid var(--border-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -142,7 +142,7 @@
 .transfer-wizard__step-divider {
   flex: 1;
   height: 2px;
-  background: var(--color-border);
+  background: var(--border-primary);
   margin: 0 var(--space-2);
 }
 
@@ -215,7 +215,7 @@
 /* Summary and Confirm Styles */
 .transfer-wizard__summary {
   padding: var(--space-4);
-  background: var(--color-background);
+  background: var(--bg);
   border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
@@ -231,7 +231,7 @@
 
 .transfer-wizard__confirm-card {
   padding: var(--space-6);
-  background: var(--color-background);
+  background: var(--bg);
   border: 2px solid var(--color-success);
   border-radius: var(--radius-xl);
   display: flex;
@@ -262,7 +262,7 @@
   display: flex;
   justify-content: space-between;
   padding-bottom: var(--space-2);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--border-primary);
 }
 
 .transfer-wizard__confirm-label {
@@ -314,8 +314,8 @@
 /* Footer */
 .transfer-wizard__footer {
   padding: var(--space-6);
-  border-top: 2px solid var(--color-border);
-  background: var(--color-background);
+  border-top: 2px solid var(--border-primary);
+  background: var(--bg);
 }
 
 .transfer-wizard__footer-actions {

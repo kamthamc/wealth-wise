@@ -51,7 +51,7 @@
 }
 
 .error-boundary__stack {
-  background-color: var(--color-surface);
+  background-color: var(--bg-primary);
   padding: var(--space-md);
   border-radius: var(--radius-md);
   font-size: var(--font-size-sm);

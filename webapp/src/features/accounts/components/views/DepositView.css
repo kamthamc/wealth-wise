@@ -1,0 +1,367 @@
+/* Deposit View Styles */
+
+.deposit-view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-md);
+}
+
+.deposit-view__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.deposit-view__header h2 {
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.deposit-view__bank {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: var(--color-bg-secondary);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--border-radius-full);
+}
+
+/* Empty State */
+.deposit-view__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-3xl) var(--spacing-xl);
+  text-align: center;
+  gap: var(--spacing-md);
+  color: var(--color-text-secondary);
+}
+
+.deposit-view__empty svg {
+  color: var(--color-text-tertiary);
+}
+
+.deposit-view__empty h3 {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.deposit-view__empty p {
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+/* Maturity Card */
+.deposit-view__maturity-card {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  padding: var(--spacing-xl);
+}
+
+.deposit-view__maturity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-xl);
+}
+
+.deposit-view__maturity-header h3 {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  opacity: 0.9;
+  margin: 0 0 var(--spacing-sm) 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.deposit-view__maturity-amount {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.deposit-view__status {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.deposit-view__status--success {
+  background: rgba(16, 185, 129, 0.3);
+}
+
+.deposit-view__status--warning {
+  background: rgba(245, 158, 11, 0.3);
+}
+
+.deposit-view__maturity-icon {
+  opacity: 0.3;
+}
+
+/* Countdown */
+.deposit-view__countdown {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.deposit-view__countdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-sm);
+}
+
+.deposit-view__countdown-days {
+  font-weight: 600;
+  font-size: var(--font-size-base);
+}
+
+.deposit-view__countdown-details {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-xs);
+  opacity: 0.9;
+}
+
+/* Stats Grid */
+.deposit-view__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+}
+
+/* Details */
+.deposit-view__details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.deposit-view__detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md);
+  background: var(--color-bg-secondary);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+}
+
+.deposit-view__detail-row > span:first-child {
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.deposit-view__detail-value {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.deposit-view__detail-value--success {
+  color: var(--color-success);
+}
+
+/* Tax Information */
+.deposit-view__tax {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.deposit-view__tax-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--color-bg-secondary);
+  border-radius: var(--border-radius-md);
+}
+
+.deposit-view__tax-icon {
+  font-size: var(--font-size-2xl);
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-tertiary);
+  border-radius: var(--border-radius-md);
+  flex-shrink: 0;
+}
+
+.deposit-view__tax-item > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  flex: 1;
+}
+
+.deposit-view__tax-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.deposit-view__tax-value {
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+/* Institution Details */
+.deposit-view__institution {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.deposit-view__institution-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md);
+  background: var(--color-bg-secondary);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+}
+
+.deposit-view__institution-row > span:first-child {
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.deposit-view__institution-value {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+/* Nominee */
+.deposit-view__nominee {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background: var(--color-bg-secondary);
+  border-radius: var(--border-radius-md);
+}
+
+.deposit-view__nominee-icon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.deposit-view__nominee-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  flex: 1;
+}
+
+.deposit-view__nominee-details > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.deposit-view__nominee-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.deposit-view__nominee-value {
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+/* Features */
+.deposit-view__features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.deposit-view__feature {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--color-bg-secondary);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.deposit-view__feature--active {
+  color: var(--color-text-primary);
+  background: var(--color-success-light);
+}
+
+.deposit-view__feature-icon {
+  font-size: var(--font-size-lg);
+  flex-shrink: 0;
+}
+
+/* Notes */
+.deposit-view__notes {
+  margin: 0;
+  padding: var(--spacing-md);
+  background: var(--color-bg-secondary);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .deposit-view {
+    padding: var(--spacing-sm);
+  }
+
+  .deposit-view__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .deposit-view__maturity-card {
+    padding: var(--spacing-lg);
+  }
+
+  .deposit-view__maturity-amount {
+    font-size: var(--font-size-2xl);
+  }
+
+  .deposit-view__stats {
+    grid-template-columns: 1fr;
+  }
+
+  .deposit-view__detail-row,
+  .deposit-view__institution-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+
+  .deposit-view__features {
+    grid-template-columns: 1fr;
+  }
+
+  .deposit-view__nominee {
+    flex-direction: column;
+  }
+}

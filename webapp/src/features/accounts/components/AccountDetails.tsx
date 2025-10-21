@@ -5,9 +5,18 @@
 
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
-import type { Account } from '@/core/db/types';
+import type {
+  Account,
+  CreditCardDetails,
+  BrokerageDetails,
+  DepositDetails,
+} from '@/core/db/types';
+import { 
+  brokerageDetailsRepository,
+  creditCardDetailsRepository,
+  depositDetailsRepository
+} from '@/core/db/repositories';
 import { useAccountStore, useTransactionStore } from '@/core/stores';
-import { DepositDetails } from '@/features/deposits';
 import { AddTransactionModal } from '@/features/transactions';
 import {
   Button,
@@ -17,11 +26,11 @@ import {
   StatCard,
   useToast,
 } from '@/shared/components';
-import { 
-  formatCurrency, 
-  formatDate, 
-  formatRelativeTime,
+import {
   calculateAccountBalance,
+  formatCurrency,
+  formatDate,
+  formatRelativeTime,
 } from '@/shared/utils';
 import type { AccountFormData } from '../types';
 import {
@@ -34,6 +43,7 @@ import { AccountActions } from './AccountActions';
 import { AccountCharts } from './AccountCharts';
 import { AddAccountModal } from './AddAccountModal';
 import { ImportTransactionsModal } from './ImportTransactionsModal';
+import { AccountViewFactory, hasSpecializedView } from './views';
 import './AccountDetails.css';
 
 export interface AccountDetailsProps {
@@ -42,7 +52,7 @@ export interface AccountDetailsProps {
 
 export function AccountDetails({ accountId }: AccountDetailsProps) {
   console.log('[AccountDetails] Component rendering, accountId:', accountId);
-  
+
   const navigate = useNavigate();
   const { accounts, isLoading, fetchAccounts, updateAccount, deleteAccount } =
     useAccountStore();
@@ -52,9 +62,15 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isCloseDialogOpen, setIsCloseDialogOpen] = useState(false);
-  const [isAddTransactionModalOpen, setIsAddTransactionModalOpen] = useState(false);
+  const [isAddTransactionModalOpen, setIsAddTransactionModalOpen] =
+    useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [account, setAccount] = useState<Account | null>(null);
+
+  // State for type-specific details
+  const [creditCardDetails, setCreditCardDetails] = useState<CreditCardDetails | null>(null);
+  const [depositDetails, setDepositDetails] = useState<DepositDetails | null>(null);
+  const [brokerageDetails, setBrokerageDetails] = useState<BrokerageDetails | null>(null);
 
   // Fetch transactions on mount
   useEffect(() => {
@@ -67,7 +83,7 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
     console.log('[AccountDetails] Looking for account:', accountId);
     console.log('[AccountDetails] Available accounts:', accounts.length);
     console.log('[AccountDetails] Is loading:', isLoading);
-    
+
     const foundAccount = accounts.find((acc) => acc.id === accountId);
     if (foundAccount) {
       console.log('[AccountDetails] Found account:', foundAccount.name);
@@ -80,6 +96,37 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
       console.log('[AccountDetails] Still loading...');
     }
   }, [accountId, accounts, isLoading, fetchAccounts]);
+
+  // Fetch type-specific details when account is loaded
+  useEffect(() => {
+    if (!account) return;
+
+    const fetchTypeSpecificDetails = async () => {
+      try {
+        // Fetch credit card details
+        if (account.type === 'credit_card') {
+          const details = await creditCardDetailsRepository.getByAccountId(account.id);
+          setCreditCardDetails(details);
+        }
+        
+        // Fetch deposit details
+        else if (isDepositAccount(account.type)) {
+          const details = await depositDetailsRepository.findByAccountId(account.id);
+          setDepositDetails(details);
+        }
+        
+        // Fetch brokerage details
+        else if (account.type === 'brokerage') {
+          const details = await brokerageDetailsRepository.getByAccountId(account.id);
+          setBrokerageDetails(details);
+        }
+      } catch (error) {
+        console.error('[AccountDetails] Error fetching type-specific details:', error);
+      }
+    };
+
+    fetchTypeSpecificDetails();
+  }, [account]);
 
   // Filter transactions for this account
   const accountTransactions = useMemo(() => {
@@ -182,10 +229,10 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
   const handleDownloadStatement = () => {
     // Generate PDF statement
     if (!account) return;
-    
+
     const fileName = `${account.name.replace(/\s+/g, '_')}_statement_${new Date().toISOString().split('T')[0]}.txt`;
     const statementText = generateStatement(account, accountTransactions);
-    
+
     const blob = new Blob([statementText], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -195,7 +242,7 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    
+
     toast.success('Statement downloaded', `Downloaded ${fileName}`);
   };
 
@@ -205,10 +252,10 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
 
   const handleExportTransactions = () => {
     if (!account) return;
-    
+
     const fileName = `${account.name.replace(/\s+/g, '_')}_transactions_${new Date().toISOString().split('T')[0]}.csv`;
     const csv = generateCSV(accountTransactions);
-    
+
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -218,12 +265,18 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    
-    toast.success('Transactions exported', `Exported ${accountTransactions.length} transactions`);
+
+    toast.success(
+      'Transactions exported',
+      `Exported ${accountTransactions.length} transactions`
+    );
   };
 
   // Helper function to generate statement
-  const generateStatement = (acc: Account, txns: typeof accountTransactions) => {
+  const generateStatement = (
+    acc: Account,
+    txns: typeof accountTransactions
+  ) => {
     let statement = `ACCOUNT STATEMENT\n`;
     statement += `================\n\n`;
     statement += `Account Name: ${acc.name}\n`;
@@ -233,14 +286,14 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
     statement += `Statement Date: ${new Date().toLocaleDateString()}\n\n`;
     statement += `TRANSACTIONS\n`;
     statement += `============\n\n`;
-    
+
     if (txns.length === 0) {
       statement += `No transactions found.\n`;
     } else {
       statement += `Date       | Description                | Type     | Amount\n`;
       statement += `-----------+---------------------------+----------+-----------\n`;
-      
-      txns.forEach(txn => {
+
+      txns.forEach((txn) => {
         const date = formatDate(txn.date).padEnd(10);
         const desc = (txn.description || '').substring(0, 25).padEnd(25);
         const type = txn.type.padEnd(8);
@@ -248,24 +301,24 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
         statement += `${date} | ${desc} | ${type} | ${amount}\n`;
       });
     }
-    
+
     return statement;
   };
 
   // Helper function to generate CSV
   const generateCSV = (txns: typeof accountTransactions) => {
     let csv = 'date,description,amount,type,category\n';
-    
-    txns.forEach(txn => {
+
+    txns.forEach((txn) => {
       const date = txn.date.toISOString().split('T')[0];
       const description = `"${(txn.description || '').replace(/"/g, '""')}"`;
       const amount = txn.amount;
       const type = txn.type;
       const category = txn.category || '';
-      
+
       csv += `${date},${description},${amount},${type},${category}\n`;
     });
-    
+
     return csv;
   };
 
@@ -299,7 +352,6 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
 
   const accountIcon = getAccountIcon(account.type);
   const accountTypeName = getAccountTypeName(account.type);
-  const isDeposit = isDepositAccount(account.type);
   const isClosed = !account.is_active;
 
   return (
@@ -320,7 +372,12 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
               <h1 className="account-details__header-title">{account.name}</h1>
               <p className="account-details__header-subtitle">
                 {accountTypeName}
-                {isClosed && <span className="account-details__closed-badge"> • Closed</span>}
+                {isClosed && (
+                  <span className="account-details__closed-badge">
+                    {' '}
+                    • Closed
+                  </span>
+                )}
               </p>
             </div>
           </div>
@@ -346,11 +403,15 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
                 {formatCurrency(currentBalance, account.currency)}
               </h2>
               <div className="account-details__balance-meta">
-                <span>Initial: {formatCurrency(account.balance, account.currency)}</span>
+                <span>
+                  Initial: {formatCurrency(account.balance, account.currency)}
+                </span>
                 <span>•</span>
                 <span>ID: {formatAccountIdentifier(account.id)}</span>
                 <span>•</span>
-                <span>Last updated {formatRelativeTime(account.updated_at)}</span>
+                <span>
+                  Last updated {formatRelativeTime(account.updated_at)}
+                </span>
               </div>
             </div>
           </div>
@@ -369,17 +430,18 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
             onReopenAccount={handleReopenAccount}
           />
 
-          {/* Deposit-specific details for FD, RD, PPF, NSC, etc. */}
-          {isDeposit && (
-            <DepositDetails
-              accountId={account.id}
-              accountName={account.name}
-              accountType={accountTypeName}
+          {/* Type-specific account views (Credit Card, Deposit, Brokerage) */}
+          {hasSpecializedView(account.type) && (
+            <AccountViewFactory
+              account={account}
+              creditCardDetails={creditCardDetails || undefined}
+              depositDetails={depositDetails || undefined}
+              brokerageDetails={brokerageDetails || undefined}
             />
           )}
 
-          {/* Charts and Visualizations - Always show for non-deposit accounts */}
-          {!isDeposit && (
+          {/* Charts and Visualizations - Show for accounts without specialized views */}
+          {!hasSpecializedView(account.type) && (
             <AccountCharts
               transactions={accountTransactions}
               currentBalance={currentBalance}
@@ -388,7 +450,7 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
           )}
 
           {/* Account Statistics */}
-          {!isDeposit && (
+          {!hasSpecializedView(account.type) && (
             <div className="account-details__stats">
               <h2 className="account-details__section-title">
                 Account Statistics
@@ -416,7 +478,7 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
           )}
 
           {/* Recent Transactions Section */}
-          {!isDeposit && (
+          {!hasSpecializedView(account.type) && (
             <div className="account-details__transactions">
               <div className="account-details__section-header">
                 <h2 className="account-details__section-title">

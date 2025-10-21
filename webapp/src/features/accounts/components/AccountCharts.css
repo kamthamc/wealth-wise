@@ -25,7 +25,7 @@
 .account-charts__subtitle {
   margin: 0;
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
 }
 
 .account-charts__empty {
@@ -35,7 +35,7 @@
   height: 300px;
   padding: var(--space-4);
   text-align: center;
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   font-size: var(--font-size-sm);
   font-style: italic;
 }

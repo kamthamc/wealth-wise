@@ -23,7 +23,7 @@
 
 .progress-bar__track {
   width: 100%;
-  background-color: var(--color-surface);
+  background-color: var(--bg-primary);
   border-radius: var(--radius-full);
   overflow: hidden;
 }
@@ -41,7 +41,7 @@
 .progress-bar__percentage {
   font-size: var(--font-size-xs);
   font-weight: 600;
-  color: var(--color-background);
+  color: var(--bg);
 }
 
 /* Sizes */

@@ -33,7 +33,7 @@
   font-size: var(--font-size-base);
   color: var(--text);
   background-color: var(--bg-primary);
-  border: 2px solid var(--color-border);
+  border: 2px solid var(--border-primary);
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all var(--transition-fast);

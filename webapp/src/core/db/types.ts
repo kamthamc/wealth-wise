@@ -18,7 +18,17 @@ export type AccountType =
   | 'scss'
   | 'post_office';
 
-export type DepositStatus = 'active' | 'matured' | 'pre_closed' | 'renewed';
+export type DepositStatus = 'active' | 'matured' | 'prematurely_closed' | 'renewed';
+
+export type CreditCardStatus = 'active' | 'blocked' | 'closed';
+
+export type CardNetwork = 'visa' | 'mastercard' | 'amex' | 'rupay' | 'diners';
+
+export type CardType = 'credit' | 'charge';
+
+export type BrokerageAccountType = 'trading' | 'demat' | 'combined';
+
+export type BrokerageStatus = 'active' | 'dormant' | 'closed';
 
 export type InterestPayoutFrequency =
   | 'monthly'
@@ -156,6 +166,106 @@ export interface DepositCalculationResult {
 }
 
 /**
+ * Credit Card Details
+ * Tracks credit card specific information
+ */
+export interface CreditCardDetails {
+  id: string;
+  account_id: string;
+
+  // Credit limits
+  credit_limit: number;
+  available_credit: number;
+
+  // Billing cycle
+  billing_cycle_day: number;
+  statement_date?: Date;
+  payment_due_date?: Date;
+
+  // Outstanding amounts
+  current_balance: number;
+  minimum_due: number;
+  total_due: number;
+
+  // Interest and fees
+  interest_rate?: number;
+  annual_fee: number;
+  late_payment_fee: number;
+
+  // Rewards and benefits
+  rewards_points: number;
+  rewards_value: number;
+  cashback_earned: number;
+
+  // Card details
+  card_network?: CardNetwork;
+  card_type?: CardType;
+  last_four_digits?: string;
+  expiry_date?: Date;
+
+  // Bank details
+  issuer_bank?: string;
+  customer_id?: string;
+
+  // Status
+  status: CreditCardStatus;
+  autopay_enabled: boolean;
+
+  // Additional metadata
+  notes?: string;
+
+  created_at: Date;
+  updated_at: Date;
+}
+
+/**
+ * Brokerage Details
+ * Tracks investment account information
+ */
+export interface BrokerageDetails {
+  id: string;
+  account_id: string;
+
+  // Account information
+  broker_name: string;
+  account_number?: string;
+  demat_account_number?: string;
+  trading_account_number?: string;
+
+  // Account values
+  invested_value: number;
+  current_value: number;
+  total_returns: number;
+  total_returns_percentage: number;
+
+  // P&L tracking
+  realized_gains: number;
+  unrealized_gains: number;
+
+  // Holdings summary
+  equity_holdings: number;
+  mutual_fund_holdings: number;
+  bond_holdings: number;
+  etf_holdings: number;
+
+  // Account type
+  account_type?: BrokerageAccountType;
+
+  // Status
+  status: BrokerageStatus;
+
+  // Trading preferences
+  auto_square_off: boolean;
+  margin_enabled: boolean;
+
+  // Additional metadata
+  notes?: string;
+
+  created_at: Date;
+  updated_at: Date;
+}
+
+/**
  * Transaction entity
  */
 export interface Transaction {
@@ -171,6 +281,7 @@ export interface Transaction {
   receipt_url?: string;
   is_recurring: boolean;
   recurring_frequency?: RecurringFrequency;
+  is_initial_balance: boolean; // Marks transaction as opening balance
   linked_transaction_id?: string; // For linking transfer transactions
   created_at: Date;
   updated_at: Date;

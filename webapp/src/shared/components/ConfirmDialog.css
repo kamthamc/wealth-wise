@@ -14,8 +14,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-2xl);
   padding: var(--space-6);
@@ -91,7 +91,7 @@
 }
 
 .confirm-dialog__close:hover {
-  background: var(--color-surface-hover);
+  background: var(--bg-primary-hover);
   color: var(--text-primary);
 }
 

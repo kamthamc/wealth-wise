@@ -207,12 +207,193 @@ class DatabaseClient {
    */
   private async runMigrations(from: number, to: number): Promise<void> {
     console.log(`[DB] Running migrations from version ${from} to ${to}`);
-    // TODO: Implement migration logic when schema changes
-    // For now, just update the version
-    await this.db?.query(
-      "UPDATE settings SET value = $1 WHERE key = 'db_version'",
-      [to.toString()]
-    );
+
+    try {
+      // Migration from version 1 to 2: Add deposit account types
+      if (from < 2 && to >= 2) {
+        console.log('[DB] Migration 1→2: Adding deposit account types');
+
+        // Drop old constraint
+        await this.db?.query(
+          'ALTER TABLE accounts DROP CONSTRAINT IF EXISTS accounts_type_check;'
+        );
+
+        // Add new constraint with all types
+        await this.db?.query(`
+          ALTER TABLE accounts ADD CONSTRAINT accounts_type_check 
+          CHECK (type IN (
+            'bank', 
+            'credit_card', 
+            'upi', 
+            'brokerage', 
+            'cash', 
+            'wallet',
+            'fixed_deposit',
+            'recurring_deposit',
+            'ppf',
+            'nsc',
+            'kvp',
+            'scss',
+            'post_office'
+          ))
+        `);
+
+        console.log('[DB] ✅ Migration 1→2 completed');
+      }
+
+      // Migration from version 2 to 3: Convert initial balances to transactions
+      if (from < 3 && to >= 3) {
+        console.log(
+          '[DB] Migration 2→3: Converting initial balances to transactions'
+        );
+
+        // Add is_initial_balance column to transactions
+        await this.db?.query(`
+          ALTER TABLE transactions 
+          ADD COLUMN IF NOT EXISTS is_initial_balance BOOLEAN NOT NULL DEFAULT false
+        `);
+
+        // Get all accounts with non-zero balances
+        const accountsResult = await this.db?.query(`
+          SELECT id, balance, created_at, name FROM accounts WHERE balance != 0
+        `);
+
+        if (accountsResult && accountsResult.rows.length > 0) {
+          console.log(
+            `[DB] Found ${accountsResult.rows.length} accounts with initial balances`
+          );
+
+          // Create initial balance transactions for each account
+          for (const row of accountsResult.rows) {
+            const account = row as {
+              id: string;
+              balance: number;
+              created_at: string;
+              name: string;
+            };
+
+            await this.db?.query(
+              `
+              INSERT INTO transactions (
+                account_id, 
+                amount, 
+                type, 
+                category, 
+                date, 
+                description, 
+                is_initial_balance,
+                is_recurring
+              )
+              VALUES ($1, $2, $3, $4, $5, $6, true, false)
+            `,
+              [
+                account.id,
+                Math.abs(account.balance),
+                account.balance >= 0 ? 'income' : 'expense',
+                'Initial Balance',
+                account.created_at,
+                `Opening balance for ${account.name}`,
+              ]
+            );
+          }
+
+          console.log('[DB] ✅ Created initial balance transactions');
+
+          // Optional: Set account balances to 0 since they're now in transactions
+          // Uncomment if you want to fully migrate away from account.balance
+          // await this.db?.query('UPDATE accounts SET balance = 0');
+        }
+
+        console.log('[DB] ✅ Migration 2→3 completed');
+      }
+
+      // Migration from version 3 to 4: Add deposit_details table
+      if (from < 4 && to >= 4) {
+        console.log('[DB] Migration 3→4: Creating deposit_details table');
+
+        await this.db?.query(`
+          CREATE TABLE IF NOT EXISTS deposit_details (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE UNIQUE,
+            
+            -- Principal and maturity
+            principal_amount DECIMAL(15, 2) NOT NULL,
+            maturity_amount DECIMAL(15, 2) NOT NULL,
+            current_value DECIMAL(15, 2) NOT NULL DEFAULT 0,
+            
+            -- Dates
+            start_date DATE NOT NULL,
+            maturity_date DATE NOT NULL,
+            last_interest_date DATE,
+            
+            -- Interest details
+            interest_rate DECIMAL(5, 2) NOT NULL,
+            interest_payout_frequency TEXT CHECK (interest_payout_frequency IN ('monthly', 'quarterly', 'annually', 'maturity')),
+            total_interest_earned DECIMAL(15, 2) NOT NULL DEFAULT 0,
+            
+            -- Tenure
+            tenure_months INTEGER NOT NULL,
+            completed_months INTEGER NOT NULL DEFAULT 0,
+            remaining_months INTEGER NOT NULL,
+            
+            -- Tax information
+            tds_deducted DECIMAL(15, 2) NOT NULL DEFAULT 0,
+            tax_deduction_section TEXT,
+            is_tax_saving BOOLEAN NOT NULL DEFAULT false,
+            
+            -- Status and options
+            status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'matured', 'prematurely_closed', 'renewed')),
+            auto_renewal BOOLEAN NOT NULL DEFAULT false,
+            premature_withdrawal_allowed BOOLEAN NOT NULL DEFAULT true,
+            loan_against_deposit_allowed BOOLEAN NOT NULL DEFAULT false,
+            
+            -- Institution details
+            bank_name TEXT,
+            branch TEXT,
+            account_number TEXT,
+            certificate_number TEXT,
+            
+            -- Nominee
+            nominee_name TEXT,
+            nominee_relationship TEXT,
+            
+            -- Additional metadata
+            notes TEXT,
+            
+            created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+            updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+          )
+        `);
+
+        // Add indexes - separate queries
+        await this.db?.query(
+          'CREATE INDEX IF NOT EXISTS idx_deposit_details_account_id ON deposit_details(account_id)'
+        );
+
+        await this.db?.query(
+          'CREATE INDEX IF NOT EXISTS idx_deposit_details_maturity_date ON deposit_details(maturity_date)'
+        );
+
+        // Add trigger for updated_at
+        await this.db?.query(`
+          CREATE TRIGGER update_deposit_details_updated_at BEFORE UPDATE ON deposit_details
+            FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()
+        `);
+
+        console.log('[DB] ✅ Migration 3→4 completed');
+      }
+
+      // Update version
+      await this.db?.query(
+        "UPDATE settings SET value = $1 WHERE key = 'db_version'",
+        [to.toString()]
+      );
+
+      console.log(`[DB] Database version updated to ${to}`);
+    } catch (error) {
+      console.error('[DB] Migration failed:', error);
+      throw error;
+    }
   }
 
   /**

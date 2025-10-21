@@ -22,8 +22,8 @@ class TransactionRepository extends BaseRepository<Transaction> {
    */
   async create(input: CreateTransactionInput): Promise<Transaction> {
     const result = await db.query<Transaction>(
-      `INSERT INTO transactions (account_id, type, category, amount, description, date, tags, is_recurring, recurring_frequency)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      `INSERT INTO transactions (account_id, type, category, amount, description, date, tags, is_recurring, recurring_frequency, is_initial_balance)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
        RETURNING *`,
       [
         input.account_id,
@@ -35,6 +35,7 @@ class TransactionRepository extends BaseRepository<Transaction> {
         input.tags || [],
         input.is_recurring || false,
         input.recurring_frequency || null,
+        input.is_initial_balance || false,
       ]
     );
 

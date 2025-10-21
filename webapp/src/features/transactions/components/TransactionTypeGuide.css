@@ -32,8 +32,8 @@
   display: flex;
   flex-direction: column;
   padding: 24px;
-  background: var(--color-background-elevated);
-  border: 2px solid var(--color-border);
+  background: var(--bg-elevated);
+  border: 2px solid var(--border-primary);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -206,8 +206,8 @@
 /* Dark Mode Support */
 @media (prefers-color-scheme: dark) {
   .type-card {
-    background: var(--color-background-elevated, #1e293b);
-    border-color: var(--color-border, #334155);
+    background: var(--bg-elevated, #1e293b);
+    border-color: var(--border-primary, #334155);
   }
 
   .type-card:hover {

@@ -6,10 +6,10 @@
 import { useMemo } from 'react';
 import type { Transaction } from '@/core/db/types';
 import {
-  LineChart,
   GroupedBarChart,
-  type LineChartDataPoint,
   type GroupedBarDataPoint,
+  LineChart,
+  type LineChartDataPoint,
 } from '@/shared/components';
 import { calculateMonthlyStats } from '@/shared/utils';
 import './AccountCharts.css';
@@ -20,21 +20,34 @@ export interface AccountChartsProps {
   currency: string;
 }
 
-const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const MONTH_NAMES = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
 
 export function AccountCharts({
   transactions,
   currentBalance,
 }: AccountChartsProps) {
   // Calculate monthly statistics with initial balance
-  const monthlyStats = useMemo(() => 
-    calculateMonthlyStats(transactions, 6, currentBalance),
+  const monthlyStats = useMemo(
+    () => calculateMonthlyStats(transactions, 6, currentBalance),
     [transactions, currentBalance]
   );
 
   // Balance history data - use the balance directly from stats
   const balanceHistory: LineChartDataPoint[] = useMemo(() => {
-    return monthlyStats.map(stat => ({
+    return monthlyStats.map((stat) => ({
       label: MONTH_NAMES[stat.month - 1] || '',
       value: stat.balance,
     }));
@@ -42,7 +55,7 @@ export function AccountCharts({
 
   // Income vs Expenses data
   const incomeExpenseData: GroupedBarDataPoint[] = useMemo(() => {
-    return monthlyStats.map(stat => ({
+    return monthlyStats.map((stat) => ({
       label: MONTH_NAMES[stat.month - 1] || '',
       values: [
         {
@@ -86,17 +99,15 @@ export function AccountCharts({
       {/* Monthly Income/Expense Trend */}
       <div className="account-charts__card">
         <h3 className="account-charts__title">Income vs Expenses</h3>
-        <p className="account-charts__subtitle">Monthly comparison (last 6 months)</p>
+        <p className="account-charts__subtitle">
+          Monthly comparison (last 6 months)
+        </p>
         {!hasTransactions ? (
           <div className="account-charts__empty">
             <p>Add income and expense transactions to track your cash flow</p>
           </div>
         ) : (
-          <GroupedBarChart
-            data={incomeExpenseData}
-            height={300}
-            showLegend
-          />
+          <GroupedBarChart data={incomeExpenseData} height={300} showLegend />
         )}
       </div>
     </div>

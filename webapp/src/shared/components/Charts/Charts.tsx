@@ -4,7 +4,7 @@
  */
 
 import { useMemo } from 'react';
-import { formatCurrency, formatCompactNumber } from '@/shared/utils';
+import { formatCompactNumber, formatCurrency } from '@/shared/utils';
 import './Charts.css';
 
 export interface LineChartDataPoint {
@@ -34,7 +34,7 @@ export function LineChart({
       return { points: [], min: 0, max: 0, path: '', areaPath: '' };
     }
 
-    const values = data.map(d => d.value);
+    const values = data.map((d) => d.value);
     const min = Math.min(...values);
     const max = Math.max(...values);
     const range = max - min || 1;
@@ -46,17 +46,19 @@ export function LineChart({
 
     const points = data.map((d, i) => {
       const x = (i / (data.length - 1 || 1)) * width;
-      const y = chartHeight - padding - ((d.value - min) / range) * usableHeight;
+      const y =
+        chartHeight - padding - ((d.value - min) / range) * usableHeight;
       return { x, y, value: d.value, label: d.label };
     });
 
     // Create SVG path
-    const pathData = points.map((p, i) => 
-      `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`
-    ).join(' ');
+    const pathData = points
+      .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`)
+      .join(' ');
 
     // Create area path for fill
-    const areaPathData = pathData + 
+    const areaPathData =
+      pathData +
       ` L ${points[points.length - 1]?.x ?? 0} ${chartHeight - padding}` +
       ` L ${points[0]?.x ?? 0} ${chartHeight - padding} Z`;
 
@@ -73,11 +75,15 @@ export function LineChart({
 
   return (
     <div className="chart chart--line" style={{ height }}>
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="chart__svg">
+      <svg
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+        className="chart__svg"
+      >
         {/* Grid lines */}
         {showGrid && (
           <g className="chart__grid">
-            {[0, 25, 50, 75, 100].map(y => (
+            {[0, 25, 50, 75, 100].map((y) => (
               <line
                 key={y}
                 x1="0"
@@ -137,7 +143,9 @@ export function LineChart({
       {/* Y-axis labels */}
       <div className="chart__y-axis">
         <span className="chart__y-label">{formatCompactNumber(max)}</span>
-        <span className="chart__y-label">{formatCompactNumber((max + min) / 2)}</span>
+        <span className="chart__y-label">
+          {formatCompactNumber((max + min) / 2)}
+        </span>
         <span className="chart__y-label">{formatCompactNumber(min)}</span>
       </div>
     </div>
@@ -166,7 +174,7 @@ export function BarChart({
   defaultColor = 'var(--color-primary)',
 }: BarChartProps) {
   const max = useMemo(() => {
-    return data.length > 0 ? Math.max(...data.map(d => d.value)) : 0;
+    return data.length > 0 ? Math.max(...data.map((d) => d.value)) : 0;
   }, [data]);
 
   if (data.length === 0) {
@@ -182,8 +190,12 @@ export function BarChart({
       {/* Grid */}
       {showGrid && (
         <div className="chart__grid-horizontal">
-          {[0, 25, 50, 75, 100].map(percent => (
-            <div key={percent} className="chart__grid-line-horizontal" style={{ bottom: `${percent}%` }} />
+          {[0, 25, 50, 75, 100].map((percent) => (
+            <div
+              key={percent}
+              className="chart__grid-line-horizontal"
+              style={{ bottom: `${percent}%` }}
+            />
           ))}
         </div>
       )}
@@ -250,8 +262,8 @@ export function GroupedBarChart({
     let max = 0;
     const legendSet = new Set<string>();
 
-    data.forEach(group => {
-      group.values.forEach(v => {
+    data.forEach((group) => {
+      group.values.forEach((v) => {
         if (v.value > max) max = v.value;
         legendSet.add(v.key);
       });
@@ -273,13 +285,15 @@ export function GroupedBarChart({
       {/* Legend */}
       {showLegend && legend.length > 0 && (
         <div className="chart__legend">
-          {legend.map(key => {
-            const sample = data[0]?.values.find(v => v.key === key);
+          {legend.map((key) => {
+            const sample = data[0]?.values.find((v) => v.key === key);
             return (
               <div key={key} className="chart__legend-item">
                 <span
                   className="chart__legend-color"
-                  style={{ backgroundColor: sample?.color || 'var(--color-primary)' }}
+                  style={{
+                    backgroundColor: sample?.color || 'var(--color-primary)',
+                  }}
                 />
                 <span className="chart__legend-label">{key}</span>
               </div>
@@ -291,8 +305,12 @@ export function GroupedBarChart({
       {/* Grid */}
       {showGrid && (
         <div className="chart__grid-horizontal">
-          {[0, 25, 50, 75, 100].map(percent => (
-            <div key={percent} className="chart__grid-line-horizontal" style={{ bottom: `${percent}%` }} />
+          {[0, 25, 50, 75, 100].map((percent) => (
+            <div
+              key={percent}
+              className="chart__grid-line-horizontal"
+              style={{ bottom: `${percent}%` }}
+            />
           ))}
         </div>
       )}

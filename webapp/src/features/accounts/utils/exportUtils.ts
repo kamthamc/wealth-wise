@@ -19,7 +19,7 @@ export async function exportToExcel(
     // Prepare data
     const data = [
       ['Date', 'Description', 'Amount', 'Type', 'Category', 'Balance'],
-      ...transactions.map(txn => [
+      ...transactions.map((txn) => [
         new Date(txn.date).toLocaleDateString('en-IN'),
         txn.description,
         txn.amount,
@@ -52,7 +52,9 @@ export async function exportToExcel(
     // Save file
     XLSX.writeFile(workbook, filename);
   } catch (error) {
-    throw new Error('Excel export library not available. Please install xlsx package.');
+    throw new Error(
+      'Excel export library not available. Please install xlsx package.'
+    );
   }
 }
 
@@ -85,18 +87,38 @@ export async function exportStatementToPDF(
 
     doc.text('Account Details:', leftCol, startY);
     doc.text(`Account Name: ${account.name}`, leftCol, startY + 7);
-    doc.text(`Account Type: ${formatAccountType(account.type)}`, leftCol, startY + 14);
-    doc.text(`Account Number: ${account.id.substring(0, 8)}...`, leftCol, startY + 21);
+    doc.text(
+      `Account Type: ${formatAccountType(account.type)}`,
+      leftCol,
+      startY + 14
+    );
+    doc.text(
+      `Account Number: ${account.id.substring(0, 8)}...`,
+      leftCol,
+      startY + 21
+    );
 
-    doc.text(`Current Balance: ₹${account.balance.toLocaleString('en-IN', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`, rightCol, startY + 7);
-    doc.text(`Statement Date: ${new Date().toLocaleDateString('en-IN')}`, rightCol, startY + 14);
-    doc.text(`Total Transactions: ${transactions.length}`, rightCol, startY + 21);
+    doc.text(
+      `Current Balance: ₹${account.balance.toLocaleString('en-IN', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+      rightCol,
+      startY + 7
+    );
+    doc.text(
+      `Statement Date: ${new Date().toLocaleDateString('en-IN')}`,
+      rightCol,
+      startY + 14
+    );
+    doc.text(
+      `Total Transactions: ${transactions.length}`,
+      rightCol,
+      startY + 21
+    );
 
     // Add transactions table
-    const tableData = transactions.map(txn => {
+    const tableData = transactions.map((txn) => {
       const desc = txn.description || '';
       return [
         new Date(txn.date).toLocaleDateString('en-IN'),
@@ -149,7 +171,9 @@ export async function exportStatementToPDF(
     const filename = `${account.name}_statement_${new Date().toISOString().split('T')[0]}.pdf`;
     doc.save(filename);
   } catch (error) {
-    throw new Error(`PDF generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `PDF generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
 }
 
@@ -170,26 +194,36 @@ export async function exportAllAccountsToExcel(
       ['Account Summary'],
       [],
       ['Account Name', 'Type', 'Balance', 'Transactions'],
-      ...accounts.map(acc => [
+      ...accounts.map((acc) => [
         acc.name,
         formatAccountType(acc.type),
         acc.balance,
         transactionsByAccount[acc.id]?.length || 0,
       ]),
       [],
-      ['Total Balance', '', accounts.reduce((sum, acc) => sum + acc.balance, 0), ''],
+      [
+        'Total Balance',
+        '',
+        accounts.reduce((sum, acc) => sum + acc.balance, 0),
+        '',
+      ],
     ];
 
     const summarySheet = XLSX.utils.aoa_to_sheet(summaryData);
-    summarySheet['!cols'] = [{ wch: 30 }, { wch: 20 }, { wch: 15 }, { wch: 15 }];
+    summarySheet['!cols'] = [
+      { wch: 30 },
+      { wch: 20 },
+      { wch: 15 },
+      { wch: 15 },
+    ];
     XLSX.utils.book_append_sheet(workbook, summarySheet, 'Summary');
 
     // Add sheet for each account
-    accounts.forEach(account => {
+    accounts.forEach((account) => {
       const transactions = transactionsByAccount[account.id] || [];
       const data = [
         ['Date', 'Description', 'Amount', 'Type', 'Category'],
-        ...transactions.map(txn => [
+        ...transactions.map((txn) => [
           new Date(txn.date).toLocaleDateString('en-IN'),
           txn.description,
           txn.amount,
@@ -208,14 +242,18 @@ export async function exportAllAccountsToExcel(
       ];
 
       // Sanitize sheet name (max 31 chars, no special characters)
-      const sheetName = account.name.substring(0, 31).replace(/[:\\/?*\[\]]/g, '_');
+      const sheetName = account.name
+        .substring(0, 31)
+        .replace(/[:\\/?*[\]]/g, '_');
       XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
     });
 
     const filename = `all_accounts_${new Date().toISOString().split('T')[0]}.xlsx`;
     XLSX.writeFile(workbook, filename);
   } catch (error) {
-    throw new Error('Excel export library not available. Please install xlsx package.');
+    throw new Error(
+      'Excel export library not available. Please install xlsx package.'
+    );
   }
 }
 

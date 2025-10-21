@@ -4,8 +4,8 @@
  */
 
 .dashboard-header {
-  background: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
+  background: var(--bg-primary-elevated);
+  border-bottom: 1px solid var(--border-primary);
   position: sticky;
   top: 0;
   /* z-index: 100; */
@@ -68,7 +68,7 @@
 }
 
 .dashboard-header__link:hover {
-  background: var(--color-surface-hover);
+  background: var(--bg-primary-hover);
   color: var(--text-primary);
 }
 

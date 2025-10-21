@@ -40,7 +40,8 @@ export function DropdownSelect({
   disabled = false,
   required = false,
 }: DropdownSelectProps) {
-  const selectId = id || `dropdown-select-${Math.random().toString(36).slice(2, 11)}`;
+  const selectId =
+    id || `dropdown-select-${Math.random().toString(36).slice(2, 11)}`;
   const errorId = `${selectId}-error`;
   const helperId = `${selectId}-helper`;
 
@@ -99,10 +100,7 @@ export function DropdownSelect({
             sideOffset={5}
           >
             {options.length === 0 ? (
-              <DropdownMenu.Item
-                className="dropdown-select-item"
-                disabled
-              >
+              <DropdownMenu.Item className="dropdown-select-item" disabled>
                 No options available
               </DropdownMenu.Item>
             ) : (

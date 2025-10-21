@@ -8,7 +8,11 @@ import { Upload, X } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useTransactionStore } from '@/core/stores';
 import { Button, useToast } from '@/shared/components';
-import { detectFileFormat, parseFile, type ParsedData } from '../utils/fileParser';
+import {
+  detectFileFormat,
+  type ParsedData,
+  parseFile,
+} from '../utils/fileParser';
 import { ColumnMapper } from './ColumnMapper';
 import './ImportTransactionsModal.css';
 
@@ -50,7 +54,10 @@ export function ImportTransactionsModal({
 
     const format = detectFileFormat(file);
     if (format === 'unknown') {
-      toast.error('Unsupported format', 'Please upload CSV, Excel (.xlsx, .xls), or PDF files');
+      toast.error(
+        'Unsupported format',
+        'Please upload CSV, Excel (.xlsx, .xls), or PDF files'
+      );
       return;
     }
 
@@ -67,7 +74,10 @@ export function ImportTransactionsModal({
       toast.success('File parsed', `Found ${data.rows.length} rows`);
     } catch (error) {
       console.error('Failed to parse file:', error);
-      toast.error('Parse error', error instanceof Error ? error.message : 'Failed to parse file');
+      toast.error(
+        'Parse error',
+        error instanceof Error ? error.message : 'Failed to parse file'
+      );
       setSelectedFile(null);
       setParsedData(null);
     } finally {
@@ -77,63 +87,74 @@ export function ImportTransactionsModal({
 
   const handleMappingComplete = (mappings: any[]) => {
     setShowColumnMapper(false);
-    
+
     if (!parsedData) return;
-    
+
     // Check if using separate debit/credit columns (HDFC format)
-    const hasDebitColumn = mappings.some(m => m.systemField === 'amount_debit');
-    const hasCreditColumn = mappings.some(m => m.systemField === 'amount_credit');
+    const hasDebitColumn = mappings.some(
+      (m) => m.systemField === 'amount_debit'
+    );
+    const hasCreditColumn = mappings.some(
+      (m) => m.systemField === 'amount_credit'
+    );
     const hasSeparateColumns = hasDebitColumn && hasCreditColumn;
-    
+
     // Apply mappings to transform data
-    const transactions = parsedData.rows.map(row => {
-      const txn: any = {};
-      
-      mappings.forEach(mapping => {
-        if (mapping.systemField === 'skip') return;
-        
-        let value = row[mapping.csvColumn];
-        
-        // Apply value mappings (e.g., credit -> income)
-        if (mapping.valueMapping && value) {
-          const lowerValue = value.toLowerCase().trim();
-          value = mapping.valueMapping[lowerValue] || value;
+    const transactions = parsedData.rows
+      .map((row) => {
+        const txn: any = {};
+
+        mappings.forEach((mapping) => {
+          if (mapping.systemField === 'skip') return;
+
+          let value = row[mapping.csvColumn];
+
+          // Apply value mappings (e.g., credit -> income)
+          if (mapping.valueMapping && value) {
+            const lowerValue = value.toLowerCase().trim();
+            value = mapping.valueMapping[lowerValue] || value;
+          }
+
+          txn[mapping.systemField] = value;
+        });
+
+        // Handle separate debit/credit columns (HDFC format)
+        let amount = 0;
+        let type: 'income' | 'expense' | 'transfer' = 'expense';
+
+        if (hasSeparateColumns) {
+          const debitValue = parseFloat(txn.amount_debit || '0');
+          const creditValue = parseFloat(txn.amount_credit || '0');
+
+          if (debitValue > 0) {
+            amount = debitValue;
+            type = 'expense';
+          } else if (creditValue > 0) {
+            amount = creditValue;
+            type = 'income';
+          }
+        } else {
+          amount = Math.abs(parseFloat(txn.amount || '0'));
+          type = (txn.type?.toLowerCase() || 'expense') as
+            | 'income'
+            | 'expense'
+            | 'transfer';
         }
-        
-        txn[mapping.systemField] = value;
-      });
-      
-      // Handle separate debit/credit columns (HDFC format)
-      let amount = 0;
-      let type: 'income' | 'expense' | 'transfer' = 'expense';
-      
-      if (hasSeparateColumns) {
-        const debitValue = parseFloat(txn.amount_debit || '0');
-        const creditValue = parseFloat(txn.amount_credit || '0');
-        
-        if (debitValue > 0) {
-          amount = debitValue;
-          type = 'expense';
-        } else if (creditValue > 0) {
-          amount = creditValue;
-          type = 'income';
-        }
-      } else {
-        amount = Math.abs(parseFloat(txn.amount || '0'));
-        type = (txn.type?.toLowerCase() || 'expense') as 'income' | 'expense' | 'transfer';
-      }
-      
-      return {
-        date: txn.date || '',
-        description: txn.description || '',
-        amount,
-        type,
-        category: txn.category || undefined,
-      } as ParsedTransaction;
-    }).filter(t => t.date && t.description && !isNaN(t.amount) && t.amount > 0);
-    
+
+        return {
+          date: txn.date || '',
+          description: txn.description || '',
+          amount,
+          type,
+          category: txn.category || undefined,
+        } as ParsedTransaction;
+      })
+      .filter(
+        (t) => t.date && t.description && !isNaN(t.amount) && t.amount > 0
+      );
+
     setPreviewData(transactions);
-    
+
     // Show detailed feedback
     if (transactions.length === 0) {
       toast.error(
@@ -147,7 +168,10 @@ export function ImportTransactionsModal({
         `${transactions.length} valid transactions found. ${filtered} rows were filtered out (missing data or invalid amounts).`
       );
     } else {
-      toast.success('Mapping complete', `${transactions.length} valid transactions ready to import`);
+      toast.success(
+        'Mapping complete',
+        `${transactions.length} valid transactions ready to import`
+      );
     }
   };
 
@@ -185,12 +209,12 @@ export function ImportTransactionsModal({
         'Import complete',
         `Imported ${successCount} transactions${failCount > 0 ? `, ${failCount} failed` : ''}`
       );
-      
+
       // Call success callback to refresh transactions
       if (onImportSuccess) {
         onImportSuccess();
       }
-      
+
       handleClose();
     } catch (error) {
       console.error('Import error:', error);
@@ -220,7 +244,7 @@ export function ImportTransactionsModal({
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     const file = e.dataTransfer.files[0];
     if (file) {
       setSelectedFile(file);
@@ -232,14 +256,18 @@ export function ImportTransactionsModal({
     <Dialog.Root open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <Dialog.Portal>
         <Dialog.Overlay className="modal-overlay" />
-        <Dialog.Content className="import-modal__content" aria-describedby={undefined}>
+        <Dialog.Content
+          className="import-modal__content"
+          aria-describedby={undefined}
+        >
           <div className="import-modal__header">
             <div>
               <Dialog.Title className="import-modal__title">
                 Import Transactions
               </Dialog.Title>
               <Dialog.Description className="import-modal__subtitle">
-                Upload CSV, Excel, or PDF file to import transactions for {accountName}
+                Upload CSV, Excel, or PDF file to import transactions for{' '}
+                {accountName}
               </Dialog.Description>
             </div>
             <Dialog.Close asChild>
@@ -275,14 +303,16 @@ export function ImportTransactionsModal({
                 >
                   <Upload size={48} className="import-modal__upload-icon" />
                   <p className="import-modal__upload-text">
-                    {selectedFile ? selectedFile.name : 'Drag and drop file or click to browse'}
+                    {selectedFile
+                      ? selectedFile.name
+                      : 'Drag and drop file or click to browse'}
                   </p>
                   <p className="import-modal__upload-hint">
                     Supported: CSV, Excel (.xlsx, .xls), PDF
                   </p>
                   {selectedFile && (
                     <p className="import-modal__file-info">
-                      Format: {detectFileFormat(selectedFile).toUpperCase()} • 
+                      Format: {detectFileFormat(selectedFile).toUpperCase()} •
                       Size: {(selectedFile.size / 1024).toFixed(2)} KB
                     </p>
                   )}
@@ -319,7 +349,9 @@ export function ImportTransactionsModal({
                               <td>{txn.description}</td>
                               <td>₹{txn.amount.toLocaleString()}</td>
                               <td>
-                                <span className={`import-modal__type-badge import-modal__type-badge--${txn.type}`}>
+                                <span
+                                  className={`import-modal__type-badge import-modal__type-badge--${txn.type}`}
+                                >
                                   {txn.type}
                                 </span>
                               </td>
@@ -338,9 +370,11 @@ export function ImportTransactionsModal({
 
                 {/* Sample Format */}
                 <div className="import-modal__sample">
-                  <h4 className="import-modal__sample-title">Sample CSV Format:</h4>
+                  <h4 className="import-modal__sample-title">
+                    Sample CSV Format:
+                  </h4>
                   <pre className="import-modal__sample-code">
-{`date,description,amount,type,category
+                    {`date,description,amount,type,category
 2025-01-15,Salary,50000,income,
 2025-01-16,Grocery Shopping,2500,expense,food
 2025-01-17,Netflix Subscription,499,expense,entertainment`}
@@ -351,22 +385,37 @@ export function ImportTransactionsModal({
           </div>
 
           <div className="import-modal__footer">
-            <Button variant="secondary" onClick={handleClose} disabled={isProcessing}>
+            <Button
+              variant="secondary"
+              onClick={handleClose}
+              disabled={isProcessing}
+            >
               Cancel
             </Button>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
-              {!showColumnMapper && previewData.length === 0 && selectedFile && !isProcessing && (
-                <span style={{ fontSize: '0.85em', color: '#ef4444' }}>
-                  Complete column mapping to import
-                </span>
-              )}
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-end',
+                gap: '4px',
+              }}
+            >
+              {!showColumnMapper &&
+                previewData.length === 0 &&
+                selectedFile &&
+                !isProcessing && (
+                  <span style={{ fontSize: '0.85em', color: '#ef4444' }}>
+                    Complete column mapping to import
+                  </span>
+                )}
               <Button
                 variant="primary"
                 onClick={handleImport}
                 disabled={isProcessing || previewData.length === 0}
                 isLoading={isProcessing}
               >
-                Import {previewData.length > 0 && `${previewData.length} Transactions`}
+                Import{' '}
+                {previewData.length > 0 && `${previewData.length} Transactions`}
               </Button>
             </div>
           </div>

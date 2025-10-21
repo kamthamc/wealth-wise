@@ -7,20 +7,20 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as Select from '@radix-ui/react-select';
 import {
   Banknote,
+  Check,
+  ChevronDown,
   CreditCard,
+  FileText,
   Landmark,
+  Lock,
+  PiggyBank,
   Smartphone,
   TrendingUp,
   Wallet,
-  Lock,
-  FileText,
-  PiggyBank,
-  ChevronDown,
-  Check,
 } from 'lucide-react';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Account } from '@/core/db/types';
+import type { Account, InterestPayoutFrequency } from '@/core/db/types';
 import { Button, CurrencyInput, Input } from '@/shared/components';
 import type { AccountFormData, AccountType } from '../types';
 import {
@@ -65,7 +65,15 @@ const ACCOUNT_TYPE_CATEGORIES = [
   },
   {
     label: 'Deposits & Savings',
-    types: ['fixed_deposit', 'recurring_deposit', 'ppf', 'nsc', 'kvp', 'scss', 'post_office'] as AccountType[],
+    types: [
+      'fixed_deposit',
+      'recurring_deposit',
+      'ppf',
+      'nsc',
+      'kvp',
+      'scss',
+      'post_office',
+    ] as AccountType[],
   },
   {
     label: 'Cash & Wallets',
@@ -81,6 +89,17 @@ export function AddAccountModal({
 }: AddAccountModalProps) {
   const { t } = useTranslation();
 
+  // Check if selected type is a deposit account
+  const DEPOSIT_TYPES: AccountType[] = [
+    'fixed_deposit',
+    'recurring_deposit',
+    'ppf',
+    'nsc',
+    'kvp',
+    'scss',
+    'post_office',
+  ];
+
   const [formData, setFormData] = useState<AccountFormData>({
     name: account?.name || '',
     type: account?.type || 'bank',
@@ -92,6 +111,9 @@ export function AddAccountModal({
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Check if current type is a deposit
+  const isDepositAccount = DEPOSIT_TYPES.includes(formData.type);
 
   // Generate unique IDs for form elements
   const nameId = useId();
@@ -184,7 +206,10 @@ export function AddAccountModal({
               <span className="account-modal__label account-modal__label--required">
                 {t('pages.accounts.modal.typeLabel')}
               </span>
-              <Select.Root value={formData.type} onValueChange={handleTypeSelect}>
+              <Select.Root
+                value={formData.type}
+                onValueChange={handleTypeSelect}
+              >
                 <Select.Trigger className="account-modal__type-select">
                   <Select.Value>
                     <div className="account-modal__type-select-value">
@@ -199,11 +224,16 @@ export function AddAccountModal({
                   </Select.Icon>
                 </Select.Trigger>
                 <Select.Portal>
-                  <Select.Content className="account-modal__type-content" position="popper">
+                  <Select.Content
+                    className="account-modal__type-content"
+                    position="popper"
+                  >
                     <Select.Viewport className="account-modal__type-viewport">
                       {ACCOUNT_TYPE_CATEGORIES.map((category, index) => (
                         <Select.Group key={category.label}>
-                          {index > 0 && <Select.Separator className="account-modal__type-separator" />}
+                          {index > 0 && (
+                            <Select.Separator className="account-modal__type-separator" />
+                          )}
                           <Select.Label className="account-modal__type-category-label">
                             {category.label}
                           </Select.Label>
@@ -217,7 +247,9 @@ export function AddAccountModal({
                                 <span className="account-modal__type-item-icon">
                                   {ACCOUNT_TYPE_ICONS[type]}
                                 </span>
-                                <Select.ItemText>{getAccountTypeName(type)}</Select.ItemText>
+                                <Select.ItemText>
+                                  {getAccountTypeName(type)}
+                                </Select.ItemText>
                               </div>
                               <Select.ItemIndicator className="account-modal__type-item-indicator">
                                 <Check size={16} />
@@ -256,6 +288,552 @@ export function AddAccountModal({
                 error={errors.balance}
               />
             </div>
+
+            {/* Credit Card-specific fields */}
+            {formData.type === 'credit_card' && (
+              <>
+                {/* Credit Limit */}
+                <div className="account-modal__form-group">
+                  <label
+                    htmlFor="cc-credit-limit"
+                    className="account-modal__label account-modal__label--required"
+                  >
+                    Credit Limit
+                  </label>
+                  <CurrencyInput
+                    id="cc-credit-limit"
+                    value={formData.creditCardDetails?.credit_limit || 0}
+                    onChange={(value) => {
+                      setFormData({
+                        ...formData,
+                        creditCardDetails: {
+                          ...formData.creditCardDetails,
+                          credit_limit: value || 0,
+                        },
+                      });
+                    }}
+                    currency={formData.currency}
+                    placeholder="50000"
+                  />
+                </div>
+
+                {/* Billing Cycle Day */}
+                <div className="account-modal__form-group">
+                  <label
+                    htmlFor="cc-billing-cycle"
+                    className="account-modal__label"
+                  >
+                    Billing Cycle Day (1-31)
+                  </label>
+                  <Input
+                    id="cc-billing-cycle"
+                    type="number"
+                    min="1"
+                    max="31"
+                    value={formData.creditCardDetails?.billing_cycle_day || ''}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        creditCardDetails: {
+                          ...formData.creditCardDetails,
+                          credit_limit:
+                            formData.creditCardDetails?.credit_limit || 0,
+                          billing_cycle_day: parseInt(e.target.value) || undefined,
+                        },
+                      });
+                    }}
+                    placeholder="1"
+                  />
+                </div>
+
+                {/* Payment Due Day */}
+                <div className="account-modal__form-group">
+                  <label
+                    htmlFor="cc-payment-due"
+                    className="account-modal__label"
+                  >
+                    Payment Due Day (1-31)
+                  </label>
+                  <Input
+                    id="cc-payment-due"
+                    type="number"
+                    min="1"
+                    max="31"
+                    value={formData.creditCardDetails?.payment_due_day || ''}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        creditCardDetails: {
+                          ...formData.creditCardDetails,
+                          credit_limit:
+                            formData.creditCardDetails?.credit_limit || 0,
+                          payment_due_day: parseInt(e.target.value) || undefined,
+                        },
+                      });
+                    }}
+                    placeholder="20"
+                  />
+                </div>
+
+                {/* Card Network */}
+                <div className="account-modal__form-group">
+                  <label
+                    htmlFor="cc-card-network"
+                    className="account-modal__label"
+                  >
+                    Card Network
+                  </label>
+                  <Select.Root
+                    value={formData.creditCardDetails?.card_network || 'visa'}
+                    onValueChange={(value) => {
+                      setFormData({
+                        ...formData,
+                        creditCardDetails: {
+                          ...formData.creditCardDetails,
+                          credit_limit:
+                            formData.creditCardDetails?.credit_limit || 0,
+                          card_network: value,
+                        },
+                      });
+                    }}
+                  >
+                    <Select.Trigger className="account-modal__type-select">
+                      <Select.Value />
+                      <Select.Icon className="account-modal__type-select-chevron">
+                        <ChevronDown size={16} />
+                      </Select.Icon>
+                    </Select.Trigger>
+                    <Select.Portal>
+                      <Select.Content
+                        className="account-modal__type-content"
+                        position="popper"
+                      >
+                        <Select.Viewport className="account-modal__type-viewport">
+                          <Select.Item
+                            value="visa"
+                            className="account-modal__type-item"
+                          >
+                            <Select.ItemText>Visa</Select.ItemText>
+                            <Select.ItemIndicator className="account-modal__type-item-indicator">
+                              <Check size={16} />
+                            </Select.ItemIndicator>
+                          </Select.Item>
+                          <Select.Item
+                            value="mastercard"
+                            className="account-modal__type-item"
+                          >
+                            <Select.ItemText>Mastercard</Select.ItemText>
+                            <Select.ItemIndicator className="account-modal__type-item-indicator">
+                              <Check size={16} />
+                            </Select.ItemIndicator>
+                          </Select.Item>
+                          <Select.Item
+                            value="rupay"
+                            className="account-modal__type-item"
+                          >
+                            <Select.ItemText>RuPay</Select.ItemText>
+                            <Select.ItemIndicator className="account-modal__type-item-indicator">
+                              <Check size={16} />
+                            </Select.ItemIndicator>
+                          </Select.Item>
+                          <Select.Item
+                            value="amex"
+                            className="account-modal__type-item"
+                          >
+                            <Select.ItemText>American Express</Select.ItemText>
+                            <Select.ItemIndicator className="account-modal__type-item-indicator">
+                              <Check size={16} />
+                            </Select.ItemIndicator>
+                          </Select.Item>
+                        </Select.Viewport>
+                      </Select.Content>
+                    </Select.Portal>
+                  </Select.Root>
+                </div>
+
+                {/* Interest Rate */}
+                <div className="account-modal__form-group">
+                  <label
+                    htmlFor="cc-interest-rate"
+                    className="account-modal__label"
+                  >
+                    Interest Rate (% per annum)
+                  </label>
+                  <Input
+                    id="cc-interest-rate"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    max="100"
+                    value={formData.creditCardDetails?.interest_rate || ''}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        creditCardDetails: {
+                          ...formData.creditCardDetails,
+                          credit_limit:
+                            formData.creditCardDetails?.credit_limit || 0,
+                          interest_rate: parseFloat(e.target.value) || undefined,
+                        },
+                      });
+                    }}
+                    placeholder="36.0"
+                  />
+                </div>
+              </>
+            )}
+
+            {/* Brokerage-specific fields */}
+            {formData.type === 'brokerage' && (
+              <>
+                {/* Broker Name */}
+                <div className="account-modal__form-group">
+                  <label
+                    htmlFor="brokerage-broker-name"
+                    className="account-modal__label"
+                  >
+                    Broker Name
+                  </label>
+                  <Input
+                    id="brokerage-broker-name"
+                    type="text"
+                    value={formData.brokerageDetails?.broker_name || ''}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        brokerageDetails: {
+                          ...formData.brokerageDetails,
+                          broker_name: e.target.value,
+                        },
+                      });
+                    }}
+                    placeholder="Zerodha, Groww, etc."
+                  />
+                </div>
+
+                {/* Demat Account Number */}
+                <div className="account-modal__form-group">
+                  <label
+                    htmlFor="brokerage-demat-account"
+                    className="account-modal__label"
+                  >
+                    Demat Account Number
+                  </label>
+                  <Input
+                    id="brokerage-demat-account"
+                    type="text"
+                    value={formData.brokerageDetails?.demat_account_number || ''}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        brokerageDetails: {
+                          ...formData.brokerageDetails,
+                          demat_account_number: e.target.value,
+                        },
+                      });
+                    }}
+                    placeholder="1234567890123456"
+                  />
+                </div>
+
+                {/* Trading Account Number */}
+                <div className="account-modal__form-group">
+                  <label
+                    htmlFor="brokerage-trading-account"
+                    className="account-modal__label"
+                  >
+                    Trading Account Number
+                  </label>
+                  <Input
+                    id="brokerage-trading-account"
+                    type="text"
+                    value={formData.brokerageDetails?.trading_account_number || ''}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        brokerageDetails: {
+                          ...formData.brokerageDetails,
+                          trading_account_number: e.target.value,
+                        },
+                      });
+                    }}
+                    placeholder="AB1234"
+                  />
+                </div>
+
+                {/* DP ID */}
+                <div className="account-modal__form-group">
+                  <label
+                    htmlFor="brokerage-dp-id"
+                    className="account-modal__label"
+                  >
+                    DP ID (Depository Participant ID)
+                  </label>
+                  <Input
+                    id="brokerage-dp-id"
+                    type="text"
+                    value={formData.brokerageDetails?.dp_id || ''}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        brokerageDetails: {
+                          ...formData.brokerageDetails,
+                          dp_id: e.target.value,
+                        },
+                      });
+                    }}
+                    placeholder="IN300***"
+                  />
+                </div>
+
+                {/* Client ID */}
+                <div className="account-modal__form-group">
+                  <label
+                    htmlFor="brokerage-client-id"
+                    className="account-modal__label"
+                  >
+                    Client ID
+                  </label>
+                  <Input
+                    id="brokerage-client-id"
+                    type="text"
+                    value={formData.brokerageDetails?.client_id || ''}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        brokerageDetails: {
+                          ...formData.brokerageDetails,
+                          client_id: e.target.value,
+                        },
+                      });
+                    }}
+                    placeholder="ABC123"
+                  />
+                </div>
+              </>
+            )}
+
+            {/* Deposit-specific fields */}
+            {isDepositAccount && (
+              <>
+                {/* Interest Rate */}
+                <div className="account-modal__form-group">
+                  <label
+                    htmlFor="deposit-interest-rate"
+                    className="account-modal__label account-modal__label--required"
+                  >
+                    Interest Rate (% per annum)
+                  </label>
+                  <Input
+                    id="deposit-interest-rate"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    max="100"
+                    value={formData.depositDetails?.interest_rate || ''}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        depositDetails: {
+                          ...formData.depositDetails,
+                          principal_amount: formData.balance,
+                          interest_rate: parseFloat(e.target.value) || 0,
+                          start_date:
+                            formData.depositDetails?.start_date || new Date(),
+                          tenure_months:
+                            formData.depositDetails?.tenure_months || 12,
+                        },
+                      });
+                    }}
+                    placeholder="7.5"
+                  />
+                </div>
+
+                {/* Tenure */}
+                <div className="account-modal__form-group">
+                  <label
+                    htmlFor="deposit-tenure"
+                    className="account-modal__label account-modal__label--required"
+                  >
+                    Tenure (months)
+                  </label>
+                  <Input
+                    id="deposit-tenure"
+                    type="number"
+                    min="1"
+                    max="600"
+                    value={formData.depositDetails?.tenure_months || ''}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        depositDetails: {
+                          ...formData.depositDetails,
+                          principal_amount: formData.balance,
+                          interest_rate:
+                            formData.depositDetails?.interest_rate || 0,
+                          start_date:
+                            formData.depositDetails?.start_date || new Date(),
+                          tenure_months: parseInt(e.target.value) || 0,
+                        },
+                      });
+                    }}
+                    placeholder="12"
+                  />
+                </div>
+
+                {/* Start Date */}
+                <div className="account-modal__form-group">
+                  <label
+                    htmlFor="deposit-start-date"
+                    className="account-modal__label account-modal__label--required"
+                  >
+                    Start Date
+                  </label>
+                  <Input
+                    id="deposit-start-date"
+                    type="date"
+                    value={
+                      formData.depositDetails?.start_date
+                        ? new Date(formData.depositDetails.start_date)
+                            .toISOString()
+                            .split('T')[0]
+                        : ''
+                    }
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        depositDetails: {
+                          ...formData.depositDetails,
+                          principal_amount: formData.balance,
+                          interest_rate:
+                            formData.depositDetails?.interest_rate || 0,
+                          tenure_months:
+                            formData.depositDetails?.tenure_months || 12,
+                          start_date: new Date(e.target.value),
+                        },
+                      });
+                    }}
+                  />
+                </div>
+
+                {/* Interest Payout Frequency */}
+                <div className="account-modal__form-group">
+                  <label
+                    htmlFor="deposit-payout-frequency"
+                    className="account-modal__label"
+                  >
+                    Interest Payout Frequency
+                  </label>
+                  <Select.Root
+                    value={
+                      formData.depositDetails?.interest_payout_frequency ||
+                      'quarterly'
+                    }
+                    onValueChange={(value) => {
+                      setFormData({
+                        ...formData,
+                        depositDetails: {
+                          ...formData.depositDetails,
+                          principal_amount: formData.balance,
+                          interest_rate:
+                            formData.depositDetails?.interest_rate || 0,
+                          start_date:
+                            formData.depositDetails?.start_date || new Date(),
+                          tenure_months:
+                            formData.depositDetails?.tenure_months || 12,
+                          interest_payout_frequency:
+                            value as InterestPayoutFrequency,
+                        },
+                      });
+                    }}
+                  >
+                    <Select.Trigger className="account-modal__type-select">
+                      <Select.Value />
+                      <Select.Icon className="account-modal__type-select-chevron">
+                        <ChevronDown size={16} />
+                      </Select.Icon>
+                    </Select.Trigger>
+                    <Select.Portal>
+                      <Select.Content
+                        className="account-modal__type-content"
+                        position="popper"
+                      >
+                        <Select.Viewport className="account-modal__type-viewport">
+                          <Select.Item
+                            value="monthly"
+                            className="account-modal__type-item"
+                          >
+                            <Select.ItemText>Monthly</Select.ItemText>
+                            <Select.ItemIndicator className="account-modal__type-item-indicator">
+                              <Check size={16} />
+                            </Select.ItemIndicator>
+                          </Select.Item>
+                          <Select.Item
+                            value="quarterly"
+                            className="account-modal__type-item"
+                          >
+                            <Select.ItemText>Quarterly</Select.ItemText>
+                            <Select.ItemIndicator className="account-modal__type-item-indicator">
+                              <Check size={16} />
+                            </Select.ItemIndicator>
+                          </Select.Item>
+                          <Select.Item
+                            value="annually"
+                            className="account-modal__type-item"
+                          >
+                            <Select.ItemText>Annually</Select.ItemText>
+                            <Select.ItemIndicator className="account-modal__type-item-indicator">
+                              <Check size={16} />
+                            </Select.ItemIndicator>
+                          </Select.Item>
+                          <Select.Item
+                            value="maturity"
+                            className="account-modal__type-item"
+                          >
+                            <Select.ItemText>At Maturity</Select.ItemText>
+                            <Select.ItemIndicator className="account-modal__type-item-indicator">
+                              <Check size={16} />
+                            </Select.ItemIndicator>
+                          </Select.Item>
+                        </Select.Viewport>
+                      </Select.Content>
+                    </Select.Portal>
+                  </Select.Root>
+                </div>
+
+                {/* Bank Name */}
+                <div className="account-modal__form-group">
+                  <label
+                    htmlFor="deposit-bank-name"
+                    className="account-modal__label"
+                  >
+                    Bank/Institution Name
+                  </label>
+                  <Input
+                    id="deposit-bank-name"
+                    type="text"
+                    value={formData.depositDetails?.bank_name || ''}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        depositDetails: {
+                          ...formData.depositDetails,
+                          principal_amount: formData.balance,
+                          interest_rate:
+                            formData.depositDetails?.interest_rate || 0,
+                          start_date:
+                            formData.depositDetails?.start_date || new Date(),
+                          tenure_months:
+                            formData.depositDetails?.tenure_months || 12,
+                          bank_name: e.target.value,
+                        },
+                      });
+                    }}
+                    placeholder="HDFC Bank"
+                  />
+                </div>
+              </>
+            )}
 
             {/* Submit Error */}
             {errors.submit && (

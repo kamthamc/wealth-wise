@@ -2,18 +2,6 @@
  * Export all shared components from a central location
  */
 
-// Chart Components
-export {
-  BarChart,
-  type BarChartDataPoint,
-  type BarChartProps,
-  GroupedBarChart,
-  type GroupedBarChartProps,
-  type GroupedBarDataPoint,
-  LineChart,
-  type LineChartDataPoint,
-  type LineChartProps,
-} from './Charts';
 // Form Components
 export { AccountSelect, type AccountSelectProps } from './AccountSelect';
 // Data Display Components
@@ -32,13 +20,29 @@ export {
 } from './Button';
 export { Card, type CardProps } from './Card';
 export { CategorySelect, type CategorySelectProps } from './CategorySelect';
+// Chart Components
+export {
+  BarChart,
+  type BarChartDataPoint,
+  type BarChartProps,
+  GroupedBarChart,
+  type GroupedBarChartProps,
+  type GroupedBarDataPoint,
+  LineChart,
+  type LineChartDataPoint,
+  type LineChartProps,
+} from './Charts';
 export { Checkbox, type CheckboxProps } from './Checkbox';
 export { ConfirmDialog, type ConfirmDialogProps } from './ConfirmDialog';
 export { CurrencyInput, type CurrencyInputProps } from './CurrencyInput';
 export { DateInput, type DateInputProps } from './DateInput';
 export { DatePicker, type DatePickerProps } from './DatePicker';
 export { Divider, type DividerProps } from './Divider';
-export { DropdownSelect, type DropdownSelectOption, type DropdownSelectProps } from './DropdownSelect';
+export {
+  DropdownSelect,
+  type DropdownSelectOption,
+  type DropdownSelectProps,
+} from './DropdownSelect';
 export { EmptyState, type EmptyStateProps } from './EmptyState';
 export { ErrorBoundary } from './ErrorBoundary';
 export { Input, type InputProps } from './Input';
@@ -46,6 +50,11 @@ export { Input, type InputProps } from './Input';
 export { AppLayout } from './Layout/AppLayout';
 // Logo & Branding
 export { LogoIcon } from './LogoIcon';
+export {
+  MultiSelectFilter,
+  type MultiSelectFilterProps,
+  type MultiSelectOption,
+} from './MultiSelectFilter';
 export { PageHeader } from './PageHeader/PageHeader';
 export { Pagination, type PaginationProps } from './Pagination';
 export { ProgressBar, type ProgressBarProps } from './ProgressBar';

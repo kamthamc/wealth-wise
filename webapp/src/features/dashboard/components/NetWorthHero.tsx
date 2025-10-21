@@ -7,10 +7,10 @@ import { ArrowDown, ArrowUp, TrendingDown, TrendingUp } from 'lucide-react';
 import { useMemo } from 'react';
 import { useAccountStore, useTransactionStore } from '@/core/stores';
 import { LineChart } from '@/shared/components';
-import { 
-  formatCurrency, 
+import {
   calculateAccountBalances,
   calculateMonthlyStats,
+  formatCurrency,
 } from '@/shared/utils';
 import './NetWorthHero.css';
 
@@ -28,9 +28,9 @@ export function NetWorthHero() {
 
   const netWorthData: NetWorthData = useMemo(() => {
     // Calculate current net worth using optimized batch calculation
-    const activeAccounts = accounts.filter(acc => acc.is_active);
+    const activeAccounts = accounts.filter((acc) => acc.is_active);
     const balances = calculateAccountBalances(activeAccounts, transactions);
-    
+
     const current = activeAccounts.reduce((sum, acc) => {
       return sum + (balances.get(acc.id) || 0);
     }, 0);
@@ -70,17 +70,31 @@ export function NetWorthHero() {
   // Calculate 6-month net worth trend for the sparkline
   const netWorthTrend = useMemo(() => {
     const monthlyStats = calculateMonthlyStats(transactions, 6);
-    
+
     // Calculate net worth at each month
-    return monthlyStats.map(stat => {
+    return monthlyStats.map((stat) => {
       // Sum initial balances
       const initialTotal = accounts
-        .filter(acc => acc.is_active)
+        .filter((acc) => acc.is_active)
         .reduce((sum, acc) => sum + Number(acc.balance || 0), 0);
-      
+
       // Add the running balance from transactions
       return {
-        label: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][stat.month - 1] || '',
+        label:
+          [
+            'Jan',
+            'Feb',
+            'Mar',
+            'Apr',
+            'May',
+            'Jun',
+            'Jul',
+            'Aug',
+            'Sep',
+            'Oct',
+            'Nov',
+            'Dec',
+          ][stat.month - 1] || '',
         value: initialTotal + stat.balance,
       };
     });
@@ -156,7 +170,11 @@ export function NetWorthHero() {
               height={120}
               showGrid={false}
               showLabels={false}
-              color={netWorthData.isPositive ? 'var(--color-success)' : 'var(--color-danger)'}
+              color={
+                netWorthData.isPositive
+                  ? 'var(--color-success)'
+                  : 'var(--color-danger)'
+              }
               fillArea
             />
           </div>

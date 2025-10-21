@@ -58,7 +58,7 @@
 .budget-form__header {
   position: relative;
   padding: 24px;
-  border-bottom: 1px solid var(--color-border, #e5e7eb);
+  border-bottom: 1px solid var(--border-primary, #e5e7eb);
 }
 
 .budget-form__title {
@@ -146,7 +146,7 @@
   align-items: center;
   gap: 12px;
   padding: 12px;
-  border: 2px solid var(--color-border, #e5e7eb);
+  border: 2px solid var(--border-primary, #e5e7eb);
   border-radius: 8px;
   background-color: var(--color-bg-primary, #ffffff);
   cursor: pointer;
@@ -159,7 +159,7 @@
 }
 
 .budget-form__radio-item:hover {
-  border-color: var(--color-border-hover, #d1d5db);
+  border-color: var(--border-primary-hover, #d1d5db);
   background-color: var(--color-bg-secondary, #f9fafb);
 }
 
@@ -167,7 +167,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  border: 2px solid var(--color-border, #d1d5db);
+  border: 2px solid var(--border-primary, #d1d5db);
   background-color: var(--color-bg-primary, #ffffff);
   display: flex;
   align-items: center;
@@ -223,7 +223,7 @@
   position: relative;
   flex-grow: 1;
   height: 6px;
-  background-color: var(--color-border, #e5e7eb);
+  background-color: var(--border-primary, #e5e7eb);
   border-radius: 9999px;
 }
 
@@ -267,7 +267,7 @@
   justify-content: flex-end;
   gap: 12px;
   padding: 16px 24px;
-  border-top: 1px solid var(--color-border, #e5e7eb);
+  border-top: 1px solid var(--border-primary, #e5e7eb);
   background-color: var(--color-bg-secondary, #f9fafb);
 }
 
@@ -285,7 +285,7 @@
   }
 
   .budget-form__header {
-    border-bottom-color: var(--color-border, #374151);
+    border-bottom-color: var(--border-primary, #374151);
   }
 
   .budget-form__title {
@@ -314,7 +314,7 @@
   }
 
   .budget-form__radio-item {
-    border-color: var(--color-border, #374151);
+    border-color: var(--border-primary, #374151);
     background-color: var(--color-bg-secondary, #111827);
   }
 
@@ -326,12 +326,12 @@
   }
 
   .budget-form__radio-item:hover {
-    border-color: var(--color-border-hover, #4b5563);
+    border-color: var(--border-primary-hover, #4b5563);
     background-color: var(--color-bg-tertiary, #1f2937);
   }
 
   .budget-form__radio-button {
-    border-color: var(--color-border, #4b5563);
+    border-color: var(--border-primary, #4b5563);
     background-color: var(--color-bg-secondary, #111827);
   }
 
@@ -340,7 +340,7 @@
   }
 
   .budget-form__slider-track {
-    background-color: var(--color-border, #374151);
+    background-color: var(--border-primary, #374151);
   }
 
   .budget-form__slider-thumb {
@@ -349,7 +349,7 @@
   }
 
   .budget-form__footer {
-    border-top-color: var(--color-border, #374151);
+    border-top-color: var(--border-primary, #374151);
     background-color: var(--color-bg-secondary, #111827);
   }
 }

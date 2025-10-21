@@ -1,15 +1,11 @@
 /* Net Worth Hero Styles */
 
 .networth-hero {
-  background: linear-gradient(
-    135deg,
-    var(--color-primary) 0%,
-    var(--color-primary-dark, #0056b3) 100%
-  );
+  background-color: var(--bg-primary-elevated);
   border-radius: var(--radius-xl);
   padding: var(--space-8) var(--space-6);
   margin-bottom: var(--space-6);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-lg);
   position: relative;
   overflow: hidden;
 }
@@ -49,7 +45,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  color: rgba(255, 255, 255, 0.9);
+  /* color: rgba(255, 255, 255, 0.9); */
   font-size: var(--font-size-sm);
   font-weight: 500;
   text-transform: uppercase;
@@ -194,7 +190,7 @@
 
 /* Loading State */
 .networth-hero--loading {
-  background: var(--color-surface-hover);
+  background: var(--bg-primary-hover);
   min-height: 220px;
   display: flex;
   align-items: center;
@@ -214,9 +210,9 @@
 .networth-hero__skeleton-change {
   background: linear-gradient(
     90deg,
-    var(--color-border) 25%,
-    var(--color-surface-hover) 50%,
-    var(--color-border) 75%
+    var(--border-primary) 25%,
+    var(--bg-primary-hover) 50%,
+    var(--border-primary) 75%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;

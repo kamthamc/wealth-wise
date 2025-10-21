@@ -123,7 +123,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
+  width: auto;
   padding: var(--space-3) var(--space-4);
   border: 2px solid var(--border-primary);
   border-radius: var(--radius-lg);
@@ -163,7 +163,8 @@
   transition: transform 0.2s ease;
 }
 
-.account-modal__type-select[data-state='open'] .account-modal__type-select-chevron {
+.account-modal__type-select[data-state="open"]
+  .account-modal__type-select-chevron {
   transform: rotate(180deg);
 }
 
@@ -232,7 +233,7 @@
   outline: none;
 }
 
-.account-modal__type-item[data-state='checked'] {
+.account-modal__type-item[data-state="checked"] {
   background: var(--color-primary-100);
   font-weight: var(--font-semibold);
 }

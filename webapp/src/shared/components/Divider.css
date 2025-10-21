@@ -1,6 +1,6 @@
 .divider {
   border: none;
-  background-color: var(--color-border);
+  background-color: var(--border-primary);
 }
 
 /* Horizontal */
@@ -53,7 +53,7 @@
   flex: 1;
   border: none;
   height: 1px;
-  background-color: var(--color-border);
+  background-color: var(--border-primary);
 }
 
 .divider__label {

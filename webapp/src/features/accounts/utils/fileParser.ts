@@ -27,10 +27,14 @@ export async function parseCSV(file: File): Promise<ParsedData> {
     reader.onload = (e) => {
       try {
         const text = e.target?.result as string;
-        const allLines = text.split(/\r?\n/).filter(line => line.trim());
+        const allLines = text.split(/\r?\n/).filter((line) => line.trim());
 
         if (allLines.length < 2) {
-          reject(new Error('CSV file must have at least a header row and one data row'));
+          reject(
+            new Error(
+              'CSV file must have at least a header row and one data row'
+            )
+          );
           return;
         }
 
@@ -38,19 +42,36 @@ export async function parseCSV(file: File): Promise<ParsedData> {
         let headerIndex = 0;
         // Including HDFC-specific terms: "Narration", "Chq./Ref.No.", "Value Dt", "Withdrawal Amt.", "Deposit Amt."
         const headerKeywords = [
-          'date', 'description', 'amount', 'type', 'category', 
-          'debit', 'credit', 'balance', 'narration', 'particulars',
-          'withdrawal', 'deposit', 'value dt', 'chq', 'ref.no', 'ref no',
-          'withdrawal amt', 'deposit amt', 'closing balance'
+          'date',
+          'description',
+          'amount',
+          'type',
+          'category',
+          'debit',
+          'credit',
+          'balance',
+          'narration',
+          'particulars',
+          'withdrawal',
+          'deposit',
+          'value dt',
+          'chq',
+          'ref.no',
+          'ref no',
+          'withdrawal amt',
+          'deposit amt',
+          'closing balance',
         ];
-        
+
         for (let i = 0; i < Math.min(allLines.length, 10); i++) {
           const line = allLines[i];
           if (!line) continue;
-          
+
           const lowerLine = line.toLowerCase();
-          const matchCount = headerKeywords.filter(keyword => lowerLine.includes(keyword)).length;
-          
+          const matchCount = headerKeywords.filter((keyword) =>
+            lowerLine.includes(keyword)
+          ).length;
+
           // If line contains at least 2 header keywords, it's likely the header
           if (matchCount >= 2) {
             headerIndex = i;
@@ -64,7 +85,7 @@ export async function parseCSV(file: File): Promise<ParsedData> {
         const headers = parseCSVLine(lines[0]!);
 
         // Parse data rows
-        const rows = lines.slice(1).map(line => {
+        const rows = lines.slice(1).map((line) => {
           const values = parseCSVLine(line);
           const row: Record<string, string> = {};
           headers.forEach((header, index) => {
@@ -130,11 +151,30 @@ function findTableStartRow(data: string[][]): number {
   // Look for common transaction table headers
   // Including bank-specific terms (HDFC: "Narration", "Chq./Ref.No.", "Value Dt", "Withdrawal Amt.", "Deposit Amt.")
   const headerKeywords = [
-    'date', 'txn', 'transaction', 'posting', 'value date', 'value dt',
-    'description', 'narration', 'particulars', 'details',
-    'amount', 'debit', 'credit', 'withdrawal', 'deposit',
-    'withdrawal amt', 'deposit amt', 'closing balance',
-    'balance', 'type', 'category', 'chq', 'ref.no', 'ref no'
+    'date',
+    'txn',
+    'transaction',
+    'posting',
+    'value date',
+    'value dt',
+    'description',
+    'narration',
+    'particulars',
+    'details',
+    'amount',
+    'debit',
+    'credit',
+    'withdrawal',
+    'deposit',
+    'withdrawal amt',
+    'deposit amt',
+    'closing balance',
+    'balance',
+    'type',
+    'category',
+    'chq',
+    'ref.no',
+    'ref no',
   ];
 
   for (let i = 0; i < Math.min(data.length, 30); i++) {
@@ -142,29 +182,39 @@ function findTableStartRow(data: string[][]): number {
     if (!row) continue;
 
     // Check if this row looks like a header row
-    const rowText = row.map(cell => String(cell || '').toLowerCase().trim()).join(' ');
-    
+    const rowText = row
+      .map((cell) =>
+        String(cell || '')
+          .toLowerCase()
+          .trim()
+      )
+      .join(' ');
+
     // Count how many header keywords are present
-    const matchCount = headerKeywords.filter(keyword => rowText.includes(keyword)).length;
-    
+    const matchCount = headerKeywords.filter((keyword) =>
+      rowText.includes(keyword)
+    ).length;
+
     // If at least 3 header keywords found, this is likely the header row
     if (matchCount >= 3) {
       return i;
     }
 
     // Also check if row has multiple non-empty cells that look like headers
-    const nonEmptyCells = row.filter(cell => cell != null && String(cell).trim() !== '');
+    const nonEmptyCells = row.filter(
+      (cell) => cell != null && String(cell).trim() !== ''
+    );
     if (nonEmptyCells.length >= 3) {
-      const hasDateColumn = nonEmptyCells.some(cell => 
+      const hasDateColumn = nonEmptyCells.some((cell) =>
         /date|dt|txn/i.test(String(cell))
       );
-      const hasAmountColumn = nonEmptyCells.some(cell => 
+      const hasAmountColumn = nonEmptyCells.some((cell) =>
         /amount|debit|credit|withdrawal|deposit|balance/i.test(String(cell))
       );
-      const hasDescColumn = nonEmptyCells.some(cell => 
+      const hasDescColumn = nonEmptyCells.some((cell) =>
         /description|narration|particulars|details|remark/i.test(String(cell))
       );
-      
+
       if (hasDateColumn && hasAmountColumn && hasDescColumn) {
         return i;
       }
@@ -175,8 +225,10 @@ function findTableStartRow(data: string[][]): number {
   for (let i = 0; i < Math.min(data.length, 10); i++) {
     const row = data[i];
     if (!row) continue;
-    
-    const nonEmptyCells = row.filter(cell => cell != null && String(cell).trim() !== '');
+
+    const nonEmptyCells = row.filter(
+      (cell) => cell != null && String(cell).trim() !== ''
+    );
     if (nonEmptyCells.length >= 3) {
       return i;
     }
@@ -192,10 +244,25 @@ function findTableStartRow(data: string[][]): number {
 function findPDFTableStart(lines: string[]): number {
   // Including HDFC-specific terms
   const tableIndicators = [
-    'transaction', 'date', 'particulars', 'narration', 'description',
-    'debit', 'credit', 'withdrawal', 'deposit', 'balance',
-    'txn date', 'posting date', 'value date', 'value dt',
-    'withdrawal amt', 'deposit amt', 'closing balance', 'chq', 'ref no'
+    'transaction',
+    'date',
+    'particulars',
+    'narration',
+    'description',
+    'debit',
+    'credit',
+    'withdrawal',
+    'deposit',
+    'balance',
+    'txn date',
+    'posting date',
+    'value date',
+    'value dt',
+    'withdrawal amt',
+    'deposit amt',
+    'closing balance',
+    'chq',
+    'ref no',
   ];
 
   for (let i = 0; i < Math.min(lines.length, 50); i++) {
@@ -203,16 +270,20 @@ function findPDFTableStart(lines: string[]): number {
     if (!line || line.length < 5) continue;
 
     // Check if this line contains multiple table indicators
-    const matchCount = tableIndicators.filter(indicator => line.includes(indicator)).length;
-    
+    const matchCount = tableIndicators.filter((indicator) =>
+      line.includes(indicator)
+    ).length;
+
     if (matchCount >= 2) {
       return i;
     }
 
     // Check for common table header patterns
-    if (/date.*description.*amount/i.test(line) || 
-        /date.*particulars.*debit.*credit/i.test(line) ||
-        /txn.*date.*narration/i.test(line)) {
+    if (
+      /date.*description.*amount/i.test(line) ||
+      /date.*particulars.*debit.*credit/i.test(line) ||
+      /txn.*date.*narration/i.test(line)
+    ) {
       return i;
     }
   }
@@ -225,7 +296,7 @@ function findPDFTableStart(lines: string[]): number {
  */
 function isHeaderOrFooterLine(line: string): boolean {
   const lower = line.toLowerCase();
-  
+
   // Common header/footer patterns to skip
   const skipPatterns = [
     /^page \d+/i,
@@ -243,7 +314,7 @@ function isHeaderOrFooterLine(line: string): boolean {
     /^\d+\s+of\s+\d+$/i, // Page numbers
   ];
 
-  return skipPatterns.some(pattern => pattern.test(lower));
+  return skipPatterns.some((pattern) => pattern.test(lower));
 }
 
 /**
@@ -276,31 +347,48 @@ export async function parseExcel(file: File): Promise<ParsedData> {
           }
 
           // Convert to JSON
-          const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as string[][];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet, {
+            header: 1,
+          }) as string[][];
 
           if (jsonData.length < 2) {
-            reject(new Error('Excel file must have at least a header row and one data row'));
+            reject(
+              new Error(
+                'Excel file must have at least a header row and one data row'
+              )
+            );
             return;
           }
 
           // Find the row where data table starts (skip summary/header rows)
           const tableStartIndex = findTableStartRow(jsonData);
-          
-          if (tableStartIndex === -1 || tableStartIndex >= jsonData.length - 1) {
+
+          if (
+            tableStartIndex === -1 ||
+            tableStartIndex >= jsonData.length - 1
+          ) {
             reject(new Error('Could not find transaction table in Excel file'));
             return;
           }
 
-          const headers = jsonData[tableStartIndex]?.map(h => String(h || '').trim()).filter(h => h) || [];
-          
+          const headers =
+            jsonData[tableStartIndex]
+              ?.map((h) => String(h || '').trim())
+              .filter((h) => h) || [];
+
           if (headers.length === 0) {
             reject(new Error('No valid headers found in Excel file'));
             return;
           }
 
-          const rows = jsonData.slice(tableStartIndex + 1)
-            .filter(row => row && row.some(cell => cell != null && String(cell).trim() !== ''))
-            .map(row => {
+          const rows = jsonData
+            .slice(tableStartIndex + 1)
+            .filter(
+              (row) =>
+                row &&
+                row.some((cell) => cell != null && String(cell).trim() !== '')
+            )
+            .map((row) => {
               const rowData: Record<string, string> = {};
               headers.forEach((header, index) => {
                 rowData[header] = String(row[index] || '').trim();
@@ -322,7 +410,9 @@ export async function parseExcel(file: File): Promise<ParsedData> {
       reader.readAsBinaryString(file);
     });
   } catch (error) {
-    throw new Error('Excel parsing library not available. Please install xlsx package.');
+    throw new Error(
+      'Excel parsing library not available. Please install xlsx package.'
+    );
   }
 }
 
@@ -335,7 +425,7 @@ export async function parsePDF(file: File): Promise<ParsedData> {
   try {
     // Dynamic import to avoid bundling if not used
     const pdfjsLib = await import('pdfjs-dist');
-    
+
     // Set worker path
     pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
@@ -356,16 +446,18 @@ export async function parsePDF(file: File): Promise<ParsedData> {
     const transactions = parseTransactionsFromText(fullText);
 
     if (transactions.length === 0) {
-      throw new Error('No transactions found in PDF. This format may not be supported.');
+      throw new Error(
+        'No transactions found in PDF. This format may not be supported.'
+      );
     }
 
     // Convert to standard format
     const headers = ['Date', 'Description', 'Amount', 'Type'];
-    const rows = transactions.map(txn => ({
-      'Date': txn.date,
-      'Description': txn.description,
-      'Amount': String(txn.amount),
-      'Type': txn.type,
+    const rows = transactions.map((txn) => ({
+      Date: txn.date,
+      Description: txn.description,
+      Amount: String(txn.amount),
+      Type: txn.type,
     }));
 
     return {
@@ -374,7 +466,9 @@ export async function parsePDF(file: File): Promise<ParsedData> {
       format: 'pdf',
     };
   } catch (error) {
-    throw new Error(`Failed to parse PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to parse PDF: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
 }
 
@@ -394,14 +488,14 @@ function parseTransactionsFromText(text: string): ParsedTransaction[] {
   const tableStartIndex = findPDFTableStart(lines);
 
   // Common patterns for Indian bank statements
-  const datePattern = /(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/;
+  const datePattern = /(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})/;
   const amountPattern = /(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)/;
 
   // Start parsing from where the table begins
   for (let i = tableStartIndex; i < lines.length; i++) {
     const line = lines[i]?.trim();
     if (!line) continue;
-    
+
     // Skip empty lines and very short lines (likely not transactions)
     if (line.length < 10) continue;
 
@@ -415,12 +509,16 @@ function parseTransactionsFromText(text: string): ParsedTransaction[] {
     const date = normalizeDateFormat(dateMatch[1]);
 
     // Extract description (text between date and amount)
-    const afterDate = line.substring(line.indexOf(dateMatch[1]) + dateMatch[1].length);
+    const afterDate = line.substring(
+      line.indexOf(dateMatch[1]) + dateMatch[1].length
+    );
     const amountMatch = afterDate.match(amountPattern);
-    
+
     if (!amountMatch || !amountMatch[1]) continue;
 
-    const description = afterDate.substring(0, afterDate.indexOf(amountMatch[1])).trim();
+    const description = afterDate
+      .substring(0, afterDate.indexOf(amountMatch[1]))
+      .trim();
     const amount = parseFloat(amountMatch[1].replace(/,/g, ''));
 
     // Determine type based on keywords
@@ -445,46 +543,65 @@ function parseTransactionsFromText(text: string): ParsedTransaction[] {
  */
 function normalizeDateFormat(dateStr: string): string {
   // Handle DD/MM/YYYY, DD-MM-YYYY, DD/MM/YY
-  const parts = dateStr.split(/[\/\-]/);
-  
+  const parts = dateStr.split(/[/-]/);
+
   if (parts.length === 3) {
-    let day = parts[0];
-    let month = parts[1];
+    const day = parts[0];
+    const month = parts[1];
     let year = parts[2];
-    
+
     if (!day || !month || !year) return dateStr;
-    
+
     // Handle 2-digit year
     if (year.length === 2) {
       year = (parseInt(year) > 50 ? '19' : '20') + year;
     }
-    
+
     return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
   }
-  
+
   return dateStr;
 }
 
 /**
  * Determine transaction type from description and context
  */
-function determineTransactionType(description: string, fullLine: string): 'income' | 'expense' | 'transfer' {
-  const incomeKeywords = ['credit', 'salary', 'deposit', 'interest', 'refund', 'cr', 'payment received'];
-  const expenseKeywords = ['debit', 'withdrawal', 'payment', 'purchase', 'dr', 'charge', 'fee'];
+function determineTransactionType(
+  description: string,
+  fullLine: string
+): 'income' | 'expense' | 'transfer' {
+  const incomeKeywords = [
+    'credit',
+    'salary',
+    'deposit',
+    'interest',
+    'refund',
+    'cr',
+    'payment received',
+  ];
+  const expenseKeywords = [
+    'debit',
+    'withdrawal',
+    'payment',
+    'purchase',
+    'dr',
+    'charge',
+    'fee',
+  ];
   const transferKeywords = ['transfer', 'neft', 'imps', 'rtgs', 'upi'];
 
   // Check for transfer keywords first
-  if (transferKeywords.some(keyword => description.includes(keyword))) {
+  if (transferKeywords.some((keyword) => description.includes(keyword))) {
     return 'transfer';
   }
 
   // Check for income keywords
-  if (incomeKeywords.some(keyword => description.includes(keyword))) {
+  if (incomeKeywords.some((keyword) => description.includes(keyword))) {
     return 'income';
   }
 
   // Check for expense keywords
-  if (expenseKeywords.some(keyword => description.includes(keyword))) {
+  if (expenseKeywords.some((keyword) => description.includes(keyword))) {
     return 'expense';
   }
 
@@ -504,7 +621,9 @@ function determineTransactionType(description: string, fullLine: string): 'incom
 /**
  * Detect file format from extension and MIME type
  */
-export function detectFileFormat(file: File): 'csv' | 'excel' | 'pdf' | 'unknown' {
+export function detectFileFormat(
+  file: File
+): 'csv' | 'excel' | 'pdf' | 'unknown' {
   const extension = file.name.toLowerCase().split('.').pop();
   const mimeType = file.type.toLowerCase();
 

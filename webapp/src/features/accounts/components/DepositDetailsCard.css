@@ -1,0 +1,279 @@
+/**
+ * Deposit Details Card Styles
+ */
+
+.deposit-details-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  margin-top: var(--spacing-4);
+}
+
+.deposit-details-card__loading {
+  text-align: center;
+  padding: var(--spacing-8);
+  color: var(--text-muted);
+}
+
+.deposit-details-card__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text);
+  margin: 0 0 var(--spacing-6) 0;
+}
+
+.deposit-details-card__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-4);
+}
+
+.deposit-details-card__item {
+  display: flex;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.deposit-details-card__item--full {
+  grid-column: 1 / -1;
+}
+
+.deposit-details-card__item-icon {
+  display: flex;
+  align-items: flex-start;
+  padding-top: var(--spacing-1);
+  color: var(--primary);
+}
+
+.deposit-details-card__item-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  flex: 1;
+}
+
+.deposit-details-card__item-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+.deposit-details-card__item-value {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text);
+}
+
+.deposit-details-card__item-value--primary {
+  color: var(--primary);
+}
+
+.deposit-details-card__item-value--success {
+  color: var(--success);
+}
+
+.deposit-details-card__item-subtitle {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.deposit-details-card__item-subtitle--warning {
+  color: var(--warning);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Progress Bar */
+.deposit-details-card__progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  width: 100%;
+}
+
+.deposit-details-card__progress-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+.deposit-details-card__progress-bar {
+  height: 8px;
+  background: var(--border);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.deposit-details-card__progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--success));
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+
+/* Footer */
+.deposit-details-card__footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-6);
+  padding-top: var(--spacing-4);
+  border-top: 1px solid var(--border);
+}
+
+.deposit-details-card__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-1) var(--spacing-3);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-full);
+  background: var(--surface-hover);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.deposit-details-card__badge--success {
+  background: var(--success-bg);
+  color: var(--success);
+  border-color: var(--success);
+}
+
+.deposit-details-card__badge--info {
+  background: var(--primary-bg);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+/* Notes */
+.deposit-details-card__notes {
+  margin-top: var(--spacing-4);
+  padding: var(--spacing-3);
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.deposit-details-card__notes strong {
+  color: var(--text);
+}
+
+/* Interest Payment History */
+.deposit-details-card__history {
+  margin-top: var(--spacing-6);
+  padding-top: var(--spacing-4);
+  border-top: 1px solid var(--border);
+}
+
+.deposit-details-card__history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-4);
+}
+
+.deposit-details-card__history-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text);
+  margin: 0;
+}
+
+.deposit-details-card__history-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.deposit-details-card__history-toggle:hover {
+  background: var(--primary-bg);
+  border-color: var(--primary);
+}
+
+.deposit-details-card__history-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.deposit-details-card__history-item {
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  gap: var(--spacing-3);
+  align-items: center;
+  padding: var(--spacing-3);
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+}
+
+.deposit-details-card__history-item-date {
+  color: var(--text-muted);
+  font-weight: var(--font-weight-medium);
+}
+
+.deposit-details-card__history-item-description {
+  color: var(--text);
+}
+
+.deposit-details-card__history-item-amount {
+  color: var(--success);
+  font-weight: var(--font-weight-semibold);
+  text-align: right;
+}
+
+.deposit-details-card__history-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--spacing-2);
+  padding: var(--spacing-3);
+  background: var(--success-bg);
+  border: 1px solid var(--success);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-medium);
+}
+
+.deposit-details-card__history-total-amount {
+  color: var(--success);
+  font-size: var(--font-size-lg);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .deposit-details-card__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .deposit-details-card__history-item {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-2);
+  }
+
+  .deposit-details-card__history-item-date {
+    font-size: var(--font-size-xs);
+  }
+
+  .deposit-details-card__history-item-amount {
+    text-align: left;
+  }
+
+  .deposit-details-card__history-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-2);
+  }
+}

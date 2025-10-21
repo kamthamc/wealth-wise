@@ -7,11 +7,11 @@
   padding: var(--space-md);
   background-color: var(--color-bg-primary);
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-primary);
 }
 
 .investment-chart:hover {
-  border-color: var(--color-border-hover);
+  border-color: var(--border-primary-hover);
 }
 
 /* Custom Tooltip Styling */
@@ -21,20 +21,20 @@
 
 .recharts-default-tooltip {
   background-color: var(--color-bg-secondary) !important;
-  border: 1px solid var(--color-border) !important;
+  border: 1px solid var(--border-primary) !important;
   border-radius: var(--radius-sm) !important;
   padding: var(--space-sm) !important;
   box-shadow: var(--shadow-md);
 }
 
 .recharts-tooltip-label {
-  color: var(--color-text-primary) !important;
+  color: var(--text-primary) !important;
   font-weight: 600;
   margin-bottom: var(--space-xs);
 }
 
 .recharts-tooltip-item {
-  color: var(--color-text-secondary) !important;
+  color: var(--text-secondary) !important;
   padding: var(--space-xs) 0;
 }
 

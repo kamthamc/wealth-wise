@@ -93,12 +93,12 @@
 }
 
 .button--ghost:hover:not(:disabled) {
-  background-color: var(--color-surface);
+  background-color: var(--bg-primary);
 }
 
 .button--danger {
   background-color: var(--color-danger);
-  color: var(--color-background);
+  color: var(--bg);
 }
 
 .button--danger:hover:not(:disabled) {
