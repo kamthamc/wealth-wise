@@ -1,0 +1,102 @@
+{
+  "conditions": [
+    {
+      "name": "beta_testers",
+      "expression": "percent <= 10"
+    },
+    {
+      "name": "production_users",
+      "expression": "percent > 10"
+    }
+  ],
+  "parameters": {
+    "enable_advanced_analytics": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "conditionalValues": {
+        "beta_testers": {
+          "value": "true"
+        }
+      },
+      "description": "Enable advanced analytics dashboard features for beta testing"
+    },
+    "enable_ai_insights": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "conditionalValues": {
+        "beta_testers": {
+          "value": "true"
+        }
+      },
+      "description": "Enable AI-powered financial insights"
+    },
+    "enable_export_pdf": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "description": "Enable PDF export functionality"
+    },
+    "max_accounts_per_user": {
+      "defaultValue": {
+        "value": "50"
+      },
+      "description": "Maximum number of accounts a user can create"
+    },
+    "max_transactions_per_import": {
+      "defaultValue": {
+        "value": "100"
+      },
+      "description": "Maximum number of transactions that can be imported at once"
+    },
+    "enable_deposit_calculator": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "description": "Enable deposit calculator features (FD, RD, PPF)"
+    },
+    "enable_goal_tracking": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "conditionalValues": {
+        "beta_testers": {
+          "value": "true"
+        }
+      },
+      "description": "Enable financial goal tracking features"
+    },
+    "enable_budget_alerts": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "description": "Enable budget alerts and notifications"
+    },
+    "theme_variant": {
+      "defaultValue": {
+        "value": "default"
+      },
+      "conditionalValues": {
+        "beta_testers": {
+          "value": "modern"
+        }
+      },
+      "description": "UI theme variant (default, modern, compact)"
+    },
+    "report_cache_ttl_seconds": {
+      "defaultValue": {
+        "value": "300"
+      },
+      "description": "Report cache time-to-live in seconds"
+    }
+  },
+  "version": {
+    "versionNumber": "1",
+    "updateTime": "2025-10-22T00:00:00Z",
+    "updateUser": {
+      "email": "admin@wealthwise.app"
+    },
+    "description": "Initial Remote Config setup for A/B testing and feature flags"
+  }
+}

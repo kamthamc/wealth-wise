@@ -1,0 +1,19 @@
+{
+	"compilerOptions": {
+		"module": "esnext",
+		"moduleResolution": "bundler",
+		"noImplicitReturns": true,
+		"noUnusedLocals": true,
+		"outDir": "lib",
+		"sourceMap": false,
+		"strict": true,
+		"target": "es2024",
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"declaration": true,
+		"emitDeclarationOnly": true,
+		"tsBuildInfoFile": ".tsbuildinfo"
+	},
+	"compileOnSave": true,
+	"include": ["src"]
+}

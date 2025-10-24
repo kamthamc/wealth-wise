@@ -1,0 +1,32 @@
+{
+	"name": "@svc/wealth-wise-functions",
+	"version": "1.0.0",
+	"description": "Cloud Functions for WealthWise",
+	"main": "lib/index.js",
+	"scripts": {
+		"build": "tsc",
+		"serve": "npm run build && firebase emulators:start --only functions",
+		"shell": "npm run build && firebase functions:shell",
+		"start": "npm run shell",
+		"deploy": "firebase deploy --only functions",
+		"logs": "firebase functions:log",
+		"fb": "firebase",
+		"lint": "biome check src",
+		"lint:fix": "biome check --write src",
+		"format": "biome format --write src"
+	},
+	"dependencies": {
+		"@biomejs/biome": "catalog:",
+		"@svc/wealth-wise-shared-types": "workspace:*",
+		"cors": "^2.8.5",
+		"firebase-admin": "catalog:",
+		"firebase-functions": "catalog:",
+		"zod": "^4.1.12"
+	},
+	"devDependencies": {
+		"@types/node": "catalog:",
+		"firebase-tools": "catalog:",
+		"typescript": "catalog:"
+	},
+	"private": true
+}
