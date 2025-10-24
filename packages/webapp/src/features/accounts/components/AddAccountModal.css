@@ -1,0 +1,287 @@
+/* Add/Edit Account Modal Styles */
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.8); /* Darker for better focus */
+  /* z-index: var(--z-modal-backdrop); */
+  animation: fadeIn 200ms ease-out;
+  backdrop-filter: blur(4px); /* Add blur for better modal focus */
+}
+
+/* Modal Content */
+.account-modal__content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 540px; /* Slightly wider for better content */
+  width: 90vw;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-2xl);
+  border: 1px solid var(--border-primary); /* Subtle border for definition */
+  /* z-index: var(--z-modal); */
+  animation: slideIn 200ms ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Modal Title & Subtitle */
+.account-modal__title {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-2) 0;
+  line-height: var(--leading-tight);
+}
+
+.account-modal__subtitle {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-6) 0;
+  line-height: var(--leading-relaxed);
+}
+
+/* Modal Form */
+.account-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(
+    --space-6
+  ); /* Increased from spacing-5 to space-6 for better breathing room */
+  padding: var(--space-6);
+}
+
+.account-modal__form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3); /* Increased from spacing-2 to space-3 */
+}
+
+.account-modal__label {
+  font-size: var(
+    --text-base
+  ); /* Increased from font-size-sm for better readability */
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  line-height: var(--leading-normal);
+}
+
+.account-modal__label--required::after {
+  content: " *";
+  color: var(--color-danger-500);
+  font-weight: var(--font-bold);
+}
+
+.account-modal__help-text {
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+  line-height: var(--leading-relaxed);
+  margin-top: var(--space-1);
+}
+
+.account-modal__error {
+  font-size: var(--text-sm);
+  color: var(--color-danger-600);
+  margin-top: var(--space-2);
+  font-weight: var(--font-medium);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.account-modal__error::before {
+  content: "⚠️";
+  font-size: 1rem;
+}
+
+/* Type Selection Dropdown */
+.account-modal__type-select {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: auto;
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  background: var(--bg-primary);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.account-modal__type-select:hover {
+  border-color: var(--color-primary-500);
+  background: var(--color-primary-50);
+}
+
+.account-modal__type-select:focus {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-offset-shadow), var(--focus-ring-shadow);
+}
+
+.account-modal__type-select-value {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--text-primary);
+}
+
+.account-modal__type-select-icon {
+  display: flex;
+  align-items: center;
+  color: var(--color-primary-600);
+}
+
+.account-modal__type-select-chevron {
+  color: var(--text-secondary);
+  transition: transform 0.2s ease;
+}
+
+.account-modal__type-select[data-state="open"]
+  .account-modal__type-select-chevron {
+  transform: rotate(180deg);
+}
+
+/* Dropdown Content */
+.account-modal__type-content {
+  overflow: hidden;
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-primary);
+  box-shadow: var(--shadow-xl);
+  z-index: 100;
+  max-height: 380px;
+  animation: slideDownAndFade 200ms ease-out;
+}
+
+@keyframes slideDownAndFade {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.account-modal__type-viewport {
+  padding: var(--space-2);
+}
+
+/* Category Label */
+.account-modal__type-category-label {
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Separator */
+.account-modal__type-separator {
+  height: 1px;
+  background: var(--border-secondary);
+  margin: var(--space-2) 0;
+}
+
+/* Dropdown Items */
+.account-modal__type-item {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-3);
+  margin: 0 var(--space-1);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s ease;
+}
+
+.account-modal__type-item:hover,
+.account-modal__type-item[data-highlighted] {
+  background: var(--color-primary-50);
+  outline: none;
+}
+
+.account-modal__type-item[data-state="checked"] {
+  background: var(--color-primary-100);
+  font-weight: var(--font-semibold);
+}
+
+.account-modal__type-item-content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--text-primary);
+}
+
+.account-modal__type-item-icon {
+  display: flex;
+  align-items: center;
+  color: var(--color-primary-600);
+}
+
+.account-modal__type-item-indicator {
+  display: flex;
+  align-items: center;
+  color: var(--color-primary-600);
+}
+
+/* Modal Actions */
+.account-modal__actions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+  padding: var(--space-5) var(--space-6);
+  border-top: 1px solid var(--border-secondary);
+  background: var(--bg-secondary); /* Subtle background for action area */
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .account-modal__content {
+    max-width: 100%;
+  }
+
+  .account-modal__type-content {
+    max-height: 300px;
+  }
+
+  .account-modal__actions {
+    flex-direction: column-reverse;
+  }
+
+  .account-modal__actions button {
+    width: 100%;
+  }
+}

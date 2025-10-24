@@ -1,0 +1,24 @@
+{
+    "main": "dist/index.js",
+    "name": "@svc/wealth-wise-shared-types",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "build": "tsc -b",
+        "clean": "rm -rf lib",
+        "format": "biome format --write .",
+        "lint": "biome check .",
+        "lint:fix": "biome check --write .",
+        "typecheck": "tsc --noEmit"
+    },
+    "types": "lib/index.d.ts",
+    "dependencies": {},
+    "devDependencies": {
+        "@biomejs/biome": "catalog:",
+        "@types/node": "catalog:",
+        "firebase": "catalog:",
+        "firebase-functions": "catalog:",
+        "firebase-tools": "catalog:",
+        "typescript": "catalog:"
+    }
+}

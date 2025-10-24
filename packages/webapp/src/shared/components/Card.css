@@ -1,0 +1,100 @@
+.card {
+  background-color: var(--bg);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-normal);
+}
+
+/* Variants */
+.card--default {
+  background-color: var(--bg-primary);
+}
+
+.card--outlined {
+  border: 2px solid var(--border-primary);
+}
+
+.card--elevated {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Padding */
+.card--padding-none {
+  padding: 0;
+}
+
+.card--padding-small {
+  padding: var(--space-4);
+}
+
+.card--padding-medium {
+  padding: var(--space-5);
+}
+
+.card--padding-large {
+  padding: var(--space-6);
+}
+
+/* Interactive */
+.card--interactive {
+  cursor: pointer;
+}
+
+.card--interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
+}
+
+.card--interactive:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.card--interactive:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Header, Content, Footer */
+.card__header {
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--border-primary);
+  margin-bottom: var(--space-md);
+}
+
+.card__footer {
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--border-primary);
+  margin-top: var(--space-md);
+}
+
+/* When card has no padding, add padding to sections */
+.card--padding-none .card__header {
+  padding: var(--space-md);
+  padding-bottom: var(--space-md);
+  margin-bottom: 0;
+}
+
+.card--padding-none .card__content {
+  padding: var(--space-md);
+}
+
+.card--padding-none .card__footer {
+  padding: var(--space-md);
+  padding-top: var(--space-md);
+  margin-top: 0;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+
+  .card--interactive:hover {
+    transform: none;
+  }
+
+  .card--interactive:active {
+    transform: none;
+  }
+}

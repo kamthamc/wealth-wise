@@ -1,0 +1,71 @@
+/**
+ * Investment Chart Styles
+ */
+
+.investment-chart {
+  width: 100%;
+  padding: var(--space-md);
+  background-color: var(--color-bg-primary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-primary);
+}
+
+.investment-chart:hover {
+  border-color: var(--border-primary-hover);
+}
+
+/* Custom Tooltip Styling */
+.recharts-tooltip-wrapper {
+  z-index: 10;
+}
+
+.recharts-default-tooltip {
+  background-color: var(--color-bg-secondary) !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: var(--radius-sm) !important;
+  padding: var(--space-sm) !important;
+  box-shadow: var(--shadow-md);
+}
+
+.recharts-tooltip-label {
+  color: var(--text-primary) !important;
+  font-weight: 600;
+  margin-bottom: var(--space-xs);
+}
+
+.recharts-tooltip-item {
+  color: var(--text-secondary) !important;
+  padding: var(--space-xs) 0;
+}
+
+/* Responsive Chart Adjustments */
+@media (max-width: 768px) {
+  .investment-chart {
+    padding: var(--space-sm);
+  }
+}
+
+/* Loading State */
+.investment-chart--loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-secondary) 25%,
+    var(--color-bg-tertiary) 50%,
+    var(--color-bg-secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

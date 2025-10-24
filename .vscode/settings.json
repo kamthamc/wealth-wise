@@ -6,5 +6,7 @@
     "chat.mcp.autostart": "newAndOutdated",
     "chat.agent.thinkingStyle": "collapsedPreview",
     "chat.useFileStorage": true,
-    "sweetpad.build.xcodeWorkspacePath": "apple/WealthWise/WealthWise.xcodeproj/project.xcworkspace"
+    "sweetpad.build.xcodeWorkspacePath": "apple/WealthWise/WealthWise.xcodeproj/project.xcworkspace",
+    "biome.enabled": true,
+    "biome.configurationPath": "./webapp/biome.json"
 }

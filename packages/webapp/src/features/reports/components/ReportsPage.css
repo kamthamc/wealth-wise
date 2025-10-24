@@ -1,0 +1,300 @@
+/* Reports Page Styles */
+
+.reports-page {
+  padding: var(--space-6) var(--space-4);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.reports-page__header {
+  margin-bottom: var(--space-6);
+}
+
+.reports-page__title {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.reports-page__description {
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Period Selector - Using SegmentedControl */
+.reports-page__period-selector {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--space-8);
+}
+
+/* Summary Section */
+.reports-page__summary {
+  margin-bottom: var(--space-8);
+}
+
+.reports-page__section-title {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-4) 0;
+}
+
+.reports-page__stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-4);
+}
+
+/* Sections */
+.reports-page__section {
+  margin-bottom: var(--space-8);
+}
+
+.reports-page__empty {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: var(--space-8);
+  font-style: italic;
+}
+
+/* Category List */
+.reports-page__category-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.category-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.category-item__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.category-item__name {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.category-item__amount {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.category-item__bar-container {
+  width: 100%;
+  height: 8px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.category-item__bar {
+  height: 100%;
+  background: var(--color-danger);
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+
+.category-item--income .category-item__bar {
+  background: var(--color-success);
+}
+
+.category-item__footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.category-item__percentage {
+  font-weight: 600;
+}
+
+/* Monthly Trends */
+.reports-page__trends {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.trend-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+
+.trend-item__month {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.trend-item__bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.trend-item__bar-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 120px;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.trend-item__label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.trend-item__bar-bg {
+  width: 100%;
+  height: 24px;
+  background: var(--bg-primary);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.trend-item__bar {
+  height: 100%;
+  border-radius: var(--radius-md);
+  transition: width 0.3s ease;
+}
+
+.trend-item__bar--income {
+  background: var(--color-success);
+}
+
+.trend-item__bar--expense {
+  background: var(--color-danger);
+}
+
+.trend-item__value {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.trend-item__savings {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  text-align: center;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--border-primary);
+  font-weight: 600;
+}
+
+/* Account Balances */
+.reports-page__accounts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--space-4);
+}
+
+.account-balance {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-primary);
+}
+
+.account-balance--total {
+  background: var(--color-primary-subtle);
+  border-color: var(--color-primary);
+  grid-column: 1 / -1;
+}
+
+.account-balance__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.account-balance__name {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.account-balance__type {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: var(--bg-primary);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.account-balance__amount {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.account-balance--total .account-balance__amount {
+  font-size: var(--font-size-2xl);
+  color: var(--color-primary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .reports-page {
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .reports-page__title {
+    font-size: var(--font-size-2xl);
+  }
+
+  .reports-page__stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reports-page__period-selector {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+
+  .trend-item__bar-row {
+    grid-template-columns: 60px 1fr 100px;
+    gap: var(--space-2);
+  }
+
+  .reports-page__accounts {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .category-item__bar,
+  .trend-item__bar {
+    transition: none;
+  }
+}

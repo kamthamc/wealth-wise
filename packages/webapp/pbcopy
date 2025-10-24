@@ -1,0 +1,9 @@
+
+> webapp@0.0.0 lint
+> biome check .
+
+The number of diagnostics exceeds the limit allowed. Use --max-diagnostics to increase it.
+Diagnostics not shown: 3.
+Checked 108 files in 14ms. No fixes applied.
+Found 5 errors.
+Found 10 warnings.

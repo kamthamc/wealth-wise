@@ -1,0 +1,86 @@
+/**
+ * Page Header Styles
+ */
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border-primary);
+  /* margin-bottom: 32px; */
+}
+
+.page-header__content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.page-header__icon {
+  font-size: 32px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.page-header__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.page-header__title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.page-header__description {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.page-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .page-header__icon {
+    font-size: 28px;
+  }
+
+  .page-header__title {
+    font-size: 24px;
+  }
+
+  .page-header__description {
+    font-size: 13px;
+  }
+
+  .page-header__actions {
+    width: 100%;
+  }
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .page-header {
+    border-color: var(--border-primary, #334155);
+  }
+}

@@ -94,6 +94,7 @@ iOSInjectionProject/
 
 # AI/LLM Generated Content and Logs
 logs/
+*.log
 *.ai-log
 *.llm-output
 .copilot-workspace/
@@ -106,3 +107,5 @@ obj/
 target/
 out/
 dist/
+node_modules/
+**/node_modules/

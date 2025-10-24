@@ -1,0 +1,36 @@
+{
+  "name": "@svc/wealth-wise",
+  "version": "1.0.0",
+  "description": "WealthWise Financial Management Platform",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"pnpm run emulators\" \"pnpm run webapp:dev\"",
+    "emulators": "firebase emulators:start",
+    "webapp:dev": "pnpm run -r dev",
+    "functions:build": "cd functions && pnpm run build",
+    "functions:deploy": "firebase deploy --only functions",
+    "deploy": "firebase deploy",
+    "lint": "pnpm run -r lint",
+    "lint:fix": "pnpm run -r lint:fix",
+    "format": "pnpm run -r format",
+    "build": "pnpm run -r build",
+    "add-changes": "changeset add",
+    "version-packages": "changeset version",
+    "publish-packages": "changeset publish"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.7",
+    "@changesets/cli": "^2.29.7",
+    "@types/node": "catalog:",
+    "concurrently": "catalog:",
+    "firebase-tools": "catalog:",
+    "typescript": "catalog:"
+  },
+  "engines": {
+    "node": "22",
+    "pnpm": ">=10.19.0"
+  }
+}

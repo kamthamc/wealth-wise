@@ -1,0 +1,60 @@
+/* Recent Transactions section styles */
+
+.recent-transactions__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-5);
+}
+
+.recent-transactions__title {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.recent-transactions__link {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.recent-transactions__link:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}
+
+.recent-transactions__link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.transaction-amount {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.transaction-amount--income {
+  color: var(--color-success);
+}
+
+.transaction-amount--expense {
+  color: var(--color-danger);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .recent-transactions__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+
+  .recent-transactions__title {
+    font-size: var(--font-size-lg);
+  }
+}

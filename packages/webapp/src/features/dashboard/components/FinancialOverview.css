@@ -1,0 +1,37 @@
+/* Financial Overview section styles */
+
+.financial-overview__title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-5) 0;
+}
+
+.financial-overview__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+
+.financial-overview__icon {
+  font-size: 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .financial-overview__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  .financial-overview__title {
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--space-4);
+  }
+}
+
+@media (min-width: 1200px) {
+  .financial-overview__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

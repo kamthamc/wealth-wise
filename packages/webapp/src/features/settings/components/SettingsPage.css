@@ -1,0 +1,554 @@
+/**
+ * Settings Page Styles
+ * WCAG 2.1 AA compliant with proper spacing and touch targets
+ */
+
+/* Settings section spacing */
+.settings-section {
+  padding: var(--space-6); /* 24px */
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+}
+
+.settings-section + .settings-section {
+  margin-top: var(--section-gap); /* 32px */
+}
+
+/* Settings field */
+.settings-field {
+  margin-top: var(--space-5); /* 20px */
+}
+
+.settings-field:first-of-type {
+  margin-top: 0;
+}
+
+.settings-field__label {
+  display: block;
+  font-size: var(--text-base); /* 16px for accessibility */
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-3); /* 12px */
+  line-height: 1.5;
+}
+
+/* Radio Group */
+.settings-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3); /* 12px */
+}
+
+.settings-radio-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3); /* 12px */
+  padding: var(--space-3); /* 12px */
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  transition: all var(--transition-normal);
+  min-height: 48px; /* WCAG touch target */
+}
+
+.settings-radio-item:hover {
+  background: var(--color-neutral-50);
+  border-color: var(--color-primary-300);
+}
+
+.settings-radio-item:has(.settings-radio-button[data-state="checked"]) {
+  background: var(--color-primary-50);
+  border-color: var(--color-primary-500);
+}
+
+.settings-radio-button {
+  /* Size - WCAG touch target */
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  flex-shrink: 0;
+
+  /* Style */
+  border-radius: 50%;
+  border: 2px solid var(--color-neutral-400);
+  background: var(--bg-primary);
+
+  /* Layout */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Interaction */
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.settings-radio-button:hover {
+  border-color: var(--color-primary-500);
+}
+
+.settings-radio-button[data-state="checked"] {
+  border-color: var(--color-primary-600);
+  background: var(--color-primary-600);
+}
+
+.settings-radio-button:focus-visible {
+  outline: 3px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+.settings-radio-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: white;
+}
+
+.settings-radio-label {
+  font-size: var(--text-base); /* 16px */
+  color: var(--text-primary);
+  cursor: pointer;
+  line-height: 1.5;
+  flex: 1;
+}
+
+/* Select Dropdown */
+.settings-select-trigger {
+  /* Layout */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: var(--space-2);
+
+  /* Sizing - WCAG touch target */
+  min-height: 48px;
+  padding: var(--space-3) var(--space-4); /* 12px 16px */
+
+  /* Typography */
+  font-size: var(--text-base); /* 16px */
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+
+  /* Style */
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+
+  /* Interaction */
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.settings-select-trigger:hover {
+  border-color: var(--color-primary-400);
+  background: var(--color-neutral-50);
+}
+
+.settings-select-trigger:focus-visible {
+  outline: 3px solid var(--color-primary-500);
+  outline-offset: 2px;
+  border-color: var(--color-primary-500);
+}
+
+.settings-select-trigger[data-state="open"] {
+  border-color: var(--color-primary-500);
+}
+
+.settings-select-icon {
+  color: var(--text-secondary);
+  transition: transform var(--transition-normal);
+}
+
+.settings-select-trigger[data-state="open"] .settings-select-icon {
+  transform: rotate(180deg);
+}
+
+.settings-select-content {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  /* z-index: var(--z-dropdown); */
+
+  /* Animation */
+  animation: slideDown 200ms ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.settings-select-viewport {
+  padding: var(--space-1);
+}
+
+.settings-select-item {
+  /* Layout */
+  display: flex;
+  align-items: center;
+
+  /* Sizing - WCAG touch target */
+  min-height: 40px;
+  padding: var(--space-2) var(--space-3); /* 8px 12px */
+
+  /* Typography */
+  font-size: var(--text-base); /* 16px */
+  color: var(--text-primary);
+
+  /* Style */
+  border-radius: var(--radius-sm);
+
+  /* Interaction */
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  transition: background var(--transition-fast);
+}
+
+.settings-select-item[data-highlighted] {
+  background: var(--color-primary-50);
+  color: var(--color-primary-700);
+}
+
+.settings-select-item[data-state="checked"] {
+  background: var(--color-primary-100);
+  color: var(--color-primary-800);
+  font-weight: 600;
+}
+
+/* Action Buttons */
+.settings-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4); /* 16px */
+  margin-top: var(--space-4);
+}
+
+.settings-action-button {
+  /* Layout */
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4); /* 16px */
+
+  /* Sizing - WCAG touch target */
+  min-height: 64px;
+  padding: var(--space-4); /* 16px */
+
+  /* Style */
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+
+  /* Interaction */
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  text-align: left;
+}
+
+.settings-action-button:hover {
+  background: var(--color-neutral-50);
+  border-color: var(--color-primary-400);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.settings-action-button:active {
+  transform: translateY(0);
+}
+
+.settings-action-button:focus-visible {
+  outline: 3px solid var(--color-primary-500);
+  outline-offset: 2px;
+  border-color: var(--color-primary-500);
+}
+
+.settings-action-icon {
+  font-size: var(--text-2xl); /* 24px */
+  flex-shrink: 0;
+}
+
+.settings-action-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1); /* 4px */
+  flex: 1;
+}
+
+.settings-action-title {
+  font-size: var(--text-base); /* 16px */
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.settings-action-description {
+  font-size: var(--text-sm); /* 14px */
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Placeholder for coming soon sections */
+.settings-placeholder {
+  margin-top: var(--space-4);
+  padding: var(--space-6);
+  background: var(--color-neutral-50);
+  border: 1px dashed var(--border-primary);
+  border-radius: var(--radius-md);
+  text-align: center;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Dark mode */
+[data-theme="dark"] .settings-section {
+  background: var(--color-neutral-800);
+  border-color: var(--color-neutral-700);
+}
+
+[data-theme="dark"] .settings-radio-item {
+  background: var(--color-neutral-800);
+  border-color: var(--color-neutral-700);
+}
+
+[data-theme="dark"] .settings-radio-item:hover {
+  background: var(--color-neutral-700);
+  border-color: var(--color-primary-600);
+}
+
+[data-theme="dark"]
+  .settings-radio-item:has(.settings-radio-button[data-state="checked"]) {
+  background: var(--color-primary-900);
+  border-color: var(--color-primary-500);
+}
+
+[data-theme="dark"] .settings-radio-button {
+  background: var(--color-neutral-700);
+  border-color: var(--color-neutral-600);
+}
+
+[data-theme="dark"] .settings-select-trigger {
+  background: var(--color-neutral-800);
+  border-color: var(--color-neutral-700);
+}
+
+[data-theme="dark"] .settings-select-trigger:hover {
+  background: var(--color-neutral-700);
+}
+
+[data-theme="dark"] .settings-select-content {
+  background: var(--color-neutral-800);
+  border-color: var(--color-neutral-700);
+}
+
+[data-theme="dark"] .settings-action-button {
+  background: var(--color-neutral-800);
+  border-color: var(--color-neutral-700);
+}
+
+[data-theme="dark"] .settings-action-button:hover {
+  background: var(--color-neutral-700);
+}
+
+[data-theme="dark"] .settings-placeholder {
+  background: var(--color-neutral-800);
+  border-color: var(--color-neutral-700);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .settings-radio-item,
+  .settings-radio-button,
+  .settings-select-trigger,
+  .settings-select-icon,
+  .settings-select-item,
+  .settings-action-button {
+    transition: none;
+  }
+
+  .settings-select-content {
+    animation: none;
+  }
+}
+
+/* Danger button variant */
+.settings-action-button--danger {
+  border-color: var(--color-danger, #dc2626);
+}
+
+.settings-action-button--danger:hover {
+  background: var(--color-danger-light, #fee2e2);
+  border-color: var(--color-danger, #dc2626);
+}
+
+.settings-action-button--danger .settings-action-title {
+  color: var(--color-danger, #dc2626);
+}
+
+/* Dialog Overlay */
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* z-index: 50; */
+  animation: fadeIn 150ms ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Dialog Content */
+.dialog-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 90%;
+  /* z-index: 51; */
+  animation: slideIn 200ms ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Dialog Title */
+.dialog-title {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+/* Dialog Description */
+.dialog-description {
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--space-5);
+}
+
+/* Import Summary */
+.import-summary {
+  background: var(--bg);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.import-summary p {
+  margin: var(--space-2) 0;
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+}
+
+/* Dialog Actions */
+.dialog-actions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+  margin-top: var(--space-5);
+}
+
+/* Dialog Buttons */
+.dialog-button {
+  min-height: 40px; /* WCAG touch target */
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border-primary);
+  transition: all 150ms ease;
+}
+
+.dialog-button--primary {
+  background: var(--color-primary, #3b82f6);
+  color: white;
+  border-color: var(--color-primary, #3b82f6);
+}
+
+.dialog-button--primary:hover:not(:disabled) {
+  background: var(--color-primary-dark, #2563eb);
+  border-color: var(--color-primary-dark, #2563eb);
+}
+
+.dialog-button--secondary {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.dialog-button--secondary:hover {
+  background: var(--bg);
+}
+
+.dialog-button--danger {
+  background: var(--color-danger, #dc2626);
+  color: white;
+  border-color: var(--color-danger, #dc2626);
+}
+
+.dialog-button--danger:hover {
+  background: var(--color-danger-dark, #b91c1c);
+  border-color: var(--color-danger-dark, #b91c1c);
+}
+
+.dialog-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .settings-section {
+    padding: var(--space-4); /* 16px on mobile */
+  }
+
+  .settings-action-button {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-2);
+  }
+
+  .dialog-content {
+    width: 95%;
+    padding: var(--space-5);
+  }
+
+  .dialog-actions {
+    flex-direction: column;
+  }
+
+  .dialog-button {
+    width: 100%;
+  }
+}

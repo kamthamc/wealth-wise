@@ -1,0 +1,61 @@
+.error-boundary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: var(--space-xl);
+}
+
+.error-boundary__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  text-align: center;
+  max-width: 600px;
+}
+
+.error-boundary__icon {
+  font-size: 4rem;
+  margin-bottom: var(--space-sm);
+}
+
+.error-boundary__title {
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.error-boundary__message {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.error-boundary__details {
+  width: 100%;
+  margin-top: var(--space-md);
+  text-align: left;
+}
+
+.error-boundary__details summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: var(--space-sm);
+}
+
+.error-boundary__details summary:hover {
+  color: var(--text);
+}
+
+.error-boundary__stack {
+  background-color: var(--bg-primary);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}

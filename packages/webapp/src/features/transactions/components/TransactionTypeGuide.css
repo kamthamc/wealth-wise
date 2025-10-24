@@ -1,0 +1,239 @@
+/**
+ * Transaction Type Guide Styles
+ * Visual guide component styling
+ */
+
+.transaction-type-guide {
+  padding: 0;
+}
+
+.transaction-type-guide__title {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.transaction-type-guide__subtitle {
+  margin: 0 0 24px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* Type Cards Grid */
+.transaction-type-guide__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* Type Card */
+.type-card {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  background: var(--bg-elevated);
+  border: 2px solid var(--border-primary);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  position: relative;
+  min-height: 280px;
+}
+
+.type-card:hover {
+  border-color: var(--card-border-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.type-card:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Color Variants */
+.type-card--green {
+  --card-border-hover: #10b981;
+  --card-accent: #10b981;
+}
+
+.type-card--red {
+  --card-border-hover: #ef4444;
+  --card-accent: #ef4444;
+}
+
+.type-card--blue {
+  --card-border-hover: #3b82f6;
+  --card-accent: #3b82f6;
+}
+
+/* Selected State */
+.type-card--selected {
+  background: linear-gradient(
+    135deg,
+    var(--card-accent) 0%,
+    var(--card-accent-dark) 100%
+  );
+  border-color: var(--card-accent);
+  color: white;
+  box-shadow: var(--shadow-lg);
+}
+
+.type-card--green.type-card--selected {
+  --card-accent-dark: #059669;
+}
+
+.type-card--red.type-card--selected {
+  --card-accent-dark: #dc2626;
+}
+
+.type-card--blue.type-card--selected {
+  --card-accent-dark: #2563eb;
+}
+
+.type-card--selected:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+.type-card--selected .type-card__label,
+.type-card--selected .type-card__description,
+.type-card--selected .examples-label,
+.type-card--selected .examples-list {
+  color: white;
+}
+
+/* Icon */
+.type-card__icon {
+  font-size: 48px;
+  line-height: 1;
+  margin-bottom: 16px;
+}
+
+/* Label */
+.type-card__label {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Description */
+.type-card__description {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* Examples */
+.type-card__examples {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.examples-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+}
+
+.examples-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.examples-list li::before {
+  content: "• ";
+  margin-right: 6px;
+  color: var(--card-accent);
+}
+
+.type-card--selected .examples-list li::before {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Selected Badge */
+.type-card__selected-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .transaction-type-guide__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .type-card {
+    padding: 20px;
+    min-height: 240px;
+  }
+
+  .type-card__icon {
+    font-size: 40px;
+  }
+
+  .type-card__label {
+    font-size: 18px;
+  }
+
+  .type-card__examples {
+    display: none; /* Hide examples on mobile to save space */
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .type-card {
+    background: var(--bg-elevated, #1e293b);
+    border-color: var(--border-primary, #334155);
+  }
+
+  .type-card:hover {
+    border-color: var(--card-border-hover);
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .type-card {
+    border-width: 3px;
+  }
+
+  .type-card--selected {
+    border-width: 4px;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .type-card {
+    transition: none;
+  }
+
+  .type-card:hover,
+  .type-card--selected:hover {
+    transform: none;
+  }
+}

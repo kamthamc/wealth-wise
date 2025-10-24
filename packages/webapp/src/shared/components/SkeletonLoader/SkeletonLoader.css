@@ -1,0 +1,249 @@
+/* Skeleton Loader Styles */
+
+/* Base Skeleton */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-primary-hover) 0%,
+    var(--border-primary) 50%,
+    var(--bg-primary-hover) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: var(--radius-sm);
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animation Variants */
+.skeleton--wave {
+  animation: skeleton-wave 1.5s ease-in-out infinite;
+}
+
+.skeleton--pulse {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+.skeleton--none {
+  animation: none;
+}
+
+@keyframes skeleton-wave {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Shape Variants */
+.skeleton--text {
+  height: 16px;
+  width: 100%;
+  margin-bottom: var(--space-2);
+  border-radius: var(--radius-xs);
+}
+
+.skeleton--heading {
+  height: 24px;
+  width: 100%;
+  margin-bottom: var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.skeleton--circle {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+}
+
+.skeleton--rectangle {
+  width: 100%;
+  height: 120px;
+  border-radius: var(--radius-md);
+}
+
+/* Composite Patterns */
+
+/* Card Skeleton */
+.skeleton-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.skeleton-card__content {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* List Item Skeleton */
+.skeleton-list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-3);
+}
+
+.skeleton-list-item__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+/* Stat Card Skeleton */
+.skeleton-stat-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Stats Grid */
+.skeleton-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+}
+
+/* Text Block */
+.skeleton-text-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Accessibility */
+.skeleton::before {
+  content: "Loading...";
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 640px) {
+  .skeleton-list-item {
+    padding: var(--space-3);
+  }
+
+  .skeleton-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .skeleton-card__content {
+    padding: var(--space-3);
+  }
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .skeleton {
+    border: 1px solid var(--border-primary);
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton--wave,
+  .skeleton--pulse {
+    animation: none;
+  }
+
+  .skeleton {
+    opacity: 0.6;
+  }
+}
+
+/* Responsive Typography Skeletons */
+@media (max-width: 768px) {
+  .skeleton--heading {
+    height: 20px;
+  }
+
+  .skeleton--text {
+    height: 14px;
+  }
+}
+
+/* Loading Container Pattern */
+.skeleton-container {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Dashboard Grid Pattern */
+.skeleton-dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-4);
+  padding: var(--space-4);
+}
+
+/* Table Row Pattern */
+.skeleton-table-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.skeleton-table-row:last-child {
+  border-bottom: none;
+}
+
+/* Form Field Pattern */
+.skeleton-form-field {
+  margin-bottom: var(--space-4);
+}
+
+.skeleton-form-field .skeleton--text {
+  height: 12px;
+  width: 30%;
+  margin-bottom: var(--space-2);
+}
+
+.skeleton-form-field .skeleton--rectangle {
+  height: 44px;
+  width: 100%;
+}
