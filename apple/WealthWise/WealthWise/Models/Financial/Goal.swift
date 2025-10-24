@@ -62,7 +62,10 @@ public final class Goal {
     
     // TODO: CrossBorderAsset relationship will be activated when Issue #20 (Asset Data Models) is fully integrated
     // @Relationship(deleteRule: .cascade) public var linkedAssets: [CrossBorderAsset]?
-    @Relationship(deleteRule: .cascade) public var linkedTransactions: [Transaction]?
+    
+    // NOTE: Temporarily commented to break circular dependency with Transaction
+    // Will be restored via extension after successful compilation
+    // @Relationship(deleteRule: .cascade) public var linkedTransactions: [Transaction]?
     
     // MARK: - Initialization
     

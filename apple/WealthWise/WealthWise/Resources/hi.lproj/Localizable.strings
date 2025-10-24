@@ -128,3 +128,108 @@
 "format.million" = "मिलियन";
 "format.billion" = "बिलियन";
 "format.thousand" = "हजार";
+
+/* Import/Export - Import Status */
+"import_status_pending" = "लंबित";
+"import_status_processing" = "प्रोसेसिंग";
+"import_status_completed" = "पूर्ण";
+"import_status_failed" = "विफल";
+"import_status_cancelled" = "रद्द";
+
+/* Import/Export - Import Source Types */
+"import_source_csv" = "CSV फ़ाइल";
+"import_source_excel" = "Excel फ़ाइल";
+"import_source_json" = "JSON फ़ाइल";
+"import_source_bank_statement" = "बैंक स्टेटमेंट";
+"import_source_manual" = "मैन्युअल एंट्री";
+"import_source_backup" = "बैकअप फ़ाइल";
+
+/* Import/Export - Export Status */
+"export_status_pending" = "लंबित";
+"export_status_processing" = "प्रोसेसिंग";
+"export_status_completed" = "पूर्ण";
+"export_status_failed" = "विफल";
+
+/* Import/Export - Export Formats */
+"export_format_csv" = "CSV";
+"export_format_json" = "JSON";
+"export_format_excel" = "Excel";
+"export_format_pdf" = "PDF";
+"export_format_backup" = "एन्क्रिप्टेड बैकअप";
+
+/* Import/Export - Field Names */
+"import_field_date" = "तारीख";
+"import_field_amount" = "राशि";
+"import_field_description" = "विवरण";
+"import_field_category" = "श्रेणी";
+"import_field_type" = "प्रकार";
+"import_field_account" = "खाता";
+"import_field_currency" = "मुद्रा";
+"import_field_notes" = "नोट्स";
+"import_field_merchant" = "व्यापारी";
+"import_field_reference" = "संदर्भ संख्या";
+"import_field_ignore" = "अनदेखा करें";
+
+/* Import/Export - Data Types */
+"import_datatype_string" = "टेक्स्ट";
+"import_datatype_decimal" = "दशमलव संख्या";
+"import_datatype_integer" = "पूर्णांक";
+"import_datatype_date" = "तारीख";
+"import_datatype_boolean" = "हाँ/नहीं";
+"import_datatype_currency" = "मुद्रा";
+
+/* Import/Export - CSV Errors */
+"csv_error_invalid_format" = "अमान्य CSV प्रारूप";
+"csv_error_empty_file" = "CSV फ़ाइल खाली है";
+"csv_error_encoding" = "फ़ाइल एन्कोडिंग पढ़ने में असमर्थ";
+"csv_error_invalid_delimiter" = "अमान्य CSV डिलीमीटर";
+"csv_error_header_missing" = "CSV हेडर पंक्ति गुम है";
+"csv_error_row_parse" = "पंक्ति %d को पार्स करने में त्रुटि: %@";
+
+/* Import/Export - CSV Validation */
+"csv_validation_no_data" = "CSV फ़ाइल में कोई डेटा पंक्तियाँ नहीं मिलीं";
+"csv_validation_inconsistent_columns" = "पंक्ति %d में असंगत स्तंभ संख्या";
+
+/* Import/Export - Import Errors */
+"import_error_missing_date" = "तारीख आवश्यक है";
+"import_error_missing_amount" = "राशि आवश्यक है";
+"import_error_missing_description" = "विवरण आवश्यक है";
+"import_error_invalid_date" = "अमान्य तारीख प्रारूप";
+"import_error_invalid_amount" = "अमान्य राशि प्रारूप";
+"import_invalid_row" = "अमान्य पंक्ति";
+
+/* Import/Export - Import Warnings */
+"import_warning_zero_amount" = "लेनदेन की राशि शून्य है";
+"import_warning_future_date" = "लेनदेन की तारीख भविष्य में है";
+
+/* Import/Export - Backup Errors */
+"backup_error_invalid_password" = "अमान्य पासवर्ड";
+"backup_error_encryption_failed" = "बैकअप एन्क्रिप्ट करने में विफल";
+"backup_error_compression_failed" = "बैकअप डेटा को संपीड़ित करने में विफल";
+"backup_error_invalid_file" = "अमान्य बैकअप फ़ाइल";
+"backup_error_corrupted" = "बैकअप फ़ाइल दूषित है";
+"backup_error_incompatible_version" = "बैकअप संस्करण इस ऐप संस्करण के साथ असंगत है";
+"backup_error_export_failed" = "निर्यात विफल: %@";
+"backup_error_invalid_salt" = "बैकअप फ़ाइल में अमान्य एन्क्रिप्शन सॉल्ट";
+
+/* Import/Export - Backup Warnings */
+"backup_warning_version_incompatible" = "बैकअप असंगत संस्करण से हो सकता है";
+
+/* Import/Export - UI Labels */
+"import_button_title" = "आयात करें";
+"export_button_title" = "निर्यात करें";
+"backup_button_title" = "बैकअप बनाएं";
+"restore_button_title" = "बैकअप पुनर्स्थापित करें";
+"preview_button_title" = "पूर्वावलोकन";
+"import_preview_title" = "आयात पूर्वावलोकन";
+"column_mapping_title" = "कॉलम मैपिंग";
+"duplicate_detection_title" = "डुप्लिकेट पहचान";
+"backup_management_title" = "बैकअप प्रबंधन";
+
+/* Import/Export - Help Text */
+"import_help_text" = "CSV फ़ाइलों से लेनदेन आयात करें। कॉलम को लेनदेन फ़ील्ड से मैप करें।";
+"export_help_text" = "अपने लेनदेन को CSV, Excel, या PDF प्रारूप में निर्यात करें।";
+"backup_help_text" = "अपने सभी वित्तीय डेटा का एन्क्रिप्टेड बैकअप बनाएं।";
+"restore_help_text" = "पिछले बैकअप से अपना डेटा पुनर्स्थापित करें।";
+"column_mapping_help" = "CSV कॉलम को लेनदेन फ़ील्ड से मिलाएं। आवश्यक फ़ील्ड: तारीख, राशि, विवरण।";
+"duplicate_detection_help" = "आयात के दौरान डुप्लिकेट लेनदेन को स्वचालित रूप से पहचानें और छोड़ें।";
