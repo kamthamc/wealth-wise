@@ -14,7 +14,8 @@ import {
 import { useMemo } from 'react';
 import type { Account, CreditCardDetails } from '@/core/db/types';
 import { Card, ProgressBar, StatCard } from '@/shared/components';
-import { formatCurrency, formatDate } from '@/shared/utils';
+import { formatCurrency, formatDate } from '@/utils';
+import { usePreferences } from '@/hooks/usePreferences';
 import './CreditCardView.css';
 
 export interface CreditCardViewProps {
@@ -26,6 +27,7 @@ export function CreditCardView({
   account,
   creditCardDetails,
 }: CreditCardViewProps) {
+  const { preferences } = usePreferences();
   // Calculate credit utilization percentage
   const creditUtilization = useMemo(() => {
     if (!creditCardDetails) return 0;
@@ -86,7 +88,11 @@ export function CreditCardView({
           <div>
             <h3>Credit Limit</h3>
             <p className="credit-card-view__limit-amount">
-              {formatCurrency(creditCardDetails.credit_limit, account.currency)}
+              {formatCurrency(
+                creditCardDetails.credit_limit,
+                preferences?.currency || account.currency,
+                preferences?.locale || 'en-IN'
+              )}
             </p>
           </div>
           <div className="credit-card-view__limit-icon">
@@ -113,14 +119,16 @@ export function CreditCardView({
               Used:{' '}
               {formatCurrency(
                 creditCardDetails.current_balance,
-                account.currency
+                preferences?.currency || account.currency,
+                preferences?.locale || 'en-IN'
               )}
             </span>
             <span>
               Available:{' '}
               {formatCurrency(
                 creditCardDetails.available_credit,
-                account.currency
+                preferences?.currency || account.currency,
+                preferences?.locale || 'en-IN'
               )}
             </span>
           </div>
@@ -133,7 +141,8 @@ export function CreditCardView({
           label="Current Balance"
           value={formatCurrency(
             creditCardDetails.current_balance,
-            account.currency
+            preferences?.currency || account.currency,
+            preferences?.locale || 'en-IN'
           )}
           icon={<DollarSign size={20} />}
         />
@@ -142,7 +151,8 @@ export function CreditCardView({
           label="Minimum Due"
           value={formatCurrency(
             creditCardDetails.minimum_due,
-            account.currency
+            preferences?.currency || account.currency,
+            preferences?.locale || 'en-IN'
           )}
           icon={<TrendingDown size={20} />}
           variant={creditCardDetails.minimum_due > 0 ? 'warning' : 'default'}
@@ -150,14 +160,18 @@ export function CreditCardView({
 
         <StatCard
           label="Total Due"
-          value={formatCurrency(creditCardDetails.total_due, account.currency)}
+          value={formatCurrency(
+            creditCardDetails.total_due,
+            preferences?.currency || account.currency,
+            preferences?.locale || 'en-IN'
+          )}
           icon={<TrendingUp size={20} />}
           variant={creditCardDetails.total_due > 0 ? 'danger' : 'default'}
         />
 
         <StatCard
           label="Rewards Points"
-          value={`${creditCardDetails.rewards_points.toLocaleString()} ${creditCardDetails.rewards_value > 0 ? `(≈ ${formatCurrency(creditCardDetails.rewards_value, account.currency)})` : 'points'}`}
+          value={`${creditCardDetails.rewards_points.toLocaleString()} ${creditCardDetails.rewards_value > 0 ? `(≈ ${formatCurrency(creditCardDetails.rewards_value, preferences?.currency || account.currency, preferences?.locale || 'en-IN')})` : 'points'}`}
           icon={<Gift size={20} />}
           variant="success"
         />
@@ -187,7 +201,11 @@ export function CreditCardView({
                   Last Statement Date
                 </span>
                 <span className="credit-card-view__billing-value">
-                  {formatDate(creditCardDetails.statement_date)}
+                  {formatDate(
+                    creditCardDetails.statement_date,
+                    preferences?.dateFormat || 'DD/MM/YYYY',
+                    preferences?.locale || 'en-IN'
+                  )}
                 </span>
               </div>
             </div>
@@ -201,7 +219,11 @@ export function CreditCardView({
                   Payment Due Date
                 </span>
                 <span className="credit-card-view__billing-value">
-                  {formatDate(creditCardDetails.payment_due_date)}
+                  {formatDate(
+                    creditCardDetails.payment_due_date,
+                    preferences?.dateFormat || 'DD/MM/YYYY',
+                    preferences?.locale || 'en-IN'
+                  )}
                   {daysUntilDue !== null && (
                     <span
                       className={`credit-card-view__days-until ${daysUntilDue <= 3 ? 'credit-card-view__days-until--urgent' : ''}`}
@@ -262,7 +284,11 @@ export function CreditCardView({
             <span>Annual Fee</span>
             <span className="credit-card-view__detail-value">
               {creditCardDetails.annual_fee > 0
-                ? formatCurrency(creditCardDetails.annual_fee, account.currency)
+                ? formatCurrency(
+                    creditCardDetails.annual_fee,
+                    preferences?.currency || account.currency,
+                    preferences?.locale || 'en-IN'
+                  )
                 : 'Free'}
             </span>
           </div>

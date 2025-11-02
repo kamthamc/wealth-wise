@@ -16,11 +16,13 @@ import {
   ProgressBar,
   SkeletonList,
 } from '@/shared/components';
-import { formatCurrency } from '@/shared/utils';
+import { formatCurrency } from '@/utils';
+import { usePreferences } from '@/hooks/usePreferences';
 import './BudgetProgress.css';
 
 export function BudgetProgress() {
   const { budgets, isLoading } = useBudgetStore();
+  const { preferences, loading: prefsLoading } = usePreferences();
 
   // Get active budgets sorted by progress percentage
   const activeBudgets = useMemo(() => {
@@ -62,7 +64,7 @@ export function BudgetProgress() {
           </Link>
         </div>
 
-        {isLoading ? (
+        {isLoading || prefsLoading ? (
           <SkeletonList items={5} />
         ) : activeBudgets.length > 0 ? (
           <div className="budget-progress__list">
@@ -79,8 +81,16 @@ export function BudgetProgress() {
                       <span className="budget-item__name">{budget.name}</span>
                     </div>
                     <span className="budget-item__amount">
-                      {formatCurrency(budget.total_spent)} /{' '}
-                      {formatCurrency(budget.total_allocated)}
+                      {formatCurrency(
+                        budget.total_spent,
+                        preferences?.currency || 'INR',
+                        preferences?.locale || 'en-IN'
+                      )} /{' '}
+                      {formatCurrency(
+                        budget.total_allocated,
+                        preferences?.currency || 'INR',
+                        preferences?.locale || 'en-IN'
+                      )}
                     </span>
                   </div>
                   <ProgressBar

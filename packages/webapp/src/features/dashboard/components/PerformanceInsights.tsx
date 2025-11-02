@@ -12,7 +12,8 @@ import {
 } from 'lucide-react';
 import { useMemo } from 'react';
 import { useTransactionStore } from '@/core/stores';
-import { formatCurrency } from '@/shared/utils';
+import { usePreferences } from '@/hooks/usePreferences';
+import { formatCurrency } from '@/utils';
 import './PerformanceInsights.css';
 
 interface MonthlyPerformance {
@@ -30,6 +31,7 @@ interface MonthlyPerformance {
 
 export function PerformanceInsights() {
   const { transactions, isLoading } = useTransactionStore();
+  const { preferences, loading: prefsLoading } = usePreferences();
 
   const performance: MonthlyPerformance = useMemo(() => {
     const now = new Date();
@@ -96,7 +98,7 @@ export function PerformanceInsights() {
     };
   }, [transactions]);
 
-  if (isLoading) {
+  if (isLoading || prefsLoading) {
     return (
       <section className="performance-insights">
         <div className="performance-insights__header">
@@ -149,11 +151,19 @@ export function PerformanceInsights() {
             </div>
           </div>
           <div className="performance-insights__card-value">
-            {formatCurrency(performance.income)}
+            {formatCurrency(
+              performance.income,
+              preferences?.currency || 'INR',
+              preferences?.locale || 'en-IN'
+            )}
           </div>
           <div className="performance-insights__card-footer">
             <span className="performance-insights__card-comparison">
-              vs {formatCurrency(performance.previousIncome)} last month
+              vs {formatCurrency(
+                performance.previousIncome,
+                preferences?.currency || 'INR',
+                preferences?.locale || 'en-IN'
+              )} last month
             </span>
           </div>
         </div>
@@ -181,11 +191,19 @@ export function PerformanceInsights() {
             </div>
           </div>
           <div className="performance-insights__card-value">
-            {formatCurrency(performance.expenses)}
+            {formatCurrency(
+              performance.expenses,
+              preferences?.currency || 'INR',
+              preferences?.locale || 'en-IN'
+            )}
           </div>
           <div className="performance-insights__card-footer">
             <span className="performance-insights__card-comparison">
-              vs {formatCurrency(performance.previousExpenses)} last month
+              vs {formatCurrency(
+                performance.previousExpenses,
+                preferences?.currency || 'INR',
+                preferences?.locale || 'en-IN'
+              )} last month
             </span>
           </div>
         </div>
@@ -213,7 +231,11 @@ export function PerformanceInsights() {
             </div>
           </div>
           <div className="performance-insights__card-value">
-            {formatCurrency(performance.savings)}
+            {formatCurrency(
+              performance.savings,
+              preferences?.currency || 'INR',
+              preferences?.locale || 'en-IN'
+            )}
           </div>
           <div className="performance-insights__card-footer">
             <div className="performance-insights__savings-rate">

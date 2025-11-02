@@ -12,7 +12,8 @@ import {
   getAccountIcon,
   getAccountTypeName,
 } from '@/features/accounts/utils/accountHelpers';
-import { formatCurrency } from '@/shared/utils';
+import { formatCurrency } from '@/utils';
+import { usePreferences } from '@/hooks/usePreferences';
 import './AccountBreakdown.css';
 
 interface AccountTypeData {
@@ -42,6 +43,7 @@ const ACCOUNT_TYPE_COLORS: Record<AccountType, string> = {
 export function AccountBreakdown() {
   const navigate = useNavigate();
   const { accounts, isLoading } = useAccountStore();
+  const { preferences, loading: prefsLoading } = usePreferences();
 
   const breakdown: AccountTypeData[] = useMemo(() => {
     const totalBalance = accounts.reduce((sum, acc) => sum + acc.balance, 0);
@@ -76,7 +78,7 @@ export function AccountBreakdown() {
     [accounts]
   );
 
-  if (isLoading) {
+  if (isLoading || prefsLoading) {
     return (
       <section className="account-breakdown">
         <div className="account-breakdown__header">
@@ -115,7 +117,11 @@ export function AccountBreakdown() {
       <div className="account-breakdown__header">
         <h2 className="account-breakdown__title">Asset Breakdown</h2>
         <p className="account-breakdown__subtitle">
-          {formatCurrency(totalBalance)} across {accounts.length} accounts
+          {formatCurrency(
+            totalBalance,
+            preferences?.currency || 'INR',
+            preferences?.locale || 'en-IN'
+          )} across {accounts.length} accounts
         </p>
       </div>
 
@@ -188,7 +194,11 @@ export function AccountBreakdown() {
                 </div>
                 <div className="account-breakdown__item-footer">
                   <span className="account-breakdown__item-amount">
-                    {formatCurrency(item.balance)}
+                    {formatCurrency(
+                      item.balance,
+                      preferences?.currency || 'INR',
+                      preferences?.locale || 'en-IN'
+                    )}
                   </span>
                   <span className="account-breakdown__item-percentage">
                     {item.percentage.toFixed(1)}%

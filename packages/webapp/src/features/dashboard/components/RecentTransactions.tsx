@@ -18,13 +18,15 @@ import {
   Table,
   type TableColumn,
 } from '@/shared/components';
-import { formatCurrency } from '@/shared/utils';
+import { formatCurrency, formatDate } from '@/utils';
+import { usePreferences } from '@/hooks/usePreferences';
 import './RecentTransactions.css';
 
 import type { Transaction } from '@/core/db/types';
 
 export function RecentTransactions() {
   const { transactions, isLoading } = useTransactionStore();
+  const { preferences, loading: prefsLoading } = usePreferences();
 
   // Get the 5 most recent transactions
   const recentTransactions = useMemo(() => {
@@ -37,7 +39,11 @@ export function RecentTransactions() {
     {
       key: 'date',
       header: 'Date',
-      accessor: (row) => new Date(row.date).toLocaleDateString('en-IN'),
+      accessor: (row) => formatDate(
+        new Date(row.date),
+        preferences?.dateFormat || 'DD/MM/YYYY',
+        preferences?.locale || 'en-IN'
+      ),
       sortable: true,
     },
     {
@@ -79,7 +85,11 @@ export function RecentTransactions() {
             }}
           >
             {row.type === 'income' ? '+' : row.type === 'expense' ? '-' : ''}
-            {formatCurrency(row.amount)}
+            {formatCurrency(
+              row.amount,
+              preferences?.currency || 'INR',
+              preferences?.locale || 'en-IN'
+            )}
           </span>
         );
       },
@@ -98,7 +108,7 @@ export function RecentTransactions() {
           </Link>
         </div>
 
-        {isLoading ? (
+        {isLoading || prefsLoading ? (
           <SkeletonList items={5} />
         ) : recentTransactions.length > 0 ? (
           <Table
