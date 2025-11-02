@@ -6,18 +6,18 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { Upload, X } from 'lucide-react';
 import { useRef, useState } from 'react';
-import { batchCheckDuplicates } from '@/core/api';
+import {
+  batchCheckDuplicates,
+  detectFileFormat,
+  parseFile,
+  type ParsedFileData,
+} from '@/core/api';
 import type {
   DuplicateCheckResult,
   DuplicateMatch,
 } from '@/core/services/duplicateDetectionService';
 import { useTransactionStore } from '@/core/stores';
 import { Button, useToast } from '@/shared/components';
-import {
-  detectFileFormat,
-  type ParsedData,
-  parseFile,
-} from '../utils/fileParser';
 import { getTransactionReference } from '../utils/referenceExtraction';
 import { ColumnMapper } from './ColumnMapper';
 import {
@@ -55,7 +55,7 @@ export function ImportTransactionsModal({
   const [isProcessing, setIsProcessing] = useState(false);
   const [previewData, setPreviewData] = useState<ParsedTransaction[]>([]);
   const [showColumnMapper, setShowColumnMapper] = useState(false);
-  const [parsedData, setParsedData] = useState<ParsedData | null>(null);
+  const [parsedData, setParsedData] = useState<ParsedFileData | null>(null);
 
   // Duplicate detection state
   const [showDuplicateReview, setShowDuplicateReview] = useState(false);

@@ -9,6 +9,7 @@ export * from './budgetApi';
 export * from './dataExportApi';
 export * from './depositApi';
 export * from './duplicateApi';
+export * from './fileParsingApi';
 export * from './preferencesApi';
 export * from './reportApi';
 export * from './transactionApi';

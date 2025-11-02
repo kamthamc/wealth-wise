@@ -102,3 +102,8 @@ export {
   getTransactionStats,
   updateTransaction,
 } from './transactions';
+
+// Export file parsing functions
+export { parseCSV } from './parsing/csvParser';
+export { parseExcel } from './parsing/excelParser';
+export { parsePDF } from './parsing/pdfParser';
