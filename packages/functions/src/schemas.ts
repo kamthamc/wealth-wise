@@ -18,21 +18,52 @@ export const currencySchema = z.number().nonnegative();
 export const uuidSchema = z.uuidv4();
 
 export const allAccountTypes: AccountType[] = [
-  'savings',
-  'checking',
+  // Banking & Cash
+  'bank',
   'credit_card',
-  'investment',
-  'brokerage',
-  'mutual_fund',
-  'loan',
-  'mortgage',
+  'upi',
+  'cash',
+  'wallet',
+  // Deposits & Savings
   'fixed_deposit',
   'recurring_deposit',
   'ppf',
+  'nsc',
+  'kvp',
+  'scss',
+  'post_office',
+  'ssy',
+  // Investments & Brokerage
+  'brokerage',
+  'mutual_fund',
+  'stocks',
+  'bonds',
+  'etf',
+  // Insurance
+  'term_insurance',
+  'endowment',
+  'money_back',
+  'ulip',
+  'child_plan',
+  // Retirement
   'nps',
+  'apy',
   'epf',
-  'cash',
-  'other',
+  'vpf',
+  // Real Estate
+  'property',
+  'reit',
+  'invit',
+  // Precious Metals
+  'gold',
+  'silver',
+  // Alternative Investments
+  'p2p_lending',
+  'chit_fund',
+  'cryptocurrency',
+  'commodity',
+  'hedge_fund',
+  'angel_investment',
 ];
 
 /**

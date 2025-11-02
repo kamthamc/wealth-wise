@@ -3,24 +3,14 @@
  * Accessible text input with label and error states using Radix UI styling
  */
 
-import type { ReactNode } from 'react';
+import type { ReactNode, InputHTMLAttributes } from 'react';
 
-export interface InputProps {
+export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
   helperText?: string;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
-  placeholder?: string;
-  value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  disabled?: boolean;
-  required?: boolean;
-  type?: string;
-  id?: string;
-  name?: string;
-  autoComplete?: string;
-  minLength?: number;
 }
 
 export function Input({

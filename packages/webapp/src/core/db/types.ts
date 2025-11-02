@@ -5,24 +5,18 @@
  * Webapp-specific utility types are defined below.
  */
 
-// ==================== Shared Types (Re-exported) ====================
-export type {
-  // Account & Currency Types
+// ==================== Shared Types (Import for use in local type definitions) ====================
+import type {
+  // Account & Currency Types - used in local type definitions
   AccountType,
-  Currency,
   
-  // Status Types
+  // Status Types - used in local type definitions
   DepositStatus,
   CreditCardStatus,
   BrokerageStatus,
-  InsuranceStatus,
-  PensionStatus,
-  RealEstateStatus,
-  AlternativeInvestmentStatus,
   
-  // Enumerations
+  // Enumerations - used in local type definitions
   InterestPayoutFrequency,
-  PremiumFrequency,
   CardNetwork,
   CardType,
   BrokerageAccountType,
@@ -32,67 +26,25 @@ export type {
   GoalPriority,
   GoalStatus,
   CategoryType,
-  BudgetPeriodType,
-  InsurancePolicyType,
-  PensionSchemeType,
-  RealEstateType,
-  PropertyType,
-  MetalType,
-  MetalInvestmentForm,
-  MetalStorageLocation,
-  AlternativeInvestmentType,
-  RiskRating,
-  InvestmentTransactionType,
-  
-  // Core Entities
-  Account,
-  Transaction,
-  Budget,
-  BudgetCategory,
-  Goal,
-  GoalContribution,
-  Category,
-  
-  // Investment Details
-  DepositDetails,
-  CreditCardDetails,
-  BrokerageDetails,
-  InsuranceDetails,
-  PensionAccount,
-  RealEstateInvestment,
-  PreciousMetal,
-  AlternativeInvestment,
-  InvestmentTransaction,
-  
-  // Input/Output Types
-  CreateAccountInput,
-  UpdateAccountInput,
-  CreateTransactionInput,
-  UpdateTransactionInput,
-  CreateBudgetInput,
-  UpdateBudgetInput,
-  CreateGoalInput,
-  UpdateGoalInput,
-  CreateDepositDetailsInput,
-  UpdateDepositDetailsInput,
-  CreateInsuranceDetailsInput,
-  UpdateInsuranceDetailsInput,
-  CreatePensionAccountInput,
-  UpdatePensionAccountInput,
-  CreateRealEstateInput,
-  UpdateRealEstateInput,
-  CreatePreciousMetalInput,
-  UpdatePreciousMetalInput,
-  CreateAlternativeInvestmentInput,
-  UpdateAlternativeInvestmentInput,
-  
-  // Response Types
-  ApiResponse,
-  PaginatedResponse,
-  AccountSummary,
-  TransactionSummary,
-  BudgetProgress,
-  InvestmentPortfolioSummary,
+} from '@svc/wealth-wise-shared-types';
+
+// Re-export types from shared-types that are needed by webapp
+export type {
+  AccountType,
+  Currency,
+  DepositStatus,
+  CreditCardStatus,
+  BrokerageStatus,
+  InterestPayoutFrequency,
+  CardNetwork,
+  CardType,
+  BrokerageAccountType,
+  TaxDeductionSection,
+  TransactionType,
+  RecurringFrequency,
+  GoalPriority,
+  GoalStatus,
+  CategoryType,
 } from '@svc/wealth-wise-shared-types';
 
 // ==================== Webapp-Specific Types ====================

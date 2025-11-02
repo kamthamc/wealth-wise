@@ -59,7 +59,6 @@ export { PageHeader } from './PageHeader/PageHeader';
 export { Pagination, type PaginationProps } from './Pagination';
 export { ProgressBar, type ProgressBarProps } from './ProgressBar';
 export {
-  Radio,
   RadioGroup,
   type RadioGroupProps,
   type RadioOption,

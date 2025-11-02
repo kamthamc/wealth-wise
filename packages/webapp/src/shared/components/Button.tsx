@@ -3,23 +3,19 @@
  * Accessible button with multiple variants using Radix UI
  */
 
-import type { ReactNode } from 'react';
+import type { ReactNode, ButtonHTMLAttributes } from 'react';
 import { Button as RadixButton } from '@radix-ui/themes';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 export type ButtonSize = 'small' | 'medium' | 'large';
 
-export interface ButtonProps {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   isLoading?: boolean;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
   fullWidth?: boolean;
-  children: ReactNode;
-  disabled?: boolean;
-  type?: 'button' | 'submit' | 'reset';
-  onClick?: () => void;
 }
 
 export function Button({
@@ -76,7 +72,7 @@ export function Button({
       type={type}
       variant={getRadixVariant()}
       size={getRadixSize()}
-      color={getRadixColor()}
+  color={getRadixColor() as any}
       disabled={disabled || isLoading}
       loading={isLoading}
       style={fullWidth ? { width: '100%' } : undefined}
