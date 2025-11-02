@@ -1,58 +1,104 @@
 /**
- * TypeScript types for database entities
- * Matches the SQL schema definitions
+ * Database Types
+ * 
+ * Re-exports types from @svc/shared-types for cross-platform consistency.
+ * Webapp-specific utility types are defined below.
  */
 
-export type AccountType =
-  | 'bank'
-  | 'credit_card'
-  | 'upi'
-  | 'brokerage'
-  | 'cash'
-  | 'wallet'
-  | 'fixed_deposit'
-  | 'recurring_deposit'
-  | 'ppf'
-  | 'nsc'
-  | 'kvp'
-  | 'scss'
-  | 'post_office';
+// ==================== Shared Types (Re-exported) ====================
+export type {
+  // Account & Currency Types
+  AccountType,
+  Currency,
+  
+  // Status Types
+  DepositStatus,
+  CreditCardStatus,
+  BrokerageStatus,
+  InsuranceStatus,
+  PensionStatus,
+  RealEstateStatus,
+  AlternativeInvestmentStatus,
+  
+  // Enumerations
+  InterestPayoutFrequency,
+  PremiumFrequency,
+  CardNetwork,
+  CardType,
+  BrokerageAccountType,
+  TaxDeductionSection,
+  TransactionType,
+  RecurringFrequency,
+  GoalPriority,
+  GoalStatus,
+  CategoryType,
+  BudgetPeriodType,
+  InsurancePolicyType,
+  PensionSchemeType,
+  RealEstateType,
+  PropertyType,
+  MetalType,
+  MetalInvestmentForm,
+  MetalStorageLocation,
+  AlternativeInvestmentType,
+  RiskRating,
+  InvestmentTransactionType,
+  
+  // Core Entities
+  Account,
+  Transaction,
+  Budget,
+  BudgetCategory,
+  Goal,
+  GoalContribution,
+  Category,
+  
+  // Investment Details
+  DepositDetails,
+  CreditCardDetails,
+  BrokerageDetails,
+  InsuranceDetails,
+  PensionAccount,
+  RealEstateInvestment,
+  PreciousMetal,
+  AlternativeInvestment,
+  InvestmentTransaction,
+  
+  // Input/Output Types
+  CreateAccountInput,
+  UpdateAccountInput,
+  CreateTransactionInput,
+  UpdateTransactionInput,
+  CreateBudgetInput,
+  UpdateBudgetInput,
+  CreateGoalInput,
+  UpdateGoalInput,
+  CreateDepositDetailsInput,
+  UpdateDepositDetailsInput,
+  CreateInsuranceDetailsInput,
+  UpdateInsuranceDetailsInput,
+  CreatePensionAccountInput,
+  UpdatePensionAccountInput,
+  CreateRealEstateInput,
+  UpdateRealEstateInput,
+  CreatePreciousMetalInput,
+  UpdatePreciousMetalInput,
+  CreateAlternativeInvestmentInput,
+  UpdateAlternativeInvestmentInput,
+  
+  // Response Types
+  ApiResponse,
+  PaginatedResponse,
+  AccountSummary,
+  TransactionSummary,
+  BudgetProgress,
+  InvestmentPortfolioSummary,
+} from '@svc/wealth-wise-shared-types';
 
-export type DepositStatus =
-  | 'active'
-  | 'matured'
-  | 'prematurely_closed'
-  | 'renewed';
+// ==================== Webapp-Specific Types ====================
 
-export type CreditCardStatus = 'active' | 'blocked' | 'closed';
-
-export type CardNetwork = 'visa' | 'mastercard' | 'amex' | 'rupay' | 'diners';
-
-export type CardType = 'credit' | 'charge';
-
-export type BrokerageAccountType = 'trading' | 'demat' | 'combined';
-
-export type BrokerageStatus = 'active' | 'dormant' | 'closed';
-
-export type InterestPayoutFrequency =
-  | 'monthly'
-  | 'quarterly'
-  | 'annually'
-  | 'maturity';
-
-export type TaxDeductionSection = '80C' | '80D' | '80G' | 'none';
-
-export type TransactionType = 'income' | 'expense' | 'transfer';
-
-export type RecurringFrequency = 'daily' | 'weekly' | 'monthly' | 'yearly';
-
+// Legacy type alias for backward compatibility
 export type BudgetPeriod = 'daily' | 'weekly' | 'monthly' | 'yearly';
-
-export type GoalPriority = 'low' | 'medium' | 'high';
-
-export type GoalStatus = 'active' | 'completed' | 'paused' | 'cancelled';
-
-export type CategoryType = 'income' | 'expense';
 
 /**
  * Account entity

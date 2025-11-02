@@ -1,10 +1,10 @@
 /**
  * Table Component
- * Accessible data table with sorting and selection
+ * Accessible data table with sorting and selection using Radix UI
  */
 
 import type { ReactNode } from 'react';
-import './Table.css';
+import { Table as RadixTable } from '@radix-ui/themes';
 
 export interface TableColumn<T> {
   key: string;
@@ -23,7 +23,6 @@ export interface TableProps<T> {
   sortKey?: string;
   sortDirection?: 'asc' | 'desc';
   emptyMessage?: string;
-  className?: string;
   striped?: boolean;
   hoverable?: boolean;
   compact?: boolean;
@@ -37,7 +36,6 @@ export function Table<T>({
   sortKey,
   sortDirection,
   emptyMessage = 'No data available',
-  className = '',
   striped = false,
   hoverable = true,
   compact = false,
@@ -50,75 +48,90 @@ export function Table<T>({
     onSort(key, newDirection);
   };
 
-  const classes = [
-    'table-container',
-    striped && 'table--striped',
-    hoverable && 'table--hoverable',
-    compact && 'table--compact',
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ');
-
   if (data.length === 0) {
     return (
-      <div className="table-empty">
+      <div
+        style={{
+          padding: 'var(--space-4)',
+          textAlign: 'center',
+          color: 'var(--color-text-tertiary)',
+        }}
+      >
         <p>{emptyMessage}</p>
       </div>
     );
   }
 
   return (
-    <div className={classes}>
-      <table className="table">
-        <thead>
-          <tr>
-            {columns.map((column) => (
-              <th
-                key={column.key}
-                style={{
-                  width: column.width,
-                  textAlign: column.align || 'left',
-                }}
-                className={column.sortable ? 'table-header--sortable' : ''}
-              >
-                {column.sortable ? (
-                  <button
-                    type="button"
-                    className="table-sort-button"
-                    onClick={() => handleSort(column.key)}
-                    aria-label={`Sort by ${column.header}`}
-                  >
-                    {column.header}
-                    {sortKey === column.key && (
-                      <span className="table-sort-icon" aria-hidden="true">
-                        {sortDirection === 'asc' ? ' ▲' : ' ▼'}
-                      </span>
-                    )}
-                  </button>
-                ) : (
-                  column.header
-                )}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row, index) => (
-            <tr key={keyExtractor(row, index)}>
-              {columns.map((column) => (
-                <td
-                  key={column.key}
-                  style={{ textAlign: column.align || 'left' }}
-                  className="table-cell"
+    <RadixTable.Root
+      size={compact ? '1' : '2'}
+      variant={striped ? 'surface' : 'ghost'}
+    >
+      <RadixTable.Header>
+        <RadixTable.Row>
+          {columns.map((column) => (
+            <RadixTable.ColumnHeaderCell
+              key={column.key}
+              style={{
+                width: column.width,
+                textAlign: column.align || 'left',
+              }}
+            >
+              {column.sortable ? (
+                <button
+                  type="button"
+                  onClick={() => handleSort(column.key)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    font: 'inherit',
+                    color: 'inherit',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 'var(--space-1)',
+                    width: '100%',
+                    justifyContent:
+                      column.align === 'right'
+                        ? 'flex-end'
+                        : column.align === 'center'
+                        ? 'center'
+                        : 'flex-start',
+                  }}
+                  aria-label={`Sort by ${column.header}`}
                 >
-                  {column.accessor(row)}
-                </td>
-              ))}
-            </tr>
+                  {column.header}
+                  {sortKey === column.key && (
+                    <span aria-hidden="true">
+                      {sortDirection === 'asc' ? ' ▲' : ' ▼'}
+                    </span>
+                  )}
+                </button>
+              ) : (
+                column.header
+              )}
+            </RadixTable.ColumnHeaderCell>
           ))}
-        </tbody>
-      </table>
-    </div>
+        </RadixTable.Row>
+      </RadixTable.Header>
+
+      <RadixTable.Body>
+        {data.map((row, index) => (
+          <RadixTable.Row
+            key={keyExtractor(row, index)}
+            style={hoverable ? { cursor: 'pointer' } : undefined}
+          >
+            {columns.map((column) => (
+              <RadixTable.Cell
+                key={column.key}
+                style={{ textAlign: column.align || 'left' }}
+              >
+                {column.accessor(row)}
+              </RadixTable.Cell>
+            ))}
+          </RadixTable.Row>
+        ))}
+      </RadixTable.Body>
+    </RadixTable.Root>
   );
 }

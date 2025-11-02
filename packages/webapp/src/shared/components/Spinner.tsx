@@ -1,12 +1,11 @@
 /**
  * Spinner Component
- * Loading spinner with different sizes
+ * Loading spinner with different sizes using Radix UI
  */
 
-import type { OutputHTMLAttributes } from 'react';
-import './Spinner.css';
+import { Spinner as RadixSpinner } from '@radix-ui/themes';
 
-export interface SpinnerProps extends OutputHTMLAttributes<HTMLOutputElement> {
+export interface SpinnerProps {
   size?: 'small' | 'medium' | 'large';
   label?: string;
 }
@@ -14,17 +13,25 @@ export interface SpinnerProps extends OutputHTMLAttributes<HTMLOutputElement> {
 export function Spinner({
   size = 'medium',
   label = 'Loading...',
-  className = '',
-  ...props
 }: SpinnerProps) {
-  const classes = ['spinner', `spinner--${size}`, className]
-    .filter(Boolean)
-    .join(' ');
+  // Map our sizes to Radix sizes
+  const getRadixSize = () => {
+    switch (size) {
+      case 'small':
+        return '1';
+      case 'medium':
+        return '2';
+      case 'large':
+        return '3';
+      default:
+        return '2';
+    }
+  };
 
   return (
-    <output className={classes} aria-live="polite" {...props}>
-      <div className="spinner__circle" aria-hidden="true" />
-      <span className="sr-only">{label}</span>
-    </output>
+    <RadixSpinner
+      size={getRadixSize()}
+      aria-label={label}
+    />
   );
 }

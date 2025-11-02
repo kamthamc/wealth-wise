@@ -8,8 +8,8 @@ import { useEffect, useMemo } from 'react';
 import { useAccountStore, useTransactionStore } from '@/core/stores';
 import { LineChart } from '@/shared/components';
 import {
-  calculateAccountBalances,
   calculateMonthlyStats,
+  calculateNetWorth,
   formatCurrency,
 } from '@/shared/utils';
 import './NetWorthHero.css';
@@ -28,13 +28,8 @@ export function NetWorthHero() {
   const { transactions } = useTransactionStore();
 
   const netWorthData: NetWorthData = useMemo(() => {
-    // Calculate current net worth using optimized batch calculation
-    const activeAccounts = accounts.filter((acc) => acc.is_active);
-    const balances = calculateAccountBalances(activeAccounts, transactions);
-
-    const current = activeAccounts.reduce((sum, acc) => {
-      return sum + (balances.get(acc.id) || 0);
-    }, 0);
+    // Calculate current net worth using calculateNetWorth function
+    const current = calculateNetWorth(accounts, transactions);
 
     // Calculate net worth from previous month
     const now = new Date();

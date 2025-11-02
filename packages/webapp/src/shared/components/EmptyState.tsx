@@ -1,10 +1,9 @@
 /**
  * Empty State Component
- * Display when there's no data to show with various size options
+ * Display when there's no data to show with various size options using Radix design tokens
  */
 
 import type { ReactNode } from 'react';
-import './EmptyState.css';
 
 export interface EmptyStateProps {
   /** Icon or emoji to display */
@@ -21,8 +20,6 @@ export interface EmptyStateProps {
   secondaryAction?: ReactNode;
   /** Size variant */
   size?: 'small' | 'medium' | 'large';
-  /** Additional CSS classes */
-  className?: string;
 }
 
 export function EmptyState({
@@ -33,42 +30,119 @@ export function EmptyState({
   action,
   secondaryAction,
   size = 'medium',
-  className = '',
 }: EmptyStateProps) {
-  const sizeClass = `empty-state--${size}`;
+  // Size-based styles
+  const getSizeStyles = () => {
+    switch (size) {
+      case 'small':
+        return {
+          padding: 'var(--space-3)',
+          iconSize: 'var(--font-size-4)',
+          titleSize: 'var(--font-size-3)',
+          descriptionSize: 'var(--font-size-2)',
+        };
+      case 'large':
+        return {
+          padding: 'var(--space-6)',
+          iconSize: 'var(--font-size-6)',
+          titleSize: 'var(--font-size-5)',
+          descriptionSize: 'var(--font-size-3)',
+        };
+      case 'medium':
+      default:
+        return {
+          padding: 'var(--space-4)',
+          iconSize: 'var(--font-size-5)',
+          titleSize: 'var(--font-size-4)',
+          descriptionSize: 'var(--font-size-2)',
+        };
+    }
+  };
+
+  const styles = getSizeStyles();
 
   return (
-    <div className={`empty-state ${sizeClass} ${className}`.trim()}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: 'center',
+        padding: styles.padding,
+        gap: 'var(--space-3)',
+        minHeight: size === 'large' ? '300px' : size === 'medium' ? '200px' : '150px',
+      }}
+    >
       {/* Visual Element */}
       {illustration ? (
-        <div className="empty-state__illustration" aria-hidden="true">
+        <div aria-hidden="true">
           <img
             src={illustration}
             alt=""
-            className="empty-state__illustration-img"
+            style={{
+              maxWidth: '200px',
+              height: 'auto',
+              opacity: 0.8,
+            }}
           />
         </div>
       ) : icon ? (
-        <div className="empty-state__icon" aria-hidden="true">
+        <div
+          aria-hidden="true"
+          style={{
+            fontSize: styles.iconSize,
+            color: 'var(--color-text-tertiary)',
+            opacity: 0.8,
+          }}
+        >
           {icon}
         </div>
       ) : null}
 
       {/* Content */}
-      <div className="empty-state__content">
-        <h2 className="empty-state__title">{title}</h2>
+      <div style={{ maxWidth: '400px' }}>
+        <h2
+          style={{
+            fontSize: styles.titleSize,
+            fontWeight: 'var(--font-weight-semibold)',
+            color: 'var(--color-text-primary)',
+            margin: 0,
+            marginBottom: description ? 'var(--space-2)' : 0,
+          }}
+        >
+          {title}
+        </h2>
 
         {description && (
-          <p className="empty-state__description">{description}</p>
+          <p
+            style={{
+              fontSize: styles.descriptionSize,
+              color: 'var(--color-text-secondary)',
+              margin: 0,
+              lineHeight: 'var(--leading-relaxed)',
+            }}
+          >
+            {description}
+          </p>
         )}
       </div>
 
       {/* Actions */}
       {(action || secondaryAction) && (
-        <div className="empty-state__actions">
-          {action && <div className="empty-state__action">{action}</div>}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 'var(--space-2)',
+            alignItems: 'center',
+            width: '100%',
+            maxWidth: '300px',
+          }}
+        >
+          {action && <div>{action}</div>}
           {secondaryAction && (
-            <div className="empty-state__secondary-action">
+            <div style={{ opacity: 0.8 }}>
               {secondaryAction}
             </div>
           )}

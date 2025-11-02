@@ -12,14 +12,14 @@ import {
   createAccountSchema,
   safeValidate,
 } from './schemas';
-import type { GetAccountTypesHttpsCallable  } from '@svc/wealth-wise-shared-types'
+import type { GetAccountTypesHttpsCallable  } from '@svc/wealth-wise-shared-types';
+import { fetchUserPreferences } from './preferences';
 
 const { onRequest, onCall } = https;
 
 const db = admin.firestore();
 
 export const getAccountTypes: GetAccountTypesHttpsCallable = onCall(() => {
-    // GetAccountTypesHttpsCallable
   return ({
       success: true,
       accountTypes: allAccountTypes,
@@ -86,6 +86,10 @@ export const createAccount = onCall(async (request, resp) => {
   const data = validation.data;
 
   try {
+    // Get user preferences for default currency
+    const userPreferences = await fetchUserPreferences(userId);
+    const defaultCurrency = userPreferences.currency ?? 'INR';
+
     // Create account document
     const accountRef = await db.collection('accounts').add({
       user_id: userId,
@@ -93,7 +97,7 @@ export const createAccount = onCall(async (request, resp) => {
       type: data.type,
       balance: data.balance || 0,
       initial_balance: data.initial_balance || data.balance || 0,
-      currency: data.currency || 'INR',
+      currency: data.currency || defaultCurrency,
       institution: data.institution || null,
       account_number: data.account_number || null,
       notes: data.notes || null,
@@ -316,9 +320,13 @@ export const calculateAccountBalance = onCall(async (request) => {
       updated_at: admin.firestore.FieldValue.serverTimestamp(),
     });
 
+    const accountData = account.data();
+    const currency = accountData?.currency || 'INR';
+
     return {
       success: true,
       balance: String(balance),
+      currency,
       message: 'Account balance calculated successfully',
     };
   } catch (error) {

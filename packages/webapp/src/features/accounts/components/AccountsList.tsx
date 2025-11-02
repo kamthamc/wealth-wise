@@ -202,8 +202,8 @@ export function AccountsList() {
 
         {/* Grid Skeleton */}
         <div className="accounts-page__grid">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <SkeletonCard key={i} />
+          {Array.from({ length: 6 }, (_, i) => (
+            <SkeletonCard key={`skeleton-card-${Date.now()}-${i}`} />
           ))}
         </div>
       </div>

@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+import { fetchUserPreferences } from './preferences';
 
 const db = admin.firestore();
 
@@ -66,6 +67,10 @@ export const createBudget = functions.https.onCall(async (request) => {
   }
 
   try {
+    // Fetch user preferences for currency
+    const userPreferences = await fetchUserPreferences(userId);
+    const currency = userPreferences.currency;
+
     // Create budget document
     const budgetRef = await db.collection('budgets').add({
       user_id: userId,
@@ -79,6 +84,7 @@ export const createBudget = functions.https.onCall(async (request) => {
       is_recurring: data.is_recurring,
       rollover_enabled: data.rollover_enabled,
       categories: data.categories,
+      currency, // Store currency with budget
       created_at: admin.firestore.FieldValue.serverTimestamp(),
       updated_at: admin.firestore.FieldValue.serverTimestamp(),
     });
@@ -86,6 +92,7 @@ export const createBudget = functions.https.onCall(async (request) => {
     return {
       success: true,
       budgetId: budgetRef.id,
+      currency, // Return currency in response
       message: 'Budget created successfully',
     };
   } catch (error) {
@@ -164,8 +171,14 @@ export const updateBudget = functions.https.onCall(async (request) => {
 
     await budgetRef.update(updateData);
 
+    // Get updated budget data including currency
+    const updatedBudget = await budgetRef.get();
+    const budgetData = updatedBudget.data();
+    const currency = budgetData?.currency || 'INR';
+
     return {
       success: true,
+      currency, // Return currency in response
       message: 'Budget updated successfully',
     };
   } catch (error) {
@@ -326,6 +339,9 @@ export const calculateBudgetProgress = functions.https.onCall(
       const overallPercentUsed =
         totalAllocated > 0 ? (totalSpent / totalAllocated) * 100 : 0;
 
+      // Get currency from budget or fetch user preferences
+      const currency = budgetData?.currency || (await fetchUserPreferences(userId)).currency;
+
       return {
         success: true,
         budget: {
@@ -337,6 +353,7 @@ export const calculateBudgetProgress = functions.https.onCall(
         total_spent: totalSpent,
         total_remaining: totalRemaining,
         overall_percent_used: overallPercentUsed,
+        currency, // Return currency for proper formatting
       };
     } catch (error) {
       console.error('Error calculating budget progress:', error);

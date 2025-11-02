@@ -183,7 +183,7 @@ class DatabaseClient {
         const keysToRemove: string[] = [];
         for (let i = 0; i < localStorage.length; i++) {
           const key = localStorage.key(i);
-          if (key && key.includes(DB_NAME)) {
+          if (key?.includes(DB_NAME)) {
             keysToRemove.push(key);
           }
         }
@@ -299,9 +299,8 @@ class DatabaseClient {
 
           console.log('[DB] ✅ Created initial balance transactions');
 
-          // Optional: Set account balances to 0 since they're now in transactions
-          // Uncomment if you want to fully migrate away from account.balance
-          // await this.db?.query('UPDATE accounts SET balance = 0');
+          // Set account balances to 0 since they're now in transactions
+          await this.db?.query('UPDATE accounts SET balance = 0 WHERE balance != 0');
         }
 
         console.log('[DB] ✅ Migration 2→3 completed');
@@ -381,6 +380,236 @@ class DatabaseClient {
         `);
 
         console.log('[DB] ✅ Migration 3→4 completed');
+      }
+
+      // Migration from version 7 to 8: Add comprehensive investment tables
+      if (from < 8 && to >= 8) {
+        console.log(
+          '[DB] Migration 7→8: Adding comprehensive investment tables'
+        );
+
+        // Update account types to include all investment types
+        await this.db?.query(
+          'ALTER TABLE accounts DROP CONSTRAINT IF EXISTS accounts_type_check;'
+        );
+
+        await this.db?.query(`
+          ALTER TABLE accounts ADD CONSTRAINT accounts_type_check 
+          CHECK (type IN (
+            'bank', 'credit_card', 'upi', 'cash', 'wallet',
+            'fixed_deposit', 'recurring_deposit', 'ppf', 'nsc', 'kvp', 'scss', 'post_office', 'ssy',
+            'brokerage', 'mutual_fund', 'stocks', 'bonds', 'etf',
+            'term_insurance', 'endowment', 'money_back', 'ulip', 'child_plan',
+            'nps', 'apy', 'epf', 'vpf',
+            'property', 'reit', 'invit',
+            'gold', 'silver',
+            'p2p_lending', 'chit_fund', 'cryptocurrency', 'commodity', 'hedge_fund', 'angel_investment'
+          ))
+        `);
+
+        // Create insurance_details table
+        await this.db?.query(`
+          CREATE TABLE IF NOT EXISTS insurance_details (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE UNIQUE,
+            policy_number TEXT NOT NULL,
+            policy_type TEXT NOT NULL CHECK (policy_type IN ('term', 'endowment', 'money_back', 'ulip', 'child')),
+            plan_name TEXT NOT NULL,
+            insurance_company TEXT NOT NULL,
+            sum_assured DECIMAL(15, 2) NOT NULL,
+            premium_amount DECIMAL(15, 2) NOT NULL,
+            premium_frequency TEXT CHECK (premium_frequency IN ('monthly', 'quarterly', 'half_yearly', 'annual')),
+            policy_term INTEGER NOT NULL,
+            policy_start_date DATE NOT NULL,
+            policy_maturity_date DATE NOT NULL,
+            last_premium_paid_date DATE,
+            next_premium_due_date DATE,
+            fund_value DECIMAL(15, 2) DEFAULT 0,
+            maturity_benefit DECIMAL(15, 2),
+            bonus_accumulated DECIMAL(15, 2) DEFAULT 0,
+            nominee_name TEXT NOT NULL,
+            nominee_relationship TEXT,
+            status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'paid_up', 'lapsed', 'matured', 'surrendered')),
+            notes TEXT,
+            created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+            updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+          )
+        `);
+
+        // Create pension_accounts table
+        await this.db?.query(`
+          CREATE TABLE IF NOT EXISTS pension_accounts (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE UNIQUE,
+            scheme_type TEXT NOT NULL CHECK (scheme_type IN ('nps', 'apy', 'epf', 'vpf')),
+            pran_number TEXT,
+            uan_number TEXT,
+            account_number TEXT,
+            employee_contribution DECIMAL(15, 2) DEFAULT 0,
+            employer_contribution DECIMAL(15, 2) DEFAULT 0,
+            total_corpus DECIMAL(15, 2) DEFAULT 0,
+            equity_percentage DECIMAL(5, 2),
+            corporate_debt_percentage DECIMAL(5, 2),
+            government_securities_percentage DECIMAL(5, 2),
+            pension_fund_manager TEXT,
+            guaranteed_pension_amount DECIMAL(15, 2),
+            account_opening_date DATE NOT NULL,
+            vesting_age INTEGER DEFAULT 60,
+            status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'matured')),
+            notes TEXT,
+            created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+            updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+          )
+        `);
+
+        // Create real_estate_investments table
+        await this.db?.query(`
+          CREATE TABLE IF NOT EXISTS real_estate_investments (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE UNIQUE,
+            investment_type TEXT NOT NULL CHECK (investment_type IN ('property', 'reit', 'invit')),
+            property_address TEXT,
+            property_type TEXT CHECK (property_type IN ('residential_flat', 'independent_house', 'commercial_office', 'shop', 'plot', 'agricultural_land')),
+            carpet_area DECIMAL(10, 2),
+            purchase_price DECIMAL(15, 2) NOT NULL,
+            purchase_date DATE NOT NULL,
+            estimated_market_value DECIMAL(15, 2),
+            last_valuation_date DATE,
+            is_rented BOOLEAN DEFAULT false,
+            monthly_rental_income DECIMAL(15, 2),
+            has_loan BOOLEAN DEFAULT false,
+            outstanding_loan DECIMAL(15, 2),
+            emi_amount DECIMAL(15, 2),
+            units_held DECIMAL(15, 4),
+            current_nav DECIMAL(10, 2),
+            status TEXT NOT NULL DEFAULT 'owned' CHECK (status IN ('owned', 'under_construction', 'sold', 'inherited')),
+            notes TEXT,
+            created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+            updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+          )
+        `);
+
+        // Create precious_metals table
+        await this.db?.query(`
+          CREATE TABLE IF NOT EXISTS precious_metals (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE UNIQUE,
+            metal_type TEXT NOT NULL CHECK (metal_type IN ('gold', 'silver')),
+            investment_form TEXT NOT NULL CHECK (investment_form IN ('physical', 'sgb', 'etf', 'digital', 'mutual_fund')),
+            quantity_in_grams DECIMAL(15, 6) NOT NULL,
+            purity TEXT,
+            average_purchase_price_per_gram DECIMAL(10, 2) NOT NULL,
+            total_purchase_cost DECIMAL(15, 2) NOT NULL,
+            purchase_date DATE NOT NULL,
+            current_price_per_gram DECIMAL(10, 2),
+            current_value DECIMAL(15, 2),
+            storage_location TEXT CHECK (storage_location IN ('home', 'bank_locker', 'vault', 'jeweller')),
+            bond_certificate_number TEXT,
+            interest_rate DECIMAL(5, 2),
+            maturity_date DATE,
+            folio_number TEXT,
+            fund_name TEXT,
+            units_held DECIMAL(15, 6),
+            notes TEXT,
+            created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+            updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+          )
+        `);
+
+        // Create alternative_investments table
+        await this.db?.query(`
+          CREATE TABLE IF NOT EXISTS alternative_investments (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE UNIQUE,
+            investment_type TEXT NOT NULL CHECK (investment_type IN ('p2p_lending', 'chit_fund', 'cryptocurrency', 'commodity', 'hedge_fund', 'angel_investment')),
+            platform_name TEXT NOT NULL,
+            investment_id TEXT,
+            invested_amount DECIMAL(15, 2) NOT NULL,
+            current_value DECIMAL(15, 2),
+            interest_rate DECIMAL(5, 2),
+            principal_recovered DECIMAL(15, 2),
+            interest_earned DECIMAL(15, 2),
+            chit_group_name TEXT,
+            total_chit_value DECIMAL(15, 2),
+            monthly_contribution DECIMAL(10, 2),
+            is_prized BOOLEAN DEFAULT false,
+            crypto_symbol TEXT,
+            quantity DECIMAL(20, 8),
+            wallet_address TEXT,
+            company_name TEXT,
+            equity_percentage DECIMAL(5, 2),
+            risk_rating TEXT CHECK (risk_rating IN ('low', 'medium', 'high', 'very_high')),
+            status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'defaulted', 'matured', 'exited', 'written_off')),
+            total_returns DECIMAL(15, 2),
+            notes TEXT,
+            created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+            updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+          )
+        `);
+
+        // Create investment_transactions table
+        await this.db?.query(`
+          CREATE TABLE IF NOT EXISTS investment_transactions (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+            transaction_type TEXT NOT NULL CHECK (transaction_type IN ('buy', 'sell', 'sip', 'dividend', 'interest', 'bonus', 'withdrawal', 'contribution', 'premium')),
+            transaction_date DATE NOT NULL,
+            transaction_amount DECIMAL(15, 2) NOT NULL,
+            quantity DECIMAL(15, 6),
+            price_per_unit DECIMAL(15, 4),
+            brokerage_fee DECIMAL(10, 2),
+            stt_charges DECIMAL(10, 2),
+            gst_charges DECIMAL(10, 2),
+            tds_deducted DECIMAL(10, 2),
+            transaction_ref TEXT,
+            notes TEXT,
+            created_at TIMESTAMP NOT NULL DEFAULT NOW()
+          )
+        `);
+
+        // Create indexes
+        await this.db?.query(
+          'CREATE INDEX IF NOT EXISTS idx_insurance_details_account_id ON insurance_details(account_id)'
+        );
+        await this.db?.query(
+          'CREATE INDEX IF NOT EXISTS idx_pension_accounts_account_id ON pension_accounts(account_id)'
+        );
+        await this.db?.query(
+          'CREATE INDEX IF NOT EXISTS idx_real_estate_account_id ON real_estate_investments(account_id)'
+        );
+        await this.db?.query(
+          'CREATE INDEX IF NOT EXISTS idx_precious_metals_account_id ON precious_metals(account_id)'
+        );
+        await this.db?.query(
+          'CREATE INDEX IF NOT EXISTS idx_alternative_investments_account_id ON alternative_investments(account_id)'
+        );
+        await this.db?.query(
+          'CREATE INDEX IF NOT EXISTS idx_investment_transactions_account_id ON investment_transactions(account_id)'
+        );
+
+        // Create triggers
+        await this.db?.query(`
+          CREATE TRIGGER update_insurance_details_updated_at BEFORE UPDATE ON insurance_details
+            FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()
+        `);
+        await this.db?.query(`
+          CREATE TRIGGER update_pension_accounts_updated_at BEFORE UPDATE ON pension_accounts
+            FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()
+        `);
+        await this.db?.query(`
+          CREATE TRIGGER update_real_estate_updated_at BEFORE UPDATE ON real_estate_investments
+            FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()
+        `);
+        await this.db?.query(`
+          CREATE TRIGGER update_precious_metals_updated_at BEFORE UPDATE ON precious_metals
+            FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()
+        `);
+        await this.db?.query(`
+          CREATE TRIGGER update_alternative_investments_updated_at BEFORE UPDATE ON alternative_investments
+            FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()
+        `);
+
+        console.log('[DB] ✅ Migration 7→8 completed');
       }
 
       // Update version

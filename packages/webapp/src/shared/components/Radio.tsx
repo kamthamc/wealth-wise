@@ -1,10 +1,7 @@
 /**
  * Radio Component
- * Accessible radio button group
+ * Accessible radio button group using styled HTML elements
  */
-
-import type { InputHTMLAttributes } from 'react';
-import './Radio.css';
 
 export interface RadioOption {
   value: string;
@@ -22,7 +19,6 @@ export interface RadioGroupProps {
   helperText?: string;
   disabled?: boolean;
   required?: boolean;
-  className?: string;
 }
 
 export function RadioGroup({
@@ -35,24 +31,7 @@ export function RadioGroup({
   helperText,
   disabled,
   required,
-  className = '',
 }: RadioGroupProps) {
-  const groupId = `radio-group-${Math.random().toString(36).slice(2, 11)}`;
-  const errorId = `${groupId}-error`;
-  const helperId = `${groupId}-helper`;
-
-  const hasError = Boolean(error);
-  const hasHelper = Boolean(helperText);
-
-  const classes = [
-    'radio-group',
-    hasError && 'radio-group--error',
-    disabled && 'radio-group--disabled',
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ');
-
   const handleChange = (optionValue: string) => {
     if (onChange && !disabled) {
       onChange(optionValue);
@@ -60,83 +39,96 @@ export function RadioGroup({
   };
 
   return (
-    <div className={classes}>
+    <div>
       {label && (
-        <div className="radio-group-label">
+        <div
+          style={{
+            fontSize: 'var(--font-size-2)',
+            fontWeight: 'var(--font-weight-medium)',
+            color: 'var(--color-text-secondary)',
+            marginBottom: 'var(--space-2)',
+          }}
+        >
           {label}
           {required && (
-            <abbr className="radio-group-label__required" title="required">
+            <span style={{ color: 'var(--color-red-600)', marginLeft: '0.25rem' }}>
               *
-            </abbr>
+            </span>
           )}
         </div>
       )}
 
       <div
-        className="radio-group-options"
         role="radiogroup"
-        aria-labelledby={label ? groupId : undefined}
-        aria-invalid={hasError}
-        aria-describedby={
-          [hasError && errorId, hasHelper && helperId]
-            .filter(Boolean)
-            .join(' ') || undefined
-        }
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 'var(--space-2)',
+        }}
       >
         {options.map((option) => (
-          <Radio
+          <div
             key={option.value}
-            name={name}
-            value={option.value}
-            label={option.label}
-            checked={value === option.value}
-            onChange={() => handleChange(option.value)}
-            disabled={disabled || option.disabled}
-          />
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 'var(--space-2)',
+            }}
+          >
+            <input
+              type="radio"
+              id={`${name}-${option.value}`}
+              name={name}
+              value={option.value}
+              checked={value === option.value}
+              onChange={() => handleChange(option.value)}
+              disabled={disabled || option.disabled}
+              required={required}
+              style={{
+                width: '1rem',
+                height: '1rem',
+                accentColor: 'var(--color-blue-600)',
+              }}
+            />
+            <label
+              htmlFor={`${name}-${option.value}`}
+              style={{
+                fontSize: 'var(--font-size-2)',
+                color: 'var(--color-text-primary)',
+                cursor: disabled || option.disabled ? 'not-allowed' : 'pointer',
+                opacity: disabled || option.disabled ? 0.6 : 1,
+              }}
+            >
+              {option.label}
+            </label>
+          </div>
         ))}
       </div>
 
       {error && (
-        <span className="radio-group-error" id={errorId} role="alert">
+        <div
+          style={{
+            fontSize: 'var(--font-size-1)',
+            color: 'var(--color-red-600)',
+            marginTop: '0.25rem',
+          }}
+          role="alert"
+        >
           {error}
-        </span>
+        </div>
       )}
 
       {helperText && !error && (
-        <span className="radio-group-helper" id={helperId}>
+        <div
+          style={{
+            fontSize: 'var(--font-size-1)',
+            color: 'var(--color-text-tertiary)',
+            marginTop: '0.25rem',
+          }}
+        >
           {helperText}
-        </span>
+        </div>
       )}
-    </div>
-  );
-}
-
-interface RadioProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
-  label: string;
-}
-
-export function Radio({
-  label,
-  id,
-  className = '',
-  disabled,
-  ...props
-}: RadioProps) {
-  const radioId = id || `radio-${Math.random().toString(36).slice(2, 11)}`;
-
-  return (
-    <div className={`radio-wrapper ${className}`}>
-      <input
-        type="radio"
-        id={radioId}
-        className="radio-input"
-        disabled={disabled}
-        {...props}
-      />
-      <label htmlFor={radioId} className="radio-label">
-        {label}
-      </label>
     </div>
   );
 }

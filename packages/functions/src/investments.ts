@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+import { fetchUserPreferences } from './preferences';
 
 const db = admin.firestore();
 
@@ -115,6 +116,11 @@ export const fetchStockData = functions.https.onCall(async (request) => {
       timestamp: quote['07. latest trading day'],
     };
 
+    // Fetch user preferences for currency
+    const userId = request.auth.uid;
+    const userPreferences = await fetchUserPreferences(userId);
+    const currency = userPreferences.currency;
+
     // Cache the result
     await db.collection('stock_cache').doc(symbol).set({
       data: stockData,
@@ -123,6 +129,7 @@ export const fetchStockData = functions.https.onCall(async (request) => {
 
     return {
       ...stockData,
+      currency, // Return currency for price formatting
       cached: false,
       cacheAge: 0,
     };
@@ -214,11 +221,17 @@ export const fetchStockHistory = functions.https.onCall(async (request) => {
       }),
     );
 
+    // Fetch user preferences for currency
+    const userId = request.auth.uid;
+    const userPreferences = await fetchUserPreferences(userId);
+    const currency = userPreferences.currency;
+
     return {
       symbol,
       interval,
       history,
       count: history.length,
+      currency, // Return currency for price formatting
     };
   } catch (error: any) {
     console.error('Error fetching stock history:', error);
@@ -308,6 +321,11 @@ export const fetchMutualFundData = functions.https.onCall(async (request) => {
       timestamp: latestNav.date,
     };
 
+    // Fetch user preferences for currency
+    const userId = request.auth.uid;
+    const userPreferences = await fetchUserPreferences(userId);
+    const currency = userPreferences.currency;
+
     // Cache the result
     await db.collection('mutualfund_cache').doc(isin).set({
       data: mutualFundData,
@@ -316,6 +334,7 @@ export const fetchMutualFundData = functions.https.onCall(async (request) => {
 
     return {
       ...mutualFundData,
+      currency, // Return currency for NAV formatting
       cached: false,
       cacheAge: 0,
     };
@@ -409,6 +428,11 @@ export const fetchETFData = functions.https.onCall(async (request) => {
       timestamp: quote['07. latest trading day'],
     };
 
+    // Fetch user preferences for currency
+    const userId = request.auth.uid;
+    const userPreferences = await fetchUserPreferences(userId);
+    const currency = userPreferences.currency;
+
     // Cache the result
     await db.collection('stock_cache').doc(symbol).set({
       data: etfData,
@@ -417,6 +441,7 @@ export const fetchETFData = functions.https.onCall(async (request) => {
 
     return {
       ...etfData,
+      currency, // Return currency for price formatting
       cached: false,
       cacheAge: 0,
     };
@@ -518,6 +543,10 @@ export const getInvestmentsSummary = functions.https.onCall(async (request) => {
       return acc;
     }, {});
 
+    // Fetch user preferences for currency
+    const userPreferences = await fetchUserPreferences(userId);
+    const currency = userPreferences.currency;
+
     return {
       summary: {
         totalAccounts: investmentAccounts.length,
@@ -537,6 +566,7 @@ export const getInvestmentsSummary = functions.https.onCall(async (request) => {
         type: acc.type,
         balance: acc.balance,
       })),
+      currency, // Return currency for portfolio value formatting
     };
   } catch (error: any) {
     console.error('Error getting investments summary:', error);

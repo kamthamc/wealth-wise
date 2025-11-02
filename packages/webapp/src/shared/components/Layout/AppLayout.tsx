@@ -3,7 +3,7 @@
  * Main application layout with collapsible navigation
  */
 
-import { Link, useMatchRoute } from '@tanstack/react-router';
+import { Link, useMatchRoute, useRouter } from '@tanstack/react-router';
 import {
   ArrowLeftRight,
   BarChart3,
@@ -18,6 +18,7 @@ import {
 import { type ReactNode, useState } from 'react';
 import { LogoIcon } from '../LogoIcon';
 import './AppLayout.css';
+import { useAuth } from '@/core/hooks/useAuth';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -47,6 +48,17 @@ export function AppLayout({ children }: AppLayoutProps) {
   const matchRoute = useMatchRoute();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  const router = useRouter();
+  const auth = useAuth();
+
+  const handleLogout = () => {
+    auth.signOut().then(() => {
+      router.invalidate().finally(() => {
+        router.navigate({ to: '/' });
+      });
+    });
+  };
 
   return (
     <div className="app-layout">
@@ -115,6 +127,23 @@ export function AppLayout({ children }: AppLayoutProps) {
                 </li>
               );
             })}
+          </ul>
+          <ul>
+            <li className="nav-item nav-item--bottom">
+              <button
+                type="button"
+                className="nav-link nav-link--logout"
+                onClick={handleLogout}
+                title={isCollapsed ? 'Logout' : undefined}
+              >
+                <span className="nav-link__icon" aria-hidden="true">
+                  <X size={20} />
+                </span>
+                {!isCollapsed && (
+                  <span className="nav-link__label">Logout</span>
+                )}
+              </button>
+            </li>
           </ul>
         </nav>
       </aside>

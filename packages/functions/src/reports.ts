@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+import { fetchUserPreferences } from './preferences';
 
 const db = admin.firestore();
 
@@ -81,6 +82,12 @@ export const generateReport = functions.https.onCall(async (request) => {
         );
     }
 
+    // Fetch user preferences for formatting
+    const userPreferences = await fetchUserPreferences(userId);
+    const currency = userPreferences.currency;
+    const dateFormat = userPreferences.dateFormat;
+    const locale = userPreferences.locale;
+
     return {
       success: true,
       report: {
@@ -89,6 +96,9 @@ export const generateReport = functions.https.onCall(async (request) => {
         endDate: endDate,
         generatedAt: admin.firestore.Timestamp.now(),
         data: reportData,
+        currency, // For amount formatting
+        dateFormat, // For date formatting
+        locale, // For number formatting
       },
     };
   } catch (error) {
@@ -345,6 +355,10 @@ export const getDashboardAnalytics = functions.https.onCall(async (request) => {
       .where('end_date', '>=', admin.firestore.Timestamp.now())
       .get();
 
+    // Fetch user preferences for formatting
+    const userPreferences = await fetchUserPreferences(userId);
+    const currency = userPreferences.currency;
+
     return {
       success: true,
       analytics: {
@@ -363,6 +377,7 @@ export const getDashboardAnalytics = functions.https.onCall(async (request) => {
           acc[account.type] = (acc[account.type] || 0) + 1;
           return acc;
         }, {}),
+        currency, // Return currency for amount formatting
       },
     };
   } catch (error) {

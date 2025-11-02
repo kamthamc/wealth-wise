@@ -3,7 +3,7 @@
  * Defines all tables and their structures
  */
 
-export const DATABASE_VERSION = 7; // Updated: Enhanced budget management system
+export const DATABASE_VERSION = 8; // Updated: Comprehensive investment types support
 
 /**
  * SQL schema for the entire database
@@ -15,19 +15,52 @@ CREATE TABLE IF NOT EXISTS accounts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   type TEXT NOT NULL CHECK (type IN (
+    -- Banking & Cash
     'bank', 
     'credit_card', 
     'upi', 
-    'brokerage', 
     'cash', 
     'wallet',
+    -- Deposits & Savings
     'fixed_deposit',
     'recurring_deposit',
     'ppf',
     'nsc',
     'kvp',
     'scss',
-    'post_office'
+    'post_office',
+    'ssy',
+    -- Investments & Brokerage
+    'brokerage',
+    'mutual_fund',
+    'stocks',
+    'bonds',
+    'etf',
+    -- Insurance
+    'term_insurance',
+    'endowment',
+    'money_back',
+    'ulip',
+    'child_plan',
+    -- Retirement
+    'nps',
+    'apy',
+    'epf',
+    'vpf',
+    -- Real Estate
+    'property',
+    'reit',
+    'invit',
+    -- Precious Metals
+    'gold',
+    'silver',
+    -- Alternative Investments
+    'p2p_lending',
+    'chit_fund',
+    'cryptocurrency',
+    'commodity',
+    'hedge_fund',
+    'angel_investment'
   )),
   balance DECIMAL(15, 2) NOT NULL DEFAULT 0,
   currency TEXT NOT NULL DEFAULT 'INR',
@@ -299,6 +332,242 @@ CREATE TABLE IF NOT EXISTS settings (
   updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
+-- Insurance details table (for all insurance products)
+CREATE TABLE IF NOT EXISTS insurance_details (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE UNIQUE,
+  
+  -- Policy information
+  policy_number TEXT NOT NULL,
+  policy_type TEXT NOT NULL CHECK (policy_type IN ('term', 'endowment', 'money_back', 'ulip', 'child')),
+  plan_name TEXT NOT NULL,
+  insurance_company TEXT NOT NULL,
+  
+  -- Coverage details
+  sum_assured DECIMAL(15, 2) NOT NULL,
+  premium_amount DECIMAL(15, 2) NOT NULL,
+  premium_frequency TEXT CHECK (premium_frequency IN ('monthly', 'quarterly', 'half_yearly', 'annual')),
+  policy_term INTEGER NOT NULL,
+  
+  -- Dates
+  policy_start_date DATE NOT NULL,
+  policy_maturity_date DATE NOT NULL,
+  last_premium_paid_date DATE,
+  next_premium_due_date DATE,
+  
+  -- Investment component (for ULIP, endowment)
+  fund_value DECIMAL(15, 2) DEFAULT 0,
+  maturity_benefit DECIMAL(15, 2),
+  bonus_accumulated DECIMAL(15, 2) DEFAULT 0,
+  
+  -- Nominee details
+  nominee_name TEXT NOT NULL,
+  nominee_relationship TEXT,
+  
+  -- Status
+  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'paid_up', 'lapsed', 'matured', 'surrendered')),
+  
+  notes TEXT,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+-- Pension accounts table (NPS, APY, EPF, VPF)
+CREATE TABLE IF NOT EXISTS pension_accounts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE UNIQUE,
+  
+  -- Account information
+  scheme_type TEXT NOT NULL CHECK (scheme_type IN ('nps', 'apy', 'epf', 'vpf')),
+  pran_number TEXT,
+  uan_number TEXT,
+  account_number TEXT,
+  
+  -- Contribution details
+  employee_contribution DECIMAL(15, 2) DEFAULT 0,
+  employer_contribution DECIMAL(15, 2) DEFAULT 0,
+  total_corpus DECIMAL(15, 2) DEFAULT 0,
+  
+  -- Investment allocation (for NPS)
+  equity_percentage DECIMAL(5, 2),
+  corporate_debt_percentage DECIMAL(5, 2),
+  government_securities_percentage DECIMAL(5, 2),
+  pension_fund_manager TEXT,
+  
+  -- Pension details (for APY)
+  guaranteed_pension_amount DECIMAL(15, 2),
+  
+  -- Dates
+  account_opening_date DATE NOT NULL,
+  vesting_age INTEGER DEFAULT 60,
+  
+  -- Status
+  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'matured')),
+  
+  notes TEXT,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+-- Real estate investments table
+CREATE TABLE IF NOT EXISTS real_estate_investments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE UNIQUE,
+  
+  -- Investment type
+  investment_type TEXT NOT NULL CHECK (investment_type IN ('property', 'reit', 'invit')),
+  
+  -- Property details
+  property_address TEXT,
+  property_type TEXT CHECK (property_type IN ('residential_flat', 'independent_house', 'commercial_office', 'shop', 'plot', 'agricultural_land')),
+  carpet_area DECIMAL(10, 2),
+  
+  -- Purchase details
+  purchase_price DECIMAL(15, 2) NOT NULL,
+  purchase_date DATE NOT NULL,
+  
+  -- Current valuation
+  estimated_market_value DECIMAL(15, 2),
+  last_valuation_date DATE,
+  
+  -- Rental income
+  is_rented BOOLEAN DEFAULT false,
+  monthly_rental_income DECIMAL(15, 2),
+  
+  -- Loan details
+  has_loan BOOLEAN DEFAULT false,
+  outstanding_loan DECIMAL(15, 2),
+  emi_amount DECIMAL(15, 2),
+  
+  -- REIT/InvIT specific
+  units_held DECIMAL(15, 4),
+  current_nav DECIMAL(10, 2),
+  
+  -- Status
+  status TEXT NOT NULL DEFAULT 'owned' CHECK (status IN ('owned', 'under_construction', 'sold', 'inherited')),
+  
+  notes TEXT,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+-- Precious metals table (Gold, Silver)
+CREATE TABLE IF NOT EXISTS precious_metals (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE UNIQUE,
+  
+  -- Metal type
+  metal_type TEXT NOT NULL CHECK (metal_type IN ('gold', 'silver')),
+  
+  -- Form of investment
+  investment_form TEXT NOT NULL CHECK (investment_form IN ('physical', 'sgb', 'etf', 'digital', 'mutual_fund')),
+  
+  -- Quantity tracking
+  quantity_in_grams DECIMAL(15, 6) NOT NULL,
+  purity TEXT,
+  
+  -- Purchase details
+  average_purchase_price_per_gram DECIMAL(10, 2) NOT NULL,
+  total_purchase_cost DECIMAL(15, 2) NOT NULL,
+  purchase_date DATE NOT NULL,
+  
+  -- Current valuation
+  current_price_per_gram DECIMAL(10, 2),
+  current_value DECIMAL(15, 2),
+  
+  -- Physical storage
+  storage_location TEXT CHECK (storage_location IN ('home', 'bank_locker', 'vault', 'jeweller')),
+  
+  -- SGB specific
+  bond_certificate_number TEXT,
+  interest_rate DECIMAL(5, 2),
+  maturity_date DATE,
+  
+  -- ETF/MF specific
+  folio_number TEXT,
+  fund_name TEXT,
+  units_held DECIMAL(15, 6),
+  
+  notes TEXT,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+-- Alternative investments table
+CREATE TABLE IF NOT EXISTS alternative_investments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE UNIQUE,
+  
+  -- Investment type
+  investment_type TEXT NOT NULL CHECK (investment_type IN ('p2p_lending', 'chit_fund', 'cryptocurrency', 'commodity', 'hedge_fund', 'angel_investment')),
+  
+  -- Platform/Company details
+  platform_name TEXT NOT NULL,
+  investment_id TEXT,
+  
+  -- Investment details
+  invested_amount DECIMAL(15, 2) NOT NULL,
+  current_value DECIMAL(15, 2),
+  
+  -- P2P Lending specific
+  interest_rate DECIMAL(5, 2),
+  principal_recovered DECIMAL(15, 2),
+  interest_earned DECIMAL(15, 2),
+  
+  -- Chit Fund specific
+  chit_group_name TEXT,
+  total_chit_value DECIMAL(15, 2),
+  monthly_contribution DECIMAL(10, 2),
+  is_prized BOOLEAN DEFAULT false,
+  
+  -- Cryptocurrency specific
+  crypto_symbol TEXT,
+  quantity DECIMAL(20, 8),
+  wallet_address TEXT,
+  
+  -- Startup/Angel specific
+  company_name TEXT,
+  equity_percentage DECIMAL(5, 2),
+  
+  -- Risk & Status
+  risk_rating TEXT CHECK (risk_rating IN ('low', 'medium', 'high', 'very_high')),
+  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'defaulted', 'matured', 'exited', 'written_off')),
+  
+  -- Returns
+  total_returns DECIMAL(15, 2),
+  
+  notes TEXT,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+-- Investment transactions table (unified transaction tracking)
+CREATE TABLE IF NOT EXISTS investment_transactions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+  
+  -- Transaction details
+  transaction_type TEXT NOT NULL CHECK (transaction_type IN ('buy', 'sell', 'sip', 'dividend', 'interest', 'bonus', 'withdrawal', 'contribution', 'premium')),
+  transaction_date DATE NOT NULL,
+  
+  -- Amounts
+  transaction_amount DECIMAL(15, 2) NOT NULL,
+  quantity DECIMAL(15, 6),
+  price_per_unit DECIMAL(15, 4),
+  
+  -- Fees and charges
+  brokerage_fee DECIMAL(10, 2),
+  stt_charges DECIMAL(10, 2),
+  gst_charges DECIMAL(10, 2),
+  tds_deducted DECIMAL(10, 2),
+  
+  -- Reference
+  transaction_ref TEXT,
+  
+  notes TEXT,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
 -- Create indexes for better query performance
 CREATE INDEX IF NOT EXISTS idx_transactions_account_id ON transactions(account_id);
 CREATE INDEX IF NOT EXISTS idx_transactions_date ON transactions(date DESC);
@@ -317,6 +586,20 @@ CREATE INDEX IF NOT EXISTS idx_deposit_details_maturity_date ON deposit_details(
 CREATE INDEX IF NOT EXISTS idx_credit_card_details_account_id ON credit_card_details(account_id);
 CREATE INDEX IF NOT EXISTS idx_credit_card_details_payment_due_date ON credit_card_details(payment_due_date);
 CREATE INDEX IF NOT EXISTS idx_brokerage_details_account_id ON brokerage_details(account_id);
+CREATE INDEX IF NOT EXISTS idx_insurance_details_account_id ON insurance_details(account_id);
+CREATE INDEX IF NOT EXISTS idx_insurance_details_maturity_date ON insurance_details(policy_maturity_date);
+CREATE INDEX IF NOT EXISTS idx_insurance_details_status ON insurance_details(status);
+CREATE INDEX IF NOT EXISTS idx_pension_accounts_account_id ON pension_accounts(account_id);
+CREATE INDEX IF NOT EXISTS idx_pension_accounts_scheme_type ON pension_accounts(scheme_type);
+CREATE INDEX IF NOT EXISTS idx_real_estate_account_id ON real_estate_investments(account_id);
+CREATE INDEX IF NOT EXISTS idx_real_estate_type ON real_estate_investments(investment_type);
+CREATE INDEX IF NOT EXISTS idx_precious_metals_account_id ON precious_metals(account_id);
+CREATE INDEX IF NOT EXISTS idx_precious_metals_type ON precious_metals(metal_type);
+CREATE INDEX IF NOT EXISTS idx_alternative_investments_account_id ON alternative_investments(account_id);
+CREATE INDEX IF NOT EXISTS idx_alternative_investments_type ON alternative_investments(investment_type);
+CREATE INDEX IF NOT EXISTS idx_investment_transactions_account_id ON investment_transactions(account_id);
+CREATE INDEX IF NOT EXISTS idx_investment_transactions_date ON investment_transactions(transaction_date DESC);
+CREATE INDEX IF NOT EXISTS idx_investment_transactions_type ON investment_transactions(transaction_type);
 
 -- Budget indices
 CREATE INDEX IF NOT EXISTS idx_budgets_period ON budgets(start_date, end_date);
@@ -358,6 +641,21 @@ CREATE TRIGGER update_credit_card_details_updated_at BEFORE UPDATE ON credit_car
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_brokerage_details_updated_at BEFORE UPDATE ON brokerage_details
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_insurance_details_updated_at BEFORE UPDATE ON insurance_details
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_pension_accounts_updated_at BEFORE UPDATE ON pension_accounts
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_real_estate_updated_at BEFORE UPDATE ON real_estate_investments
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_precious_metals_updated_at BEFORE UPDATE ON precious_metals
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_alternative_investments_updated_at BEFORE UPDATE ON alternative_investments
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_settings_updated_at BEFORE UPDATE ON settings

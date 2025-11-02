@@ -15,6 +15,21 @@ export {
   getTransactionTypes,
   updateAccount,
 } from './accounts';
+
+// Export analytics functions
+export {
+  calculateNetWorth,
+  getCashFlow,
+  getDashboard,
+  getPortfolioSummary,
+  getTransactionAnalytics,
+} from './analytics';
+// Export user preferences functions
+export {
+  getUserPreferences,
+  updateUserPreferences,
+  resetUserPreferences,
+} from './preferences';
 // Export budget functions
 export {
   calculateBudgetProgress,

@@ -148,10 +148,10 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [transactions, accountId]);
 
-  // Calculate current balance based on initial balance + transactions
+  // Calculate current balance based on transactions only
   const currentBalance = useMemo(() => {
     if (!account) return 0;
-    return calculateAccountBalance(account.balance, accountTransactions);
+    return calculateAccountBalance(accountTransactions);
   }, [account, accountTransactions]);
 
   // Calculate account statistics
@@ -295,7 +295,7 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
     statement += `Account Name: ${acc.name}\n`;
     statement += `Account Type: ${getAccountTypeName(acc.type)}\n`;
     statement += `Account Number: ${formatAccountIdentifier(acc.id)}\n`;
-    statement += `Current Balance: ${formatCurrency(acc.balance, acc.currency)}\n`;
+    statement += `Current Balance: ${formatCurrency(currentBalance, acc.currency)}\n`;
     statement += `Statement Date: ${new Date().toLocaleDateString()}\n\n`;
     statement += `TRANSACTIONS\n`;
     statement += `============\n\n`;
@@ -375,7 +375,6 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
           <Button
             variant="secondary"
             onClick={handleBackToAccounts}
-            className="account-details__back-button"
           >
             ← Back
           </Button>

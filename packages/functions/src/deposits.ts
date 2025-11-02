@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+import { fetchUserPreferences } from './preferences';
 
 const db = admin.firestore();
 
@@ -46,6 +47,11 @@ export const calculateFDMaturity = functions.https.onCall(async (request) => {
   }
 
   try {
+    // Fetch user preferences for currency
+    const userId = request.auth.uid;
+    const userPreferences = await fetchUserPreferences(userId);
+    const currency = userPreferences.currency;
+
     // Calculate maturity amount with compound interest
     const n = getCompoundingPeriodsPerYear(compoundingFrequency);
     const t = tenureMonths / 12;
@@ -65,6 +71,7 @@ export const calculateFDMaturity = functions.https.onCall(async (request) => {
 
     return {
       success: true,
+      currency, // Return currency for proper formatting
       calculation: {
         principal: Math.round(principal * 100) / 100,
         interestRate,
@@ -118,6 +125,11 @@ export const calculateRDMaturity = functions.https.onCall(async (request) => {
   }
 
   try {
+    // Fetch user preferences for currency
+    const userId = request.auth.uid;
+    const userPreferences = await fetchUserPreferences(userId);
+    const currency = userPreferences.currency;
+
     // RD maturity formula: M = P × n × [(1 + i)^n - 1] / [1 - (1 + i)^(-1/3)]
     // Where P = monthly installment, n = number of months, i = monthly interest rate
     const r = interestRate / 100 / 12; // Monthly interest rate
@@ -149,6 +161,7 @@ export const calculateRDMaturity = functions.https.onCall(async (request) => {
 
     return {
       success: true,
+      currency, // Return currency for proper formatting
       calculation: {
         monthlyDeposit: Math.round(monthlyDeposit * 100) / 100,
         interestRate,
@@ -200,6 +213,11 @@ export const calculatePPFMaturity = functions.https.onCall(async (request) => {
   }
 
   try {
+    // Fetch user preferences for currency
+    const userId = request.auth.uid;
+    const userPreferences = await fetchUserPreferences(userId);
+    const currency = userPreferences.currency;
+
     // PPF interest is compounded annually
     const r = interestRate / 100;
     let maturityAmount = 0;
@@ -222,6 +240,7 @@ export const calculatePPFMaturity = functions.https.onCall(async (request) => {
 
     return {
       success: true,
+      currency, // Return currency for proper formatting
       calculation: {
         yearlyDeposit: Math.round(yearlyDeposit * 100) / 100,
         interestRate,
@@ -275,6 +294,11 @@ export const calculateSavingsInterest = functions.https.onCall(
     }
 
     try {
+      // Fetch user preferences for currency
+      const userId = request.auth.uid;
+      const userPreferences = await fetchUserPreferences(userId);
+      const currency = userPreferences.currency;
+
       // Savings account interest is calculated daily and credited quarterly
       const dailyRate = interestRate / 100 / 365;
       const interestEarned = averageBalance * dailyRate * periodDays;
@@ -285,6 +309,7 @@ export const calculateSavingsInterest = functions.https.onCall(
 
       return {
         success: true,
+        currency, // Return currency for proper formatting
         calculation: {
           averageBalance: Math.round(averageBalance * 100) / 100,
           interestRate,
@@ -490,8 +515,13 @@ export const getDepositAccountDetails = functions.https.onCall(
         };
       }
 
+      // Fetch user preferences for currency
+      const userPreferences = await fetchUserPreferences(userId);
+      const currency = userPreferences.currency;
+
       return {
         success: true,
+        currency, // Return currency for proper formatting
         account: {
           id: accountDoc.id,
           name: account?.name,
