@@ -6,7 +6,7 @@
 import type {
   GoalPriority as DbGoalPriority,
   GoalStatus as DbGoalStatus,
-} from '@/core/db/types';
+} from '@/core/types';
 
 // Re-export database types
 export type GoalPriority = DbGoalPriority;

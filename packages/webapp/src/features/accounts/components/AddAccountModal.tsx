@@ -26,7 +26,7 @@ import {
 } from 'lucide-react';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Account, InterestPayoutFrequency } from '@/core/db/types';
+import type { Account, InterestPayoutFrequency } from '@/core/types';
 import { Button, CurrencyInput, Input } from '@/shared/components';
 import type { AccountFormData, AccountType } from '../types';
 import {

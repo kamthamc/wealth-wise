@@ -3,7 +3,7 @@
  * Helper functions for enhanced multi-category budget management
  */
 
-import type { BudgetProgress } from '@/core/db/types';
+import type { BudgetProgress } from '@/core/types';
 import type { BudgetFormData, BudgetPeriodType } from '../types';
 
 /**

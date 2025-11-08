@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Account } from '@/core/db/types';
+import type { Account } from '@/core/types';
 import { useAccountStore } from '@/core/stores';
 import {
   Button,
@@ -154,19 +154,13 @@ export function AccountsList() {
   }, [accounts]);
 
   const handleAddAccount = async (data: AccountFormData) => {
-    await createAccount({
-      ...data,
-      is_active: true,
-    });
+    await createAccount(data as any);
     setIsAddModalOpen(false);
     await fetchAccounts();
   };
   const handleEditAccount = async (data: AccountFormData) => {
     if (editingAccount) {
-      await updateAccount({
-        ...data,
-        id: editingAccount.id,
-      });
+      await updateAccount(editingAccount.id, data as any);
       setEditingAccount(undefined);
       await fetchAccounts();
     }
@@ -355,7 +349,7 @@ export function AccountsList() {
             {filteredAccounts.map((account) => (
               <AccountCard
                 key={account.id}
-                account={account}
+                account={account as any}
                 onClick={handleAccountClick}
                 onEdit={setEditingAccount}
                 onDelete={setDeletingAccount}

@@ -20,9 +20,10 @@ import {
 } from '@/shared/components';
 import { formatCurrency, formatDate } from '@/utils';
 import { usePreferences } from '@/hooks/usePreferences';
+import { timestampToDate } from '@/core/utils/firebase';
 import './RecentTransactions.css';
 
-import type { Transaction } from '@/core/db/types';
+import type { Transaction } from '@/core/types';
 
 export function RecentTransactions() {
   const { transactions, isLoading } = useTransactionStore();
@@ -31,7 +32,7 @@ export function RecentTransactions() {
   // Get the 5 most recent transactions
   const recentTransactions = useMemo(() => {
     return transactions
-      .sort((a, b) => b.date.getTime() - a.date.getTime())
+      .sort((a, b) => timestampToDate(b.date).getTime() - timestampToDate(a.date).getTime())
       .slice(0, 5);
   }, [transactions]);
 
@@ -113,7 +114,7 @@ export function RecentTransactions() {
         ) : recentTransactions.length > 0 ? (
           <Table
             columns={columns}
-            data={recentTransactions}
+            data={recentTransactions as any}
             keyExtractor={(row) => row.id}
             hoverable
             compact

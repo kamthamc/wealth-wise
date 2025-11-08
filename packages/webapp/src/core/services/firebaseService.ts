@@ -3,7 +3,7 @@
  * Handles Firebase integration for caching stock prices and real-time sync
  */
 
-import type { InvestmentPrice } from '@/core/db/types';
+import type { InvestmentPrice } from '@/core/types';
 
 interface FirebaseConfig {
   apiKey: string;

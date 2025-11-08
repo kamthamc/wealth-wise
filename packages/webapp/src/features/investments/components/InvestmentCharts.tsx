@@ -19,7 +19,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import type { InvestmentAssetType } from '@/core/db/types';
+import type { InvestmentAssetType } from '@/core/types';
 import { formatCurrency } from '@/shared/utils';
 import './InvestmentCharts.css';
 

@@ -11,7 +11,7 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { useMemo } from 'react';
-import type { Account, BrokerageDetails } from '@/core/db/types';
+import type { Account, BrokerageDetails } from '@/core/types';
 import { Card, StatCard } from '@/shared/components';
 import { formatCurrency } from '@/shared/utils';
 import './BrokerageView.css';

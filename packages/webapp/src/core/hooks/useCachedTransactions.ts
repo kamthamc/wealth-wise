@@ -5,7 +5,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { transactionCache } from '@/core/cache';
-import type { Transaction } from '@/core/db/types';
+import type { Transaction } from '@/core/types';
 
 interface UseCachedTransactionsOptions {
   accountId?: string;

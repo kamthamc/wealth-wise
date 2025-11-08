@@ -5,18 +5,14 @@
 
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
-import {
-  brokerageDetailsRepository,
-  creditCardDetailsRepository,
-  depositDetailsRepository,
-} from '@/core/db/repositories';
 import type {
   Account,
   BrokerageDetails,
   CreditCardDetails,
   DepositDetails,
-} from '@/core/db/types';
+} from '@/core/types';
 import { useAccountStore, useTransactionStore } from '@/core/stores';
+import { timestampToDate, timestampToISO } from '@/core/utils/firebase';
 import { AddTransactionModal } from '@/features/transactions';
 import {
   Button,
@@ -91,7 +87,7 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
     const foundAccount = accounts.find((acc) => acc.id === accountId);
     if (foundAccount) {
       console.log('[AccountDetails] Found account:', foundAccount.name);
-      setAccount(foundAccount);
+      setAccount(foundAccount as any);
     } else if (!isLoading) {
       console.log('[AccountDetails] Account not found, fetching...');
       // Account not found, might need to fetch
@@ -103,55 +99,22 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
 
   // Fetch type-specific details when account is loaded
   useEffect(() => {
-    if (!account) return;
-
-    const fetchTypeSpecificDetails = async () => {
-      try {
-        // Fetch credit card details
-        if (account.type === 'credit_card') {
-          const details = await creditCardDetailsRepository.getByAccountId(
-            account.id
-          );
-          setCreditCardDetails(details);
-        }
-
-        // Fetch deposit details
-        else if (isDepositAccount(account.type)) {
-          const details = await depositDetailsRepository.findByAccountId(
-            account.id
-          );
-          setDepositDetails(details);
-        }
-
-        // Fetch brokerage details
-        else if (account.type === 'brokerage') {
-          const details = await brokerageDetailsRepository.getByAccountId(
-            account.id
-          );
-          setBrokerageDetails(details);
-        }
-      } catch (error) {
-        console.error(
-          '[AccountDetails] Error fetching type-specific details:',
-          error
-        );
-      }
-    };
-
-    fetchTypeSpecificDetails();
+    // TODO: Implement Firebase-based detail fetching
+    // Repository pattern has been removed - need to fetch details from Firebase
+    // For now, details functionality is disabled
   }, [account]);
 
   // Filter transactions for this account
   const accountTransactions = useMemo(() => {
     return transactions
       .filter((txn) => txn.account_id === accountId)
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      .sort((a, b) => timestampToDate(b.date).getTime() - timestampToDate(a.date).getTime());
   }, [transactions, accountId]);
 
   // Calculate current balance based on transactions only
   const currentBalance = useMemo(() => {
     if (!account) return 0;
-    return calculateAccountBalance(accountTransactions);
+    return calculateAccountBalance(accountTransactions as any);
   }, [account, accountTransactions]);
 
   // Calculate account statistics
@@ -160,7 +123,7 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
     const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
     const thisMonthTransactions = accountTransactions.filter(
-      (txn) => new Date(txn.date) >= firstDayOfMonth
+      (txn) => timestampToDate(txn.date) >= firstDayOfMonth
     );
 
     const income = thisMonthTransactions
@@ -181,10 +144,7 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
 
   const handleEditAccount = async (data: AccountFormData) => {
     if (account) {
-      await updateAccount({
-        ...data,
-        id: account.id,
-      });
+      await updateAccount(account.id, data as any);
       await fetchAccounts();
       setIsEditModalOpen(false);
     }
@@ -203,14 +163,9 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
 
   const handleCloseAccount = async () => {
     if (account) {
-      await updateAccount({
-        name: account.name,
-        type: account.type,
-        balance: account.balance,
-        currency: account.currency,
-        id: account.id,
+      await updateAccount(account.id, {
         is_active: false,
-      });
+      } as any);
       await fetchAccounts();
       setIsCloseDialogOpen(false);
     }
@@ -218,14 +173,9 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
 
   const handleReopenAccount = async () => {
     if (account) {
-      await updateAccount({
-        name: account.name,
-        type: account.type,
-        balance: account.balance,
-        currency: account.currency,
-        id: account.id,
+      await updateAccount(account.id, {
         is_active: true,
-      });
+      } as any);
       await fetchAccounts();
     }
   };
@@ -307,7 +257,7 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
       statement += `-----------+---------------------------+----------+-----------\n`;
 
       txns.forEach((txn) => {
-        const date = formatDate(txn.date).padEnd(10);
+        const date = formatDate(timestampToDate(txn.date)).padEnd(10);
         const desc = (txn.description || '').substring(0, 25).padEnd(25);
         const type = txn.type.padEnd(8);
         const amount = formatCurrency(txn.amount, acc.currency);
@@ -323,7 +273,7 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
     let csv = 'date,description,amount,type,category\n';
 
     txns.forEach((txn) => {
-      const date = txn.date.toISOString().split('T')[0];
+      const date = timestampToISO(txn.date).split('T')[0];
       const description = `"${(txn.description || '').replace(/"/g, '""')}"`;
       const amount = txn.amount;
       const type = txn.type;
@@ -455,7 +405,7 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
           {/* Charts and Visualizations - Show for accounts without specialized views */}
           {!hasSpecializedView(account.type) && (
             <AccountCharts
-              transactions={accountTransactions}
+              transactions={accountTransactions as any}
               currentBalance={currentBalance}
               currency={account.currency}
             />
@@ -535,7 +485,7 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
                           {txn.description}
                         </div>
                         <div className="transaction-item__date">
-                          {formatDate(txn.date)}
+                          {formatDate(timestampToDate(txn.date))}
                         </div>
                       </div>
                       <div

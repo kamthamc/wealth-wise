@@ -12,7 +12,7 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { useMemo } from 'react';
-import type { Account, CreditCardDetails } from '@/core/db/types';
+import type { Account, CreditCardDetails } from '@/core/types';
 import { Card, ProgressBar, StatCard } from '@/shared/components';
 import { formatCurrency, formatDate } from '@/utils';
 import { usePreferences } from '@/hooks/usePreferences';

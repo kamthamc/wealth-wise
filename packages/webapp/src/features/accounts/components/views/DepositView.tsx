@@ -5,7 +5,7 @@
 
 import { DollarSign, PiggyBank, TrendingUp, Users } from 'lucide-react';
 import { useMemo } from 'react';
-import type { Account, DepositDetails } from '@/core/db/types';
+import type { Account, DepositDetails } from '@/core/types';
 import { Card, ProgressBar, StatCard } from '@/shared/components';
 import { formatCurrency, formatDate } from '@/shared/utils';
 import './DepositView.css';

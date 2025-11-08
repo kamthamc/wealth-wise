@@ -17,7 +17,7 @@
  */
 
 import { transactionCache } from '@/core/cache';
-import type { Account, Transaction } from '@/core/db/types';
+import type { Account, Transaction } from '@/core/types';
 
 /**
  * Precision for currency calculations (2 decimal places)

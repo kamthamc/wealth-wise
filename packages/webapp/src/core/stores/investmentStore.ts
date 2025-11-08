@@ -15,7 +15,7 @@ import type {
   InvestmentTransaction,
   PortfolioSummary,
   UpdateInvestmentHoldingInput,
-} from '@/core/db/types';
+} from '@/core/types';
 
 interface InvestmentState {
   // State

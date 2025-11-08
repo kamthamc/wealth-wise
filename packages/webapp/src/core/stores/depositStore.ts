@@ -14,7 +14,7 @@ import type {
   DepositInterestPayment,
   DepositStatus,
   UpdateDepositDetailsInput,
-} from '@/core/db/types';
+} from '@/core/types';
 
 interface DepositState {
   // State

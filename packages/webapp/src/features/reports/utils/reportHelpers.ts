@@ -3,7 +3,7 @@
  * Helper functions for report calculations and data processing
  */
 
-import type { Transaction } from '@/core/db/types';
+import type { Transaction } from '@/core/types';
 import type {
   CategoryBreakdown,
   DateRange,

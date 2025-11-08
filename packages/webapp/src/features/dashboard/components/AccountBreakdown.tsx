@@ -6,7 +6,7 @@
 import { useNavigate } from '@tanstack/react-router';
 import { ChevronRight, PieChart } from 'lucide-react';
 import { useMemo } from 'react';
-import type { AccountType } from '@/core/db/types';
+import type { AccountType } from '@/core/types';
 import { useAccountStore } from '@/core/stores';
 import {
   getAccountIcon,

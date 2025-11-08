@@ -1,9 +1,8 @@
 import type { Unsubscribe } from 'firebase/firestore';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { collection, getFirestore, onSnapshot, query, where } from 'firebase/firestore';
 import { create } from 'zustand';
 import { accountFunctions } from '../api';
-import { db } from '../firebase/firebase';
-import { useAuthStore } from './authStore';
 
 interface Account {
   id: string;
@@ -35,11 +34,13 @@ interface Account {
 interface AccountState {
   accounts: Account[];
   loading: boolean;
+  isLoading: boolean; // Alias for compatibility
   error: string | null;
   unsubscribe: Unsubscribe | null;
 
   // Actions
   initialize: () => void;
+  fetchAccounts: () => void; // Alias for initialize
   createAccount: (
     data: Omit<
       Account,
@@ -55,48 +56,32 @@ interface AccountState {
 export const useFirebaseAccountStore = create<AccountState>((set, get) => ({
   accounts: [],
   loading: false,
+  isLoading: false,
   error: null,
   unsubscribe: null,
 
-  initialize: () => {
-    const user = useAuthStore.getState().user;
-    if (!user) {
-      set({ accounts: [], loading: false });
-      return;
-    }
+    initialize: () => {
+    const auth = getAuth();
+    const userId = auth.currentUser?.uid;
+    if (!userId) return;
 
-    set({ loading: true, error: null });
+    const db = getFirestore();
+    const accountsRef = collection(db, 'accounts');
+    const q = query(accountsRef, where('user_id', '==', userId));
 
-    // Cleanup previous subscription
-    const prevUnsubscribe = get().unsubscribe;
-    if (prevUnsubscribe) {
-      prevUnsubscribe();
-    }
-
-    // Subscribe to real-time updates
-    const q = query(
-      collection(db, 'accounts'),
-      where('user_id', '==', user.uid),
-      where('is_active', '==', true)
-    );
-
-    const unsubscribe = onSnapshot(
-      q,
-      (snapshot) => {
-        const accounts = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as Account[];
-
-        set({ accounts, loading: false });
-      },
-      (error) => {
-        console.error('Error fetching accounts:', error);
-        set({ error: error.message, loading: false });
-      }
-    );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const accounts = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Account[];
+      set({ accounts, loading: false });
+    });
 
     set({ unsubscribe });
+  },
+
+  fetchAccounts() {
+    get().initialize();
   },
 
   createAccount: async (data) => {

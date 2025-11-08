@@ -6,7 +6,7 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { ArrowRight, CheckCircle, Link2, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import type { Transaction } from '@/core/db/types';
+import type { Transaction } from '@/core/types';
 import { useAccountStore, useTransactionStore } from '@/core/stores';
 import { Button } from '@/shared/components';
 import { formatCurrency, formatDate } from '@/shared/utils';

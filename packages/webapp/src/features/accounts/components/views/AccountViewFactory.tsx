@@ -9,7 +9,7 @@ import type {
   BrokerageDetails,
   CreditCardDetails,
   DepositDetails,
-} from '@/core/db/types';
+} from '@/core/types';
 import { BrokerageView } from './BrokerageView';
 import { CreditCardView } from './CreditCardView';
 import { DepositView } from './DepositView';

@@ -3,7 +3,7 @@
  * Functions for calculating interest, maturity amounts, TDS, and other deposit-related calculations
  */
 
-import type { DepositDetails, InterestPayoutFrequency } from '@/core/db/types';
+import type { DepositDetails, InterestPayoutFrequency } from '@/core/types';
 
 /**
  * Calculate maturity amount for a fixed deposit

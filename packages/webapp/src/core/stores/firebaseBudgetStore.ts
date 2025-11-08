@@ -1,9 +1,8 @@
 import type { Unsubscribe } from 'firebase/firestore';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { collection, getFirestore, onSnapshot, query, where } from 'firebase/firestore';
 import { create } from 'zustand';
 import { budgetFunctions } from '../api';
-import { db } from '../firebase/firebase';
-import { useAuthStore } from './authStore';
 
 interface BudgetCategory {
   category: string;
@@ -30,6 +29,7 @@ interface Budget {
 interface BudgetState {
   budgets: Budget[];
   loading: boolean;
+  isLoading: boolean; // Alias for compatibility
   error: string | null;
   unsubscribe: Unsubscribe | null;
 
@@ -45,12 +45,14 @@ interface BudgetState {
 export const useFirebaseBudgetStore = create<BudgetState>((set, get) => ({
   budgets: [],
   loading: false,
+  isLoading: false,
   error: null,
   unsubscribe: null,
 
   initialize: () => {
-    const user = useAuthStore.getState().user;
-    if (!user) {
+    const auth = getAuth();
+    const userId = auth.currentUser?.uid;
+    if (!userId) {
       set({ budgets: [], loading: false });
       return;
     }
@@ -63,10 +65,11 @@ export const useFirebaseBudgetStore = create<BudgetState>((set, get) => ({
       prevUnsubscribe();
     }
 
+    const db = getFirestore();
     // Subscribe to real-time updates
     const q = query(
       collection(db, 'budgets'),
-      where('user_id', '==', user.uid)
+      where('user_id', '==', userId)
     );
 
     const unsubscribe = onSnapshot(
