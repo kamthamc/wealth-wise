@@ -80,12 +80,20 @@ export {
 } from './import';
 // Export investment data functions
 export {
+  addHolding,
+  addInvestmentTransaction,
   clearInvestmentCache,
+  deleteHolding,
+  deleteInvestmentTransaction,
   fetchETFData,
   fetchMutualFundData,
   fetchStockData,
   fetchStockHistory,
+  getHoldings,
   getInvestmentsSummary,
+  getInvestmentTransactions,
+  updateHolding,
+  updateInvestmentTransaction,
 } from './investments';
 // Export Pub/Sub and scheduled functions
 export {
