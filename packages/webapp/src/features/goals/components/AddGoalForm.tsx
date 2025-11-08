@@ -177,26 +177,29 @@ export function AddGoalForm({ isOpen, onClose, goalId }: AddGoalFormProps) {
     setIsSubmitting(true);
 
     try {
-      // Convert string date to Date object for the API
-      const goalInput = {
-        ...formData,
-        target_date: formData.target_date
-          ? new Date(formData.target_date)
-          : undefined,
-        status: 'active' as const, // New goals start as active
-      };
+      // Convert string date to Date object to ISO string for the API
+      const target_date = formData.target_date
+        ? new Date(formData.target_date).toISOString()
+        : undefined;
 
       if (goalId) {
         await updateGoal({
-          id: goalId,
-          ...goalInput,
+          goalId,
+          updates: {
+            ...formData,
+            target_date,
+            status: 'active' as const,
+          },
         });
         toast.success(
           'Goal updated',
           'Your goal has been updated successfully'
         );
       } else {
-        await createGoal(goalInput);
+        await createGoal({
+          ...formData,
+          target_date,
+        });
         toast.success(
           'Goal created',
           'Your goal has been created successfully'
