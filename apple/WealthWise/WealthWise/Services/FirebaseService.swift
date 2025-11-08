@@ -3,16 +3,17 @@
 //  WealthWise
 //
 //  Created by WealthWise Team on 2025-11-08.
-//  Firebase integration wrapper for authentication and Firestore
+//  Firebase integration using Cloud Functions (matching webapp architecture)
 //
 
 import Foundation
 import FirebaseCore
 import FirebaseAuth
-import FirebaseFirestore
+import FirebaseFunctions
 
-/// Central Firebase service managing authentication and Firestore operations
-/// Provides a clean interface for Firebase operations matching webapp implementation
+/// Central Firebase service managing authentication and Cloud Functions
+/// All database operations go through Cloud Functions, not direct Firestore access
+/// Matches webapp architecture exactly
 @MainActor
 final class FirebaseService: ObservableObject {
     
@@ -27,29 +28,7 @@ final class FirebaseService: ObservableObject {
     @Published private(set) var isInitialized = false
     
     private let auth: Auth
-    private let firestore: Firestore
-    
-    // MARK: - Collections
-    
-    private var accountsCollection: CollectionReference {
-        firestore.collection("accounts")
-    }
-    
-    private var transactionsCollection: CollectionReference {
-        firestore.collection("transactions")
-    }
-    
-    private var budgetsCollection: CollectionReference {
-        firestore.collection("budgets")
-    }
-    
-    private var goalsCollection: CollectionReference {
-        firestore.collection("goals")
-    }
-    
-    private var usersCollection: CollectionReference {
-        firestore.collection("users")
-    }
+    private let functions: Functions
     
     // MARK: - Initialization
     
@@ -60,13 +39,7 @@ final class FirebaseService: ObservableObject {
         }
         
         self.auth = Auth.auth()
-        self.firestore = Firestore.firestore()
-        
-        // Configure Firestore settings
-        let settings = FirestoreSettings()
-        settings.isPersistenceEnabled = true
-        settings.cacheSizeBytes = FirestoreCacheSizeUnlimited
-        firestore.settings = settings
+        self.functions = Functions.functions(region: "asia-south1") // Same region as webapp
         
         // Setup auth state listener
         setupAuthStateListener()
@@ -102,9 +75,6 @@ final class FirebaseService: ObservableObject {
             try await changeRequest.commitChanges()
         }
         
-        // Create user document in Firestore
-        try await createUserDocument(userId: result.user.uid, email: email, displayName: displayName)
-        
         return result.user
     }
     
@@ -118,207 +88,421 @@ final class FirebaseService: ObservableObject {
         try await auth.sendPasswordReset(withEmail: email)
     }
     
-    /// Create user document in Firestore
-    private func createUserDocument(userId: String, email: String, displayName: String?) async throws {
-        let userData: [String: Any] = [
-            "email": email,
-            "displayName": displayName ?? "",
-            "locale": Locale.current.identifier,
-            "currency": "INR",
-            "createdAt": FieldValue.serverTimestamp(),
-            "updatedAt": FieldValue.serverTimestamp()
-        ]
+    // MARK: - Cloud Functions Helper
+    
+    /// Call a Cloud Function with typed request/response
+    private func callFunction<Request: Encodable, Response: Decodable>(
+        name: String,
+        data: Request
+    ) async throws -> Response {
+        let callable = functions.httpsCallable(name)
+        let result = try await callable.call(data)
         
-        try await usersCollection.document(userId).setData(userData)
+        guard let resultData = result.data as? [String: Any] else {
+            throw FirebaseError.invalidData
+        }
+        
+        let jsonData = try JSONSerialization.data(withJSONObject: resultData)
+        return try JSONDecoder().decode(Response.self, from: jsonData)
     }
     
-    // MARK: - Account Operations
+    // MARK: - Account Operations (via Cloud Functions)
     
     /// Fetch all accounts for current user
-    func fetchAccounts() async throws -> [Account] {
-        guard let userId = currentUser?.uid else {
-            throw FirebaseError.notAuthenticated
-        }
-        
-        let snapshot = try await accountsCollection
-            .whereField("userId", isEqualTo: userId)
-            .order(by: "createdAt", descending: false)
-            .getDocuments()
-        
-        return try snapshot.documents.compactMap { doc in
-            try Account(from: doc.data(), id: doc.documentID)
-        }
-    }
-    
-    /// Create or update account
-    func saveAccount(_ account: Account) async throws {
+    func fetchAccounts() async throws -> [AccountDTO] {
         guard currentUser != nil else {
             throw FirebaseError.notAuthenticated
         }
         
-        let docRef = accountsCollection.document(account.id.uuidString)
-        try await docRef.setData(account.toFirestore(), merge: true)
-    }
-    
-    /// Delete account
-    func deleteAccount(_ accountId: UUID) async throws {
-        guard currentUser != nil else {
-            throw FirebaseError.notAuthenticated
+        struct Response: Codable {
+            let accounts: [AccountDTO]
         }
         
-        try await accountsCollection.document(accountId.uuidString).delete()
+        // Note: If there's a dedicated getAccounts function, use it
+        // Otherwise, this might need to be implemented in Cloud Functions
+        let response: Response = try await callFunction(name: "getAccounts", data: [:])
+        return response.accounts
     }
     
-    // MARK: - Transaction Operations
+    /// Create account via Cloud Function
+    func createAccount(name: String, type: String, institution: String?, initialBalance: Double) async throws -> AccountDTO {
+        struct Request: Codable {
+            let name: String
+            let type: String
+            let institution: String?
+            let balance: Double
+        }
+        
+        struct Response: Codable {
+            let account: AccountDTO
+        }
+        
+        let request = Request(
+            name: name,
+            type: type,
+            institution: institution,
+            balance: initialBalance
+        )
+        
+        let response: Response = try await callFunction(name: "createAccount", data: request)
+        return response.account
+    }
     
-    /// Fetch transactions for user with optional filters
+    /// Update account via Cloud Function
+    func updateAccount(accountId: String, updates: [String: Any]) async throws -> AccountDTO {
+        struct Response: Codable {
+            let account: AccountDTO
+        }
+        
+        var request: [String: Any] = ["accountId": accountId]
+        request.merge(updates) { _, new in new }
+        
+        let callable = functions.httpsCallable("updateAccount")
+        let result = try await callable.call(request)
+        
+        guard let resultData = result.data as? [String: Any] else {
+            throw FirebaseError.invalidData
+        }
+        
+        let jsonData = try JSONSerialization.data(withJSONObject: resultData)
+        let response = try JSONDecoder().decode(Response.self, from: jsonData)
+        return response.account
+    }
+    
+    /// Delete account via Cloud Function
+    func deleteAccount(_ accountId: String) async throws {
+        struct Request: Codable {
+            let accountId: String
+        }
+        
+        struct Response: Codable {
+            let success: Bool
+        }
+        
+        let _: Response = try await callFunction(
+            name: "deleteAccount",
+            data: Request(accountId: accountId)
+        )
+    }
+    
+    // MARK: - Transaction Operations (via Cloud Functions)
+    
+    /// Fetch transactions with optional filters
     func fetchTransactions(
-        accountId: UUID? = nil,
+        accountId: String? = nil,
         startDate: Date? = nil,
         endDate: Date? = nil,
         category: String? = nil
-    ) async throws -> [WebAppTransaction] {
-        guard let userId = currentUser?.uid else {
-            throw FirebaseError.notAuthenticated
-        }
-        
-        var query: Query = transactionsCollection
-            .whereField("userId", isEqualTo: userId)
-        
-        if let accountId = accountId {
-            query = query.whereField("accountId", isEqualTo: accountId.uuidString)
-        }
-        
-        if let category = category {
-            query = query.whereField("category", isEqualTo: category)
-        }
-        
-        query = query.order(by: "date", descending: true)
-        
-        let snapshot = try await query.getDocuments()
-        
-        var transactions = try snapshot.documents.compactMap { doc in
-            try WebAppTransaction(from: doc.data(), id: doc.documentID)
-        }
-        
-        // Filter by date range if specified
-        if let startDate = startDate {
-            transactions = transactions.filter { $0.date >= startDate }
-        }
-        if let endDate = endDate {
-            transactions = transactions.filter { $0.date <= endDate }
-        }
-        
-        return transactions
-    }
-    
-    /// Save transaction
-    func saveTransaction(_ transaction: WebAppTransaction) async throws {
+    ) async throws -> [TransactionDTO] {
         guard currentUser != nil else {
             throw FirebaseError.notAuthenticated
         }
         
-        let docRef = transactionsCollection.document(transaction.id.uuidString)
-        try await docRef.setData(transaction.toFirestore(), merge: true)
-    }
-    
-    /// Delete transaction
-    func deleteTransaction(_ transactionId: UUID) async throws {
-        guard currentUser != nil else {
-            throw FirebaseError.notAuthenticated
+        struct Request: Codable {
+            let accountId: String?
+            let startDate: String?
+            let endDate: String?
+            let category: String?
         }
         
-        try await transactionsCollection.document(transactionId.uuidString).delete()
-    }
-    
-    /// Bulk delete transactions
-    func bulkDeleteTransactions(_ transactionIds: [UUID]) async throws {
-        guard currentUser != nil else {
-            throw FirebaseError.notAuthenticated
+        struct Response: Codable {
+            let transactions: [TransactionDTO]
         }
         
-        let batch = firestore.batch()
+        let dateFormatter = ISO8601DateFormatter()
+        let request = Request(
+            accountId: accountId,
+            startDate: startDate.map { dateFormatter.string(from: $0) },
+            endDate: endDate.map { dateFormatter.string(from: $0) },
+            category: category
+        )
         
-        for id in transactionIds {
-            let docRef = transactionsCollection.document(id.uuidString)
-            batch.deleteDocument(docRef)
-        }
-        
-        try await batch.commit()
+        let response: Response = try await callFunction(name: "getTransactions", data: request)
+        return response.transactions
     }
     
-    // MARK: - Budget Operations
+    /// Create transaction via Cloud Function
+    func createTransaction(
+        accountId: String,
+        date: Date,
+        amount: Double,
+        type: String,
+        category: String,
+        description: String,
+        notes: String?
+    ) async throws -> TransactionDTO {
+        struct Request: Codable {
+            let accountId: String
+            let date: String
+            let amount: Double
+            let type: String
+            let category: String
+            let description: String
+            let notes: String?
+        }
+        
+        struct Response: Codable {
+            let transaction: TransactionDTO
+        }
+        
+        let dateFormatter = ISO8601DateFormatter()
+        let request = Request(
+            accountId: accountId,
+            date: dateFormatter.string(from: date),
+            amount: amount,
+            type: type,
+            category: category,
+            description: description,
+            notes: notes
+        )
+        
+        let response: Response = try await callFunction(name: "createTransaction", data: request)
+        return response.transaction
+    }
+    
+    /// Update transaction via Cloud Function
+    func updateTransaction(transactionId: String, updates: [String: Any]) async throws -> TransactionDTO {
+        struct Response: Codable {
+            let transaction: TransactionDTO
+        }
+        
+        var request: [String: Any] = ["transactionId": transactionId]
+        request.merge(updates) { _, new in new }
+        
+        let callable = functions.httpsCallable("updateTransaction")
+        let result = try await callable.call(request)
+        
+        guard let resultData = result.data as? [String: Any] else {
+            throw FirebaseError.invalidData
+        }
+        
+        let jsonData = try JSONSerialization.data(withJSONObject: resultData)
+        let response = try JSONDecoder().decode(Response.self, from: jsonData)
+        return response.transaction
+    }
+    
+    /// Delete transaction via Cloud Function
+    func deleteTransaction(_ transactionId: String) async throws {
+        struct Request: Codable {
+            let transactionId: String
+        }
+        
+        struct Response: Codable {
+            let success: Bool
+        }
+        
+        let _: Response = try await callFunction(
+            name: "deleteTransaction",
+            data: Request(transactionId: transactionId)
+        )
+    }
+    
+    /// Bulk delete transactions via Cloud Function
+    func bulkDeleteTransactions(_ transactionIds: [String]) async throws {
+        struct Request: Codable {
+            let transactionIds: [String]
+        }
+        
+        struct Response: Codable {
+            let success: Bool
+            let deletedCount: Int
+        }
+        
+        let _: Response = try await callFunction(
+            name: "bulkDeleteTransactions",
+            data: Request(transactionIds: transactionIds)
+        )
+    }
+    
+    // MARK: - Budget Operations (via Cloud Functions)
     
     /// Fetch budgets for current user
-    func fetchBudgets() async throws -> [Budget] {
-        guard let userId = currentUser?.uid else {
-            throw FirebaseError.notAuthenticated
-        }
-        
-        let snapshot = try await budgetsCollection
-            .whereField("userId", isEqualTo: userId)
-            .order(by: "createdAt", descending: false)
-            .getDocuments()
-        
-        return try snapshot.documents.compactMap { doc in
-            try Budget(from: doc.data(), id: doc.documentID)
-        }
-    }
-    
-    /// Save budget
-    func saveBudget(_ budget: Budget) async throws {
+    func fetchBudgets() async throws -> [BudgetDTO] {
         guard currentUser != nil else {
             throw FirebaseError.notAuthenticated
         }
         
-        let docRef = budgetsCollection.document(budget.id.uuidString)
-        try await docRef.setData(budget.toFirestore(), merge: true)
-    }
-    
-    /// Delete budget
-    func deleteBudget(_ budgetId: UUID) async throws {
-        guard currentUser != nil else {
-            throw FirebaseError.notAuthenticated
+        struct Response: Codable {
+            let budgets: [BudgetDTO]
         }
         
-        try await budgetsCollection.document(budgetId.uuidString).delete()
+        let response: Response = try await callFunction(name: "getBudgets", data: [:])
+        return response.budgets
     }
     
-    // MARK: - Goal Operations
+    /// Create or update budget via Cloud Function (matches webapp createOrUpdateBudget)
+    func createOrUpdateBudget(
+        budgetId: String?,
+        name: String,
+        amount: Double,
+        period: String,
+        categories: [String],
+        startDate: Date
+    ) async throws -> BudgetDTO {
+        struct Request: Codable {
+            let budgetId: String?
+            let name: String
+            let amount: Double
+            let period: String
+            let categories: [String]
+            let startDate: String
+        }
+        
+        struct Response: Codable {
+            let budget: BudgetDTO
+        }
+        
+        let dateFormatter = ISO8601DateFormatter()
+        let request = Request(
+            budgetId: budgetId,
+            name: name,
+            amount: amount,
+            period: period,
+            categories: categories,
+            startDate: dateFormatter.string(from: startDate)
+        )
+        
+        let response: Response = try await callFunction(name: "createOrUpdateBudget", data: request)
+        return response.budget
+    }
+    
+    /// Generate budget report via Cloud Function
+    func generateBudgetReport(budgetId: String) async throws -> BudgetReportDTO {
+        struct Request: Codable {
+            let budgetId: String
+        }
+        
+        let response: BudgetReportDTO = try await callFunction(
+            name: "generateBudgetReport",
+            data: Request(budgetId: budgetId)
+        )
+        return response
+    }
+    
+    /// Delete budget via Cloud Function
+    func deleteBudget(_ budgetId: String) async throws {
+        struct Request: Codable {
+            let budgetId: String
+        }
+        
+        struct Response: Codable {
+            let success: Bool
+        }
+        
+        let _: Response = try await callFunction(
+            name: "deleteBudget",
+            data: Request(budgetId: budgetId)
+        )
+    }
+    
+    // MARK: - Goal Operations (via Cloud Functions)
     
     /// Fetch goals for current user
-    func fetchGoals() async throws -> [WebAppGoal] {
-        guard let userId = currentUser?.uid else {
-            throw FirebaseError.notAuthenticated
-        }
-        
-        let snapshot = try await goalsCollection
-            .whereField("userId", isEqualTo: userId)
-            .order(by: "createdAt", descending: false)
-            .getDocuments()
-        
-        return try snapshot.documents.compactMap { doc in
-            try WebAppGoal(from: doc.data(), id: doc.documentID)
-        }
-    }
-    
-    /// Save goal
-    func saveGoal(_ goal: WebAppGoal) async throws {
+    func fetchGoals() async throws -> [GoalDTO] {
         guard currentUser != nil else {
             throw FirebaseError.notAuthenticated
         }
         
-        let docRef = goalsCollection.document(goal.id.uuidString)
-        try await docRef.setData(goal.toFirestore(), merge: true)
-    }
-    
-    /// Delete goal
-    func deleteGoal(_ goalId: UUID) async throws {
-        guard currentUser != nil else {
-            throw FirebaseError.notAuthenticated
+        struct Response: Codable {
+            let goals: [GoalDTO]
         }
         
-        try await goalsCollection.document(goalId.uuidString).delete()
+        let response: Response = try await callFunction(name: "getGoals", data: [:])
+        return response.goals
+    }
+    
+    /// Create or update goal via Cloud Function (matches webapp createOrUpdateGoal)
+    func createOrUpdateGoal(
+        goalId: String?,
+        name: String,
+        targetAmount: Double,
+        targetDate: Date,
+        type: String,
+        priority: String
+    ) async throws -> GoalDTO {
+        struct Request: Codable {
+            let goalId: String?
+            let name: String
+            let targetAmount: Double
+            let targetDate: String
+            let type: String
+            let priority: String
+        }
+        
+        struct Response: Codable {
+            let goal: GoalDTO
+        }
+        
+        let dateFormatter = ISO8601DateFormatter()
+        let request = Request(
+            goalId: goalId,
+            name: name,
+            targetAmount: targetAmount,
+            targetDate: dateFormatter.string(from: targetDate),
+            type: type,
+            priority: priority
+        )
+        
+        let response: Response = try await callFunction(name: "createOrUpdateGoal", data: request)
+        return response.goal
+    }
+    
+    /// Add contribution to goal via Cloud Function
+    func addGoalContribution(
+        goalId: String,
+        amount: Double,
+        date: Date,
+        note: String?
+    ) async throws -> GoalDTO {
+        struct Request: Codable {
+            let goalId: String
+            let amount: Double
+            let date: String
+            let note: String?
+        }
+        
+        struct Response: Codable {
+            let goal: GoalDTO
+        }
+        
+        let dateFormatter = ISO8601DateFormatter()
+        let request = Request(
+            goalId: goalId,
+            amount: amount,
+            date: dateFormatter.string(from: date),
+            note: note
+        )
+        
+        let response: Response = try await callFunction(name: "addGoalContribution", data: request)
+        return response.goal
+    }
+    
+    /// Delete goal via Cloud Function
+    func deleteGoal(_ goalId: String) async throws {
+        struct Request: Codable {
+            let goalId: String
+        }
+        
+        struct Response: Codable {
+            let success: Bool
+        }
+        
+        let _: Response = try await callFunction(
+            name: "deleteGoal",
+            data: Request(goalId: goalId)
+        )
+    }
+    
+    // MARK: - Balance Calculation (via Cloud Functions)
+    
+    /// Calculate balances via Cloud Function
+    func calculateBalances() async throws -> BalanceResponseDTO {
+        struct Response: Codable {
+            let balances: BalanceResponseDTO
+        }
+        
+        let response: Response = try await callFunction(name: "calculateBalances", data: [:])
+        return response.balances
     }
 }
 

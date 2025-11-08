@@ -77,22 +77,34 @@
 - ✅ Full localization
 - ✅ Sample data for debugging
 
-### 3. Firebase Integration
+### 3. Cloud Functions Architecture
+
+**IMPORTANT**: All database operations go through Firebase Cloud Functions (not direct Firestore access).
 
 #### FirebaseService (`Services/FirebaseService.swift`)
-Central Firebase service wrapper:
+Central Firebase Cloud Functions wrapper:
 - ✅ Authentication (sign in, sign up, sign out, password reset)
-- ✅ Account CRUD operations
-- ✅ Transaction management with filtering
-- ✅ Budget operations
-- ✅ Goal management
-- ✅ Firestore batch operations
-- ✅ Model extensions for Firestore parsing
+- ✅ Generic `callFunction<Request, Response>` helper
+- ✅ Account operations via Cloud Functions (getAccounts, createAccount, updateAccount, deleteAccount)
+- ✅ Transaction operations via Cloud Functions (getTransactions, createTransaction, updateTransaction, deleteTransaction, bulkDeleteTransactions)
+- ✅ Budget operations via Cloud Functions (getBudgets, createOrUpdateBudget, deleteBudget, generateBudgetReport)
+- ✅ Goal operations via Cloud Functions (getGoals, createOrUpdateGoal, addGoalContribution, deleteGoal)
+- ✅ Balance calculation via Cloud Functions
+- ✅ Region: `asia-south1` (matching webapp)
+
+#### Data Transfer Objects (DTOs)
+Models for Cloud Function request/response:
+- ✅ `AccountDTO.swift` - Account data with conversion methods
+- ✅ `TransactionDTO.swift` - Transaction data with conversion methods
+- ✅ `BudgetDTO.swift` - Budget data with conversion methods
+- ✅ `GoalDTO.swift` - Goal data with conversion methods
+- ✅ `BalanceResponseDTO.swift` - Balance calculation response
+- ✅ Request DTOs for all create/update operations
 
 #### AccountRepository (`Core/Repositories/AccountRepository.swift`)
 Repository pattern for offline-first data access:
 - ✅ Local SwiftData storage
-- ✅ Firebase sync
+- ✅ Firebase Cloud Functions sync
 - ✅ CRUD operations
 - ✅ Balance calculations
 - ✅ Archive/unarchive functionality
@@ -106,9 +118,48 @@ Repository pattern for offline-first data access:
 - Cloud Functions integration
 - Troubleshooting guide
 
+#### Cloud Functions Status (`apple/CLOUD-FUNCTIONS-STATUS.md`)
+- Complete list of required Cloud Functions
+- Existing vs missing functions
+- Implementation guide for backend team
+- Testing checklist
+
 ## 🚧 Next Steps
 
-### Immediate (Before First Build)
+### Critical: Backend Work Required
+
+**⚠️ The Swift app requires Cloud Functions that don't exist yet!**
+
+See `apple/CLOUD-FUNCTIONS-STATUS.md` for complete details.
+
+#### Missing Cloud Functions (Need to Create)
+Location: `packages/functions/src/index.ts`
+
+**Account Operations** (Priority 1):
+- `getAccounts` - Fetch all accounts for user
+- `createAccount` - Create new account
+- `updateAccount` - Update account details
+- `deleteAccount` - Delete account
+
+**Transaction Operations** (Priority 1):
+- `getTransactions` - Fetch transactions with filters
+- `createTransaction` - Create new transaction
+- `updateTransaction` - Update transaction
+- `deleteTransaction` - Delete single transaction
+
+**Budget Operations** (Priority 2):
+- `getBudgets` - Fetch all budgets
+- `deleteBudget` - Delete budget
+- ✅ `createOrUpdateBudget` - Already exists
+- ✅ `generateBudgetReport` - Already exists
+
+**Goal Operations** (Priority 2):
+- `getGoals` - Fetch all goals
+- `addGoalContribution` - Add contribution
+- `deleteGoal` - Delete goal
+- ✅ `createOrUpdateGoal` - Already exists
+
+### Immediate (iOS Team - Before First Build)
 
 #### 1. Install Firebase SDK
 ```bash
@@ -116,8 +167,10 @@ Repository pattern for offline-first data access:
 # File → Add Package Dependencies
 # URL: https://github.com/firebase/firebase-ios-sdk
 # Version: 10.0.0+
-# Add: FirebaseAuth, FirebaseFirestore, FirebaseFunctions
+# Add: FirebaseAuth, FirebaseFunctions (NOT FirebaseFirestore)
 ```
+
+**Note**: Only need FirebaseAuth and FirebaseFunctions (no direct Firestore access).
 
 #### 2. Add GoogleService-Info.plist
 1. Download from [Firebase Console](https://console.firebase.google.com/)
@@ -213,23 +266,40 @@ Create reusable components:
 ## 📊 Progress Tracking
 
 ### Phase 1: Foundation
-- [x] Implementation plan
-- [x] SwiftData models (4 models)
-- [x] Firebase service wrapper
-- [x] Account repository
+- [x] Implementation plan (1,500+ lines)
+- [x] SwiftData models (4 models: Account, Transaction, Budget, Goal)
+- [x] Firebase Cloud Functions service wrapper (600+ lines)
+- [x] Data Transfer Objects (5 DTOs: Account, Transaction, Budget, Goal, Balance)
+- [x] Account repository with offline-first pattern
+- [ ] **Backend: Create missing Cloud Functions** (see CLOUD-FUNCTIONS-STATUS.md)
 - [ ] Transaction repository
 - [ ] Budget repository
 - [ ] Goal repository
 - [ ] Authentication views
-- [ ] Firebase SDK installation
+- [ ] Firebase SDK installation (manual Xcode step)
 - [ ] First successful build
 
-**Status**: 60% complete (6 of 10 tasks)
+**Status**: 50% complete (5 of 11 tasks)
 
 ### Overall Project
 **Phase**: 1 of 14  
 **Timeline**: Week 1 of 36  
-**Completion**: 4% (Phase 1: 60% × 1/14)
+**Completion**: 3.5% (Phase 1: 50% × 1/14)
+
+## 🔑 Key Architectural Decisions
+
+### Cloud Functions Only
+- ✅ All database operations through Cloud Functions
+- ✅ No direct Firestore access from Swift
+- ✅ Matches webapp architecture exactly
+- ✅ Enhanced security (server-side validation)
+- ✅ Region: asia-south1
+
+### Offline-First Pattern
+- Local SwiftData as source of truth
+- Background sync to Cloud Functions
+- Optimistic updates for better UX
+- Conflict resolution strategies
 
 ## 🔨 Build Instructions
 
