@@ -7,12 +7,22 @@
 
 import SwiftUI
 import SwiftData
+import FirebaseCore
 
 @main
 struct WealthWiseApp: App {
+    
+    init() {
+        // Configure Firebase
+        FirebaseApp.configure()
+    }
+    
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            Account.self,
+            WebAppTransaction.self,
+            Budget.self,
+            WebAppGoal.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
