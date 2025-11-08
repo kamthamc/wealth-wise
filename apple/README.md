@@ -101,13 +101,38 @@ Models for Cloud Function request/response:
 - ✅ `BalanceResponseDTO.swift` - Balance calculation response
 - ✅ Request DTOs for all create/update operations
 
-#### AccountRepository (`Core/Repositories/AccountRepository.swift`)
-Repository pattern for offline-first data access:
-- ✅ Local SwiftData storage
-- ✅ Firebase Cloud Functions sync
-- ✅ CRUD operations
-- ✅ Balance calculations
-- ✅ Archive/unarchive functionality
+#### Repositories (Offline-First Pattern)
+All repositories follow the same architecture:
+- ✅ Local SwiftData storage as source of truth
+- ✅ Firebase Cloud Functions sync in background
+- ✅ Optimistic updates for better UX
+- ✅ Published properties for SwiftUI reactivity
+- ✅ Comprehensive error handling
+
+**AccountRepository** (`Core/Repositories/AccountRepository.swift` - 165 lines):
+- CRUD operations with Cloud Functions sync
+- Balance calculations and archive management
+- Multi-account support
+
+**TransactionRepository** (`Core/Repositories/TransactionRepository.swift` - 305 lines):
+- Transaction CRUD with filtering (account, category, date range)
+- Bulk delete operations
+- Statistics: totals by category, monthly grouping, recent transactions
+- Optimistic local updates with background sync
+
+**BudgetRepository** (`Core/Repositories/BudgetRepository.swift` - 245 lines):
+- Budget CRUD with period filtering (monthly, quarterly, yearly)
+- Active budget detection
+- Spending calculation from transactions
+- Budget report generation via Cloud Functions
+- Over-budget and near-limit detection
+
+**GoalRepository** (`Core/Repositories/GoalRepository.swift` - 315 lines):
+- Goal CRUD with type and priority filtering
+- Contribution tracking and management
+- Status management (active, paused, completed, cancelled)
+- Progress analysis: overdue goals, deadline proximity
+- Monthly contribution calculations
 
 ### 4. Documentation
 
@@ -178,21 +203,16 @@ Location: `packages/functions/src/index.ts`
 3. Select all targets
 
 #### 3. Create Remaining Repositories
-Need to create:
-- `TransactionRepository.swift`
-- `BudgetRepository.swift`
-- `GoalRepository.swift`
+✅ **All repositories completed!**
+- ✅ `TransactionRepository.swift` (305 lines) - Transaction management with statistics
+- ✅ `BudgetRepository.swift` (245 lines) - Budget tracking with analysis  
+- ✅ `GoalRepository.swift` (315 lines) - Goal tracking with contributions
 
-Pattern same as AccountRepository:
-```swift
-@MainActor
-final class TransactionRepository: ObservableObject {
-    @Published var transactions: [WebAppTransaction] = []
-    private let modelContext: ModelContext
-    private let firebaseService: FirebaseService
-    // ... CRUD operations
-}
-```
+All repositories follow the same offline-first pattern as AccountRepository:
+- Local SwiftData storage
+- Cloud Functions background sync
+- Optimistic updates
+- Comprehensive filtering and analysis methods
 
 #### 4. Update WealthWiseApp.swift
 ```swift
@@ -270,21 +290,21 @@ Create reusable components:
 - [x] SwiftData models (4 models: Account, Transaction, Budget, Goal)
 - [x] Firebase Cloud Functions service wrapper (600+ lines)
 - [x] Data Transfer Objects (5 DTOs: Account, Transaction, Budget, Goal, Balance)
-- [x] Account repository with offline-first pattern
+- [x] Account repository with offline-first pattern (165 lines)
+- [x] Transaction repository with statistics (305 lines)
+- [x] Budget repository with analysis (245 lines)
+- [x] Goal repository with contribution tracking (315 lines)
 - [ ] **Backend: Create missing Cloud Functions** (see CLOUD-FUNCTIONS-STATUS.md)
-- [ ] Transaction repository
-- [ ] Budget repository
-- [ ] Goal repository
 - [ ] Authentication views
 - [ ] Firebase SDK installation (manual Xcode step)
 - [ ] First successful build
 
-**Status**: 50% complete (5 of 11 tasks)
+**Status**: 73% complete (8 of 11 tasks)
 
 ### Overall Project
 **Phase**: 1 of 14  
 **Timeline**: Week 1 of 36  
-**Completion**: 3.5% (Phase 1: 50% × 1/14)
+**Completion**: 5.2% (Phase 1: 73% × 1/14)
 
 ## 🔑 Key Architectural Decisions
 
