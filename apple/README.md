@@ -423,10 +423,14 @@ Create reusable components:
 - [x] Real-time data display in DashboardView
 - [x] Transaction row component with category icons
 - [x] Localization strings file
-- [ ] AccountsView integration
-- [ ] TransactionsView integration
-- [ ] BudgetsView integration
-- [ ] GoalsView integration
+- [x] AccountsViewModel with balance calculations
+- [x] AccountsView integration with real data
+- [x] TransactionsViewModel with filtering and search
+- [x] TransactionsView integration with grouped lists
+- [x] BudgetsViewModel with spending analysis
+- [x] BudgetsView integration with progress tracking
+- [x] GoalsViewModel with progress monitoring
+- [x] GoalsView integration with status indicators
 - [ ] Add/Edit forms for all features
 
 **Status**: 92% complete (11 of 12 tasks)
