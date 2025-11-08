@@ -67,6 +67,7 @@ export {
   calculateGoalProgress,
   createGoal,
   deleteGoal,
+  getGoals,
   updateGoal,
 } from './goals';
 // Export import/export and bulk operations

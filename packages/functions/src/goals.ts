@@ -12,6 +12,49 @@ import { fetchUserPreferences } from './preferences';
 const db = admin.firestore();
 
 /**
+ * Get all goals for the authenticated user
+ */
+export const getGoals = functions.https.onCall(async (request) => {
+  if (!request.auth) {
+    throw authError(ErrorCodes.AUTH_UNAUTHENTICATED);
+  }
+
+  const userId = request.auth.uid;
+
+  try {
+    const goalsSnapshot = await db
+      .collection('goals')
+      .where('user_id', '==', userId)
+      .orderBy('created_at', 'desc')
+      .get();
+
+    const goals = goalsSnapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        target_date: data.target_date ? data.target_date.toDate().toISOString() : null,
+        created_at: data.created_at.toDate().toISOString(),
+        updated_at: data.updated_at.toDate().toISOString(),
+      };
+    });
+
+    return { goals };
+  } catch (error: any) {
+    console.error('Error fetching goals:', error);
+    if (error instanceof AppError) {
+      throw error;
+    }
+    throw new AppError(
+      ErrorCodes.OPERATION_FAILED,
+      'Failed to fetch goals',
+      'internal',
+      { originalError: error.message },
+    );
+  }
+});
+
+/**
  * Create a new goal
  */
 export const createGoal = functions.https.onCall(async (request) => {
