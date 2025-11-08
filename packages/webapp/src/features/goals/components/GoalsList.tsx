@@ -6,10 +6,12 @@
 import {
   CheckCircle2,
   DollarSign,
+  Edit2,
   Flag,
   Plus,
   Search,
   Target,
+  Trash2,
   TrendingUp,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
@@ -18,6 +20,7 @@ import { useGoalStore } from '@/core/stores';
 import { timestampToDate } from '@/core/utils/firebase';
 import {
   Button,
+  ConfirmDialog,
   EmptyState,
   Input,
   SegmentedControl,
@@ -26,6 +29,7 @@ import {
   SkeletonStats,
   SkeletonText,
   StatCard,
+  useToast,
 } from '@/shared/components';
 import { formatCurrency } from '@/shared/utils';
 import type { GoalStatus } from '../types';
@@ -37,12 +41,14 @@ import {
   getGoalStatusIcon,
   getGoalStatusName,
 } from '../utils/goalHelpers';
+import { AddContributionDialog } from './AddContributionDialog';
 import { AddGoalForm } from './AddGoalForm';
 import './GoalsList.css';
 
 export function GoalsList() {
   const { t } = useTranslation();
-  const { goals, isLoading, fetchGoals } = useGoalStore();
+  const { goals, isLoading, fetchGoals, deleteGoal } = useGoalStore();
+  const toast = useToast();
 
   // Fetch goals on mount
   useEffect(() => {
@@ -62,6 +68,38 @@ export function GoalsList() {
   const [statusFilter, setStatusFilter] = useState<GoalStatus | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingGoalId, setEditingGoalId] = useState<string | undefined>(undefined);
+  const [deleteConfirmGoalId, setDeleteConfirmGoalId] = useState<string | null>(null);
+  const [contributionGoalId, setContributionGoalId] = useState<string | null>(null);
+
+  // Handle delete goal
+  const handleDelete = async (goalId: string) => {
+    try {
+      await deleteGoal(goalId);
+      toast.success('Goal deleted successfully');
+      setDeleteConfirmGoalId(null);
+    } catch (error) {
+      console.error('Failed to delete goal:', error);
+      toast.error('Failed to delete goal');
+    }
+  };
+
+  // Handle edit goal
+  const handleEdit = (goalId: string) => {
+    setEditingGoalId(goalId);
+    setIsFormOpen(true);
+  };
+
+  // Handle add contribution
+  const handleAddContribution = (goalId: string) => {
+    setContributionGoalId(goalId);
+  };
+
+  // Close form and reset editing state
+  const handleCloseForm = () => {
+    setIsFormOpen(false);
+    setEditingGoalId(undefined);
+  };
 
   // Filter and search goals
   const filteredGoals = useMemo(() => {
@@ -247,12 +285,42 @@ export function GoalsList() {
                       </span>
                     </div>
                   </div>
-                  <span
-                    className={`goal-card__status goal-card__status--${goal.status}`}
-                  >
-                    {getGoalStatusIcon(goal.status)}{' '}
-                    {getGoalStatusName(goal.status)}
-                  </span>
+                  <div className="goal-card__actions">
+                    <span
+                      className={`goal-card__status goal-card__status--${goal.status}`}
+                    >
+                      {getGoalStatusIcon(goal.status)}{' '}
+                      {getGoalStatusName(goal.status)}
+                    </span>
+                    <div className="goal-card__action-buttons">
+                      {goal.status === 'active' && (
+                        <Button
+                          variant="ghost"
+                          size="small"
+                          onClick={() => handleAddContribution(goal.id)}
+                          title="Add Contribution"
+                        >
+                          <Plus size={16} />
+                        </Button>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="small"
+                        onClick={() => handleEdit(goal.id)}
+                        title="Edit Goal"
+                      >
+                        <Edit2 size={16} />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="small"
+                        onClick={() => setDeleteConfirmGoalId(goal.id)}
+                        title="Delete Goal"
+                      >
+                        <Trash2 size={16} />
+                      </Button>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="goal-card__amounts">
@@ -306,7 +374,40 @@ export function GoalsList() {
       )}
 
       {/* Goal Form Modal */}
-      <AddGoalForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} />
+      <AddGoalForm 
+        isOpen={isFormOpen} 
+        onClose={handleCloseForm}
+        goalId={editingGoalId}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={deleteConfirmGoalId !== null}
+        onClose={() => setDeleteConfirmGoalId(null)}
+        onConfirm={() => {
+          if (deleteConfirmGoalId) {
+            return handleDelete(deleteConfirmGoalId);
+          }
+        }}
+        title="Delete Goal?"
+        description="Are you sure you want to delete this goal? This action cannot be undone."
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        variant="danger"
+      />
+
+      {/* Add Contribution Dialog */}
+      {contributionGoalId && (
+        <AddContributionDialog
+          isOpen={contributionGoalId !== null}
+          onClose={() => setContributionGoalId(null)}
+          goalId={contributionGoalId}
+          onSuccess={() => {
+            setContributionGoalId(null);
+            fetchGoals(); // Refresh to show updated progress
+          }}
+        />
+      )}
     </div>
   );
 }
