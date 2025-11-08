@@ -69,9 +69,73 @@ GoalsList/GoalsProgress → goalStore → Cloud Functions → Firestore
 
 ---
 
+### 3. ✅ Budget Transaction Lists
+**Status**: Complete  
+**Commit**: `feat: implement budget category transactions with Cloud Function`
+
+**What Was Done**:
+- Added `getBudgetTransactions` Cloud Function to budgets.ts
+- Integrated transaction fetching with BudgetDetailView component
+- Display transactions in category cards with loading states
+
+**Architecture**:
+```
+BudgetDetailView → getBudgetTransactions Cloud Function → Firestore
+```
+
+**Cloud Function**:
+- `getBudgetTransactions(budgetId, category?)` - Fetch transactions for budget period/category
+
+**UI Integration**:
+- Fetch on category expand with caching
+- Shows first 5 transactions with "+X more" indicator
+- Loading, data, and empty states handled
+
+---
+
+### 4. ✅ Investment Store Implementation
+**Status**: Complete  
+**Commits**: `feat: implement investment store with Cloud Functions`
+
+**What Was Done**:
+- Created 8 new Cloud Functions for investment CRUD operations
+- Reimplemented investmentStore.ts with full functionality
+- Holdings stored in account metadata, transactions in separate collection
+
+**Architecture**:
+```
+investmentStore → Cloud Functions → Firestore (accounts + investment_transactions)
+```
+
+**Cloud Functions Created**:
+- `getHoldings()` - Fetch all holdings from investment accounts
+- `addHolding(accountId, holding)` - Add new holding
+- `updateHolding(accountId, holdingId, updates)` - Update holding
+- `deleteHolding(accountId, holdingId)` - Remove holding
+- `getInvestmentTransactions(accountId?, holdingId?)` - Fetch with filters
+- `addInvestmentTransaction(transaction)` - Create transaction
+- `updateInvestmentTransaction(transactionId, updates)` - Update transaction
+- `deleteInvestmentTransaction(transactionId)` - Remove transaction
+
+**Store Functions**:
+- `fetchHoldings()` - Get all user holdings
+- `fetchTransactions(accountId?, holdingId?)` - Get transactions with filters
+- `addHolding(accountId, holding)` - Create new holding
+- `updateHolding(accountId, holdingId, updates)` - Update holding
+- `deleteHolding(accountId, holdingId)` - Delete holding
+- `addTransaction(transaction)` - Add buy/sell/dividend transaction
+- `updateTransaction(transactionId, updates)` - Update transaction
+- `deleteTransaction(transactionId)` - Remove transaction
+- `calculatePerformance(holdingId)` - Calculate ROI (placeholder for XIRR)
+- `getPortfolioSummary(accountIds?)` - Aggregate portfolio stats
+
+**Note**: No UI components currently use investment store. Integration can be done when investment features are needed.
+
+---
+
 ## Incomplete Features
 
-### 3. ⚠️ Investment Store
+### 5. ⚠️ Deposit Store
 **Status**: Stub implementation  
 **File**: `packages/webapp/src/core/stores/investmentStore.ts`
 
@@ -131,7 +195,7 @@ GoalsList/GoalsProgress → goalStore → Cloud Functions → Firestore
 
 ---
 
-### 5. ⚠️ Category Service
+### 6. ⚠️ Category Service
 **Status**: Stub implementation  
 **File**: `packages/webapp/src/core/services/categoryService.ts`
 
@@ -157,36 +221,6 @@ GoalsList/GoalsProgress → goalStore → Cloud Functions → Firestore
 - `getCategoryUsage` - Count transactions using category
 
 **Priority**: Low (transactions use string categories for now)
-
----
-
-### 6. ⚠️ Budget Transaction Lists
-**Status**: UI placeholder  
-**Files**: 
-- `packages/webapp/src/features/budgets/components/BudgetDetailView.tsx` (line 452)
-- `packages/webapp/src/features/dashboard/components/BudgetProgress.tsx` (line 34)
-
-**Current State**:
-- UI shows "No transactions" empty state
-- TODO comment: "Add transaction list for this category"
-
-**What's Needed**:
-1. **Cloud Function**: `getBudgetTransactions(budgetId, category)`
-   - Fetch transactions for specific budget category
-   - Filter by budget period dates
-   - Return transaction list with totals
-
-2. **Service/Store Update**: Add method to budgetStore or transactionStore
-   ```typescript
-   fetchBudgetTransactions(budgetId: string, category: string): Promise<Transaction[]>
-   ```
-
-3. **UI Integration**:
-   - Replace EmptyState with transaction list
-   - Show transactions with amount, date, description
-   - Calculate category spending total
-
-**Priority**: Medium (useful for budget monitoring)
 
 ---
 
@@ -274,11 +308,10 @@ export const getItems = functions.https.onCall(async (request) => {
 ## Next Steps (Priority Order)
 
 ### High Priority
-1. **None currently** - Core features (goals, duplicates) are complete
+1. **None currently** - Core features (goals, duplicates, budgets, investments) are complete
 
 ### Medium Priority
-1. **Investment Store** - If investment tracking features are actively used
-2. **Budget Transaction Lists** - Useful for budget monitoring
+1. **None currently** - Budget transactions complete
 
 ### Low Priority
 1. **Category Service** - Only if custom categories are needed
@@ -303,6 +336,23 @@ export const getItems = functions.https.onCall(async (request) => {
 - [x] Detect fuzzy duplicates (similar transactions)
 - [ ] Batch import with duplicate detection
 - [ ] Review and skip duplicates
+
+### Budget Transactions ✅
+- [x] Fetch transactions for budget category
+- [x] Display in category cards
+- [x] Loading and empty states
+- [x] Show first 5 with "+X more" indicator
+
+### Investment Store ✅
+- [x] Fetch holdings from accounts
+- [x] Add new holding
+- [x] Update holding
+- [x] Delete holding
+- [x] Fetch investment transactions
+- [x] Add transaction (buy/sell/dividend)
+- [x] Update transaction
+- [x] Delete transaction
+- [ ] Test with UI components when needed
 
 ---
 
@@ -335,6 +385,17 @@ export const getItems = functions.https.onCall(async (request) => {
 3. `feat: integrate goalStore with UI components`
    - GoalsList.tsx
    - GoalsProgress.tsx
+
+4. `feat: implement budget category transactions with Cloud Function`
+   - budgets.ts (Cloud Function)
+   - BudgetDetailView.tsx
+   - feature-implementation-progress.md
+
+5. `feat: implement investment store with Cloud Functions`
+   - investments.ts (Cloud Functions)
+   - index.ts (exports)
+   - investmentStore.ts
+   - feature-implementation-progress.md
 
 ---
 
