@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "WealthWise Financial Management Platform",
   "private": true,
+  "packageManager": "pnpm@10.20.0",
   "scripts": {
     "dev": "concurrently \"pnpm run emulators\" \"pnpm run webapp:dev\"",
     "emulators": "firebase emulators:start",
