@@ -35,6 +35,7 @@ export {
   calculateBudgetProgress,
   createBudget,
   deleteBudget,
+  getBudgetTransactions,
   updateBudget,
 } from './budgets';
 // Export dashboard and caching functions

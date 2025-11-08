@@ -18,6 +18,9 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { httpsCallable } from 'firebase/functions';
+import { functions } from '@/core/firebase/firebase';
+import type { Transaction } from '@/core/types';
 import { Button, Card, EmptyState, StatCard } from '@/shared/components';
 import { formatCurrency } from '@/shared/utils';
 import { timestampToDate } from '@/core/utils/firebase';
@@ -52,6 +55,12 @@ export function BudgetDetailView({
   );
   const [categorySort, setCategorySort] = useState<CategorySort>('percent');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  const [categoryTransactions, setCategoryTransactions] = useState<
+    Record<string, Transaction[]>
+  >({});
+  const [loadingTransactions, setLoadingTransactions] = useState<
+    Record<string, boolean>
+  >({});
 
   // Sort categories
   const sortedCategories = useMemo(() => {
@@ -84,12 +93,53 @@ export function BudgetDetailView({
     return groups;
   }, [budget.alerts]);
 
+  // Fetch transactions for a category when expanded
+  const fetchCategoryTransactions = async (category: string) => {
+    if (categoryTransactions[category] || loadingTransactions[category]) {
+      return; // Already fetched or loading
+    }
+
+    setLoadingTransactions((prev) => ({ ...prev, [category]: true }));
+
+    try {
+      const getBudgetTransactionsFn = httpsCallable<
+        { budgetId: string; category: string },
+        {
+          success: boolean;
+          transactions: Transaction[];
+          total_spent: number;
+          allocated_amount: number;
+          remaining: number;
+          transaction_count: number;
+          currency: string;
+        }
+      >(functions, 'getBudgetTransactions');
+
+      const result = await getBudgetTransactionsFn({
+        budgetId: budget.id,
+        category,
+      });
+
+      setCategoryTransactions((prev) => ({
+        ...prev,
+        [category]: result.data.transactions,
+      }));
+    } catch (error) {
+      console.error('Error fetching category transactions:', error);
+      setCategoryTransactions((prev) => ({ ...prev, [category]: [] }));
+    } finally {
+      setLoadingTransactions((prev) => ({ ...prev, [category]: false }));
+    }
+  };
+
   const toggleCategory = (category: string) => {
     const newExpanded = new Set(expandedCategories);
     if (newExpanded.has(category)) {
       newExpanded.delete(category);
     } else {
       newExpanded.add(category);
+      // Fetch transactions when expanding
+      fetchCategoryTransactions(category);
     }
     setExpandedCategories(newExpanded);
   };
@@ -278,6 +328,8 @@ export function BudgetDetailView({
                 category={category}
                 isExpanded={expandedCategories.has(category.category || '')}
                 onToggle={() => toggleCategory(category.category || '')}
+                transactions={categoryTransactions[category.category || '']}
+                isLoadingTransactions={loadingTransactions[category.category || '']}
               />
             ))
           )}
@@ -358,10 +410,14 @@ function CategoryCard({
   category,
   isExpanded,
   onToggle,
+  transactions,
+  isLoadingTransactions,
 }: {
   category: BudgetProgress;
   isExpanded: boolean;
   onToggle: () => void;
+  transactions?: Transaction[];
+  isLoadingTransactions?: boolean;
 }) {
   const { t } = useTranslation();
   
@@ -449,16 +505,49 @@ function CategoryCard({
             </span>
           </div>
 
-          {/* TODO: Add transaction list for this category */}
+          {/* Transaction list for this category */}
           <div className="category-transactions">
             <div className="transactions-header">
-              <span className="text-muted">Recent Transactions</span>
+              <span className="text-muted">
+                {t('pages.budgets.details.recentTransactions', 'Recent Transactions')}
+              </span>
             </div>
-            <EmptyState
-              icon={<TrendingDown size={24} />}
-              title={t('pages.budgets.details.noTransactions.title', 'No transactions')}
-              description={t('pages.budgets.details.noTransactions.description', 'Transactions will appear here')}
-            />
+            {isLoadingTransactions ? (
+              <div style={{ padding: 'var(--space-4)', textAlign: 'center' }}>
+                <span className="text-muted">
+                  {t('common.loading', 'Loading...')}
+                </span>
+              </div>
+            ) : transactions && transactions.length > 0 ? (
+              <div className="transactions-list">
+                {transactions.slice(0, 5).map((txn: Transaction) => (
+                  <div key={txn.id} className="transaction-item">
+                    <div className="transaction-info">
+                      <div className="transaction-description">
+                        {txn.description || t('common.noDescription', 'No description')}
+                      </div>
+                      <div className="transaction-date text-muted">
+                        {new Date(txn.date).toLocaleDateString()}
+                      </div>
+                    </div>
+                    <div className="transaction-amount text-danger">
+                      -{formatCurrency(txn.amount)}
+                    </div>
+                  </div>
+                ))}
+                {transactions.length > 5 && (
+                  <div className="text-muted text-center" style={{ padding: 'var(--space-2)', fontSize: 'var(--font-size-sm)' }}>
+                    +{transactions.length - 5} {t('pages.budgets.details.moreTransactions', 'more transactions')}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <EmptyState
+                icon={<TrendingDown size={24} />}
+                title={t('pages.budgets.details.noTransactions.title', 'No transactions')}
+                description={t('pages.budgets.details.noTransactions.description', 'No expenses in this category yet')}
+              />
+            )}
           </div>
         </div>
       )}
