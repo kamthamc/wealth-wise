@@ -133,6 +133,53 @@ investmentStore → Cloud Functions → Firestore (accounts + investment_transac
 
 ---
 
+### 5. ✅ Deposit Store Implementation
+**Status**: Complete  
+**Commit**: `feat: implement deposit store with Cloud Functions`
+
+**What Was Done**:
+- Created 3 new Cloud Functions for deposit operations
+- Reimplemented depositStore.ts with full functionality
+- Deposits managed as special account types with deposit_info metadata
+
+**Architecture**:
+```
+depositStore → Cloud Functions → Firestore (accounts + transactions)
+```
+
+**Cloud Functions Created**:
+- `getDeposits()` - Fetch all deposit accounts (FD/RD/PPF/Savings)
+- `getInterestPayments(accountId)` - Fetch interest transactions
+- `recordInterestPayment(accountId, amount, date)` - Create interest payment
+
+**Store Functions**:
+- `fetchDeposits()` - Get all user deposit accounts
+- `fetchInterestPayments(depositId)` - Get interest payment history
+- `recordInterestPayment(input)` - Record interest and update balance
+- `updateDepositProgress(depositId)` - Placeholder (calculations in Cloud Functions)
+- `calculateInterest()` - Placeholder (use Cloud Functions directly)
+- `addDeposit()` - Stub (use createAccount with deposit_info)
+- `updateDeposit()` - Stub (use updateAccount)
+- `deleteDeposit()` - Stub (use deleteAccount)
+
+**Key Design**:
+- Deposits are accounts with `type: fixed_deposit/recurring_deposit/ppf/savings`
+- Interest payments are income transactions with `category: interest_income`
+- CRUD operations handled through account functions
+- Calculations done via dedicated Cloud Functions (calculateFDMaturity, etc.)
+
+**UI Integration**:
+- DepositDetails.tsx component already uses store correctly
+- No changes needed to existing UI
+
+---
+
+## Incomplete Features
+
+### 6. ⚠️ Category Service
+
+---
+
 ## Incomplete Features
 
 ### 5. ⚠️ Deposit Store
@@ -308,14 +355,13 @@ export const getItems = functions.https.onCall(async (request) => {
 ## Next Steps (Priority Order)
 
 ### High Priority
-1. **None currently** - Core features (goals, duplicates, budgets, investments) are complete
+1. **None currently** - Core features (goals, duplicates, budgets, investments, deposits) are complete
 
 ### Medium Priority
-1. **None currently** - Budget transactions complete
+1. **None currently** - All medium priority features complete
 
 ### Low Priority
-1. **Category Service** - Only if custom categories are needed
-2. **Deposit Store** - Deposits are managed through accounts
+1. **Category Service** - Only if custom categories are needed (transactions use string categories currently)
 
 ---
 
@@ -353,6 +399,14 @@ export const getItems = functions.https.onCall(async (request) => {
 - [x] Update transaction
 - [x] Delete transaction
 - [ ] Test with UI components when needed
+
+### Deposit Store ✅
+- [x] Fetch deposit accounts
+- [x] Fetch interest payments
+- [x] Record interest payment with balance update
+- [x] UI integration (DepositDetails.tsx)
+- [ ] Test deposit calculations
+- [ ] Test interest payment recording
 
 ---
 
@@ -395,6 +449,15 @@ export const getItems = functions.https.onCall(async (request) => {
    - investments.ts (Cloud Functions)
    - index.ts (exports)
    - investmentStore.ts
+   - feature-implementation-progress.md
+
+6. `docs: update feature implementation progress`
+   - feature-implementation-progress.md
+
+7. `feat: implement deposit store with Cloud Functions`
+   - deposits.ts (Cloud Functions)
+   - index.ts (exports)
+   - depositStore.ts
    - feature-implementation-progress.md
 
 ---
