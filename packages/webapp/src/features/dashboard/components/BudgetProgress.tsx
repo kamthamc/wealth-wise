@@ -4,7 +4,7 @@
  */
 
 import { Link } from '@tanstack/react-router';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useBudgetStore } from '@/core/stores';
 import {
@@ -21,36 +21,90 @@ import { formatCurrency } from '@/utils';
 import { usePreferences } from '@/hooks/usePreferences';
 import './BudgetProgress.css';
 
+interface BudgetWithProgress {
+  id: string;
+  name: string;
+  period_type: 'monthly' | 'quarterly' | 'annual' | 'custom' | 'event';
+  categories?: any[];
+  is_active: boolean;
+  total_spent: number;
+  total_allocated: number;
+  percentage: number;
+  status: 'on-track' | 'warning' | 'danger' | 'over';
+}
+
 export function BudgetProgress() {
   const { t } = useTranslation();
-  const { budgets, isLoading } = useBudgetStore();
+  const { budgets, isLoading, calculateProgress } = useBudgetStore();
   const { preferences, loading: prefsLoading } = usePreferences();
+  const [budgetsWithProgress, setBudgetsWithProgress] = useState<BudgetWithProgress[]>([]);
 
-  // Get active budgets sorted by progress percentage
+  // Calculate progress for all active budgets
+  useEffect(() => {
+    const loadBudgetProgress = async () => {
+      const activeBudgets = budgets.filter((b) => b.is_active);
+      if (activeBudgets.length === 0) return;
+
+      try {
+        const progressPromises = activeBudgets.map(async (budget) => {
+          try {
+            const progressData = await calculateProgress(budget.id);
+            const total_allocated = budget.categories?.reduce(
+              (sum, cat: any) => sum + (cat.allocated_amount || 0), 
+              0
+            ) || 0;
+            const total_spent = progressData.total_spent || 0;
+            const percentage = total_allocated > 0 ? (total_spent / total_allocated) * 100 : 0;
+            const status = calculateBudgetProgress(total_spent, total_allocated, {});
+
+            return {
+              id: budget.id,
+              name: budget.name,
+              period_type: budget.period_type,
+              categories: budget.categories,
+              is_active: budget.is_active,
+              total_spent,
+              total_allocated,
+              percentage,
+              status,
+            };
+          } catch (error) {
+            console.error(`Error calculating progress for budget ${budget.id}:`, error);
+            // Return budget with zero progress on error
+            const total_allocated = budget.categories?.reduce(
+              (sum, cat: any) => sum + (cat.allocated_amount || 0), 
+              0
+            ) || 0;
+            return {
+              id: budget.id,
+              name: budget.name,
+              period_type: budget.period_type,
+              categories: budget.categories,
+              is_active: budget.is_active,
+              total_spent: 0,
+              total_allocated,
+              percentage: 0,
+              status: 'on-track' as const,
+            };
+          }
+        });
+
+        const results = await Promise.all(progressPromises);
+        setBudgetsWithProgress(results.sort((a, b) => b.percentage - a.percentage).slice(0, 5));
+      } catch (error) {
+        console.error('Error loading budget progress:', error);
+      }
+    };
+
+    if (!isLoading && budgets.length > 0) {
+      loadBudgetProgress();
+    }
+  }, [budgets, isLoading, calculateProgress]);
+
+  // Get active budgets with progress
   const activeBudgets = useMemo(() => {
-    return budgets
-      .filter((b) => b.is_active)
-      .map((budget) => {
-        // TODO: Calculate these from transactions or get from store
-        const total_spent = 0;
-        const total_allocated = budget.categories?.reduce((sum, cat: any) => sum + (cat.allocated_amount || 0), 0) || 0;
-        const percentage = total_allocated > 0 ? (total_spent / total_allocated) * 100 : 0;
-        const status = calculateBudgetProgress(
-          total_spent,
-          total_allocated,
-          {}
-        );
-        return {
-          ...budget,
-          total_spent,
-          total_allocated,
-          percentage,
-          status,
-        };
-      })
-      .sort((a, b) => b.percentage - a.percentage)
-      .slice(0, 5); // Top 5 budgets
-  }, [budgets]);
+    return budgetsWithProgress;
+  }, [budgetsWithProgress]);
 
   const getVariant = (
     status: ReturnType<typeof calculateBudgetProgress>
