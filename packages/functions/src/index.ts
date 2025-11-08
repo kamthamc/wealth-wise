@@ -58,6 +58,9 @@ export {
   calculateRDMaturity,
   calculateSavingsInterest,
   getDepositAccountDetails,
+  getDeposits,
+  getInterestPayments,
+  recordInterestPayment,
 } from './deposits';
 
 // Export duplicate detection functions
