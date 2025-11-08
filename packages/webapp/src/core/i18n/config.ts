@@ -8,22 +8,30 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import HttpBackend from 'i18next-http-backend';
 import { initReactI18next } from 'react-i18next';
 
-// Supported languages
-export const SUPPORTED_LANGUAGES = ['en-IN', 'hi', 'te-IN'] as const;
+// Supported languages (BCP 47 locale codes)
+export const SUPPORTED_LANGUAGES = ['en-IN', 'hi-IN', 'te-IN', 'ta-IN'] as const;
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 
 // Custom language detector to map browser languages to our supported languages
 const customLanguageDetector = {
   name: 'customDetector',
   lookup() {
-    const browserLang = navigator.language;
+    const browserLang = navigator.language || navigator.languages?.[0] || 'en-IN';
 
     // Map browser languages to our supported languages
-    if (browserLang.startsWith('hi')) return 'hi';
-    if (browserLang.startsWith('te')) return 'te-IN';
-    if (browserLang.startsWith('en-IN')) return 'en-IN';
+    // Check for exact matches first
+    if (browserLang === 'en-IN') return 'en-IN';
+    if (browserLang === 'hi-IN') return 'hi-IN';
+    if (browserLang === 'te-IN') return 'te-IN';
+    if (browserLang === 'ta-IN') return 'ta-IN';
 
-    // Default to English (India)
+    // Map language codes to India-specific variants
+    if (browserLang.startsWith('hi')) return 'hi-IN'; // Hindi → Hindi (India)
+    if (browserLang.startsWith('te')) return 'te-IN'; // Telugu → Telugu (India)
+    if (browserLang.startsWith('ta')) return 'ta-IN'; // Tamil → Tamil (India)
+    if (browserLang.startsWith('en')) return 'en-IN'; // English → English (India)
+
+    // Default to English (India) for Indian market
     return 'en-IN';
   },
 };

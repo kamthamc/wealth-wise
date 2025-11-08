@@ -12,8 +12,10 @@ import {
   Target,
   TrendingUp,
 } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGoalStore } from '@/core/stores';
+import { timestampToDate } from '@/core/utils/firebase';
 import {
   Button,
   EmptyState,
@@ -38,15 +40,24 @@ import {
 import { AddGoalForm } from './AddGoalForm';
 import './GoalsList.css';
 
-// Status filter options with icons
-const STATUS_OPTIONS: SegmentedControlOption<GoalStatus | 'all'>[] = [
-  { value: 'all', label: 'All', icon: <Flag size={16} /> },
-  { value: 'active', label: 'Active', icon: <Target size={16} /> },
-  { value: 'completed', label: 'Completed', icon: <CheckCircle2 size={16} /> },
-];
-
 export function GoalsList() {
-  const { goals, isLoading } = useGoalStore();
+  const { t } = useTranslation();
+  const { goals, isLoading, fetchGoals } = useGoalStore();
+
+  // Fetch goals on mount
+  useEffect(() => {
+    fetchGoals();
+  }, [fetchGoals]);
+
+  // Status filter options with icons
+  const STATUS_OPTIONS: SegmentedControlOption<GoalStatus | 'all'>[] = useMemo(
+    () => [
+      { value: 'all', label: t('pages.goals.filters.all', 'All'), icon: <Flag size={16} /> },
+      { value: 'active', label: t('pages.goals.filters.active', 'Active'), icon: <Target size={16} /> },
+      { value: 'completed', label: t('pages.goals.filters.completed', 'Completed'), icon: <CheckCircle2 size={16} /> },
+    ],
+    [t]
+  );
 
   const [statusFilter, setStatusFilter] = useState<GoalStatus | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -119,31 +130,37 @@ export function GoalsList() {
   return (
     <div className="goals-page">
       {/* Header */}
+            {/* Page Header */}
       <div className="goals-page__header">
-        <h1 className="goals-page__title">Goals</h1>
-        <Button onClick={() => setIsFormOpen(true)}>+ Add Goal</Button>
+        <div className="goals-page__header-content">
+          <h1 className="goals-page__title">{t('pages.goals.title', 'Goals')}</h1>
+        </div>
+        <Button variant="primary" onClick={() => setIsFormOpen(true)}>
+          <Plus size={18} />
+          {t('pages.goals.addButton', 'Add Goal')}
+        </Button>
       </div>
 
       {/* Stats */}
       <div className="goals-page__stats">
         <StatCard
-          label="Active Goals"
+          label={t('pages.goals.stats.activeGoals', 'Active Goals')}
           value={stats.activeGoals.toString()}
           icon={<Target size={24} />}
         />
         <StatCard
-          label="Completed"
+          label={t('pages.goals.stats.completed', 'Completed')}
           value={stats.completedGoals.toString()}
           icon={<CheckCircle2 size={24} />}
           variant="success"
         />
         <StatCard
-          label="Total Target"
+          label={t('pages.goals.stats.totalTarget', 'Total Target')}
           value={formatCurrency(stats.totalTargetAmount)}
           icon={<DollarSign size={24} />}
         />
         <StatCard
-          label="Overall Progress"
+          label={t('pages.goals.stats.overallProgress', 'Overall Progress')}
           value={`${Math.round(stats.overallProgress)}%`}
           icon={<TrendingUp size={24} />}
           variant={stats.overallProgress >= 80 ? 'success' : 'default'}
@@ -158,7 +175,7 @@ export function GoalsList() {
           </div>
           <Input
             type="search"
-            placeholder="Search goals..."
+            placeholder={t('pages.goals.searchPlaceholder', 'Search goals...')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -182,19 +199,19 @@ export function GoalsList() {
             icon={<Target size={48} />}
             title={
               searchQuery || statusFilter !== 'all'
-                ? 'No goals found'
-                : 'No goals yet'
+                ? t('emptyState.goals.filtered.title', 'No goals found')
+                : t('emptyState.goals.title', 'No goals yet')
             }
             description={
               searchQuery || statusFilter !== 'all'
-                ? 'Try adjusting your filters or search query'
-                : 'Set your first financial goal and start saving toward it'
+                ? t('emptyState.goals.filtered.description', 'Try adjusting your filters or search query')
+                : t('emptyState.goals.description', 'Set your first financial goal and start saving toward it')
             }
             action={
               !searchQuery && statusFilter === 'all' ? (
                 <Button onClick={() => setIsFormOpen(true)}>
                   <Plus size={20} />
-                  Create Your First Goal
+                  {t('emptyState.goals.action', 'Create Your First Goal')}
                 </Button>
               ) : undefined
             }
@@ -278,7 +295,7 @@ export function GoalsList() {
                   <div className="goal-card__deadline">
                     <span className="goal-card__deadline-icon">📅</span>
                     <span className="goal-card__deadline-text">
-                      {formatDaysRemaining(goal.target_date)}
+                      {formatDaysRemaining(timestampToDate(goal.target_date))}
                     </span>
                   </div>
                 )}

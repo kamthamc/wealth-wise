@@ -1,0 +1,336 @@
+{
+  "app": {
+    "name": "WealthWise",
+    "tagline": "Manage your finances intelligently"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "displayName": "Display Name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "processing": "Processing...",
+    "orContinueWith": "Or continue with",
+    "signInWithGoogle": "Sign in with Google",
+    "displayNamePlaceholder": "Enter your display name",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "••••••••",
+    "emulator": {
+      "title": "Testing with Firebase Emulators",
+      "subtitle": "Auth: localhost:9099 | Firestore: localhost:8080"
+    }
+  },
+  "pages": {
+    "accounts": {
+      "title": "Accounts",
+      "addButton": "Add Account",
+      "transferButton": "Transfer Money",
+      "description": "Manage your bank accounts, credit cards, and other financial accounts",
+      "stats": {
+        "totalBalance": "Total Balance",
+        "activeAccounts": "Active Accounts",
+        "totalAccounts": "Total Accounts"
+      },
+      "searchPlaceholder": "Search accounts by name or account number"
+    },
+    "transactions": {
+      "title": "Transactions",
+      "subtitle": "Track your income and expenses",
+      "addButton": "Add Transaction",
+      "searchPlaceholder": "Search transactions...",
+      "hideFilters": "Hide Filters",
+      "moreFilters": "More Filters",
+      "selectItems": "Select Items",
+      "cancelSelection": "Cancel Selection",
+      "selectedCount": "{{count}} selected",
+      "selectAll": "Select All ({{count}})",
+      "deleteSelected": "Delete Selected",
+      "stats": {
+        "totalIncome": "Total Income",
+        "totalExpenses": "Total Expenses",
+        "netCashFlow": "Net Cash Flow",
+        "totalTransactions": "Total Transactions"
+      },
+      "filters": {
+        "all": "All",
+        "income": "Income",
+        "expense": "Expense",
+        "transfer": "Transfer"
+      },
+      "bulkDelete": {
+        "confirm": "Are you sure you want to delete {{count}} transaction? This action cannot be undone.",
+        "confirm_other": "Are you sure you want to delete {{count}} transactions? This action cannot be undone.",
+        "success": "Successfully deleted {{count}} transaction",
+        "success_other": "Successfully deleted {{count}} transactions",
+        "error": "Failed to delete transactions. Please try again."
+      },
+      "bulkCategorize": {
+        "success": "Successfully categorized {{count}} transaction",
+        "success_other": "Successfully categorized {{count}} transactions",
+        "error": "Failed to categorize transactions. Please try again."
+      }
+    },
+    "budgets": {
+      "title": "Budgets",
+      "subtitle": "Track and manage your spending limits",
+      "addButton": "Add Budget",
+      "searchPlaceholder": "Search budgets...",
+      "stats": {
+        "totalBudget": "Total Budget",
+        "totalSpent": "Total Spent",
+        "remaining": "Remaining",
+        "overBudget": "Over Budget"
+      },
+      "filters": {
+        "period": {
+          "all": "All Periods",
+          "monthly": "Monthly",
+          "quarterly": "Quarterly",
+          "annual": "Annual"
+        }
+      },
+      "deleteConfirm": "Are you sure you want to delete this budget?",
+      "editBudget": "Edit Budget",
+      "deleteBudget": "Delete Budget",
+      "categories": "Categories",
+      "percentUsed": "% Used",
+      "spent": "Spent",
+      "name": "Name"
+    },
+    "goals": {
+      "title": "Goals",
+      "addButton": "Add Goal",
+      "searchPlaceholder": "Search goals...",
+      "filters": {
+        "all": "All",
+        "active": "Active",
+        "completed": "Completed"
+      },
+      "stats": {
+        "activeGoals": "Active Goals",
+        "completed": "Completed",
+        "totalTarget": "Total Target",
+        "overallProgress": "Overall Progress"
+      }
+    },
+    "investments": {
+      "title": "Investments",
+      "addButton": "Add Investment"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "welcome": "Welcome back",
+      "financialOverview": {
+        "title": "Financial Overview",
+        "totalBalance": "Total Balance",
+        "acrossAccounts": "Across {{count}} account",
+        "acrossAccounts_other": "Across {{count}} accounts",
+        "thisMonthIncome": "This Month Income",
+        "thisMonthExpenses": "This Month Expenses",
+        "savingsRate": "Savings Rate",
+        "vsLastMonth": "vs last month",
+        "excellentSavings": "Excellent savings!",
+        "goodSavings": "Good savings",
+        "tryToSaveMore": "Try to save more"
+      },
+      "budgetProgress": {
+        "title": "Budget Progress",
+        "viewAll": "View All",
+        "exceeded": "Budget exceeded!",
+        "approachingLimit": "Approaching limit"
+      },
+      "recentTransactions": {
+        "title": "Recent Transactions",
+        "viewAll": "View All",
+        "date": "Date",
+        "description": "Description",
+        "category": "Category",
+        "amount": "Amount",
+        "untitled": "Untitled transaction",
+        "uncategorized": "Uncategorized"
+      },
+      "goalsProgress": {
+        "title": "Goals Progress",
+        "viewAll": "View All"
+      },
+      "welcomeBanner": {
+        "dismiss": "Dismiss welcome message",
+        "title": "Welcome to WealthWise!",
+        "description": "Start tracking your finances in 3 simple steps:",
+        "step1": "Add your first account (bank, wallet, or credit card)",
+        "step2": "Record transactions to track your spending",
+        "step3": "Set budgets and goals to reach your financial targets",
+        "getStarted": "Get Started",
+        "maybeLater": "Maybe Later"
+      }
+    }
+  },
+  "emptyState": {
+    "accounts": {
+      "title": "No accounts yet",
+      "description": "Add your first account to start tracking your finances",
+      "filtered": {
+        "title": "No accounts found",
+        "description": "Try adjusting your search or filters"
+      }
+    },
+    "transactions": {
+      "title": "No transactions yet",
+      "description": "Start tracking your income and expenses by recording your first transaction",
+      "filtered": {
+        "title": "No transactions found",
+        "description": "Try adjusting your filters or search query to find the transactions you're looking for"
+      },
+      "actionButton": "Add Your First Transaction"
+    },
+    "budgets": {
+      "title": "No budgets yet",
+      "description": "Create your first budget to start tracking spending",
+      "filtered": {
+        "title": "No budgets found",
+        "description": "Try adjusting your filters or search query"
+      },
+      "actionButton": "Create Budget"
+    },
+    "goals": {
+      "title": "No goals yet",
+      "description": "Set your first financial goal to start planning for the future",
+      "filtered": {
+        "title": "No goals found",
+        "description": "Try adjusting your filters"
+      },
+      "actionButton": "Create Goal"
+    }
+  },
+  "quickActions": {
+    "addTransaction": {
+      "description": "Record income or expense",
+      "tooltip": "Add an account first"
+    },
+    "addAccount": {
+      "description": "Connect a bank account"
+    },
+    "createBudget": {
+      "description": "Set spending limits",
+      "tooltip": "Add transactions first"
+    },
+    "setGoal": {
+      "description": "Plan for the future"
+    }
+  },
+  "goals": {
+    "addGoal": "Set Goal"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "confirm": "Confirm",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "clear": "Clear",
+    "apply": "Apply",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "reset": "Reset",
+    "actions": "Actions",
+    "inactive": "Inactive",
+    "active": "Active"
+  },
+  "validation": {
+    "required": "This field is required",
+    "email": "Please enter a valid email",
+    "password": {
+      "minLength": "Password must be at least {{count}} characters",
+      "match": "Passwords must match"
+    }
+  },
+  "currency": {
+    "symbol": "₹",
+    "code": "INR",
+    "format": "{{value}}"
+  },
+  "forms": {
+    "transaction": {
+      "addTitle": "Add Transaction",
+      "editTitle": "Edit Transaction",
+      "addDescription": "Record a new income, expense, or transfer",
+      "editDescription": "Update transaction details",
+      "typeLabel": "Transaction Type",
+      "amountLabel": "Amount",
+      "amountPlaceholder": "0.00",
+      "accountLabel": "Account",
+      "accountPlaceholder": "Select an account...",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "What was this transaction for?",
+      "dateLabel": "Date",
+      "datePlaceholder": "Select transaction date...",
+      "categoryPlaceholder": "Select a category (optional)",
+      "saving": "Saving...",
+      "addButton": "Add Transaction",
+      "updateButton": "Update Transaction",
+      "saveError": "Failed to save transaction",
+      "saveErrorTitle": "Failed to save"
+    },
+    "budget": {
+      "createTitle": "Create Budget",
+      "editTitle": "Edit Budget",
+      "createDescription": "Set spending limits for better financial control",
+      "editDescription": "Update budget details and limits",
+      "nameLabel": "Budget Name",
+      "namePlaceholder": "e.g., Monthly Groceries",
+      "periodLabel": "Budget Period",
+      "periods": {
+        "monthly": "Monthly",
+        "quarterly": "Quarterly"
+      },
+      "startDateLabel": "Start Date",
+      "startDatePlaceholder": "Select start date...",
+      "endDateLabel": "End Date (Optional)",
+      "endDatePlaceholder": "No end date (ongoing)",
+      "endDateHelp": "Leave empty for a recurring budget without an end date",
+      "saving": "Saving...",
+      "createButton": "Create Budget",
+      "updateButton": "Update Budget",
+      "saveError": "Failed to save budget",
+      "saveErrorTitle": "Failed to save"
+    },
+    "goal": {
+      "createTitle": "Create Financial Goal",
+      "editTitle": "Edit Goal",
+      "createDescription": "Set a savings target and track your progress",
+      "editDescription": "Update your financial goal details",
+      "nameLabel": "Goal Name",
+      "namePlaceholder": "e.g., Buy a new car",
+      "categoryLabel": "Category",
+      "categoryPlaceholder": "e.g., Transportation",
+      "targetAmountLabel": "Target Amount",
+      "targetAmountPlaceholder": "0.00",
+      "targetDateLabel": "Target Date",
+      "targetDatePlaceholder": "Select target date...",
+      "targetDateHelp": "Set a realistic deadline to help you stay motivated",
+      "priorityLabel": "Priority",
+      "priorities": {
+        "low": "Low Priority",
+        "medium": "Medium Priority",
+        "high": "High Priority"
+      },
+      "iconLabel": "Goal Icon",
+      "saving": "Saving...",
+      "createButton": "Create Goal",
+      "updateButton": "Update Goal",
+      "saveError": "Failed to save goal",
+      "saveErrorTitle": "Failed to save"
+    }
+  }
+}

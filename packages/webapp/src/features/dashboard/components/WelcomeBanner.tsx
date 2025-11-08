@@ -5,10 +5,12 @@
 
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAccountStore } from '@/core/stores';
 import './WelcomeBanner.css';
 
 export function WelcomeBanner() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { accounts } = useAccountStore();
   const [dismissed, setDismissed] = useState(() => {
@@ -41,7 +43,7 @@ export function WelcomeBanner() {
         type="button"
         className="welcome-banner__close"
         onClick={handleDismiss}
-        aria-label="Dismiss welcome message"
+        aria-label={t('pages.dashboard.welcomeBanner.dismiss', 'Dismiss welcome message')}
       >
         ✕
       </button>
@@ -53,10 +55,10 @@ export function WelcomeBanner() {
 
         <div className="welcome-banner__text">
           <h2 id="welcome-title" className="welcome-banner__title">
-            Welcome to WealthWise!
+            {t('pages.dashboard.welcomeBanner.title', 'Welcome to WealthWise!')}
           </h2>
           <p className="welcome-banner__description">
-            Start tracking your finances in 3 simple steps:
+            {t('pages.dashboard.welcomeBanner.description', 'Start tracking your finances in 3 simple steps:')}
           </p>
 
           <ol className="welcome-banner__steps">
@@ -65,8 +67,7 @@ export function WelcomeBanner() {
                 1
               </span>
               <span className="welcome-banner__step-text">
-                <strong>Add your first account</strong> (bank, wallet, or credit
-                card)
+                {t('pages.dashboard.welcomeBanner.step1', 'Add your first account (bank, wallet, or credit card)')}
               </span>
             </li>
             <li className="welcome-banner__step">
@@ -74,7 +75,7 @@ export function WelcomeBanner() {
                 2
               </span>
               <span className="welcome-banner__step-text">
-                <strong>Record transactions</strong> to track your spending
+                {t('pages.dashboard.welcomeBanner.step2', 'Record transactions to track your spending')}
               </span>
             </li>
             <li className="welcome-banner__step">
@@ -82,8 +83,7 @@ export function WelcomeBanner() {
                 3
               </span>
               <span className="welcome-banner__step-text">
-                <strong>Set budgets and goals</strong> to reach your financial
-                targets
+                {t('pages.dashboard.welcomeBanner.step3', 'Set budgets and goals to reach your financial targets')}
               </span>
             </li>
           </ol>
@@ -96,14 +96,14 @@ export function WelcomeBanner() {
           className="welcome-banner__button welcome-banner__button--primary"
           onClick={handleGetStarted}
         >
-          Get Started
+          {t('pages.dashboard.welcomeBanner.getStarted', 'Get Started')}
         </button>
         <button
           type="button"
           className="welcome-banner__button welcome-banner__button--secondary"
           onClick={handleDismiss}
         >
-          Maybe Later
+          {t('pages.dashboard.welcomeBanner.maybeLater', 'Maybe Later')}
         </button>
       </div>
     </section>

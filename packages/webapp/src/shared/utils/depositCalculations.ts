@@ -4,6 +4,7 @@
  */
 
 import type { DepositDetails, InterestPayoutFrequency } from '@/core/types';
+import { timestampToDate } from '@/core/utils/firebase';
 
 /**
  * Calculate maturity amount for a fixed deposit
@@ -237,7 +238,7 @@ export function updateDepositProgress(deposit: DepositDetails): {
   completed_months: number;
   remaining_months: number;
 } {
-  const completedMonths = calculateCompletedMonths(deposit.start_date);
+  const completedMonths = calculateCompletedMonths(timestampToDate(deposit.start_date));
   const remainingMonths = Math.max(0, deposit.tenure_months - completedMonths);
 
   return {

@@ -5,6 +5,7 @@
 
 import { Link } from '@tanstack/react-router';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useTransactionStore } from '@/core/stores';
 import {
   getTransactionIcon,
@@ -26,6 +27,7 @@ import './RecentTransactions.css';
 import type { Transaction } from '@/core/types';
 
 export function RecentTransactions() {
+  const { t } = useTranslation();
   const { transactions, isLoading } = useTransactionStore();
   const { preferences, loading: prefsLoading } = usePreferences();
 
@@ -39,9 +41,9 @@ export function RecentTransactions() {
   const columns: TableColumn<Transaction>[] = [
     {
       key: 'date',
-      header: 'Date',
+      header: t('pages.dashboard.recentTransactions.date', 'Date'),
       accessor: (row) => formatDate(
-        new Date(row.date),
+        timestampToDate(row.date),
         preferences?.dateFormat || 'DD/MM/YYYY',
         preferences?.locale || 'en-IN'
       ),
@@ -49,27 +51,27 @@ export function RecentTransactions() {
     },
     {
       key: 'description',
-      header: 'Description',
+      header: t('pages.dashboard.recentTransactions.description', 'Description'),
       accessor: (row) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span>{getTransactionIcon(row.type)}</span>
-          <span>{row.description || 'Untitled transaction'}</span>
+          <span>{row.description || t('pages.dashboard.recentTransactions.untitled', 'Untitled transaction')}</span>
         </div>
       ),
       sortable: true,
     },
     {
       key: 'category',
-      header: 'Category',
+      header: t('pages.dashboard.recentTransactions.category', 'Category'),
       accessor: (row) => (
         <Badge variant="default" size="small">
-          {row.category || 'Uncategorized'}
+          {row.category || t('pages.dashboard.recentTransactions.uncategorized', 'Uncategorized')}
         </Badge>
       ),
     },
     {
       key: 'amount',
-      header: 'Amount',
+      header: t('pages.dashboard.recentTransactions.amount', 'Amount'),
       accessor: (row) => {
         const variant = getTransactionTypeColor(row.type);
         return (
@@ -103,9 +105,9 @@ export function RecentTransactions() {
     <section className="recent-transactions">
       <Card>
         <div className="recent-transactions__header">
-          <h2 className="recent-transactions__title">Recent Transactions</h2>
+          <h2 className="recent-transactions__title">{t('pages.dashboard.recentTransactions.title', 'Recent Transactions')}</h2>
           <Link to="/transactions" className="recent-transactions__link">
-            View All →
+            {t('pages.dashboard.recentTransactions.viewAll', 'View All')} →
           </Link>
         </div>
 
@@ -122,8 +124,8 @@ export function RecentTransactions() {
         ) : (
           <EmptyState
             icon="📝"
-            title="No transactions yet"
-            description="Start tracking your finances by adding your first transaction"
+            title={t('emptyState.transactions.title', 'No transactions yet')}
+            description={t('emptyState.transactions.description', 'Start tracking your income and expenses by recording your first transaction')}
           />
         )}
       </Card>

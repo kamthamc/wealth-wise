@@ -352,7 +352,10 @@ export function AddAccountModal({
                       });
                     }}
                     currency={formData.currency}
-                    placeholder="50000"
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.creditLimit',
+                      '50000'
+                    )}
                   />
                 </div>
 
@@ -382,7 +385,10 @@ export function AddAccountModal({
                         },
                       });
                     }}
-                    placeholder="1"
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.billingCycleDay',
+                      '1'
+                    )}
                   />
                 </div>
 
@@ -412,7 +418,10 @@ export function AddAccountModal({
                         },
                       });
                     }}
-                    placeholder="20"
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.paymentDueDay',
+                      '20'
+                    )}
                   />
                 </div>
 
@@ -519,7 +528,10 @@ export function AddAccountModal({
                         },
                       });
                     }}
-                    placeholder="36.0"
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.interestRate',
+                      '36.0'
+                    )}
                   />
                 </div>
               </>
@@ -549,7 +561,10 @@ export function AddAccountModal({
                         },
                       });
                     }}
-                    placeholder="Zerodha, Groww, etc."
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.brokerName',
+                      'Zerodha, Groww, etc.'
+                    )}
                   />
                 </div>
 
@@ -576,7 +591,10 @@ export function AddAccountModal({
                         },
                       });
                     }}
-                    placeholder="1234567890123456"
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.dematAccount',
+                      '1234567890123456'
+                    )}
                   />
                 </div>
 
@@ -603,7 +621,10 @@ export function AddAccountModal({
                         },
                       });
                     }}
-                    placeholder="AB1234"
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.tradingAccount',
+                      'AB1234'
+                    )}
                   />
                 </div>
 
@@ -628,7 +649,10 @@ export function AddAccountModal({
                         },
                       });
                     }}
-                    placeholder="IN300***"
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.dpId',
+                      'IN300***'
+                    )}
                   />
                 </div>
 
@@ -653,7 +677,10 @@ export function AddAccountModal({
                         },
                       });
                     }}
-                    placeholder="ABC123"
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.clientId',
+                      'ABC123'
+                    )}
                   />
                 </div>
               </>
@@ -691,7 +718,10 @@ export function AddAccountModal({
                         },
                       });
                     }}
-                    placeholder="7.5"
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.depositInterestRate',
+                      '7.5'
+                    )}
                   />
                 </div>
 
@@ -723,7 +753,10 @@ export function AddAccountModal({
                         },
                       });
                     }}
-                    placeholder="12"
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.depositTenure',
+                      '12'
+                    )}
                   />
                 </div>
 
@@ -875,7 +908,10 @@ export function AddAccountModal({
                         },
                       });
                     }}
-                    placeholder="HDFC Bank"
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.bankName',
+                      'HDFC Bank'
+                    )}
                   />
                 </div>
               </>

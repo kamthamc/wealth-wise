@@ -5,7 +5,8 @@
 
 import * as Dialog from '@radix-ui/react-dialog';
 import * as RadioGroup from '@radix-ui/react-radio-group';
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGoalStore } from '@/core/stores';
 import {
   Button,
@@ -27,17 +28,6 @@ interface AddGoalFormProps {
   goalId?: string;
 }
 
-const GOAL_PRIORITIES: {
-  value: GoalPriority;
-  label: string;
-  icon: string;
-  color: string;
-}[] = [
-  { value: 'low', label: 'Low Priority', icon: '🔵', color: '#3b82f6' },
-  { value: 'medium', label: 'Medium Priority', icon: '🟡', color: '#f59e0b' },
-  { value: 'high', label: 'High Priority', icon: '🔴', color: '#ef4444' },
-];
-
 const GOAL_ICONS = [
   { emoji: '🏠', name: 'Home' },
   { emoji: '🚗', name: 'Car' },
@@ -52,9 +42,24 @@ const GOAL_ICONS = [
 ];
 
 export function AddGoalForm({ isOpen, onClose, goalId }: AddGoalFormProps) {
+  const { t } = useTranslation();
   const formId = useId();
   const { goals, createGoal, updateGoal } = useGoalStore();
   const toast = useToast();
+
+  const GOAL_PRIORITIES: {
+    value: GoalPriority;
+    label: string;
+    icon: string;
+    color: string;
+  }[] = useMemo(
+    () => [
+      { value: 'low', label: t('forms.goal.priorities.low', 'Low Priority'), icon: '🔵', color: '#3b82f6' },
+      { value: 'medium', label: t('forms.goal.priorities.medium', 'Medium Priority'), icon: '🟡', color: '#f59e0b' },
+      { value: 'high', label: t('forms.goal.priorities.high', 'High Priority'), icon: '🔴', color: '#ef4444' },
+    ],
+    [t]
+  );
 
   // Form state
   const [formData, setFormData] = useState<GoalFormData>({
@@ -201,8 +206,8 @@ export function AddGoalForm({ isOpen, onClose, goalId }: AddGoalFormProps) {
       resetForm();
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : 'Failed to save goal';
-      toast.error('Failed to save', errorMessage);
+        error instanceof Error ? error.message : t('forms.goal.saveError', 'Failed to save goal');
+      toast.error(t('forms.goal.saveErrorTitle', 'Failed to save'), errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -240,16 +245,16 @@ export function AddGoalForm({ isOpen, onClose, goalId }: AddGoalFormProps) {
         <Dialog.Content className="goal-form__content">
           <div className="goal-form__header">
             <Dialog.Title className="goal-form__title">
-              {goalId ? 'Edit Goal' : 'Create Financial Goal'}
+              {goalId ? t('forms.goal.editTitle', 'Edit Goal') : t('forms.goal.createTitle', 'Create Financial Goal')}
             </Dialog.Title>
             <Dialog.Description className="goal-form__description">
               {goalId
-                ? 'Update your financial goal details'
-                : 'Set a savings target and track your progress'}
+                ? t('forms.goal.editDescription', 'Update your financial goal details')
+                : t('forms.goal.createDescription', 'Set a savings target and track your progress')}
             </Dialog.Description>
             <Dialog.Close
               className="goal-form__close"
-              aria-label="Close dialog"
+              aria-label={t('common.closeDialog', 'Close dialog')}
             >
               ✕
             </Dialog.Close>
@@ -259,7 +264,7 @@ export function AddGoalForm({ isOpen, onClose, goalId }: AddGoalFormProps) {
             {/* Goal Name */}
             <div className="goal-form__field">
               <label htmlFor={`${formId}-name`} className="goal-form__label">
-                Goal Name *
+                {t('forms.goal.nameLabel', 'Goal Name')} *
               </label>
               <Input
                 id={`${formId}-name`}
@@ -269,7 +274,7 @@ export function AddGoalForm({ isOpen, onClose, goalId }: AddGoalFormProps) {
                   setFormData((prev) => ({ ...prev, name: e.target.value }))
                 }
                 onBlur={nameValidation.onBlur}
-                placeholder="e.g., Buy a new car"
+                placeholder={t('forms.goal.namePlaceholder', 'e.g., Buy a new car')}
                 required
                 aria-invalid={!!nameValidation.message}
                 aria-describedby={
@@ -293,7 +298,7 @@ export function AddGoalForm({ isOpen, onClose, goalId }: AddGoalFormProps) {
                 htmlFor={`${formId}-category`}
                 className="goal-form__label"
               >
-                Category *
+                {t('forms.goal.categoryLabel', 'Category')} *
               </label>
               <Input
                 id={`${formId}-category`}
@@ -303,7 +308,7 @@ export function AddGoalForm({ isOpen, onClose, goalId }: AddGoalFormProps) {
                   setFormData((prev) => ({ ...prev, category: e.target.value }))
                 }
                 onBlur={categoryValidation.onBlur}
-                placeholder="e.g., Transportation"
+                placeholder={t('forms.goal.categoryPlaceholder', 'e.g., Transportation')}
                 required
                 aria-invalid={!!categoryValidation.message}
                 aria-describedby={
@@ -324,7 +329,7 @@ export function AddGoalForm({ isOpen, onClose, goalId }: AddGoalFormProps) {
             {/* Target Amount */}
             <div className="goal-form__field">
               <label htmlFor={`${formId}-amount`} className="goal-form__label">
-                Target Amount *
+                {t('forms.goal.targetAmountLabel', 'Target Amount')} *
               </label>
               <Input
                 id={`${formId}-amount`}
@@ -337,7 +342,7 @@ export function AddGoalForm({ isOpen, onClose, goalId }: AddGoalFormProps) {
                   }))
                 }
                 onBlur={targetAmountValidation.onBlur}
-                placeholder="0.00"
+                placeholder={t('forms.goal.targetAmountPlaceholder', '0.00')}
                 required
                 min="0"
                 step="0.01"
@@ -360,7 +365,7 @@ export function AddGoalForm({ isOpen, onClose, goalId }: AddGoalFormProps) {
             {/* Target Date */}
             <div className="goal-form__field">
               <label htmlFor={`${formId}-date`} className="goal-form__label">
-                Target Date *
+                {t('forms.goal.targetDateLabel', 'Target Date')} *
               </label>
               <DatePicker
                 id={`${formId}-date`}
@@ -378,7 +383,7 @@ export function AddGoalForm({ isOpen, onClose, goalId }: AddGoalFormProps) {
                   }));
                   setTimeout(() => targetDateValidation.revalidate(), 0);
                 }}
-                placeholder="Select target date..."
+                placeholder={t('forms.goal.targetDatePlaceholder', 'Select target date...')}
                 required
                 error={
                   targetDateValidation.hasBlurred
@@ -400,13 +405,13 @@ export function AddGoalForm({ isOpen, onClose, goalId }: AddGoalFormProps) {
                 />
               )}
               <p className="goal-form__help-text">
-                Set a realistic deadline to help you stay motivated
+                {t('forms.goal.targetDateHelp', 'Set a realistic deadline to help you stay motivated')}
               </p>
             </div>
 
             {/* Priority */}
             <fieldset className="goal-form__field">
-              <legend className="goal-form__label">Priority</legend>
+              <legend className="goal-form__label">{t('forms.goal.priorityLabel', 'Priority')}</legend>
               <RadioGroup.Root
                 className="goal-form__radio-group"
                 value={formData.priority}
@@ -440,7 +445,7 @@ export function AddGoalForm({ isOpen, onClose, goalId }: AddGoalFormProps) {
 
             {/* Goal Icon */}
             <fieldset className="goal-form__field">
-              <legend className="goal-form__label">Goal Icon</legend>
+              <legend className="goal-form__label">{t('forms.goal.iconLabel', 'Goal Icon')}</legend>
               <div className="goal-form__icon-grid">
                 {GOAL_ICONS.map((iconOption) => (
                   <button
@@ -476,7 +481,7 @@ export function AddGoalForm({ isOpen, onClose, goalId }: AddGoalFormProps) {
               onClick={handleClose}
               disabled={isSubmitting}
             >
-              Cancel
+              {t('common.cancel', 'Cancel')}
             </Button>
             <Button
               type="submit"
@@ -485,10 +490,10 @@ export function AddGoalForm({ isOpen, onClose, goalId }: AddGoalFormProps) {
               disabled={isSubmitting || !isFormValid}
             >
               {isSubmitting
-                ? 'Saving...'
+                ? t('forms.goal.saving', 'Saving...')
                 : goalId
-                  ? 'Update Goal'
-                  : 'Create Goal'}
+                  ? t('forms.goal.updateButton', 'Update Goal')
+                  : t('forms.goal.createButton', 'Create Goal')}
             </Button>
           </div>
         </Dialog.Content>

@@ -4,7 +4,8 @@
  */
 
 import { Link } from '@tanstack/react-router';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGoalStore } from '@/core/stores';
 import {
   calculateGoalProgress,
@@ -21,7 +22,15 @@ import { formatCurrency } from '@/shared/utils';
 import './GoalsProgress.css';
 
 export function GoalsProgress() {
-  const { goals, isLoading } = useGoalStore();
+  const { t } = useTranslation();
+  const { goals, isLoading, fetchGoals } = useGoalStore();
+
+  // Fetch goals on mount
+  useEffect(() => {
+    if (goals.length === 0 && !isLoading) {
+      fetchGoals();
+    }
+  }, [goals.length, isLoading, fetchGoals]);
 
   // Get active goals sorted by priority and progress
   const activeGoals = useMemo(() => {
@@ -141,8 +150,8 @@ export function GoalsProgress() {
         ) : (
           <EmptyState
             icon="🎯"
-            title="No active goals"
-            description="Set financial goals to track your progress"
+            title={t('pages.dashboard.goalsProgress.noGoals.title', 'No active goals')}
+            description={t('pages.dashboard.goalsProgress.noGoals.description', 'Set financial goals to track your progress')}
           />
         )}
       </Card>

@@ -18,6 +18,7 @@
 
 import { transactionCache } from '@/core/cache';
 import type { Account, Transaction } from '@/core/types';
+import { timestampToDate } from '@/core/utils/firebase';
 
 /**
  * Precision for currency calculations (2 decimal places)
@@ -211,7 +212,7 @@ export function calculateIncome(
   for (const txn of transactions) {
     if (txn.type !== 'income') continue;
 
-    const txnDate = new Date(txn.date);
+    const txnDate = timestampToDate(txn.date);
     if (startDate && txnDate < startDate) continue;
     if (endDate && txnDate > endDate) continue;
 
@@ -234,7 +235,7 @@ export function calculateExpenses(
   for (const txn of transactions) {
     if (txn.type !== 'expense') continue;
 
-    const txnDate = new Date(txn.date);
+    const txnDate = timestampToDate(txn.date);
     if (startDate && txnDate < startDate) continue;
     if (endDate && txnDate > endDate) continue;
 
@@ -302,7 +303,7 @@ export function calculateMonthlyStats(
     1
   );
   const futureTransactions = transactions.filter(
-    (t) => new Date(t.date) >= periodStart
+    (t) => timestampToDate(t.date) >= periodStart
   );
 
   // Work backwards from current balance to get the balance at start of period

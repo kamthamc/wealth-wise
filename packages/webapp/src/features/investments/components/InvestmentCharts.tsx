@@ -42,7 +42,6 @@ const ASSET_TYPE_COLORS: Record<InvestmentAssetType, string> = {
   commodity: CHART_COLORS.warning,
   reit: CHART_COLORS.pink,
   bond: CHART_COLORS.indigo,
-  crypto: CHART_COLORS.teal,
 };
 
 // Portfolio Performance Chart

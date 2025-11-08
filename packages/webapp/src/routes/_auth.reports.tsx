@@ -7,15 +7,5 @@ import { createFileRoute } from '@tanstack/react-router';
 import { ReportsPage } from '@/features/reports';
 
 export const Route = createFileRoute('/_auth/reports')({
-  component: ReportsPageRoute,
+  component: ReportsPage,
 });
-
-function ReportsPageRoute() {
-  return (
-    <div className="container">
-      <main id="main-content">
-        <ReportsPage />
-      </main>
-    </div>
-  );
-}

@@ -5,7 +5,6 @@
 
 import { createFileRoute } from '@tanstack/react-router';
 import { AccountDetails } from '@/features/accounts';
-import { DashboardLayout } from '@/features/dashboard/components';
 
 export const Route = createFileRoute('/_auth/accounts/$accountId')({
   component: AccountDetailsPage,
@@ -14,8 +13,6 @@ export const Route = createFileRoute('/_auth/accounts/$accountId')({
 function AccountDetailsPage() {
   const { accountId } = Route.useParams();
   return (
-    <DashboardLayout>
-      <AccountDetails accountId={accountId} />
-    </DashboardLayout>
+    <AccountDetails accountId={accountId} />
   );
 }

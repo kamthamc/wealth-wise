@@ -42,7 +42,7 @@ export function DepositDetails({
 
   // Fetch deposits for this account
   useEffect(() => {
-    fetchDeposits(accountId);
+    fetchDeposits();
   }, [accountId, fetchDeposits]);
 
   // Get deposit for this account

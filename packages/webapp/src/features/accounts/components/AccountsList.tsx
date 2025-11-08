@@ -278,18 +278,18 @@ export function AccountsList() {
             options={ACCOUNT_TYPE_OPTIONS}
             selected={filters.types || []}
             onChange={(types) => setFilters({ ...filters, types })}
-            label="Account Types"
-            placeholder="All account types"
-            searchPlaceholder="Search account types..."
+            label={t('pages.accounts.filters.typeLabel', 'Account Types')}
+            placeholder={t('pages.accounts.filters.typePlaceholder', 'All account types')}
+            searchPlaceholder={t('pages.accounts.filters.typeSearch', 'Search account types...')}
           />
 
           <MultiSelectFilter
             options={accountOptions}
             selected={filters.accountIds || []}
             onChange={(accountIds) => setFilters({ ...filters, accountIds })}
-            label="Specific Accounts"
-            placeholder="All accounts"
-            searchPlaceholder="Search accounts..."
+            label={t('pages.accounts.filters.specificLabel', 'Specific Accounts')}
+            placeholder={t('pages.accounts.filters.specificPlaceholder', 'All accounts')}
+            searchPlaceholder={t('pages.accounts.filters.specificSearch', 'Search accounts...')}
             maxDisplay={2}
           />
         </div>
@@ -374,10 +374,10 @@ export function AccountsList() {
         isOpen={!!deletingAccount}
         onClose={() => setDeletingAccount(undefined)}
         onConfirm={handleDeleteAccount}
-        title="Delete Account?"
-        description={`Are you sure you want to delete "${deletingAccount?.name}"? This action cannot be undone and all associated data will be permanently removed.`}
-        confirmLabel="Delete Account"
-        cancelLabel="Cancel"
+        title={t('pages.accounts.deleteConfirm.title', 'Delete Account?')}
+        description={t('pages.accounts.deleteConfirm.description', 'Are you sure you want to delete this account? This action cannot be undone and all associated data will be permanently removed.')}
+        confirmLabel={t('pages.accounts.deleteConfirm.confirmButton', 'Delete Account')}
+        cancelLabel={t('pages.accounts.deleteConfirm.cancelButton', 'Cancel')}
         variant="danger"
       />
       {/* Account Transfer Wizard */}

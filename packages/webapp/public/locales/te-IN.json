@@ -1,299 +1,718 @@
 {
-  "common": {
-    "loading": "లోడ్ అవుతోంది...",
-    "error": "లోపం",
-    "success": "విజయవంతం",
-    "cancel": "రద్దు చేయి",
-    "save": "సేవ్ చేయి",
-    "delete": "తొలగించు",
-    "edit": "సవరించు",
-    "add": "జోడించు",
-    "search": "వెతుకు",
-    "filter": "ఫిల్టర్",
-    "clear": "క్లియర్",
-    "apply": "వర్తింపజేయి",
-    "close": "మూసివేయి",
-    "back": "వెనుకకు",
-    "next": "తదుపరి",
-    "previous": "మునుపటి",
-    "continue": "కొనసాగించు",
-    "confirm": "నిర్ధారించు",
-    "learnMore": "మరింత తెలుసుకోండి",
-    "viewAll": "అన్నీ చూడండి",
-    "noResults": "ఫలితాలు కనిపించలేదు"
+  "app": {
+    "name": "WealthWise",
+    "tagline": "Manage your finances intelligently"
   },
-  "emptyState": {
-    "accounts": {
-      "title": "ఇంకా ఖాతాలు లేవు",
-      "description": "మీ బ్యాంక్ ఖాతాలు, క్రెడిట్ కార్డులు మరియు ఇతర ఆర్థిక ఖాతాలను జోడించడం ద్వారా మీ ఆర్థిక స్థితిని ట్రాక్ చేయడం ప్రారంభించండి",
-      "action": "మీ మొదటి ఖాతాను జోడించండి",
-      "secondaryAction": "ఖాతా రకాల గురించి తెలుసుకోండి →",
-      "filtered": {
-        "title": "ఖాతాలు కనిపించలేదు",
-        "description": "మీరు వెతుకుతున్నది కనుగొనడానికి మీ ఫిల్టర్‌లు లేదా శోధన ప్రశ్నను సర్దుబాటు చేయండి"
-      }
-    },
-    "transactions": {
-      "title": "ఇంకా లావాదేవీలు లేవు",
-      "description": "మీ మొదటి లావాదేవీని రికార్డ్ చేయడం ద్వారా మీ ఆదాయం మరియు ఖర్చులను ట్రాక్ చేయడం ప్రారంభించండి",
-      "action": "మీ మొదటి లావాదేవీని జోడించండి",
-      "secondaryAction": "బ్యాంక్ స్టేట్‌మెంట్ నుండి దిగుమతి చేయండి →",
-      "filtered": {
-        "title": "లావాదేవీలు కనిపించలేదు",
-        "description": "మీరు వెతుకుతున్న లావాదేవీలను కనుగొనడానికి మీ ఫిల్టర్‌లు లేదా శోధన ప్రశ్నను సర్దుబాటు చేయండి"
-      }
-    },
-    "budgets": {
-      "title": "ఇంకా బడ్జెట్‌లు లేవు",
-      "description": "మీ ఖర్చులను ట్రాక్ చేయడానికి మరియు మీ ఆర్థిక స్థితిపై నియంత్రణ ఉంచడానికి బడ్జెట్‌లను సృష్టించండి",
-      "action": "మీ మొదటి బడ్జెట్‌ను సృష్టించండి",
-      "filtered": {
-        "title": "బడ్జెట్‌లు కనిపించలేదు",
-        "description": "మీరు వెతుకుతున్న బడ్జెట్‌లను కనుగొనడానికి మీ ఫిల్టర్‌లను సర్దుబాటు చేయండి"
-      }
-    },
-    "goals": {
-      "title": "ఇంకా లక్ష్యాలు లేవు",
-      "description": "మీ పురోగతిని ట్రాక్ చేయడానికి మరియు మీ కలలను సాకారం చేసుకోవడానికి ఆర్థిక లక్ష్యాలను సెట్ చేయండి",
-      "action": "మీ మొదటి లక్ష్యాన్ని సృష్టించండి",
-      "filtered": {
-        "title": "లక్ష్యాలు కనిపించలేదు",
-        "description": "మీరు వెతుకుతున్న లక్ష్యాలను కనుగొనడానికి మీ ఫిల్టర్‌లను సర్దుబాటు చేయండి"
-      }
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "displayName": "Display Name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "processing": "Processing...",
+    "orContinueWith": "Or continue with",
+    "signInWithGoogle": "Sign in with Google",
+    "displayNamePlaceholder": "Enter your display name",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "••••••••",
+    "emulator": {
+      "title": "Testing with Firebase Emulators",
+      "subtitle": "Auth: localhost:9099 | Firestore: localhost:8080"
     }
-  },
-  "toast": {
-    "success": {
-      "accountCreated": "ఖాతా విజయవంతంగా సృష్టించబడింది",
-      "accountUpdated": "ఖాతా విజయవంతంగా నవీకరించబడింది",
-      "accountDeleted": "ఖాతా విజయవంతంగా తొలగించబడింది",
-      "transactionCreated": "లావాదేవీ విజయవంతంగా జోడించబడింది",
-      "transactionUpdated": "లావాదేవీ విజయవంతంగా నవీకరించబడింది",
-      "transactionDeleted": "లావాదేవీ విజయవంతంగా తొలగించబడింది",
-      "budgetCreated": "బడ్జెట్ విజయవంతంగా సృష్టించబడింది",
-      "budgetUpdated": "బడ్జెట్ విజయవంతంగా నవీకరించబడింది",
-      "budgetDeleted": "బడ్జెట్ విజయవంతంగా తొలగించబడింది",
-      "goalCreated": "లక్ష్యం విజయవంతంగా సృష్టించబడింది",
-      "goalUpdated": "లక్ష్యం విజయవంతంగా నవీకరించబడింది",
-      "goalDeleted": "లక్ష్యం విజయవంతంగా తొలగించబడింది"
-    },
-    "error": {
-      "generic": "ఏదో తప్పు జరిగింది. దయచేసి మళ్లీ ప్రయత్నించండి.",
-      "accountCreate": "ఖాతాను సృష్టించడంలో విఫలమైంది",
-      "accountUpdate": "ఖాతాను నవీకరించడంలో విఫలమైంది",
-      "accountDelete": "ఖాతాను తొలగించడంలో విఫలమైంది",
-      "transactionCreate": "లావాదేవీని జోడించడంలో విఫలమైంది",
-      "transactionUpdate": "లావాదేవీని నవీకరించడంలో విఫలమైంది",
-      "transactionDelete": "లావాదేవీని తొలగించడంలో విఫలమైంది",
-      "budgetCreate": "బడ్జెట్‌ను సృష్టించడంలో విఫలమైంది",
-      "budgetUpdate": "బడ్జెట్‌ను నవీకరించడంలో విఫలమైంది",
-      "budgetDelete": "బడ్జెట్‌ను తొలగించడంలో విఫలమైంది",
-      "goalCreate": "లక్ష్యాన్ని సృష్టించడంలో విఫలమైంది",
-      "goalUpdate": "లక్ష్యాన్ని నవీకరించడంలో విఫలమైంది",
-      "goalDelete": "లక్ష్యాన్ని తొలగించడంలో విఫలమైంది"
-    }
-  },
-  "validation": {
-    "required": "ఈ ఫీల్డ్ తప్పనిసరి",
-    "invalidEmail": "దయచేసి చెల్లుబాటు అయ్యే ఇమెయిల్ చిరునామాను నమోదు చేయండి",
-    "invalidAmount": "దయచేసి చెల్లుబాటు అయ్యే మొత్తాన్ని నమోదు చేయండి",
-    "invalidDate": "దయచేసి చెల్లుబాటు అయ్యే తేదీని నమోదు చేయండి",
-    "minAmount": "మొత్తం కనీసం {{min}} ఉండాలి",
-    "maxAmount": "మొత్తం {{max}} కంటే ఎక్కువ ఉండకూడదు",
-    "minLength": "కనీసం {{min}} అక్షరాలు ఉండాలి",
-    "maxLength": "{{max}} అక్షరాల కంటే ఎక్కువ ఉండకూడదు",
-    "selectOption": "దయచేసి ఒక ఎంపికను ఎంచుకోండి",
-    "futureDate": "తేదీ భవిష్యత్తులో ఉండకూడదు",
-    "pastDate": "తేదీ గతంలో ఉండకూడదు"
-  },
-  "skeleton": {
-    "loading": "కంటెంట్ లోడ్ అవుతోంది, దయచేసి వేచి ఉండండి..."
-  },
-  "accountSelect": {
-    "placeholder": "ఖాతాను ఎంచుకోండి",
-    "search": "ఖాతాలను వెతకండి...",
-    "noResults": "ఖాతాలు కనిపించలేదు",
-    "balance": "బ్యాలెన్స్"
-  },
-  "datePicker": {
-    "placeholder": "తేదీని ఎంచుకోండి",
-    "today": "ఈరోజు",
-    "selectDate": "తేదీని ఎంచుకోండి"
-  },
-  "accounts": {
-    "title": "ఖాతాలు",
-    "search": "🔍 ఖాతాలను వెతకండి...",
-    "addAccount": "ఖాతా జోడించు",
-    "totalBalance": "మొత్తం బ్యాలెన్స్",
-    "activeAccounts": "క్రియాశీల ఖాతాలు",
-    "totalAccounts": "మొత్తం ఖాతాలు",
-    "types": {
-      "all": "అన్నీ",
-      "bank": "బ్యాంక్",
-      "credit_card": "క్రెడిట్ కార్డ్",
-      "upi": "UPI",
-      "brokerage": "బ్రోకరేజ్"
-    }
-  },
-  "transactions": {
-    "title": "లావాదేవీలు",
-    "search": "🔍 లావాదేవీలను వెతకండి...",
-    "addTransaction": "లావాదేవీ జోడించు",
-    "totalIncome": "మొత్తం ఆదాయం",
-    "totalExpenses": "మొత్తం ఖర్చులు",
-    "netCashFlow": "నికర నగదు ప్రవాహం",
-    "transactionCount": "లావాదేవీలు",
-    "types": {
-      "all": "అన్నీ",
-      "income": "ఆదాయం",
-      "expense": "ఖర్చు",
-      "transfer": "బదిలీ"
-    },
-    "recentTransactions": "ఇటీవలి లావాదేవీలు"
-  },
-  "budgets": {
-    "title": "బడ్జెట్‌లు",
-    "addBudget": "బడ్జెట్ జోడించు",
-    "totalBudget": "మొత్తం బడ్జెట్",
-    "totalSpent": "మొత్తం ఖర్చు",
-    "remaining": "మిగిలింది",
-    "budgetProgress": "బడ్జెట్ పురోగతి",
-    "exceeded": "⚠️ బడ్జెట్ మించిపోయింది!",
-    "approaching": "⚡ పరిమితికి చేరుతోంది"
-  },
-  "goals": {
-    "title": "లక్ష్యాలు",
-    "addGoal": "లక్ష్యం జోడించు",
-    "activeGoals": "క్రియాశీల లక్ష్యాలు",
-    "totalSaved": "మొత్తం పొదుపు",
-    "goalsProgress": "లక్ష్యాల పురోగతి",
-    "remaining": "మిగిలింది",
-    "due": "గడువు"
-  },
-  "dashboard": {
-    "title": "డాష్‌బోర్డ్",
-    "financialOverview": "ఆర్థిక అవలోకనం"
   },
   "pages": {
     "accounts": {
-      "title": "ఖాతాలు",
-      "subtitle": "మీ ఆర్థిక ఖాతాలను నిర్వహించండి మరియు బ్యాలెన్స్‌లను ట్రాక్ చేయండి",
-      "addButton": "+ ఖాతా జోడించు",
-      "searchPlaceholder": "🔍 ఖాతాలను వెతకండి...",
+      "title": "Accounts",
+      "addButton": "Add Account",
+      "transferButton": "Transfer Money",
+      "description": "Manage your bank accounts, credit cards, and other financial accounts",
       "stats": {
-        "totalBalance": "మొత్తం బ్యాలెన్స్",
-        "activeAccounts": "క్రియాశీల ఖాతాలు",
-        "totalAccounts": "మొత్తం ఖాతాలు"
+        "totalBalance": "Total Balance",
+        "activeAccounts": "Active Accounts",
+        "totalAccounts": "Total Accounts"
+      },
+      "searchPlaceholder": "Search accounts by name or account number",
+      "filters": {
+        "typeLabel": "Account Types",
+        "typePlaceholder": "All account types",
+        "typeSearch": "Search account types...",
+        "specificLabel": "Specific Accounts",
+        "specificPlaceholder": "All accounts",
+        "specificSearch": "Search accounts..."
+      },
+      "deleteConfirm": {
+        "title": "Delete Account?",
+        "description": "Are you sure you want to delete this account? This action cannot be undone and all associated data will be permanently removed.",
+        "confirmButton": "Delete Account",
+        "cancelButton": "Cancel"
+      },
+      "details": {
+        "notFound": {
+          "title": "Account Not Found",
+          "description": "The account you're looking for doesn't exist or has been deleted.",
+          "backButton": "Back to Accounts"
+        },
+        "header": {
+          "backButton": "Back",
+          "editButton": "Edit",
+          "deleteButton": "Delete",
+          "closedBadge": "Closed"
+        },
+        "balance": {
+          "currentLabel": "Current Balance",
+          "initialLabel": "Initial",
+          "idLabel": "ID",
+          "lastUpdated": "Last updated {{time}}"
+        },
+        "stats": {
+          "title": "Account Statistics",
+          "totalTransactions": "Total Transactions",
+          "thisMonth": "This Month",
+          "avgTransaction": "Avg. Transaction",
+          "lastTransaction": "Last Transaction"
+        },
+        "actions": {
+          "title": "Quick Actions",
+          "addTransaction": "Add Transaction",
+          "transferMoney": "Transfer Money",
+          "downloadStatement": "Download Statement",
+          "importTransactions": "Import Transactions",
+          "exportTransactions": "Export Transactions",
+          "closeAccount": "Close Account",
+          "reopenAccount": "Reopen Account"
+        },
+        "confirmClose": {
+          "title": "Close Account?",
+          "description": "Are you sure you want to close this account? You can reopen it later if needed.",
+          "confirmButton": "Close Account",
+          "cancelButton": "Cancel"
+        },
+        "confirmDelete": {
+          "title": "Delete Account?",
+          "description": "Are you sure you want to delete this account? This action cannot be undone and will also delete all associated transactions.",
+          "confirmButton": "Delete Account",
+          "cancelButton": "Cancel"
+        },
+        "views": {
+          "brokerage": {
+            "emptyTitle": "Brokerage Details Not Available",
+            "emptyDescription": "Add brokerage details to track your investments, holdings, and returns.",
+            "title": "Investment Portfolio",
+            "currentValue": "Current Portfolio Value",
+            "investedValue": "Invested Value",
+            "realizedGains": "Realized Gains",
+            "unrealizedGains": "Unrealized Gains",
+            "totalHoldings": "Total Holdings",
+            "holdingsBreakdown": "Holdings Breakdown",
+            "equity": "Equity",
+            "equitySub": "Stocks & Shares",
+            "mutualFunds": "Mutual Funds",
+            "mutualFundsSub": "Managed Investments",
+            "bonds": "Bonds",
+            "bondsSub": "Fixed Income",
+            "etfs": "ETFs",
+            "etfsSub": "Exchange Traded Funds",
+            "holding": "holding",
+            "holdings": "holdings",
+            "fund": "fund",
+            "funds": "funds",
+            "bond": "bond",
+            "bonds_plural": "bonds"
+          },
+          "creditCard": {
+            "emptyTitle": "Credit Card Details Not Available",
+            "emptyDescription": "Add credit card details to track your spending, payments, and rewards.",
+            "title": "Credit Card Details",
+            "currentBalance": "Current Balance",
+            "minimumDue": "Minimum Due",
+            "totalDue": "Total Due",
+            "rewardsPoints": "Rewards Points",
+            "creditLimit": "Credit Limit",
+            "availableCredit": "Available Credit",
+            "dueDate": "Due Date",
+            "statementDate": "Statement Date",
+            "interestRate": "Interest Rate",
+            "utilizationRate": "Utilization Rate"
+          },
+          "deposit": {
+            "emptyTitle": "Deposit Details Not Available",
+            "emptyDescription": "Add deposit details to track your fixed deposits, recurring deposits, and interest earnings.",
+            "title": "Deposit Details",
+            "principalAmount": "Principal Amount",
+            "currentValue": "Current Value",
+            "interestEarned": "Interest Earned",
+            "interestRate": "Interest Rate",
+            "depositType": "Deposit Type",
+            "maturityDate": "Maturity Date",
+            "maturityAmount": "Maturity Amount",
+            "startDate": "Start Date",
+            "tenure": "Tenure",
+            "tenureMonths": "{{count}} month",
+            "tenureMonths_other": "{{count}} months"
+          }
+        },
+        "noTransactions": {
+          "title": "No Transactions Yet",
+          "description": "Start tracking your finances by adding your first transaction."
+        }
+      },
+      "transfer": {
+        "title": "Transfer Money Between Accounts",
+        "description": "Move funds from one account to another with automatic dual-entry bookkeeping",
+        "closeLabel": "Close dialog",
+        "steps": {
+          "accounts": "Accounts",
+          "amount": "Amount",
+          "details": "Details",
+          "confirm": "Confirm"
+        },
+        "accountsStep": {
+          "title": "Select Source and Destination Accounts",
+          "fromLabel": "From Account *",
+          "fromPlaceholder": "Select source account...",
+          "toLabel": "To Account *",
+          "toPlaceholder": "Select destination account...",
+          "sameAccountError": "⚠️ Source and destination accounts must be different"
+        },
+        "amountStep": {
+          "title": "How much do you want to transfer?",
+          "fromLabel": "From:",
+          "toLabel": "To:",
+          "amountLabel": "Transfer Amount *",
+          "amountPlaceholder": "0.00",
+          "hint": "{{amount}} will be moved from {{fromAccount}} to {{toAccount}}",
+          "balanceWarning": "⚠️ Transfer amount exceeds available balance in {{account}}"
+        },
+        "detailsStep": {
+          "title": "Add Transfer Details",
+          "descriptionLabel": "Description *",
+          "descriptionPlaceholder": "e.g., Monthly savings transfer",
+          "dateLabel": "Transfer Date *",
+          "notesLabel": "Notes (Optional)",
+          "notesPlaceholder": "Add any additional notes..."
+        },
+        "confirmStep": {
+          "title": "Review and Confirm Transfer",
+          "fromLabel": "From:",
+          "toLabel": "To:",
+          "descriptionLabel": "Description:",
+          "dateLabel": "Date:",
+          "notesLabel": "Notes:",
+          "impactTitle": "Account Balance Changes:",
+          "impactInfo": "ℹ️ This will create two linked transactions: a withdrawal from {{fromAccount}} and a deposit to {{toAccount}}"
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "back": "Back",
+          "continue": "Continue",
+          "processing": "Processing...",
+          "complete": "Complete Transfer"
+        },
+        "success": "Successfully transferred {{amount}} from {{fromAccount}} to {{toAccount}}",
+        "error": "Failed to complete transfer. Please try again."
+      },
+      "import": {
+        "title": "Import Transactions",
+        "subtitle": "Upload CSV, Excel, or PDF file to import transactions for {{accountName}}",
+        "closeLabel": "Close",
+        "upload": {
+          "dragDrop": "Drag and drop file or click to browse",
+          "supported": "Supported: CSV, Excel (.xlsx, .xls), PDF",
+          "fileInfo": "Format: {{format}} • Size: {{size}} KB",
+          "uploadLabel": "Upload file"
+        },
+        "preview": {
+          "title": "Preview ({{count}} transactions)",
+          "title_other": "Preview ({{count}} transactions)",
+          "headers": {
+            "date": "Date",
+            "description": "Description",
+            "amount": "Amount",
+            "type": "Type"
+          },
+          "moreTransactions": "and {{count}} more...",
+          "moreTransactions_other": "and {{count}} more..."
+        },
+        "sample": {
+          "title": "Sample CSV Format:",
+          "code": "date,description,amount,type,category\n2025-01-15,Salary,50000,income,\n2025-01-16,Grocery Shopping,2500,expense,food\n2025-01-17,Netflix Subscription,499,expense,entertainment"
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "import": "Import",
+          "importCount": "Import {{count}} Transactions",
+          "importCount_other": "Import {{count}} Transactions"
+        },
+        "messages": {
+          "mappingRequired": "Complete column mapping to import",
+          "importSuccess": "Successfully imported {{count}} transactions",
+          "importSuccess_other": "Successfully imported {{count}} transactions",
+          "importFailed": "Import failed",
+          "importError": "Failed to import transactions",
+          "unsupportedFormatTitle": "Unsupported format",
+          "unsupportedFormatDesc": "Please upload CSV, Excel (.xlsx, .xls), or PDF files",
+          "parseErrorTitle": "Parse error",
+          "fileParsedTitle": "File parsed",
+          "fileParsedDesc": "Found {{count}} rows",
+          "fileParsedDesc_other": "Found {{count}} rows",
+          "detectionFailedTitle": "Detection failed",
+          "detectionFailedDesc": "Could not check for duplicates",
+          "noDataTitle": "No data",
+          "noDataDesc": "No valid transactions to import",
+          "duplicatesFoundTitle": "Duplicates detected",
+          "duplicatesFoundDesc": "Found {{count}} potential duplicates. Please review.",
+          "duplicatesFoundDesc_other": "Found {{count}} potential duplicates. Please review.",
+          "importSuccessTitle": "Import successful"
+        },
+        "duplicateReview": {
+          "title": "Review Import for {{accountName}}",
+          "subtitle": "{{count}} transactions found - Review duplicates before importing",
+          "subtitle_other": "{{count}} transactions found - Review duplicates before importing",
+          "closeLabel": "Close",
+          "summary": {
+            "new": "{{count}} New",
+            "exactDuplicates": "{{count}} Exact Duplicates",
+            "possibleDuplicates": "{{count}} Possible Duplicates"
+          },
+          "actionsSummary": {
+            "title": "Selected Actions:",
+            "description": "{{importCount}} to import, {{skipCount}} to skip, {{updateCount}} to update"
+          },
+          "bulkActions": {
+            "importNew": "Import All New",
+            "skipDuplicates": "Skip All Duplicates"
+          },
+          "status": {
+            "new": "NEW",
+            "exactDuplicate": "EXACT DUPLICATE",
+            "duplicate": "DUPLICATE ({{score}}% match)",
+            "possibleDuplicate": "POSSIBLE DUPLICATE ({{score}}% match)"
+          },
+          "labels": {
+            "date": "Date:",
+            "description": "Description:",
+            "amount": "Amount:",
+            "type": "Type:",
+            "action": "Action:",
+            "matchReasons": "Match reasons:",
+            "existingTransaction": "Existing transaction:",
+            "selectAction": "Select action for this transaction"
+          },
+          "actions": {
+            "importNew": "Import as new",
+            "skip": "Skip (don't import)",
+            "update": "Update existing transaction",
+            "force": "Force import as new anyway"
+          },
+          "footer": {
+            "cancel": "Cancel",
+            "import": "Import {{count}} Transactions",
+            "import_other": "Import {{count}} Transactions"
+          }
+        }
       },
       "modal": {
-        "addTitle": "కొత్త ఖాతా జోడించండి",
-        "editTitle": "ఖాతాను సవరించండి",
-        "addSubtitle": "మీ డబ్బును ట్రాక్ చేయడానికి కొత్త ఆర్థిక ఖాతాను జోడించండి",
-        "editSubtitle": "మీ ఖాతా సమాచారాన్ని అప్‌డేట్ చేయండి",
-        "nameLabel": "ఖాతా పేరు",
-        "namePlaceholder": "ఉదాహరణకు, HDFC సేవింగ్స్",
-        "typeLabel": "ఖాతా రకం",
-        "initialBalanceLabel": "ప్రారంభ బ్యాలెన్స్",
-        "currentBalanceLabel": "ప్రస్తుత బ్యాలెన్స్",
-        "addButton": "ఖాతా జోడించు",
-        "saveButton": "మార్పులను సేవ్ చేయండి"
+        "addTitle": "Add Account",
+        "editTitle": "Edit Account",
+        "addSubtitle": "Add a new financial account to track",
+        "editSubtitle": "Update account information",
+        "nameLabel": "Account Name",
+        "namePlaceholder": "e.g., HDFC Savings",
+        "typeLabel": "Account Type",
+        "currentBalanceLabel": "Current Balance",
+        "initialBalanceLabel": "Initial Balance",
+        "addButton": "Add Account",
+        "saveButton": "Save Changes",
+        "placeholders": {
+          "creditLimit": "50000",
+          "billingCycleDay": "1",
+          "paymentDueDay": "20",
+          "interestRate": "36.0",
+          "brokerName": "Zerodha, Groww, etc.",
+          "dematAccount": "1234567890123456",
+          "tradingAccount": "AB1234",
+          "dpId": "IN300***",
+          "clientId": "ABC123",
+          "depositInterestRate": "7.5",
+          "depositTenure": "12",
+          "bankName": "HDFC Bank"
+        }
       }
     },
     "transactions": {
-      "title": "లావాదేవీలు",
-      "subtitle": "మీ ఆదాయం మరియు ఖర్చులను ట్రాక్ చేయండి",
-      "addButton": "+ లావాదేవీ జోడించు",
-      "searchPlaceholder": "🔍 లావాదేవీలను వెతకండి...",
+      "title": "Transactions",
+      "subtitle": "Track your income and expenses",
+      "addButton": "Add Transaction",
+      "searchPlaceholder": "Search transactions...",
+      "hideFilters": "Hide Filters",
+      "moreFilters": "More Filters",
+      "selectItems": "Select Items",
+      "cancelSelection": "Cancel Selection",
+      "selectedCount": "{{count}} selected",
+      "selectAll": "Select All ({{count}})",
+      "deleteSelected": "Delete Selected",
       "stats": {
-        "totalIncome": "మొత్తం ఆదాయం",
-        "totalExpenses": "మొత్తం ఖర్చులు",
-        "netCashFlow": "నికర నగదు ప్రవాహం",
-        "totalTransactions": "మొత్తం లావాదేవీలు"
+        "totalIncome": "Total Income",
+        "totalExpenses": "Total Expenses",
+        "netCashFlow": "Net Cash Flow",
+        "totalTransactions": "Total Transactions"
+      },
+      "filters": {
+        "all": "All",
+        "income": "Income",
+        "expense": "Expense",
+        "transfer": "Transfer"
+      },
+      "bulkDelete": {
+        "confirm": "Are you sure you want to delete {{count}} transaction? This action cannot be undone.",
+        "confirm_other": "Are you sure you want to delete {{count}} transactions? This action cannot be undone.",
+        "success": "Successfully deleted {{count}} transaction",
+        "success_other": "Successfully deleted {{count}} transactions",
+        "error": "Failed to delete transactions. Please try again."
+      },
+      "bulkCategorize": {
+        "success": "Successfully categorized {{count}} transaction",
+        "success_other": "Successfully categorized {{count}} transactions",
+        "error": "Failed to categorize transactions. Please try again."
       }
     },
     "budgets": {
-      "title": "బడ్జెట్‌లు",
-      "subtitle": "మీ ఖర్చు పరిమితులను ట్రాక్ చేయండి మరియు నిర్వహించండి",
-      "addButton": "+ బడ్జెట్ జోడించు",
-      "searchPlaceholder": "🔍 బడ్జెట్‌లను వెతకండి..."
+      "title": "Budgets",
+      "subtitle": "Track and manage your spending limits",
+      "addButton": "Add Budget",
+      "searchPlaceholder": "Search budgets...",
+      "stats": {
+        "totalBudget": "Total Budget",
+        "totalSpent": "Total Spent",
+        "remaining": "Remaining",
+        "overBudget": "Over Budget"
+      },
+      "filters": {
+        "period": {
+          "all": "All Periods",
+          "monthly": "Monthly",
+          "quarterly": "Quarterly",
+          "annual": "Annual"
+        }
+      },
+      "deleteConfirm": "Are you sure you want to delete this budget?",
+      "editBudget": "Edit Budget",
+      "deleteBudget": "Delete Budget",
+      "categories": "Categories",
+      "percentUsed": "% Used",
+      "spent": "Spent",
+      "name": "Name",
+      "details": {
+        "noCategories": {
+          "title": "No categories",
+          "description": "Add categories to start tracking spending"
+        },
+        "noTransactions": {
+          "title": "No transactions",
+          "description": "Transactions will appear here"
+        }
+      }
+    },
+    "goals": {
+      "title": "Goals",
+      "addButton": "Add Goal",
+      "searchPlaceholder": "Search goals...",
+      "filters": {
+        "all": "All",
+        "active": "Active",
+        "completed": "Completed"
+      },
+      "stats": {
+        "activeGoals": "Active Goals",
+        "completed": "Completed",
+        "totalTarget": "Total Target",
+        "overallProgress": "Overall Progress"
+      }
+    },
+    "investments": {
+      "title": "Investments",
+      "addButton": "Add Investment"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "welcome": "Welcome back",
+      "financialOverview": {
+        "title": "Financial Overview",
+        "totalBalance": "Total Balance",
+        "acrossAccounts": "Across {{count}} account",
+        "acrossAccounts_other": "Across {{count}} accounts",
+        "thisMonthIncome": "This Month Income",
+        "thisMonthExpenses": "This Month Expenses",
+        "savingsRate": "Savings Rate",
+        "vsLastMonth": "vs last month",
+        "excellentSavings": "Excellent savings!",
+        "goodSavings": "Good savings",
+        "tryToSaveMore": "Try to save more"
+      },
+      "budgetProgress": {
+        "title": "Budget Progress",
+        "viewAll": "View All",
+        "exceeded": "Budget exceeded!",
+        "approachingLimit": "Approaching limit"
+      },
+      "recentTransactions": {
+        "title": "Recent Transactions",
+        "viewAll": "View All",
+        "date": "Date",
+        "description": "Description",
+        "category": "Category",
+        "amount": "Amount",
+        "untitled": "Untitled transaction",
+        "uncategorized": "Uncategorized"
+      },
+      "goalsProgress": {
+        "title": "Goals Progress",
+        "viewAll": "View All",
+        "noGoals": {
+          "title": "No active goals",
+          "description": "Set financial goals to track your progress"
+        }
+      },
+      "welcomeBanner": {
+        "dismiss": "Dismiss welcome message",
+        "title": "Welcome to WealthWise!",
+        "description": "Start tracking your finances in 3 simple steps:",
+        "step1": "Add your first account (bank, wallet, or credit card)",
+        "step2": "Record transactions to track your spending",
+        "step3": "Set budgets and goals to reach your financial targets",
+        "getStarted": "Get Started",
+        "maybeLater": "Maybe Later"
+      }
+    },
+    "reports": {
+      "title": "Reports",
+      "timeRanges": {
+        "week": "Last 7 Days",
+        "month": "Last 30 Days",
+        "quarter": "Last 3 Months",
+        "year": "Last Year"
+      },
+      "empty": {
+        "title": "No Financial Data Yet",
+        "description": "Start adding accounts and transactions to see your financial reports and analytics"
+      },
+      "summary": {
+        "title": "Summary",
+        "totalIncome": "Total Income",
+        "totalExpenses": "Total Expenses",
+        "netCashFlow": "Net Cash Flow",
+        "savingsRate": "Savings Rate",
+        "excellentSavings": "Excellent!",
+        "goodSavings": "Good progress",
+        "improveSavings": "Try to save more"
+      },
+      "categoryBreakdown": {
+        "title": "Category Breakdown",
+        "income": "Income by Category",
+        "expense": "Expenses by Category",
+        "topCategories": "Top {{count}} Categories",
+        "other": "Other",
+        "noData": "No category data available"
+      },
+      "monthlyTrends": {
+        "title": "Monthly Trends",
+        "income": "Income",
+        "expense": "Expenses",
+        "net": "Net"
+      },
+      "accountPerformance": {
+        "title": "Account Performance",
+        "totalBalance": "Total Balance",
+        "topAccounts": "Top Accounts"
+      }
     }
   },
-  "settings": {
-    "title": "సెట్టింగ్‌లు",
-    "description": "మీ ప్రాధాన్యతలను కాన్ఫిగర్ చేయండి మరియు మీ డేటాను నిర్వహించండి",
-    "appearance": {
-      "title": "రూపం",
-      "description": "మీ థీమ్ మరియు డిస్ప్లే ప్రాధాన్యతలను అనుకూలీకరించండి",
-      "theme": {
-        "label": "థీమ్",
-        "light": "లైట్",
-        "dark": "డార్క్",
-        "system": "సిస్టమ్"
+  "emptyState": {
+    "accounts": {
+      "title": "No accounts yet",
+      "description": "Add your first account to start tracking your finances",
+      "filtered": {
+        "title": "No accounts found",
+        "description": "Try adjusting your search or filters"
       }
     },
-    "localization": {
-      "title": "స్థానికీకరణ",
-      "description": "భాష, తేదీ మరియు కరెన్సీ సెట్టింగ్‌లు",
-      "language": {
-        "label": "భాష",
-        "en": "ఇంగ్లీష్ (భారతదేశం)",
-        "hi": "హిందీ",
-        "te": "తెలుగు"
+    "transactions": {
+      "title": "No transactions yet",
+      "description": "Start tracking your income and expenses by recording your first transaction",
+      "filtered": {
+        "title": "No transactions found",
+        "description": "Try adjusting your filters or search query to find the transactions you're looking for"
       },
-      "dateFormat": {
-        "label": "తేదీ ఆకృతి",
-        "ddmmyyyy": "రోజు/నెల/సంవత్సరం",
-        "mmddyyyy": "నెల/రోజు/సంవత్సరం",
-        "yyyymmdd": "సంవత్సరం-నెల-రోజు"
+      "actionButton": "Add Your First Transaction"
+    },
+    "budgets": {
+      "title": "No budgets yet",
+      "description": "Create your first budget to start tracking spending",
+      "filtered": {
+        "title": "No budgets found",
+        "description": "Try adjusting your filters or search query"
       },
-      "currency": {
-        "label": "కరెన్సీ",
-        "inr": "భారతీయ రూపాయి (₹)",
-        "usd": "అమెరికన్ డాలర్ ($)",
-        "eur": "యూరో (€)",
-        "gbp": "బ్రిటిష్ పౌండ్ (£)"
-      }
+      "actionButton": "Create Budget"
     },
-    "dataManagement": {
-      "title": "డేటా నిర్వహణ",
-      "description": "మీ ఆర్థిక డేటాను ఎగుమతి చేయండి మరియు దిగుమతి చేయండి",
-      "export": {
-        "label": "డేటాను ఎగుమతి చేయండి",
-        "description": "మీ ఆర్థిక డేటాను JSON గా డౌన్‌లోడ్ చేయండి",
-        "success": "డేటా విజయవంతంగా ఎగుమతి చేయబడింది!",
-        "error": "డేటాను ఎగుమతి చేయడంలో విఫలమైంది. దయచేసి మళ్లీ ప్రయత్నించండి."
+    "goals": {
+      "title": "No goals yet",
+      "description": "Set your first financial goal to start planning for the future",
+      "filtered": {
+        "title": "No goals found",
+        "description": "Try adjusting your filters"
       },
-      "import": {
-        "label": "డేటాను దిగుమతి చేయండి",
-        "description": "మునుపటి ఎగుమతి నుండి డేటాను దిగుమతి చేయండి",
-        "parseError": "దిగుమతి ఫైల్‌ను పార్స్ చేయడంలో విఫలమైంది. దయచేసి ఇది చెల్లుబాటు అయ్యే JSON ఎగుమతి అని నిర్ధారించుకోండి.",
-        "success": "డేటా విజయవంతంగా దిగుమతి చేయబడింది! అప్లికేషన్‌ను రీలోడ్ చేస్తోంది...",
-        "error": "డేటాను దిగుమతి చేయడంలో విఫలమైంది. దయచేసి మళ్లీ ప్రయత్నించండి.",
-        "confirmTitle": "డేటా దిగుమతిని నిర్ధారించండి",
-        "confirmMessage": "ఇది కింది డేటాను దిగుమతి చేస్తుంది. అదే IDలతో ఉన్న ప్రస్తుత డేటా అప్‌డేట్ చేయబడుతుంది.",
-        "accounts": "ఖాతాలు",
-        "transactions": "లావాదేవీలు",
-        "budgets": "బడ్జెట్‌లు",
-        "goals": "లక్ష్యాలు"
-      }
+      "actionButton": "Create Goal"
+    }
+  },
+  "quickActions": {
+    "addTransaction": {
+      "description": "Record income or expense",
+      "tooltip": "Add an account first"
     },
-    "categories": {
-      "title": "వర్గాలు",
-      "description": "మీ లావాదేవీ వర్గాలను నిర్వహించండి",
-      "comingSoon": "వర్గ నిర్వహణ త్వరలో వస్తోంది. మీరు మీ లావాదేవీల కోసం అనుకూల వర్గాలను జోడించగలరు, సవరించగలరు మరియు నిర్వహించగలరు."
+    "addAccount": {
+      "description": "Connect a bank account"
     },
-    "privacy": {
-      "title": "గోప్యత మరియు భద్రత",
-      "description": "మీ గోప్యత మరియు భద్రత సెట్టింగ్‌లను నిర్వహించండి",
-      "clearData": {
-        "label": "అన్ని డేటాను క్లియర్ చేయండి",
-        "description": "మీ అన్ని ఆర్థిక డేటాను శాశ్వతంగా తొలగించండి",
-        "confirmTitle": "అన్ని డేటాను క్లియర్ చేయాలా?",
-        "confirmMessage": "ఇది మీ అన్ని ఖాతాలు, లావాదేవీలు, బడ్జెట్‌లు మరియు లక్ష్యాలను శాశ్వతంగా తొలగిస్తుంది. ఈ చర్యను రద్దు చేయలేము.",
-        "confirm": "అవును, అన్నీ తొలగించు",
-        "success": "అన్ని డేటా విజయవంతంగా క్లియర్ చేయబడింది.",
-        "error": "డేటాను క్లియర్ చేయడంలో విఫలమైంది. దయచేసి మళ్లీ ప్రయత్నించండి."
-      }
+    "createBudget": {
+      "description": "Set spending limits",
+      "tooltip": "Add transactions first"
+    },
+    "setGoal": {
+      "description": "Plan for the future"
+    }
+  },
+  "goals": {
+    "addGoal": "Set Goal"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "confirm": "Confirm",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "clear": "Clear",
+    "apply": "Apply",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "reset": "Reset",
+    "actions": "Actions",
+    "inactive": "Inactive",
+    "active": "Active"
+  },
+  "aria": {
+    "close": "Close",
+    "pagination": "Pagination",
+    "mainNavigation": "Main navigation",
+    "skipLinks": "Skip links",
+    "required": "required",
+    "filterByType": "Filter transactions by type",
+    "filterByStatus": "Filter goals by status",
+    "filterByPeriod": "Filter budgets by period",
+    "selectTimeRange": "Select time range",
+    "selectAccount": "Select account",
+    "selectCategory": "Select category",
+    "transactionType": "Transaction type",
+    "goalPriority": "Goal priority",
+    "alertThreshold": "Alert threshold percentage",
+    "removeCategory": "Remove category",
+    "accountTypeOptions": "Account type options",
+    "recommended": "Recommended",
+    "quickActions": "Quick action buttons"
+  },
+  "validation": {
+    "required": "This field is required",
+    "email": "Please enter a valid email",
+    "password": {
+      "minLength": "Password must be at least {{count}} characters",
+      "match": "Passwords must match"
+    }
+  },
+  "currency": {
+    "symbol": "₹",
+    "code": "INR",
+    "format": "{{value}}"
+  },
+  "forms": {
+    "transaction": {
+      "addTitle": "Add Transaction",
+      "editTitle": "Edit Transaction",
+      "addDescription": "Record a new income, expense, or transfer",
+      "editDescription": "Update transaction details",
+      "typeLabel": "Transaction Type",
+      "amountLabel": "Amount",
+      "amountPlaceholder": "0.00",
+      "accountLabel": "Account",
+      "accountPlaceholder": "Select an account...",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "What was this transaction for?",
+      "dateLabel": "Date",
+      "datePlaceholder": "Select transaction date...",
+      "categoryPlaceholder": "Select a category (optional)",
+      "saving": "Saving...",
+      "addButton": "Add Transaction",
+      "updateButton": "Update Transaction",
+      "saveError": "Failed to save transaction",
+      "saveErrorTitle": "Failed to save"
+    },
+    "budget": {
+      "createTitle": "Create Budget",
+      "editTitle": "Edit Budget",
+      "createDescription": "Set spending limits for better financial control",
+      "editDescription": "Update budget details and limits",
+      "nameLabel": "Budget Name",
+      "namePlaceholder": "e.g., Monthly Groceries",
+      "periodLabel": "Budget Period",
+      "periods": {
+        "monthly": "Monthly",
+        "quarterly": "Quarterly"
+      },
+      "startDateLabel": "Start Date",
+      "startDatePlaceholder": "Select start date...",
+      "endDateLabel": "End Date (Optional)",
+      "endDatePlaceholder": "No end date (ongoing)",
+      "endDateHelp": "Leave empty for a recurring budget without an end date",
+      "saving": "Saving...",
+      "createButton": "Create Budget",
+      "updateButton": "Update Budget",
+      "saveError": "Failed to save budget",
+      "saveErrorTitle": "Failed to save"
+    },
+    "goal": {
+      "createTitle": "Create Financial Goal",
+      "editTitle": "Edit Goal",
+      "createDescription": "Set a savings target and track your progress",
+      "editDescription": "Update your financial goal details",
+      "nameLabel": "Goal Name",
+      "namePlaceholder": "e.g., Buy a new car",
+      "categoryLabel": "Category",
+      "categoryPlaceholder": "e.g., Transportation",
+      "targetAmountLabel": "Target Amount",
+      "targetAmountPlaceholder": "0.00",
+      "targetDateLabel": "Target Date",
+      "targetDatePlaceholder": "Select target date...",
+      "targetDateHelp": "Set a realistic deadline to help you stay motivated",
+      "priorityLabel": "Priority",
+      "priorities": {
+        "low": "Low Priority",
+        "medium": "Medium Priority",
+        "high": "High Priority"
+      },
+      "iconLabel": "Goal Icon",
+      "saving": "Saving...",
+      "createButton": "Create Goal",
+      "updateButton": "Update Goal",
+      "saveError": "Failed to save goal",
+      "saveErrorTitle": "Failed to save"
     }
   }
 }

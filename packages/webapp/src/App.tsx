@@ -13,10 +13,7 @@ import { SkipNavigation, Spinner, ToastProvider } from './shared/components';
 import { useAuth } from './core/hooks/useAuth';
 import { Theme } from '@radix-ui/themes';
 
-// Import database reset utilities (dev only)
-if (import.meta.env.DEV) {
-  import('./core/db/resetUtil');
-}
+// Database reset utilities removed with PGlite migration
 
 const InnerApp = () => {
   const auth = useAuth();

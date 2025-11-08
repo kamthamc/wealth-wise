@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useMemo } from 'react';
 import { useTransactionStore } from '@/core/stores';
+import { timestampToDate } from '@/core/utils/firebase';
 import { usePreferences } from '@/hooks/usePreferences';
 import { formatCurrency } from '@/utils';
 import './PerformanceInsights.css';
@@ -41,7 +42,7 @@ export function PerformanceInsights() {
 
     // Current month transactions
     const currentMonthTxns = transactions.filter(
-      (t) => t.date >= currentMonthStart
+      (t) => timestampToDate(t.date) >= currentMonthStart
     );
 
     const income = currentMonthTxns
@@ -57,7 +58,7 @@ export function PerformanceInsights() {
 
     // Previous month transactions
     const prevMonthTxns = transactions.filter(
-      (t) => t.date >= prevMonthStart && t.date <= prevMonthEnd
+      (t) => timestampToDate(t.date) >= prevMonthStart && timestampToDate(t.date) <= prevMonthEnd
     );
 
     const previousIncome = prevMonthTxns

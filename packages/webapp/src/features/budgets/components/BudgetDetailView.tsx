@@ -17,8 +17,10 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button, Card, EmptyState, StatCard } from '@/shared/components';
 import { formatCurrency } from '@/shared/utils';
+import { timestampToDate } from '@/core/utils/firebase';
 import type { BudgetAlert, BudgetProgress, BudgetWithProgress } from '../types';
 import {
   formatBudgetPercentage,
@@ -44,6 +46,7 @@ export function BudgetDetailView({
   onEdit,
   onDelete,
 }: BudgetDetailViewProps) {
+  const { t } = useTranslation();
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
     new Set()
   );
@@ -57,13 +60,13 @@ export function BudgetDetailView({
       let comparison = 0;
       switch (categorySort) {
         case 'name':
-          comparison = a.category.localeCompare(b.category);
+          comparison = (a.category || '').localeCompare(b.category || '');
           break;
         case 'spent':
-          comparison = a.spent - b.spent;
+          comparison = (a.spent || 0) - (b.spent || 0);
           break;
         case 'percent':
-          comparison = a.percent_used - b.percent_used;
+          comparison = (a.percent_used || 0) - (b.percent_used || 0);
           break;
       }
       return sortDirection === 'asc' ? comparison : -comparison;
@@ -74,7 +77,7 @@ export function BudgetDetailView({
   // Group alerts by severity
   const alertsBySeverity = useMemo(() => {
     const groups = {
-      error: budget.alerts.filter((a) => a.severity === 'error'),
+      danger: budget.alerts.filter((a) => a.severity === 'danger'),
       warning: budget.alerts.filter((a) => a.severity === 'warning'),
       info: budget.alerts.filter((a) => a.severity === 'info'),
     };
@@ -105,7 +108,7 @@ export function BudgetDetailView({
   };
 
   const handleDelete = () => {
-    if (window.confirm('Are you sure you want to delete this budget?')) {
+    if (window.confirm(t('pages.budgets.deleteConfirm', 'Are you sure you want to delete this budget?'))) {
       onDelete?.(budget.id);
     }
   };
@@ -138,7 +141,7 @@ export function BudgetDetailView({
               >
                 <DropdownMenu.Item className="menu-item" onSelect={handleEdit}>
                   <Edit size={16} />
-                  Edit Budget
+                  {t('pages.budgets.editBudget', 'Edit Budget')}
                 </DropdownMenu.Item>
                 <DropdownMenu.Separator className="menu-separator" />
                 <DropdownMenu.Item
@@ -146,7 +149,7 @@ export function BudgetDetailView({
                   onSelect={handleDelete}
                 >
                   <Trash2 size={16} />
-                  Delete Budget
+                  {t('pages.budgets.deleteBudget', 'Delete Budget')}
                 </DropdownMenu.Item>
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
@@ -167,7 +170,7 @@ export function BudgetDetailView({
             )}
             <p className="budget-detail__period">
               {getBudgetPeriodName(budget.period_type)} •{' '}
-              {formatDateRange(budget.start_date, budget.end_date)}
+              {formatDateRange(timestampToDate(budget.start_date), budget.end_date ? timestampToDate(budget.end_date) : undefined)}
             </p>
           </div>
         </div>
@@ -202,7 +205,7 @@ export function BudgetDetailView({
         <div className="budget-detail__alerts">
           <h2 className="section-title">Alerts</h2>
           <div className="alerts-list">
-            {alertsBySeverity.error.map((alert, idx) => (
+            {alertsBySeverity.danger.map((alert, idx) => (
               <AlertCard key={`error-${idx}`} alert={alert} />
             ))}
             {alertsBySeverity.warning.map((alert, idx) => (
@@ -219,14 +222,14 @@ export function BudgetDetailView({
       <div className="budget-detail__categories">
         <div className="section-header">
           <h2 className="section-title">
-            Categories ({budget.progress.length})
+            {t('pages.budgets.categories', 'Categories')} ({budget.progress.length})
           </h2>
           <div className="category-sort">
             <button
               className={categorySort === 'percent' ? 'active' : ''}
               onClick={() => handleSort('percent')}
             >
-              % Used
+              {t('pages.budgets.percentUsed', '% Used')}
               {categorySort === 'percent' &&
                 (sortDirection === 'asc' ? (
                   <ChevronUp size={14} />
@@ -238,7 +241,7 @@ export function BudgetDetailView({
               className={categorySort === 'spent' ? 'active' : ''}
               onClick={() => handleSort('spent')}
             >
-              Spent
+              {t('pages.budgets.spent', 'Spent')}
               {categorySort === 'spent' &&
                 (sortDirection === 'asc' ? (
                   <ChevronUp size={14} />
@@ -250,7 +253,7 @@ export function BudgetDetailView({
               className={categorySort === 'name' ? 'active' : ''}
               onClick={() => handleSort('name')}
             >
-              Name
+              {t('pages.budgets.name', 'Name')}
               {categorySort === 'name' &&
                 (sortDirection === 'asc' ? (
                   <ChevronUp size={14} />
@@ -265,16 +268,16 @@ export function BudgetDetailView({
           {sortedCategories.length === 0 ? (
             <EmptyState
               icon={<Calendar size={48} />}
-              title="No categories"
-              description="Add categories to start tracking spending"
+              title={t('pages.budgets.details.noCategories.title', 'No categories')}
+              description={t('pages.budgets.details.noCategories.description', 'Add categories to start tracking spending')}
             />
           ) : (
             sortedCategories.map((category) => (
               <CategoryCard
-                key={category.category}
+                key={category.category || 'unknown'}
                 category={category}
-                isExpanded={expandedCategories.has(category.category)}
-                onToggle={() => toggleCategory(category.category)}
+                isExpanded={expandedCategories.has(category.category || '')}
+                onToggle={() => toggleCategory(category.category || '')}
               />
             ))
           )}
@@ -324,8 +327,8 @@ export function BudgetDetailView({
  * Alert Card Component
  */
 function AlertCard({ alert }: { alert: BudgetAlert }) {
-  const severityColors = {
-    error: 'danger',
+  const severityColors: Record<string, string> = {
+    danger: 'danger',
     warning: 'warning',
     info: 'info',
   };
@@ -360,6 +363,8 @@ function CategoryCard({
   isExpanded: boolean;
   onToggle: () => void;
 }) {
+  const { t } = useTranslation();
+  
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'over-budget':
@@ -375,20 +380,20 @@ function CategoryCard({
     <div className="category-card">
       <div className="category-card__header" onClick={onToggle}>
         <div className="category-card__info">
-          <h3 className="category-card__name">{category.category}</h3>
+          <h3 className="category-card__name">{category.category || 'Unknown'}</h3>
           <div className="category-card__amounts">
-            <span className="spent">{formatCurrency(category.spent)}</span>
+            <span className="spent">{formatCurrency(category.spent || 0)}</span>
             <span className="separator">/</span>
             <span className="allocated">
-              {formatCurrency(category.allocated)}
+              {formatCurrency(category.allocated || 0)}
             </span>
           </div>
         </div>
         <div className="category-card__status">
           <span
-            className={`status-badge status-badge--${getStatusColor(category.status)}`}
+            className={`status-badge status-badge--${getStatusColor(category.status || 'under')}`}
           >
-            {formatBudgetPercentage(category.percent_used)}
+            {formatBudgetPercentage(category.percent_used || 0)}
           </span>
           {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
         </div>
@@ -397,8 +402,8 @@ function CategoryCard({
       <div className="category-card__progress">
         <div className="progress-bar">
           <div
-            className={`progress-bar__fill progress-bar__fill--${getStatusColor(category.status)}`}
-            style={{ width: `${Math.min(category.percent_used, 100)}%` }}
+            className={`progress-bar__fill progress-bar__fill--${getStatusColor(category.status || 'under')}`}
+            style={{ width: `${Math.min(category.percent_used || 0, 100)}%` }}
           />
         </div>
       </div>
@@ -414,14 +419,14 @@ function CategoryCard({
               {category.remaining < 0 && ' over'}
             </span>
           </div>
-          {category.variance !== 0 && (
+          {(category.variance !== 0 && category.variance !== undefined) && (
             <div className="detail-row">
               <span className="detail-label">Variance:</span>
               <span
-                className={`detail-value ${category.variance < 0 ? 'text-success' : 'text-danger'}`}
+                className={`detail-value ${(category.variance || 0) < 0 ? 'text-success' : 'text-danger'}`}
               >
-                {category.variance > 0 ? '+' : ''}
-                {formatCurrency(category.variance)}
+                {(category.variance || 0) > 0 ? '+' : ''}
+                {formatCurrency(category.variance || 0)}
               </span>
             </div>
           )}
@@ -436,9 +441,9 @@ function CategoryCard({
           <div className="detail-row">
             <span className="detail-label">Status:</span>
             <span className="detail-value">
-              {category.status === 'over-budget'
+              {category.status === 'over'
                 ? 'Over Budget'
-                : category.status === 'warning'
+                : category.status === 'near'
                   ? 'At Warning'
                   : 'On Track'}
             </span>
@@ -451,8 +456,8 @@ function CategoryCard({
             </div>
             <EmptyState
               icon={<TrendingDown size={24} />}
-              title="No transactions"
-              description="Transactions will appear here"
+              title={t('pages.budgets.details.noTransactions.title', 'No transactions')}
+              description={t('pages.budgets.details.noTransactions.description', 'Transactions will appear here')}
             />
           </div>
         </div>

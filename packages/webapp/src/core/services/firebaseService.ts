@@ -306,10 +306,9 @@ class FirebaseService {
     return {
       symbol,
       price: Math.random() * 1000,
-      currency: 'INR',
-      exchange: exchange || 'NSE',
+      change: 0,
+      change_percentage: 0,
       last_updated: new Date(),
-      source: 'mock_api',
     };
   }
 }

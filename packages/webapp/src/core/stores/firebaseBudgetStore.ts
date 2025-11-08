@@ -9,6 +9,12 @@ interface BudgetCategory {
   allocated_amount: number;
   alert_threshold?: number;
   notes?: string;
+  // Calculated fields (need to be computed from transactions)
+  spent?: number;
+  percent_used?: number;
+  status?: 'under' | 'near' | 'over';
+  variance?: number;
+  allocated?: number; // Alias for allocated_amount
 }
 
 interface Budget {
@@ -20,10 +26,16 @@ interface Budget {
   start_date: any;
   end_date?: any;
   is_recurring: boolean;
+  is_active: boolean;
   rollover_enabled: boolean;
   categories: BudgetCategory[];
   created_at: any;
   updated_at: any;
+  // Calculated fields (need to be computed from transactions)
+  total_allocated?: number;
+  total_spent?: number;
+  overall_percent_used?: number;
+  status?: 'under' | 'near' | 'over';
 }
 
 interface BudgetState {

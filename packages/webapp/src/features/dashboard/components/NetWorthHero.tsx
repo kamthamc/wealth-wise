@@ -12,6 +12,7 @@ import {
   calculateNetWorth,
   formatCurrency,
 } from '@/shared/utils';
+import { timestampToDate } from '@/core/utils/firebase';
 import './NetWorthHero.css';
 import { getAccountTypes } from '@/core/functions/accounts';
 
@@ -29,7 +30,7 @@ export function NetWorthHero() {
 
   const netWorthData: NetWorthData = useMemo(() => {
     // Calculate current net worth using calculateNetWorth function
-    const current = calculateNetWorth(accounts, transactions);
+    const current = calculateNetWorth(accounts as any, transactions as any);
 
     // Calculate net worth from previous month
     const now = new Date();
@@ -37,7 +38,7 @@ export function NetWorthHero() {
 
     // Get all transactions from current month
     const currentMonthTransactions = transactions.filter(
-      (t) => new Date(t.date) >= currentMonthStart
+      (t) => timestampToDate(t.date) >= currentMonthStart
     );
 
     // Calculate net change this month (income - expenses)
@@ -65,7 +66,7 @@ export function NetWorthHero() {
 
   // Calculate 6-month net worth trend for the sparkline
   const netWorthTrend = useMemo(() => {
-    const monthlyStats = calculateMonthlyStats(transactions, 6);
+    const monthlyStats = calculateMonthlyStats(transactions as any, 6);
 
     // Calculate net worth at each month
     return monthlyStats.map((stat) => {

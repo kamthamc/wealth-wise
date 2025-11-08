@@ -288,11 +288,14 @@ export function SettingsPage() {
                     <Select.Item value="en-IN" className="settings-select-item">
                       <Select.ItemText>🇮🇳 English (India)</Select.ItemText>
                     </Select.Item>
-                    <Select.Item value="hi" className="settings-select-item">
-                      <Select.ItemText>🇮🇳 हिन्दी (Hindi)</Select.ItemText>
+                    <Select.Item value="hi-IN" className="settings-select-item">
+                      <Select.ItemText>🇮🇳 हिन्दी (भारत)</Select.ItemText>
                     </Select.Item>
                     <Select.Item value="te-IN" className="settings-select-item">
-                      <Select.ItemText>🇮🇳 తెలుగు (Telugu)</Select.ItemText>
+                      <Select.ItemText>🇮🇳 తెలుగు (భారతదేశం)</Select.ItemText>
+                    </Select.Item>
+                    <Select.Item value="ta-IN" className="settings-select-item">
+                      <Select.ItemText>🇮🇳 தமிழ் (இந்தியா)</Select.ItemText>
                     </Select.Item>
                   </Select.Viewport>
                 </Select.Content>
@@ -530,7 +533,7 @@ export function SettingsPage() {
                 </p>
                 <p>
                   <strong>{t('settings.dataManagement.import.goals')}:</strong>{' '}
-                  {importDataState.goals.length}
+                  {importDataState.goals?.length || 0}
                 </p>
               </div>
             )}

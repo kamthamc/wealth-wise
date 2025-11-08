@@ -1,9 +1,9 @@
 /**
- * Budget Helper Utilities
- * Helper functions for enhanced multi-category budget management
+ * Budget Helper Functions
+ * Utilities for budget calculations and formatting
  */
 
-import type { BudgetProgress } from '@/core/types';
+import type { BudgetStatus } from '@/core/types';
 import type { BudgetFormData, BudgetPeriodType } from '../types';
 
 /**
@@ -37,18 +37,31 @@ export function getBudgetPeriodName(period: BudgetPeriodType): string {
 /**
  * Get color variant for budget status
  */
-export function getBudgetStatusColor(
-  status: BudgetProgress['status']
-): 'success' | 'warning' | 'danger' | 'default' {
-  const colors: Record<
-    BudgetProgress['status'],
-    'success' | 'warning' | 'danger' | 'default'
-  > = {
-    'on-track': 'success',
+export function getStatusColor(status?: BudgetStatus | 'under' | 'near' | 'over'): string {
+  if (!status) return 'success';
+  
+  const colors: Record<string, string> = {
+    on_track: 'success',
+    under: 'success',
     warning: 'warning',
-    'over-budget': 'danger',
+    near: 'warning',
+    over_budget: 'danger',
+    over: 'danger',
   };
-  return colors[status] || 'default';
+
+  return colors[status] || 'success';
+}
+
+export function getStatusIcon(status?: BudgetStatus): string {
+  if (!status) return '✓';
+  
+  const icons: Record<string, string> = {
+    on_track: '✓',
+    warning: '⚠',
+    over_budget: '✗',
+  };
+
+  return icons[status] || '✓';
 }
 
 /**

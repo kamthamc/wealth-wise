@@ -22,8 +22,10 @@ import {
   X,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Transaction } from '@/core/types';
 import { useAccountStore, useTransactionStore } from '@/core/stores';
+import { timestampToDate } from '@/core/utils/firebase';
 import {
   Button,
   EmptyState,
@@ -46,23 +48,20 @@ import './TransactionsList.css';
 import { AddTransactionForm } from './AddTransactionForm';
 import { TransactionLinkingModal } from './TransactionLinkingModal';
 
-// Transaction type filter options with icons
-const FILTER_OPTIONS: SegmentedControlOption<TransactionType | 'all'>[] = [
-  { value: 'all', label: 'All', icon: <ListFilter size={16} /> },
-  { value: 'income', label: 'Income', icon: <ArrowUpCircle size={16} /> },
-  { value: 'expense', label: 'Expense', icon: <ArrowDownCircle size={16} /> },
-  {
-    value: 'transfer',
-    label: 'Transfer',
-    icon: <ArrowRightLeft size={16} />,
-  },
-];
-
 export function TransactionsList() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { transactions, isLoading, unlinkTransaction, fetchTransactions } =
     useTransactionStore();
   const { accounts } = useAccountStore();
+
+  // Transaction type filter options with icons
+  const FILTER_OPTIONS: SegmentedControlOption<TransactionType | 'all'>[] = useMemo(() => [
+    { value: 'all', label: t('pages.transactions.filters.all', 'All'), icon: <ListFilter size={16} /> },
+    { value: 'income', label: t('pages.transactions.filters.income', 'Income'), icon: <ArrowUpCircle size={16} /> },
+    { value: 'expense', label: t('pages.transactions.filters.expense', 'Expense'), icon: <ArrowDownCircle size={16} /> },
+    { value: 'transfer', label: t('pages.transactions.filters.transfer', 'Transfer'), icon: <ArrowRightLeft size={16} /> },
+  ], [t]);
 
   // Filter states (applied filters)
   const [typeFilter, setTypeFilter] = useState<TransactionType | 'all'>('all');
@@ -148,7 +147,11 @@ export function TransactionsList() {
   const handleBulkDelete = async () => {
     if (selectedIds.size === 0) return;
 
-    const confirmMessage = `Are you sure you want to delete ${selectedIds.size} ${selectedIds.size === 1 ? 'transaction' : 'transactions'}? This action cannot be undone.`;
+    const confirmMessage = t(
+      'pages.transactions.bulkDelete.confirm',
+      'Are you sure you want to delete {{count}} transaction? This action cannot be undone.',
+      { count: selectedIds.size }
+    );
     if (!confirm(confirmMessage)) return;
 
     try {
@@ -158,11 +161,15 @@ export function TransactionsList() {
       await Promise.all(deletePromises);
       clearSelection();
       alert(
-        `Successfully deleted ${selectedIds.size} ${selectedIds.size === 1 ? 'transaction' : 'transactions'}`
+        t(
+          'pages.transactions.bulkDelete.success',
+          'Successfully deleted {{count}} transaction',
+          { count: selectedIds.size }
+        )
       );
     } catch (error) {
       console.error('Bulk delete failed:', error);
-      alert('Failed to delete transactions. Please try again.');
+      alert(t('pages.transactions.bulkDelete.error', 'Failed to delete transactions. Please try again.'));
     }
   };
 
@@ -174,28 +181,31 @@ export function TransactionsList() {
         const transaction = filteredTransactions.find((t) => t.id === id);
         if (!transaction) return Promise.resolve(false);
 
-        return useTransactionStore.getState().updateTransaction({
-          id,
+        return useTransactionStore.getState().updateTransaction(id, {
           category: bulkCategory,
-        });
+        } as any);
       });
 
       await Promise.all(updatePromises);
       clearSelection();
       setBulkCategory('');
       alert(
-        `Successfully categorized ${selectedIds.size} ${selectedIds.size === 1 ? 'transaction' : 'transactions'}`
+        t(
+          'pages.transactions.bulkCategorize.success',
+          'Successfully categorized {{count}} transaction',
+          { count: selectedIds.size }
+        )
       );
     } catch (error) {
       console.error('Bulk categorize failed:', error);
-      alert('Failed to categorize transactions. Please try again.');
+      alert(t('pages.transactions.bulkCategorize.error', 'Failed to categorize transactions. Please try again.'));
     }
   };
 
   // Get unique years and months from transactions
   const availableYears = useMemo(() => {
     const years = new Set(
-      transactions.map((t) => new Date(t.date).getFullYear())
+      transactions.map((t) => timestampToDate(t.date).getFullYear())
     );
     return Array.from(years).sort((a, b) => b - a);
   }, [transactions]);
@@ -205,9 +215,9 @@ export function TransactionsList() {
     const months = new Set(
       transactions
         .filter(
-          (t) => new Date(t.date).getFullYear().toString() === tempYearFilter
+          (t) => timestampToDate(t.date).getFullYear().toString() === tempYearFilter
         )
-        .map((t) => new Date(t.date).getMonth())
+        .map((t) => timestampToDate(t.date).getMonth())
     );
     return Array.from(months).sort((a, b) => a - b);
   }, [transactions, tempYearFilter]);
@@ -229,14 +239,14 @@ export function TransactionsList() {
     // Filter by year
     if (yearFilter !== 'all') {
       filtered = filtered.filter(
-        (txn) => new Date(txn.date).getFullYear().toString() === yearFilter
+        (txn) => timestampToDate(txn.date).getFullYear().toString() === yearFilter
       );
     }
 
     // Filter by month
     if (monthFilter !== 'all') {
       filtered = filtered.filter(
-        (txn) => new Date(txn.date).getMonth().toString() === monthFilter
+        (txn) => timestampToDate(txn.date).getMonth().toString() === monthFilter
       );
     }
 
@@ -267,12 +277,12 @@ export function TransactionsList() {
     switch (sortBy) {
       case 'date-desc':
         sorted.sort(
-          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+          (a, b) => timestampToDate(b.date).getTime() - timestampToDate(a.date).getTime()
         );
         break;
       case 'date-asc':
         sorted.sort(
-          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+          (a, b) => timestampToDate(a.date).getTime() - timestampToDate(b.date).getTime()
         );
         break;
       case 'amount-desc':
@@ -343,36 +353,39 @@ export function TransactionsList() {
       {/* Header */}
       <div className="page-header">
         <div className="page-header-content">
-          <h1 className="page-title">Transactions</h1>
-          <p className="page-subtitle">Track your income and expenses</p>
+          <h1 className="page-title">{t('pages.transactions.title', 'Transactions')}</h1>
+          <p className="page-subtitle">{t('pages.transactions.subtitle', 'Track your income and expenses')}</p>
         </div>
         <div className="page-actions">
-          <Button onClick={() => setIsFormOpen(true)}>+ Add Transaction</Button>
+          <Button onClick={() => setIsFormOpen(true)}>
+            <Plus size={20} />
+            {t('pages.transactions.addButton', 'Add Transaction')}
+          </Button>
         </div>
       </div>
       <div className="page-content">
         {/* Stats */}
         <div className="stats-grid">
           <StatCard
-            label="Total Income"
+            label={t('pages.transactions.stats.totalIncome', 'Total Income')}
             value={formatCurrency(stats.totalIncome)}
             icon={<TrendingUp size={24} />}
             variant="success"
           />
           <StatCard
-            label="Total Expenses"
+            label={t('pages.transactions.stats.totalExpenses', 'Total Expenses')}
             value={formatCurrency(stats.totalExpenses)}
             icon={<TrendingDown size={24} />}
             variant="danger"
           />
           <StatCard
-            label="Net Cash Flow"
+            label={t('pages.transactions.stats.netCashFlow', 'Net Cash Flow')}
             value={formatCurrency(stats.netCashFlow)}
             icon={<BarChart3 size={24} />}
             variant={stats.netCashFlow >= 0 ? 'success' : 'danger'}
           />
           <StatCard
-            label="Total Transactions"
+            label={t('pages.transactions.stats.totalTransactions', 'Total Transactions')}
             value={stats.transactionCount.toString()}
             icon={<CreditCard size={24} />}
           />
@@ -386,7 +399,7 @@ export function TransactionsList() {
             </div>
             <Input
               type="search"
-              placeholder="Search transactions..."
+              placeholder={t('pages.transactions.searchPlaceholder', 'Search transactions...')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -398,7 +411,7 @@ export function TransactionsList() {
               value={typeFilter}
               onChange={setTypeFilter}
               size="medium"
-              aria-label="Filter transactions by type"
+              aria-label={t('aria.filterByType', 'Filter transactions by type')}
             />
 
             {/* Toggle Advanced Filters Button */}
@@ -407,7 +420,7 @@ export function TransactionsList() {
               size="small"
               onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
             >
-              {showAdvancedFilters ? 'Hide Filters' : 'More Filters'}
+              {showAdvancedFilters ? t('pages.transactions.hideFilters', 'Hide Filters') : t('pages.transactions.moreFilters', 'More Filters')}
             </Button>
 
             {/* Toggle Selection Mode Button */}
@@ -421,7 +434,7 @@ export function TransactionsList() {
                 }
               }}
             >
-              {isSelectionMode ? 'Cancel Selection' : 'Select Items'}
+              {isSelectionMode ? t('pages.transactions.cancelSelection', 'Cancel Selection') : t('pages.transactions.selectItems', 'Select Items')}
             </Button>
           </div>
 
@@ -430,7 +443,7 @@ export function TransactionsList() {
             <div className="bulk-actions-toolbar">
               <div className="bulk-actions-toolbar__info">
                 <span className="bulk-actions-toolbar__count">
-                  {selectedIds.size} selected
+                  {t('pages.transactions.selectedCount', '{{count}} selected', { count: selectedIds.size })}
                 </span>
                 {selectedIds.size > 0 && (
                   <button
@@ -439,7 +452,7 @@ export function TransactionsList() {
                     onClick={clearSelection}
                   >
                     <X size={16} />
-                    Clear
+                    {t('common.clear', 'Clear')}
                   </button>
                 )}
                 <button
@@ -448,7 +461,7 @@ export function TransactionsList() {
                   onClick={selectAll}
                 >
                   <Check size={16} />
-                  Select All ({filteredTransactions.length})
+                  {t('pages.transactions.selectAll', 'Select All ({{count}})', { count: filteredTransactions.length })}
                 </button>
               </div>
 
@@ -487,7 +500,7 @@ export function TransactionsList() {
                     onClick={handleBulkDelete}
                   >
                     <Trash2 size={16} />
-                    Delete Selected
+                    {t('pages.transactions.deleteSelected', 'Delete Selected')}
                   </Button>
                 </div>
               )}
@@ -619,19 +632,19 @@ export function TransactionsList() {
               icon={<CreditCard size={48} />}
               title={
                 searchQuery || typeFilter !== 'all'
-                  ? 'No transactions found'
-                  : 'No transactions yet'
+                  ? t('emptyState.transactions.filtered.title', 'No transactions found')
+                  : t('emptyState.transactions.title', 'No transactions yet')
               }
               description={
                 searchQuery || typeFilter !== 'all'
-                  ? "Try adjusting your filters or search query to find the transactions you're looking for"
-                  : 'Start tracking your income and expenses by recording your first transaction'
+                  ? t('emptyState.transactions.filtered.description', 'Try adjusting your filters or search query to find the transactions you\'re looking for')
+                  : t('emptyState.transactions.description', 'Start tracking your income and expenses by recording your first transaction')
               }
               action={
                 !searchQuery && typeFilter === 'all' ? (
                   <Button onClick={() => setIsFormOpen(true)}>
                     <Plus size={20} />
-                    Add Your First Transaction
+                    {t('emptyState.transactions.actionButton', 'Add Your First Transaction')}
                   </Button>
                 ) : undefined
               }
@@ -679,7 +692,7 @@ export function TransactionsList() {
                     </h3>
                     <p className="transaction-item__meta">
                       {getAccountName(transaction.account_id)} •{' '}
-                      {formatDate(new Date(transaction.date))}
+                      {formatDate(timestampToDate(transaction.date))}
                     </p>
                   </div>
                   <div
@@ -720,7 +733,7 @@ export function TransactionsList() {
                         className="transaction-item__action-btn transaction-item__action-btn--link"
                         onClick={(e) => {
                           e.stopPropagation();
-                          setLinkingTransaction(transaction);
+                          setLinkingTransaction(transaction as any);
                         }}
                         title="Link to another transaction"
                       >

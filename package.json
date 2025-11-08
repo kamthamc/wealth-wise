@@ -16,7 +16,8 @@
     "build": "pnpm run -r build",
     "add-changes": "changeset add",
     "version-packages": "changeset version",
-    "publish-packages": "changeset publish"
+    "publish-packages": "changeset publish",
+    "i18n:transform": "node scripts/transform-i18n.mjs"
   },
   "workspaces": [
     "packages/*"

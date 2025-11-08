@@ -12,6 +12,7 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Account, CreditCardDetails } from '@/core/types';
 import { Card, ProgressBar, StatCard } from '@/shared/components';
 import { formatCurrency, formatDate } from '@/utils';
@@ -27,6 +28,7 @@ export function CreditCardView({
   account,
   creditCardDetails,
 }: CreditCardViewProps) {
+  const { t } = useTranslation();
   const { preferences } = usePreferences();
   // Calculate credit utilization percentage
   const creditUtilization = useMemo(() => {
@@ -59,10 +61,9 @@ export function CreditCardView({
         <Card>
           <div className="credit-card-view__empty">
             <CreditCard size={48} />
-            <h3>Credit Card Details Not Available</h3>
+            <h3>{t('pages.accounts.details.views.creditCard.emptyTitle', 'Credit Card Details Not Available')}</h3>
             <p>
-              Add credit card details to see limit, billing cycle, and rewards
-              information.
+              {t('pages.accounts.details.views.creditCard.emptyDescription', 'Add credit card details to track your spending, payments, and rewards.')}
             </p>
           </div>
         </Card>
@@ -75,11 +76,12 @@ export function CreditCardView({
       {/* Credit Limit Overview */}
       <div className="credit-card-view__header">
         <h2>Credit Card Overview</h2>
-        {creditCardDetails.issuer_bank && (
+        {/* TODO: Add issuer_bank to CreditCardDetails in shared-types */}
+        {/* {creditCardDetails.issuer_bank && (
           <span className="credit-card-view__bank">
             {creditCardDetails.issuer_bank}
           </span>
-        )}
+        )} */}
       </div>
 
       {/* Credit Limit Card */}
@@ -138,7 +140,7 @@ export function CreditCardView({
       {/* Stats Grid */}
       <div className="credit-card-view__stats">
         <StatCard
-          label="Current Balance"
+          label={t('pages.accounts.details.views.creditCard.currentBalance', 'Current Balance')}
           value={formatCurrency(
             creditCardDetails.current_balance,
             preferences?.currency || account.currency,
@@ -148,7 +150,7 @@ export function CreditCardView({
         />
 
         <StatCard
-          label="Minimum Due"
+          label={t('pages.accounts.details.views.creditCard.minimumDue', 'Minimum Due')}
           value={formatCurrency(
             creditCardDetails.minimum_due,
             preferences?.currency || account.currency,
@@ -159,7 +161,7 @@ export function CreditCardView({
         />
 
         <StatCard
-          label="Total Due"
+          label={t('pages.accounts.details.views.creditCard.totalDue', 'Total Due')}
           value={formatCurrency(
             creditCardDetails.total_due,
             preferences?.currency || account.currency,
@@ -170,7 +172,7 @@ export function CreditCardView({
         />
 
         <StatCard
-          label="Rewards Points"
+          label={t('pages.accounts.details.views.creditCard.rewardsPoints', 'Rewards Points')}
           value={`${creditCardDetails.rewards_points.toLocaleString()} ${creditCardDetails.rewards_value > 0 ? `(≈ ${formatCurrency(creditCardDetails.rewards_value, preferences?.currency || account.currency, preferences?.locale || 'en-IN')})` : 'points'}`}
           icon={<Gift size={20} />}
           variant="success"
@@ -253,7 +255,8 @@ export function CreditCardView({
             </div>
           )}
 
-          {creditCardDetails.last_four_digits && (
+          {/* TODO: Add last_four_digits and expiry_date to CreditCardDetails in shared-types */}
+          {/* {creditCardDetails.last_four_digits && (
             <div className="credit-card-view__detail-row">
               <span>Card Number</span>
               <span className="credit-card-view__detail-value">
@@ -269,7 +272,7 @@ export function CreditCardView({
                 {formatDate(creditCardDetails.expiry_date, 'MM/YY')}
               </span>
             </div>
-          )}
+          )} */}
 
           {creditCardDetails.interest_rate && (
             <div className="credit-card-view__detail-row">

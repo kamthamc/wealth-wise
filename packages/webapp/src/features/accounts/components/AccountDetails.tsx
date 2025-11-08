@@ -5,6 +5,7 @@
 
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type {
   Account,
   BrokerageDetails,
@@ -33,7 +34,7 @@ import {
   formatAccountIdentifier,
   getAccountIcon,
   getAccountTypeName,
-  isDepositAccount,
+  // isDepositAccount, // Unused
 } from '../utils/accountHelpers';
 import { AccountActions } from './AccountActions';
 import { AccountCharts } from './AccountCharts';
@@ -49,6 +50,7 @@ export interface AccountDetailsProps {
 export function AccountDetails({ accountId }: AccountDetailsProps) {
   console.log('[AccountDetails] Component rendering, accountId:', accountId);
 
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { accounts, isLoading, fetchAccounts, updateAccount, deleteAccount } =
     useAccountStore();
@@ -64,12 +66,12 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
   const [account, setAccount] = useState<Account | null>(null);
 
   // State for type-specific details
-  const [creditCardDetails, setCreditCardDetails] =
+  const [creditCardDetails, _setCreditCardDetails] =
     useState<CreditCardDetails | null>(null);
-  const [depositDetails, setDepositDetails] = useState<DepositDetails | null>(
+  const [depositDetails, _setDepositDetails] = useState<DepositDetails | null>(
     null
   );
-  const [brokerageDetails, setBrokerageDetails] =
+  const [brokerageDetails, _setBrokerageDetails] =
     useState<BrokerageDetails | null>(null);
 
   // Fetch transactions on mount
@@ -303,10 +305,12 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
       <div className="account-details__empty">
         <EmptyState
           icon="🔍"
-          title="Account Not Found"
-          description="The account you're looking for doesn't exist or has been deleted."
+          title={t('pages.accounts.details.notFound.title', 'Account Not Found')}
+          description={t('pages.accounts.details.notFound.description', "The account you're looking for doesn't exist or has been deleted.")}
           action={
-            <Button onClick={handleBackToAccounts}>Back to Accounts</Button>
+            <Button onClick={handleBackToAccounts}>
+              {t('pages.accounts.details.notFound.backButton', 'Back to Accounts')}
+            </Button>
           }
         />
       </div>
@@ -326,7 +330,7 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
             variant="secondary"
             onClick={handleBackToAccounts}
           >
-            ← Back
+            ← {t('pages.accounts.details.header.backButton', 'Back')}
           </Button>
           <div className="account-details__header-info">
             <div className="account-details__header-icon">{accountIcon}</div>
@@ -337,7 +341,7 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
                 {isClosed && (
                   <span className="account-details__closed-badge">
                     {' '}
-                    • Closed
+                    • {t('pages.accounts.details.header.closedBadge', 'Closed')}
                   </span>
                 )}
               </p>
@@ -347,10 +351,10 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
 
         <div className="account-details__header-actions">
           <Button variant="secondary" onClick={() => setIsEditModalOpen(true)}>
-            Edit
+            {t('pages.accounts.details.header.editButton', 'Edit')}
           </Button>
           <Button variant="danger" onClick={() => setIsDeleteDialogOpen(true)}>
-            Delete
+            {t('pages.accounts.details.header.deleteButton', 'Delete')}
           </Button>
         </div>
       </div>
@@ -360,19 +364,25 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
           {/* Balance Overview - Prominent display */}
           <div className="account-details__balance-hero">
             <div className="account-details__balance-card">
-              <p className="account-details__balance-label">Current Balance</p>
+              <p className="account-details__balance-label">
+                {t('pages.accounts.details.balance.currentLabel', 'Current Balance')}
+              </p>
               <h2 className="account-details__balance-value">
                 {formatCurrency(currentBalance, account.currency)}
               </h2>
               <div className="account-details__balance-meta">
                 <span>
-                  Initial: {formatCurrency(account.balance, account.currency)}
+                  {t('pages.accounts.details.balance.initialLabel', 'Initial')}: {formatCurrency(account.balance, account.currency)}
                 </span>
                 <span>•</span>
-                <span>ID: {formatAccountIdentifier(account.id)}</span>
+                <span>
+                  {t('pages.accounts.details.balance.idLabel', 'ID')}: {formatAccountIdentifier(account.id)}
+                </span>
                 <span>•</span>
                 <span>
-                  Last updated {formatRelativeTime(account.updated_at)}
+                  {t('pages.accounts.details.balance.lastUpdated', 'Last updated {{time}}', {
+                    time: formatRelativeTime(account.updated_at)
+                  })}
                 </span>
               </div>
             </div>
@@ -415,16 +425,16 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
           {!hasSpecializedView(account.type) && (
             <div className="account-details__stats">
               <h2 className="account-details__section-title">
-                Account Statistics
+                {t('pages.accounts.details.stats.title', 'Account Statistics')}
               </h2>
               <div className="account-details__stats-grid">
                 <StatCard
-                  label="Total Transactions"
+                  label={t('pages.accounts.details.stats.totalTransactions', 'Total Transactions')}
                   value={accountStats.totalTransactions.toString()}
                   icon="📊"
                 />
                 <StatCard
-                  label="This Month"
+                  label={t('pages.accounts.details.stats.thisMonth', 'This Month')}
                   value={formatCurrency(
                     accountStats.thisMonthTotal,
                     account.currency
@@ -460,11 +470,11 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
                 <div className="account-details__transactions-empty">
                   <EmptyState
                     icon="💳"
-                    title="No Transactions Yet"
-                    description="Start tracking your finances by adding your first transaction."
+                    title={t('pages.accounts.details.noTransactions.title', 'No Transactions Yet')}
+                    description={t('pages.accounts.details.noTransactions.description', 'Start tracking your finances by adding your first transaction.')}
                     action={
                       <Button onClick={handleAddTransaction}>
-                        Add Transaction
+                        {t('pages.accounts.details.actions.addTransaction', 'Add Transaction')}
                       </Button>
                     }
                   />
@@ -520,10 +530,10 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
         isOpen={isDeleteDialogOpen}
         onClose={() => setIsDeleteDialogOpen(false)}
         onConfirm={handleDeleteAccount}
-        title="Delete Account?"
-        description={`Are you sure you want to delete "${account?.name}"? This action cannot be undone and all associated data will be permanently removed.`}
-        confirmLabel="Delete Account"
-        cancelLabel="Cancel"
+        title={t('pages.accounts.details.confirmDelete.title', 'Delete Account?')}
+        description={t('pages.accounts.details.confirmDelete.description', 'Are you sure you want to delete this account? This action cannot be undone and will also delete all associated transactions.')}
+        confirmLabel={t('pages.accounts.details.confirmDelete.confirmButton', 'Delete Account')}
+        cancelLabel={t('pages.accounts.details.confirmDelete.cancelButton', 'Cancel')}
         variant="danger"
       />
 
@@ -532,10 +542,10 @@ export function AccountDetails({ accountId }: AccountDetailsProps) {
         isOpen={isCloseDialogOpen}
         onClose={() => setIsCloseDialogOpen(false)}
         onConfirm={handleCloseAccount}
-        title="Close Account?"
-        description={`Are you sure you want to close "${account?.name}"? You can reopen it later if needed.`}
-        confirmLabel="Close Account"
-        cancelLabel="Cancel"
+        title={t('pages.accounts.details.confirmClose.title', 'Close Account?')}
+        description={t('pages.accounts.details.confirmClose.description', 'Are you sure you want to close this account? You can reopen it later if needed.')}
+        confirmLabel={t('pages.accounts.details.confirmClose.confirmButton', 'Close Account')}
+        cancelLabel={t('pages.accounts.details.confirmClose.cancelButton', 'Cancel')}
         variant="danger"
       />
 

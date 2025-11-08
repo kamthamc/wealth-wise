@@ -4,6 +4,7 @@
  */
 
 import { ArrowDownUp, Download, Plus, Upload, XCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/shared/components';
 import './AccountActions.css';
 
@@ -30,9 +31,13 @@ export function AccountActions({
   onCloseAccount,
   onReopenAccount,
 }: AccountActionsProps) {
+  const { t } = useTranslation();
+  
   return (
     <div className="account-actions">
-      <h3 className="account-actions__title">Quick Actions</h3>
+      <h3 className="account-actions__title">
+        {t('pages.accounts.details.actions.title', 'Quick Actions')}
+      </h3>
       <div className="account-actions__grid">
         {!isClosed && (
           <>
@@ -42,7 +47,7 @@ export function AccountActions({
               className="account-actions__button"
             >
               <Plus size={20} />
-              Add Transaction
+              {t('pages.accounts.details.actions.addTransaction', 'Add Transaction')}
             </Button>
             <Button
               variant="secondary"
@@ -50,7 +55,7 @@ export function AccountActions({
               className="account-actions__button"
             >
               <ArrowDownUp size={20} />
-              Transfer Money
+              {t('pages.accounts.details.actions.transferMoney', 'Transfer Money')}
             </Button>
             <Button
               variant="secondary"
@@ -58,7 +63,7 @@ export function AccountActions({
               className="account-actions__button"
             >
               <Upload size={20} />
-              Import Transactions
+              {t('pages.accounts.details.actions.importTransactions', 'Import Transactions')}
             </Button>
           </>
         )}
@@ -68,7 +73,7 @@ export function AccountActions({
           className="account-actions__button"
         >
           <Download size={20} />
-          Export Transactions
+          {t('pages.accounts.details.actions.exportTransactions', 'Export Transactions')}
         </Button>
         <Button
           variant="secondary"
@@ -76,7 +81,7 @@ export function AccountActions({
           className="account-actions__button"
         >
           <Download size={20} />
-          Download Statement
+          {t('pages.accounts.details.actions.downloadStatement', 'Download Statement')}
         </Button>
         {isClosed ? (
           <Button
@@ -85,7 +90,7 @@ export function AccountActions({
             className="account-actions__button"
           >
             <Plus size={20} />
-            Reopen Account
+            {t('pages.accounts.details.actions.reopenAccount', 'Reopen Account')}
           </Button>
         ) : (
           <Button
@@ -94,7 +99,7 @@ export function AccountActions({
             className="account-actions__button"
           >
             <XCircle size={20} />
-            Close Account
+            {t('pages.accounts.details.actions.closeAccount', 'Close Account')}
           </Button>
         )}
       </div>

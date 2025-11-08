@@ -11,6 +11,7 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Account, BrokerageDetails } from '@/core/types';
 import { Card, StatCard } from '@/shared/components';
 import { formatCurrency } from '@/shared/utils';
@@ -25,6 +26,8 @@ export function BrokerageView({
   account,
   brokerageDetails,
 }: BrokerageViewProps) {
+  const { t } = useTranslation();
+  
   // Calculate total holdings
   const totalHoldings = useMemo(() => {
     if (!brokerageDetails) return 0;
@@ -49,10 +52,9 @@ export function BrokerageView({
         <Card>
           <div className="brokerage-view__empty">
             <TrendingUp size={48} />
-            <h3>Brokerage Details Not Available</h3>
+            <h3>{t('pages.accounts.details.views.brokerage.emptyTitle', 'Brokerage Details Not Available')}</h3>
             <p>
-              Add brokerage details to track your investments, holdings, and
-              returns.
+              {t('pages.accounts.details.views.brokerage.emptyDescription', 'Add brokerage details to track your investments, holdings, and returns.')}
             </p>
           </div>
         </Card>
@@ -66,7 +68,7 @@ export function BrokerageView({
     <div className="brokerage-view">
       {/* Header */}
       <div className="brokerage-view__header">
-        <h2>Investment Portfolio</h2>
+        <h2>{t('pages.accounts.details.views.brokerage.title', 'Investment Portfolio')}</h2>
         {brokerageDetails.broker_name && (
           <span className="brokerage-view__broker">
             {brokerageDetails.broker_name}
@@ -80,7 +82,7 @@ export function BrokerageView({
       >
         <div className="brokerage-view__portfolio-header">
           <div>
-            <h3>Current Portfolio Value</h3>
+            <h3>{t('pages.accounts.details.views.brokerage.currentValue', 'Current Portfolio Value')}</h3>
             <p className="brokerage-view__portfolio-value">
               {formatCurrency(brokerageDetails.current_value, account.currency)}
             </p>
@@ -112,7 +114,7 @@ export function BrokerageView({
       {/* Stats Grid */}
       <div className="brokerage-view__stats">
         <StatCard
-          label="Invested Value"
+          label={t('pages.accounts.details.views.brokerage.investedValue', 'Invested Value')}
           value={formatCurrency(
             brokerageDetails.invested_value,
             account.currency
@@ -121,7 +123,7 @@ export function BrokerageView({
         />
 
         <StatCard
-          label="Realized Gains"
+          label={t('pages.accounts.details.views.brokerage.realizedGains', 'Realized Gains')}
           value={formatCurrency(
             brokerageDetails.realized_gains,
             account.currency
@@ -131,7 +133,7 @@ export function BrokerageView({
         />
 
         <StatCard
-          label="Unrealized Gains"
+          label={t('pages.accounts.details.views.brokerage.unrealizedGains', 'Unrealized Gains')}
           value={formatCurrency(
             brokerageDetails.unrealized_gains,
             account.currency
@@ -141,7 +143,7 @@ export function BrokerageView({
         />
 
         <StatCard
-          label="Total Holdings"
+          label={t('pages.accounts.details.views.brokerage.totalHoldings', 'Total Holdings')}
           value={totalHoldings.toString()}
           icon={<PieChart size={20} />}
         />
@@ -149,7 +151,7 @@ export function BrokerageView({
 
       {/* Holdings Breakdown */}
       <Card>
-        <h3>Holdings Breakdown</h3>
+        <h3>{t('pages.accounts.details.views.brokerage.holdingsBreakdown', 'Holdings Breakdown')}</h3>
         <div className="brokerage-view__holdings">
           <div className="brokerage-view__holding-item">
             <div className="brokerage-view__holding-info">
@@ -157,15 +159,19 @@ export function BrokerageView({
                 📈
               </div>
               <div>
-                <span className="brokerage-view__holding-label">Equity</span>
+                <span className="brokerage-view__holding-label">
+                  {t('pages.accounts.details.views.brokerage.equity', 'Equity')}
+                </span>
                 <span className="brokerage-view__holding-sublabel">
-                  Stocks & Shares
+                  {t('pages.accounts.details.views.brokerage.equitySub', 'Stocks & Shares')}
                 </span>
               </div>
             </div>
             <span className="brokerage-view__holding-count">
               {brokerageDetails.equity_holdings}{' '}
-              {brokerageDetails.equity_holdings === 1 ? 'holding' : 'holdings'}
+              {brokerageDetails.equity_holdings === 1 
+                ? t('pages.accounts.details.views.brokerage.holding', 'holding')
+                : t('pages.accounts.details.views.brokerage.holdings', 'holdings')}
             </span>
           </div>
 
@@ -176,16 +182,18 @@ export function BrokerageView({
               </div>
               <div>
                 <span className="brokerage-view__holding-label">
-                  Mutual Funds
+                  {t('pages.accounts.details.views.brokerage.mutualFunds', 'Mutual Funds')}
                 </span>
                 <span className="brokerage-view__holding-sublabel">
-                  Managed Investments
+                  {t('pages.accounts.details.views.brokerage.mutualFundsSub', 'Managed Investments')}
                 </span>
               </div>
             </div>
             <span className="brokerage-view__holding-count">
               {brokerageDetails.mutual_fund_holdings}{' '}
-              {brokerageDetails.mutual_fund_holdings === 1 ? 'fund' : 'funds'}
+              {brokerageDetails.mutual_fund_holdings === 1 
+                ? t('pages.accounts.details.views.brokerage.fund', 'fund')
+                : t('pages.accounts.details.views.brokerage.funds', 'funds')}
             </span>
           </div>
 
@@ -195,15 +203,19 @@ export function BrokerageView({
                 🏦
               </div>
               <div>
-                <span className="brokerage-view__holding-label">Bonds</span>
+                <span className="brokerage-view__holding-label">
+                  {t('pages.accounts.details.views.brokerage.bonds', 'Bonds')}
+                </span>
                 <span className="brokerage-view__holding-sublabel">
-                  Fixed Income
+                  {t('pages.accounts.details.views.brokerage.bondsSub', 'Fixed Income')}
                 </span>
               </div>
             </div>
             <span className="brokerage-view__holding-count">
               {brokerageDetails.bond_holdings}{' '}
-              {brokerageDetails.bond_holdings === 1 ? 'bond' : 'bonds'}
+              {brokerageDetails.bond_holdings === 1 
+                ? t('pages.accounts.details.views.brokerage.bond', 'bond')
+                : t('pages.accounts.details.views.brokerage.bonds_plural', 'bonds')}
             </span>
           </div>
 
@@ -213,9 +225,11 @@ export function BrokerageView({
                 💼
               </div>
               <div>
-                <span className="brokerage-view__holding-label">ETFs</span>
+                <span className="brokerage-view__holding-label">
+                  {t('pages.accounts.details.views.brokerage.etfs', 'ETFs')}
+                </span>
                 <span className="brokerage-view__holding-sublabel">
-                  Exchange Traded Funds
+                  {t('pages.accounts.details.views.brokerage.etfsSub', 'Exchange Traded Funds')}
                 </span>
               </div>
             </div>

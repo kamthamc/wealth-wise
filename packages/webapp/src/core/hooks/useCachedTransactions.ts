@@ -6,6 +6,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { transactionCache } from '@/core/cache';
 import type { Transaction } from '@/core/types';
+import { timestampToDate } from '@/core/utils/firebase';
 
 interface UseCachedTransactionsOptions {
   accountId?: string;
@@ -62,7 +63,7 @@ export function useCachedTransactions(
       const startTime = dateRange.start.getTime();
       const endTime = dateRange.end.getTime();
       filtered = filtered.filter(t => {
-        const txnTime = new Date(t.date).getTime();
+        const txnTime = timestampToDate(t.date).getTime();
         return txnTime >= startTime && txnTime <= endTime;
       });
     }

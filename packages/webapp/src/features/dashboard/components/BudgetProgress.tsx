@@ -5,6 +5,7 @@
 
 import { Link } from '@tanstack/react-router';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useBudgetStore } from '@/core/stores';
 import {
   calculateBudgetProgress,
@@ -21,6 +22,7 @@ import { usePreferences } from '@/hooks/usePreferences';
 import './BudgetProgress.css';
 
 export function BudgetProgress() {
+  const { t } = useTranslation();
   const { budgets, isLoading } = useBudgetStore();
   const { preferences, loading: prefsLoading } = usePreferences();
 
@@ -29,14 +31,19 @@ export function BudgetProgress() {
     return budgets
       .filter((b) => b.is_active)
       .map((budget) => {
-        const percentage = (budget.total_spent / budget.total_allocated) * 100;
+        // TODO: Calculate these from transactions or get from store
+        const total_spent = 0;
+        const total_allocated = budget.categories?.reduce((sum, cat: any) => sum + (cat.allocated_amount || 0), 0) || 0;
+        const percentage = total_allocated > 0 ? (total_spent / total_allocated) * 100 : 0;
         const status = calculateBudgetProgress(
-          budget.total_spent,
-          budget.total_allocated,
+          total_spent,
+          total_allocated,
           {}
         );
         return {
           ...budget,
+          total_spent,
+          total_allocated,
           percentage,
           status,
         };
@@ -58,9 +65,9 @@ export function BudgetProgress() {
     <section className="budget-progress">
       <Card>
         <div className="budget-progress__header">
-          <h2 className="budget-progress__title">Budget Progress</h2>
+          <h2 className="budget-progress__title">{t('pages.dashboard.budgetProgress.title', 'Budget Progress')}</h2>
           <Link to="/budgets" className="budget-progress__link">
-            View All →
+            {t('pages.dashboard.budgetProgress.viewAll', 'View All')} →
           </Link>
         </div>
 
@@ -101,11 +108,11 @@ export function BudgetProgress() {
                     showValue
                   />
                   {budget.percentage >= 100 && (
-                    <p className="budget-item__warning">⚠️ Budget exceeded!</p>
+                    <p className="budget-item__warning">⚠️ {t('pages.dashboard.budgetProgress.exceeded', 'Budget exceeded!')}</p>
                   )}
                   {budget.percentage >= 80 && budget.percentage < 100 && (
                     <p className="budget-item__warning budget-item__warning--mild">
-                      ⚡ Approaching limit
+                      ⚡ {t('pages.dashboard.budgetProgress.approachingLimit', 'Approaching limit')}
                     </p>
                   )}
                 </div>
@@ -115,8 +122,8 @@ export function BudgetProgress() {
         ) : (
           <EmptyState
             icon="💰"
-            title="No budgets yet"
-            description="Create budgets to track your spending"
+            title={t('emptyState.budgets.title', 'No budgets yet')}
+            description={t('emptyState.budgets.description', 'Create your first budget to start tracking spending')}
           />
         )}
       </Card>
