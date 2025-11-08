@@ -13,7 +13,8 @@ import {
 } from 'lucide-react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Account, CreditCardDetails } from '@/core/types';
+import type { Account } from '@/core/types';
+import type { CreditCardDetails } from '@/core/db/types';
 import { Card, ProgressBar, StatCard } from '@/shared/components';
 import { formatCurrency, formatDate } from '@/utils';
 import { usePreferences } from '@/hooks/usePreferences';
@@ -76,12 +77,11 @@ export function CreditCardView({
       {/* Credit Limit Overview */}
       <div className="credit-card-view__header">
         <h2>Credit Card Overview</h2>
-        {/* TODO: Add issuer_bank to CreditCardDetails in shared-types */}
-        {/* {creditCardDetails.issuer_bank && (
+        {creditCardDetails.issuer_bank && (
           <span className="credit-card-view__bank">
             {creditCardDetails.issuer_bank}
           </span>
-        )} */}
+        )}
       </div>
 
       {/* Credit Limit Card */}
@@ -255,8 +255,7 @@ export function CreditCardView({
             </div>
           )}
 
-          {/* TODO: Add last_four_digits and expiry_date to CreditCardDetails in shared-types */}
-          {/* {creditCardDetails.last_four_digits && (
+          {creditCardDetails.last_four_digits && (
             <div className="credit-card-view__detail-row">
               <span>Card Number</span>
               <span className="credit-card-view__detail-value">
@@ -269,10 +268,10 @@ export function CreditCardView({
             <div className="credit-card-view__detail-row">
               <span>Expiry Date</span>
               <span className="credit-card-view__detail-value">
-                {formatDate(creditCardDetails.expiry_date, 'MM/YY')}
+                {formatDate(creditCardDetails.expiry_date, preferences?.locale || 'en-IN')}
               </span>
             </div>
-          )} */}
+          )}
 
           {creditCardDetails.interest_rate && (
             <div className="credit-card-view__detail-row">

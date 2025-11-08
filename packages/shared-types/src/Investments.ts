@@ -248,6 +248,10 @@ export interface CreditCardDetails {
   status: CreditCardStatus;
   autopay_enabled: boolean;
   card_network?: CardNetwork;
+  // Additional fields for UI display
+  issuer_bank?: string; // Bank name (e.g., "HDFC Bank", "ICICI Bank")
+  last_four_digits?: string; // Last 4 digits of card number for display
+  expiry_date?: Date | string; // Card expiration date
   card_type?: CardType;
   card_last_four?: string;
   card_expiry_date?: Date | string;
