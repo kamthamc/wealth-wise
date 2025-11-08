@@ -56,6 +56,23 @@
 "set_goal_message" = "Set your first financial goal to start saving";
 "no_completed_goals" = "No Completed Goals";
 "completed_goals_message" = "Your completed goals will appear here";
+"savings" = "Savings";
+"investment" = "Investment";
+"debt_payment" = "Debt Payment";
+"purchase" = "Purchase";
+"education" = "Education";
+"retirement" = "Retirement";
+"emergency" = "Emergency Fund";
+"other" = "Other";
+
+/* Budgets */
+"monthly" = "Monthly";
+"quarterly" = "Quarterly";
+"yearly" = "Yearly";
+
+/* General */
+"today" = "Today";
+"yesterday" = "Yesterday";
 
 /* Settings */
 "general" = "General";
