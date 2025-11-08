@@ -38,6 +38,15 @@ export {
   getBudgetTransactions,
   updateBudget,
 } from './budgets';
+// Export category functions
+export {
+  createCategory,
+  deleteCategory,
+  getCategories,
+  getCategoryById,
+  getCategoryUsage,
+  updateCategory,
+} from './categories';
 // Export dashboard and caching functions
 export {
   computeAndCacheDashboard,
