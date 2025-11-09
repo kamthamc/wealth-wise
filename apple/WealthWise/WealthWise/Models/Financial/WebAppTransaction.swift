@@ -52,9 +52,10 @@ public final class WebAppTransaction {
     
     // MARK: - Relationships
     
-    /// Related account
-    @Relationship(inverse: \Account.transactions)
-    public var account: Account?
+    /// Related account ID (using UUID instead of relationship for now)
+    // TODO: Re-enable relationship once all files are in Xcode target
+    // @Relationship(inverse: \Account.transactions)
+    // public var account: Account?
     
     // MARK: - Computed Properties
     

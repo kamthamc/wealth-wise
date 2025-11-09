@@ -130,14 +130,18 @@ public final class Budget {
     
     /// Calculate spent amount from transactions
     public func calculateSpent(from transactions: [WebAppTransaction]) {
-        let spent = transactions
-            .filter { transaction in
-                transaction.type == .debit &&
-                categories.contains(transaction.category) &&
-                transaction.date >= startDate &&
-                transaction.date <= endDate
-            }
-            .reduce(Decimal(0)) { $0 + $1.amount }
+        // Filter relevant transactions
+        let relevantTransactions = transactions.filter { transaction in
+            guard transaction.type == .debit else { return false }
+            guard categories.contains(transaction.category) else { return false }
+            guard transaction.date >= startDate && transaction.date <= endDate else { return false }
+            return true
+        }
+        
+        // Sum up the amounts
+        let spent = relevantTransactions.reduce(Decimal(0)) { sum, transaction in
+            sum + transaction.amount
+        }
         
         currentSpent = spent
         updatedAt = Date()

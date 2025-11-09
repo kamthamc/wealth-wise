@@ -49,9 +49,10 @@ public final class Account {
     
     // MARK: - Relationships
     
-    /// All transactions for this account
-    @Relationship(deleteRule: .cascade)
-    public var transactions: [Transaction]?
+    /// All transactions for this account (disabled for now)
+    // TODO: Re-enable relationship once all files are in Xcode target
+    // @Relationship(deleteRule: .cascade)
+    // public var transactions: [WebAppTransaction]?
     
     // MARK: - Computed Properties
     
