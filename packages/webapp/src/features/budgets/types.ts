@@ -10,7 +10,7 @@ import type {
   BudgetProgress,
   BudgetStatus,
   CategorySpending,
-} from '@/core/db/types';
+} from '@/core/types';
 
 // Re-export database types
 export type {

@@ -7,7 +7,7 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Select from '@radix-ui/react-select';
 import { Calendar, Monitor, Moon, Sun } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   SegmentedControl,
@@ -22,6 +22,9 @@ import {
   parseImportFile,
 } from '../../../core/services/dataExportService';
 import { CategoryManager } from './CategoryManager';
+import { preferencesApi } from '@/core/api';
+import type { UserPreferences } from '@svc/wealth-wise-shared-types';
+import { formatCurrency, formatDate } from '@/utils';
 import './SettingsPage.css';
 
 type Theme = 'light' | 'dark' | 'system';
@@ -55,16 +58,38 @@ export function SettingsPage() {
     null
   );
 
-  // Load from localStorage or use defaults
+  // User Preferences State (loaded from Cloud Functions)
+  const [preferences, setPreferences] = useState<UserPreferences | null>(null);
+  const [preferencesLoading, setPreferencesLoading] = useState(true);
+  const [preferencesSaving, setPreferencesSaving] = useState(false);
+
+  // Backward compatibility: Load from localStorage or use defaults for theme (UI only)
   const [theme, setTheme] = useState<Theme>(
     (localStorage.getItem('theme') as Theme) || 'system'
   );
-  const [dateFormat, setDateFormat] = useState<DateFormat>(
-    (localStorage.getItem('dateFormat') as DateFormat) || 'DD/MM/YYYY'
-  );
-  const [currency, setCurrency] = useState<Currency>(
-    (localStorage.getItem('currency') as Currency) || 'INR'
-  );
+
+  // Load user preferences from Cloud Functions on mount
+  useEffect(() => {
+    const loadPreferences = async () => {
+      try {
+        setPreferencesLoading(true);
+        const prefs = await preferencesApi.get();
+        setPreferences(prefs);
+        
+        // Sync with i18n if language differs
+        if (prefs.language && i18n.language !== prefs.language) {
+          i18n.changeLanguage(prefs.language);
+        }
+      } catch (error) {
+        console.error('Failed to load preferences:', error);
+        // Fallback to localStorage values for backward compatibility
+      } finally {
+        setPreferencesLoading(false);
+      }
+    };
+    
+    loadPreferences();
+  }, [i18n]);
 
   const handleThemeChange = (value: Theme) => {
     setTheme(value);
@@ -88,14 +113,38 @@ export function SettingsPage() {
     i18n.changeLanguage(value);
   };
 
-  const handleDateFormatChange = (value: DateFormat) => {
-    setDateFormat(value);
-    localStorage.setItem('dateFormat', value);
+  const handleDateFormatChange = async (value: DateFormat) => {
+    if (!preferences) return;
+    
+    try {
+      setPreferencesSaving(true);
+      const updated = await preferencesApi.update({ dateFormat: value });
+      setPreferences(updated);
+      // Keep localStorage for backward compatibility
+      localStorage.setItem('dateFormat', value);
+    } catch (error) {
+      console.error('Failed to update date format:', error);
+      alert(t('settings.preferences.updateError', 'Failed to update preferences'));
+    } finally {
+      setPreferencesSaving(false);
+    }
   };
 
-  const handleCurrencyChange = (value: Currency) => {
-    setCurrency(value);
-    localStorage.setItem('currency', value);
+  const handleCurrencyChange = async (value: Currency) => {
+    if (!preferences) return;
+    
+    try {
+      setPreferencesSaving(true);
+      const updated = await preferencesApi.update({ currency: value });
+      setPreferences(updated);
+      // Keep localStorage for backward compatibility
+      localStorage.setItem('currency', value);
+    } catch (error) {
+      console.error('Failed to update currency:', error);
+      alert(t('settings.preferences.updateError', 'Failed to update preferences'));
+    } finally {
+      setPreferencesSaving(false);
+    }
   };
 
   const handleExportData = async () => {
@@ -239,11 +288,14 @@ export function SettingsPage() {
                     <Select.Item value="en-IN" className="settings-select-item">
                       <Select.ItemText>🇮🇳 English (India)</Select.ItemText>
                     </Select.Item>
-                    <Select.Item value="hi" className="settings-select-item">
-                      <Select.ItemText>🇮🇳 हिन्दी (Hindi)</Select.ItemText>
+                    <Select.Item value="hi-IN" className="settings-select-item">
+                      <Select.ItemText>🇮🇳 हिन्दी (भारत)</Select.ItemText>
                     </Select.Item>
                     <Select.Item value="te-IN" className="settings-select-item">
-                      <Select.ItemText>🇮🇳 తెలుగు (Telugu)</Select.ItemText>
+                      <Select.ItemText>🇮🇳 తెలుగు (భారతదేశం)</Select.ItemText>
+                    </Select.Item>
+                    <Select.Item value="ta-IN" className="settings-select-item">
+                      <Select.ItemText>🇮🇳 தமிழ் (இந்தியா)</Select.ItemText>
                     </Select.Item>
                   </Select.Viewport>
                 </Select.Content>
@@ -255,48 +307,84 @@ export function SettingsPage() {
             <label className="settings-field__label" htmlFor="currency-select">
               {t('settings.localization.currency.label')}
             </label>
-            <Select.Root value={currency} onValueChange={handleCurrencyChange}>
-              <Select.Trigger
-                className="settings-select-trigger"
-                id="currency-select"
-                aria-label={t('settings.localization.currency.label')}
-              >
-                <Select.Value />
-                <Select.Icon className="settings-select-icon">▼</Select.Icon>
-              </Select.Trigger>
+            {preferencesLoading ? (
+              <div className="settings-loading">Loading preferences...</div>
+            ) : preferences ? (
+              <>
+                <Select.Root 
+                  value={preferences.currency} 
+                  onValueChange={handleCurrencyChange}
+                  disabled={preferencesSaving}
+                >
+                  <Select.Trigger
+                    className="settings-select-trigger"
+                    id="currency-select"
+                    aria-label={t('settings.localization.currency.label')}
+                  >
+                    <Select.Value />
+                    <Select.Icon className="settings-select-icon">▼</Select.Icon>
+                  </Select.Trigger>
 
-              <Select.Portal>
-                <Select.Content className="settings-select-content">
-                  <Select.Viewport className="settings-select-viewport">
-                    <Select.Item value="INR" className="settings-select-item">
-                      <Select.ItemText>₹ INR - Indian Rupee</Select.ItemText>
-                    </Select.Item>
-                    <Select.Item value="USD" className="settings-select-item">
-                      <Select.ItemText>$ USD - US Dollar</Select.ItemText>
-                    </Select.Item>
-                    <Select.Item value="EUR" className="settings-select-item">
-                      <Select.ItemText>€ EUR - Euro</Select.ItemText>
-                    </Select.Item>
-                    <Select.Item value="GBP" className="settings-select-item">
-                      <Select.ItemText>£ GBP - British Pound</Select.ItemText>
-                    </Select.Item>
-                  </Select.Viewport>
-                </Select.Content>
-              </Select.Portal>
-            </Select.Root>
+                  <Select.Portal>
+                    <Select.Content className="settings-select-content">
+                      <Select.Viewport className="settings-select-viewport">
+                        <Select.Item value="INR" className="settings-select-item">
+                          <Select.ItemText>₹ INR - Indian Rupee</Select.ItemText>
+                        </Select.Item>
+                        <Select.Item value="USD" className="settings-select-item">
+                          <Select.ItemText>$ USD - US Dollar</Select.ItemText>
+                        </Select.Item>
+                        <Select.Item value="EUR" className="settings-select-item">
+                          <Select.ItemText>€ EUR - Euro</Select.ItemText>
+                        </Select.Item>
+                        <Select.Item value="GBP" className="settings-select-item">
+                          <Select.ItemText>£ GBP - British Pound</Select.ItemText>
+                        </Select.Item>
+                        <Select.Item value="JPY" className="settings-select-item">
+                          <Select.ItemText>¥ JPY - Japanese Yen</Select.ItemText>
+                        </Select.Item>
+                        <Select.Item value="AUD" className="settings-select-item">
+                          <Select.ItemText>A$ AUD - Australian Dollar</Select.ItemText>
+                        </Select.Item>
+                        <Select.Item value="CAD" className="settings-select-item">
+                          <Select.ItemText>C$ CAD - Canadian Dollar</Select.ItemText>
+                        </Select.Item>
+                        <Select.Item value="SGD" className="settings-select-item">
+                          <Select.ItemText>S$ SGD - Singapore Dollar</Select.ItemText>
+                        </Select.Item>
+                      </Select.Viewport>
+                    </Select.Content>
+                  </Select.Portal>
+                </Select.Root>
+                <p className="settings-field__help">
+                  Preview: {formatCurrency(1000000, preferences.currency, preferences.locale)}
+                </p>
+              </>
+            ) : (
+              <div className="settings-error">Failed to load preferences</div>
+            )}
           </div>
 
           <div className="settings-field">
             <label className="settings-field__label" id="date-format-label">
               {t('settings.localization.dateFormat.label')}
             </label>
-            <SegmentedControl
-              options={DATE_FORMAT_OPTIONS}
-              value={dateFormat}
-              onChange={handleDateFormatChange}
-              size="medium"
-              aria-labelledby="date-format-label"
-            />
+            {preferencesLoading ? (
+              <div className="settings-loading">Loading...</div>
+            ) : preferences ? (
+              <>
+                <SegmentedControl
+                  options={DATE_FORMAT_OPTIONS}
+                  value={preferences.dateFormat as DateFormat}
+                  onChange={preferencesSaving ? () => {} : handleDateFormatChange}
+                  size="medium"
+                  aria-labelledby="date-format-label"
+                />
+                <p className="settings-field__help">
+                  Preview: {formatDate(new Date(), preferences.dateFormat, preferences.locale)}
+                </p>
+              </>
+            ) : null}
           </div>
         </section>
 
@@ -445,7 +533,7 @@ export function SettingsPage() {
                 </p>
                 <p>
                   <strong>{t('settings.dataManagement.import.goals')}:</strong>{' '}
-                  {importDataState.goals.length}
+                  {importDataState.goals?.length || 0}
                 </p>
               </div>
             )}

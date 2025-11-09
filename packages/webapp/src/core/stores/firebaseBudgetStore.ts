@@ -1,15 +1,20 @@
 import type { Unsubscribe } from 'firebase/firestore';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { collection, getFirestore, onSnapshot, query, where } from 'firebase/firestore';
 import { create } from 'zustand';
 import { budgetFunctions } from '../api';
-import { db } from '../firebase/firebase';
-import { useAuthStore } from './authStore';
 
 interface BudgetCategory {
   category: string;
   allocated_amount: number;
   alert_threshold?: number;
   notes?: string;
+  // Calculated fields (need to be computed from transactions)
+  spent?: number;
+  percent_used?: number;
+  status?: 'under' | 'near' | 'over';
+  variance?: number;
+  allocated?: number; // Alias for allocated_amount
 }
 
 interface Budget {
@@ -21,15 +26,22 @@ interface Budget {
   start_date: any;
   end_date?: any;
   is_recurring: boolean;
+  is_active: boolean;
   rollover_enabled: boolean;
   categories: BudgetCategory[];
   created_at: any;
   updated_at: any;
+  // Calculated fields (need to be computed from transactions)
+  total_allocated?: number;
+  total_spent?: number;
+  overall_percent_used?: number;
+  status?: 'under' | 'near' | 'over';
 }
 
 interface BudgetState {
   budgets: Budget[];
   loading: boolean;
+  isLoading: boolean; // Alias for compatibility
   error: string | null;
   unsubscribe: Unsubscribe | null;
 
@@ -45,12 +57,14 @@ interface BudgetState {
 export const useFirebaseBudgetStore = create<BudgetState>((set, get) => ({
   budgets: [],
   loading: false,
+  isLoading: false,
   error: null,
   unsubscribe: null,
 
   initialize: () => {
-    const user = useAuthStore.getState().user;
-    if (!user) {
+    const auth = getAuth();
+    const userId = auth.currentUser?.uid;
+    if (!userId) {
       set({ budgets: [], loading: false });
       return;
     }
@@ -63,10 +77,11 @@ export const useFirebaseBudgetStore = create<BudgetState>((set, get) => ({
       prevUnsubscribe();
     }
 
+    const db = getFirestore();
     // Subscribe to real-time updates
     const q = query(
       collection(db, 'budgets'),
-      where('user_id', '==', user.uid)
+      where('user_id', '==', userId)
     );
 
     const unsubscribe = onSnapshot(

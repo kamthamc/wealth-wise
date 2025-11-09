@@ -4,11 +4,15 @@
  */
 
 import { useNavigate } from '@tanstack/react-router';
-import { useState } from 'react';
-import { useAuthStore } from '@/core/stores/authStore';
+import { useId, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Button, Input } from '@/shared/components';
+import { useAuthStore } from '@/core/stores';
+import '@/routes/login.css';
 
 export function LoginPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { signIn, signUp, signInWithGoogle, isLoading, error, clearError } =
     useAuthStore();
 
@@ -16,6 +20,11 @@ export function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
+
+  // Generate unique IDs
+  const displayNameId = useId();
+  const emailId = useId();
+  const passwordId = useId();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,118 +58,135 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
-          {/* Logo/Title */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              💰 WealthWise
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400">
-              {mode === 'signin' ? 'Welcome back!' : 'Create your account'}
-            </p>
+    <div className="login-container">
+      <div className="login-card">
+        {/* Logo/Title */}
+        <div className="login-header">
+          <h1 className="login-title">💰 {t('app.name', 'WealthWise')}</h1>
+          <p className="login-subtitle">
+            {t('app.tagline', 'Manage your finances intelligently')}
+          </p>
+        </div>
+
+        {/* Tabs */}
+        <div className="login-tabs">
+          <button
+            type="button"
+            className={`login-tab-button ${mode === 'signin' ? 'login-tab-button--active' : 'login-tab-button--inactive'}`}
+            onClick={() => {
+              setMode('signin');
+              clearError();
+            }}
+          >
+            {t('auth.signIn', 'Sign In')}
+          </button>
+          <button
+            type="button"
+            className={`login-tab-button ${mode === 'signup' ? 'login-tab-button--active' : 'login-tab-button--inactive'}`}
+            onClick={() => {
+              setMode('signup');
+              clearError();
+            }}
+          >
+            {t('auth.signUp', 'Sign Up')}
+          </button>
+        </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="login-error">
+            {error}
           </div>
+        )}
 
-          {/* Error Message */}
-          {error && (
-            <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-            </div>
-          )}
-
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {mode === 'signup' && (
-              <div>
-                <label
-                  htmlFor="displayName"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                >
-                  Display Name
-                </label>
-                <input
-                  id="displayName"
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="login-form">
+          {mode === 'signup' && (
+            <div className="login-field">
+              <label htmlFor={displayNameId} className="login-label">
+                {t('auth.displayName', 'Display Name')}
+              </label>
+                <Input
+                  id={displayNameId}
                   type="text"
+                  placeholder={t('auth.displayNamePlaceholder', 'Enter your display name')}
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                  placeholder="John Doe"
-                  required={mode === 'signup'}
+                  required
                 />
               </div>
             )}
 
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                placeholder="you@example.com"
-                required
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white bg-blue-600 hover:bg-blue-700 text-white font-medium"
-                placeholder="••••••••"
-                required
-                minLength={6}
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium rounded-lg transition-colors"
+          <div className="login-field">
+            <label htmlFor={emailId} className="login-label">
+              {t('auth.email', 'Email')}
+            </label>
+            <Input
+              id={emailId}
+              type="email"
+              value={email}
+              autoComplete="email"
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={t('auth.emailPlaceholder', 'you@example.com')}
+              required
               disabled={isLoading}
-            >
-              {isLoading
-                ? 'Processing...'
-                : mode === 'signin'
-                  ? 'Sign In'
-                  : 'Sign Up'}
-            </button>
-          </form>
-
-          {/* Divider */}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white dark:bg-gray-800 text-gray-500">
-                Or continue with
-              </span>
-            </div>
+            />
           </div>
 
-          {/* Google Sign In */}
-          <button
-            type="button"
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg font-medium transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={handleGoogleSignIn}
+          <div className="login-field">
+            <label htmlFor={passwordId} className="login-label">
+              {t('auth.password', 'Password')}
+            </label>
+            <Input
+              id={passwordId}
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder={t('auth.passwordPlaceholder', '••••••••')}
+              required
+              minLength={6}
+              disabled={isLoading}
+            />
+          </div>
+
+          <Button
+            type="submit"
             disabled={isLoading}
+            variant="primary"
+            fullWidth
           >
-            <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
+              {isLoading
+                ? t('auth.processing', 'Processing...')
+                : mode === 'signin'
+                  ? t('auth.signIn', 'Sign In')
+                  : t('auth.signUp', 'Sign Up')}
+            </Button>
+        </form>
+
+        {/* Divider */}
+        <div className="login-divider">
+          <div className="login-divider-text">
+            <span className="login-divider-label">
+              {t('auth.orContinueWith', 'Or continue with')}
+            </span>
+          </div>
+        </div>
+
+        {/* Google Sign In */}
+        <Button
+          type="button"
+          onClick={handleGoogleSignIn}
+          disabled={isLoading}
+          variant="secondary"
+          fullWidth
+        >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              style={{ marginRight: '0.5rem' }}
+              aria-hidden="true"
+            >
               <path
                 fill="currentColor"
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -178,34 +204,20 @@ export function LoginPage() {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            Sign in with Google
-          </button>
+          {t('auth.signInWithGoogle', 'Sign in with Google')}
+        </Button>
 
-          {/* Toggle Mode */}
-          <div className="mt-6 text-center">
-            <button
-              type="button"
-              onClick={() => {
-                setMode(mode === 'signin' ? 'signup' : 'signin');
-                clearError();
-              }}
-              className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
-            >
-              {mode === 'signin'
-                ? "Don't have an account? Sign up"
-                : 'Already have an account? Sign in'}
-            </button>
+        {/* Emulator Notice */}
+        {import.meta.env.DEV && (
+          <div className="login-footer">
+            <p className="login-footer-title">
+              {t('auth.emulator.title', 'Testing with Firebase Emulators')}
+            </p>
+            <p className="login-footer-subtitle">
+              {t('auth.emulator.subtitle', 'Auth: localhost:9099 | Firestore: localhost:8080')}
+            </p>
           </div>
-
-          {/* Emulator Notice */}
-          {import.meta.env.DEV && (
-            <div className="mt-6 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-              <p className="text-xs text-yellow-800 dark:text-yellow-200 text-center">
-                🔧 Running in development mode with Firebase Emulators
-              </p>
-            </div>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );

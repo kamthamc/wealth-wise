@@ -4,7 +4,7 @@
  */
 
 import { useMemo } from 'react';
-import type { Transaction } from '@/core/db/types';
+import type { Transaction } from '@/core/types';
 import {
   GroupedBarChart,
   type GroupedBarDataPoint,

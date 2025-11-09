@@ -5,7 +5,8 @@
 
 import { DollarSign, PiggyBank, TrendingUp, Users } from 'lucide-react';
 import { useMemo } from 'react';
-import type { Account, DepositDetails } from '@/core/db/types';
+import { useTranslation } from 'react-i18next';
+import type { Account, DepositDetails } from '@/core/types';
 import { Card, ProgressBar, StatCard } from '@/shared/components';
 import { formatCurrency, formatDate } from '@/shared/utils';
 import './DepositView.css';
@@ -16,6 +17,8 @@ export interface DepositViewProps {
 }
 
 export function DepositView({ account, depositDetails }: DepositViewProps) {
+  const { t } = useTranslation();
+  
   // Calculate days until maturity
   const daysUntilMaturity = useMemo(() => {
     if (!depositDetails?.maturity_date) return null;
@@ -60,10 +63,9 @@ export function DepositView({ account, depositDetails }: DepositViewProps) {
         <Card>
           <div className="deposit-view__empty">
             <PiggyBank size={48} />
-            <h3>Deposit Details Not Available</h3>
+            <h3>{t('pages.accounts.details.views.deposit.emptyTitle', 'Deposit Details Not Available')}</h3>
             <p>
-              Add deposit details to see interest rates, maturity information,
-              and returns.
+              {t('pages.accounts.details.views.deposit.emptyDescription', 'Add deposit details to track your fixed deposits, recurring deposits, and interest earnings.')}
             </p>
           </div>
         </Card>
@@ -124,7 +126,7 @@ export function DepositView({ account, depositDetails }: DepositViewProps) {
       {/* Stats Grid */}
       <div className="deposit-view__stats">
         <StatCard
-          label="Principal Amount"
+          label={t('pages.accounts.details.views.deposit.principalAmount', 'Principal Amount')}
           value={formatCurrency(
             depositDetails.principal_amount,
             account.currency
@@ -133,13 +135,13 @@ export function DepositView({ account, depositDetails }: DepositViewProps) {
         />
 
         <StatCard
-          label="Current Value"
+          label={t('pages.accounts.details.views.deposit.currentValue', 'Current Value')}
           value={formatCurrency(depositDetails.current_value, account.currency)}
           icon={<TrendingUp size={20} />}
         />
 
         <StatCard
-          label="Interest Earned"
+          label={t('pages.accounts.details.views.deposit.interestEarned', 'Interest Earned')}
           value={formatCurrency(
             depositDetails.total_interest_earned,
             account.currency
@@ -149,7 +151,7 @@ export function DepositView({ account, depositDetails }: DepositViewProps) {
         />
 
         <StatCard
-          label="Interest Rate"
+          label={t('pages.accounts.details.views.deposit.interestRate', 'Interest Rate')}
           value={`${depositDetails.interest_rate}% p.a.`}
           icon={<TrendingUp size={20} />}
         />

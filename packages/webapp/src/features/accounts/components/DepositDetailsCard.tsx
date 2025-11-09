@@ -14,6 +14,8 @@ import {
 import { useEffect, useState } from 'react';
 import { getDepositAccountDetails } from '@/core/api/depositApi';
 import { useFirebaseTransactionStore } from '@/core/stores/firebaseTransactionStore';
+import { formatCurrency } from '@/utils';
+import { usePreferences } from '@/hooks/usePreferences';
 import './DepositDetailsCard.css';
 
 export interface DepositDetailsCardProps {
@@ -47,14 +49,6 @@ interface DepositCalculation {
   effectiveRate?: number;
 }
 
-const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    maximumFractionDigits: 0,
-  }).format(amount);
-};
-
 const getDaysUntilMaturity = (maturityDate: string): number => {
   const days = Math.ceil(
     (new Date(maturityDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
@@ -75,6 +69,7 @@ export function DepositDetailsCard({ accountId }: DepositDetailsCardProps) {
   const [error, setError] = useState<string | null>(null);
   const [showInterestHistory, setShowInterestHistory] = useState(false);
 
+  const { preferences } = usePreferences();
   const transactionStore = useFirebaseTransactionStore();
   const interestTransactions =
     transactionStore.transactions?.filter(
@@ -160,7 +155,11 @@ export function DepositDetailsCard({ accountId }: DepositDetailsCardProps) {
               Principal Amount
             </span>
             <span className="deposit-details-card__item-value">
-              {formatCurrency(calculation.principal)}
+              {formatCurrency(
+                calculation.principal,
+                preferences?.currency || 'INR',
+                preferences?.locale || 'en-IN'
+              )}
             </span>
           </div>
         </div>
@@ -175,7 +174,11 @@ export function DepositDetailsCard({ accountId }: DepositDetailsCardProps) {
               Current Value
             </span>
             <span className="deposit-details-card__item-value deposit-details-card__item-value--primary">
-              {formatCurrency(account.balance || calculation.principal)}
+              {formatCurrency(
+                account.balance || calculation.principal,
+                preferences?.currency || 'INR',
+                preferences?.locale || 'en-IN'
+              )}
             </span>
           </div>
         </div>
@@ -205,11 +208,19 @@ export function DepositDetailsCard({ accountId }: DepositDetailsCardProps) {
               Interest Earned
             </span>
             <span className="deposit-details-card__item-value deposit-details-card__item-value--success">
-              {formatCurrency(calculation.interestEarned)}
+              {formatCurrency(
+                calculation.interestEarned,
+                preferences?.currency || 'INR',
+                preferences?.locale || 'en-IN'
+              )}
             </span>
             {calculation.tdsAmount > 0 && (
               <span className="deposit-details-card__item-subtitle">
-                TDS Deducted: {formatCurrency(calculation.tdsAmount)}
+                TDS Deducted: {formatCurrency(
+                  calculation.tdsAmount,
+                  preferences?.currency || 'INR',
+                  preferences?.locale || 'en-IN'
+                )}
               </span>
             )}
           </div>
@@ -225,7 +236,11 @@ export function DepositDetailsCard({ accountId }: DepositDetailsCardProps) {
               Maturity Amount
             </span>
             <span className="deposit-details-card__item-value">
-              {formatCurrency(calculation.maturityAmount)}
+              {formatCurrency(
+                calculation.maturityAmount,
+                preferences?.currency || 'INR',
+                preferences?.locale || 'en-IN'
+              )}
             </span>
           </div>
         </div>
@@ -387,7 +402,11 @@ export function DepositDetailsCard({ accountId }: DepositDetailsCardProps) {
                     {tx.description || 'Interest Credit'}
                   </div>
                   <div className="deposit-details-card__history-item-amount">
-                    {formatCurrency(tx.amount)}
+                    {formatCurrency(
+                      tx.amount,
+                      preferences?.currency || 'INR',
+                      preferences?.locale || 'en-IN'
+                    )}
                   </div>
                 </div>
               ))}
@@ -395,7 +414,9 @@ export function DepositDetailsCard({ accountId }: DepositDetailsCardProps) {
                 <span>Total Interest Received:</span>
                 <span className="deposit-details-card__history-total-amount">
                   {formatCurrency(
-                    interestTransactions.reduce((sum, tx) => sum + tx.amount, 0)
+                    interestTransactions.reduce((sum, tx) => sum + tx.amount, 0),
+                    preferences?.currency || 'INR',
+                    preferences?.locale || 'en-IN'
                   )}
                 </span>
               </div>

@@ -1,10 +1,9 @@
 /**
  * Pagination Component
- * Navigate through pages of data
+ * Navigate through pages of data using Radix UI components
  */
 
 import { Button } from './Button';
-import './Pagination.css';
 
 export interface PaginationProps {
   currentPage: number;
@@ -12,7 +11,6 @@ export interface PaginationProps {
   onPageChange: (page: number) => void;
   maxVisible?: number;
   showFirstLast?: boolean;
-  className?: string;
 }
 
 export function Pagination({
@@ -21,7 +19,6 @@ export function Pagination({
   onPageChange,
   maxVisible = 5,
   showFirstLast = true,
-  className = '',
 }: PaginationProps) {
   if (totalPages <= 1) return null;
 
@@ -66,15 +63,22 @@ export function Pagination({
   const pageNumbers = getPageNumbers();
 
   return (
-    <nav className={`pagination ${className}`} aria-label="Pagination">
-      <div className="pagination__controls">
+    <nav aria-label="Pagination">
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 'var(--space-1)',
+          flexWrap: 'wrap',
+        }}
+      >
         {showFirstLast && (
           <Button
             variant="ghost"
             size="small"
             onClick={() => onPageChange(1)}
             disabled={currentPage === 1}
-            aria-label="Go to first page"
           >
             ««
           </Button>
@@ -85,18 +89,26 @@ export function Pagination({
           size="small"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          aria-label="Go to previous page"
         >
           ‹
         </Button>
 
-        <div className="pagination__pages">
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 'var(--space-1)',
+          }}
+        >
           {pageNumbers.map((page) => {
             if (page === '...') {
               return (
                 <span
                   key={`ellipsis-${Math.random()}`}
-                  className="pagination__ellipsis"
+                  style={{
+                    padding: 'var(--space-1) var(--space-2)',
+                    color: 'var(--color-text-tertiary)',
+                  }}
                 >
                   ...
                 </span>
@@ -112,8 +124,6 @@ export function Pagination({
                 variant={isActive ? 'primary' : 'ghost'}
                 size="small"
                 onClick={() => onPageChange(pageNumber)}
-                aria-label={`Go to page ${pageNumber}`}
-                aria-current={isActive ? 'page' : undefined}
               >
                 {pageNumber}
               </Button>
@@ -126,7 +136,6 @@ export function Pagination({
           size="small"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          aria-label="Go to next page"
         >
           ›
         </Button>
@@ -137,14 +146,20 @@ export function Pagination({
             size="small"
             onClick={() => onPageChange(totalPages)}
             disabled={currentPage === totalPages}
-            aria-label="Go to last page"
           >
             »»
           </Button>
         )}
       </div>
 
-      <div className="pagination__info">
+      <div
+        style={{
+          textAlign: 'center',
+          marginTop: 'var(--space-2)',
+          fontSize: 'var(--font-size-1)',
+          color: 'var(--color-text-secondary)',
+        }}
+      >
         Page {currentPage} of {totalPages}
       </div>
     </nav>

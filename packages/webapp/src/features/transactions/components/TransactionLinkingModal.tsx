@@ -6,8 +6,9 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { ArrowRight, CheckCircle, Link2, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import type { Transaction } from '@/core/db/types';
+import type { Transaction } from '@/core/types';
 import { useAccountStore, useTransactionStore } from '@/core/stores';
+import { timestampToDate } from '@/core/utils/firebase';
 import { Button } from '@/shared/components';
 import { formatCurrency, formatDate } from '@/shared/utils';
 import './TransactionLinkingModal.css';
@@ -51,8 +52,8 @@ export function TransactionLinkingModal({
         if (txn.account_id === sourceTransaction.account_id) return false;
 
         // Ideally within 1 day of source transaction
-        const sourceDateMs = new Date(sourceTransaction.date).getTime();
-        const txnDateMs = new Date(txn.date).getTime();
+        const sourceDateMs = timestampToDate(sourceTransaction.date).getTime();
+        const txnDateMs = timestampToDate(txn.date).getTime();
         const daysDiff =
           Math.abs(sourceDateMs - txnDateMs) / (1000 * 60 * 60 * 24);
 
@@ -61,9 +62,9 @@ export function TransactionLinkingModal({
       })
       .sort((a, b) => {
         // Sort by date proximity to source transaction
-        const sourceDateMs = new Date(sourceTransaction.date).getTime();
-        const aDiff = Math.abs(new Date(a.date).getTime() - sourceDateMs);
-        const bDiff = Math.abs(new Date(b.date).getTime() - sourceDateMs);
+        const sourceDateMs = timestampToDate(sourceTransaction.date).getTime();
+        const aDiff = Math.abs(timestampToDate(a.date).getTime() - sourceDateMs);
+        const bDiff = Math.abs(timestampToDate(b.date).getTime() - sourceDateMs);
         return aDiff - bDiff;
       });
   }, [transactions, sourceTransaction]);
@@ -174,7 +175,7 @@ export function TransactionLinkingModal({
                           {getAccountName(txn.account_id)}
                         </span>
                         <span className="transaction-link-card__date">
-                          {formatDate(txn.date)}
+                          {formatDate(timestampToDate(txn.date))}
                         </span>
                       </div>
                       <div className="transaction-link-card__body">

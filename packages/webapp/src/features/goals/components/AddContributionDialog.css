@@ -1,0 +1,186 @@
+/**
+ * Add Contribution Dialog Styles
+ * Modal for adding contributions to goals
+ */
+
+/* Dialog uses shared dialog-* classes from global styles */
+/* This file contains contribution-specific styles */
+
+/* Contribution Summary Section */
+.contribution-dialog__summary {
+  background-color: var(--color-bg-secondary, #f9fafb);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.contribution-dialog__progress {
+  margin-bottom: 12px;
+}
+
+.contribution-dialog__progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: var(--color-bg-tertiary, #e5e7eb);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.contribution-dialog__progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary, #3b82f6) 0%, var(--color-primary-light, #60a5fa) 100%);
+  border-radius: 4px;
+  transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.contribution-dialog__progress-text {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.contribution-dialog__progress-text span:first-child {
+  font-weight: 600;
+  color: var(--text-primary, #111827);
+}
+
+.contribution-dialog__progress-text span:last-child {
+  color: var(--text-secondary, #6b7280);
+}
+
+.contribution-dialog__remaining {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+  margin: 0;
+  text-align: center;
+}
+
+/* Form Container */
+.contribution-dialog__form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Form Fields - uses shared .form-field class */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary, #111827);
+}
+
+.form-required {
+  color: var(--color-error, #ef4444);
+  margin-left: 2px;
+}
+
+.form-hint {
+  font-size: 0.75rem;
+  color: var(--color-success, #10b981);
+  font-weight: 500;
+  margin: 4px 0 0 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.form-hint::before {
+  content: '✓';
+  font-size: 0.875rem;
+}
+
+/* Dialog Actions - uses shared .dialog-actions class */
+.dialog-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 8px;
+  margin-top: 8px;
+  border-top: 1px solid var(--border-primary, #e5e7eb);
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .contribution-dialog__summary {
+    padding: 12px;
+    margin-bottom: 20px;
+  }
+
+  .contribution-dialog__progress-text {
+    font-size: 0.8125rem;
+  }
+
+  .contribution-dialog__remaining {
+    font-size: 0.8125rem;
+  }
+
+  .contribution-dialog__form {
+    gap: 16px;
+  }
+
+  .dialog-actions {
+    flex-direction: column-reverse;
+  }
+
+  .dialog-actions button {
+    width: 100%;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .contribution-dialog__summary {
+    background-color: var(--color-bg-secondary-dark, #1f2937);
+  }
+
+  .contribution-dialog__progress-bar {
+    background-color: var(--color-bg-tertiary-dark, #374151);
+  }
+
+  .contribution-dialog__progress-fill {
+    background: linear-gradient(90deg, var(--color-primary-dark, #2563eb) 0%, var(--color-primary-light-dark, #3b82f6) 100%);
+  }
+
+  .form-hint {
+    color: var(--color-success-dark, #34d399);
+  }
+
+  .dialog-actions {
+    border-top-color: var(--border-primary-dark, #374151);
+  }
+}
+
+/* Animation for progress bar */
+@keyframes contribution-progress-fill {
+  from {
+    width: 0;
+  }
+  to {
+    width: var(--progress-width);
+  }
+}
+
+/* Focus States */
+.contribution-dialog__form input:focus,
+.contribution-dialog__form select:focus,
+.contribution-dialog__form textarea:focus {
+  outline: 2px solid var(--color-primary, #3b82f6);
+  outline-offset: 2px;
+}
+
+/* Accessibility */
+.contribution-dialog__form [aria-invalid="true"] {
+  border-color: var(--color-error, #ef4444);
+}
+
+.contribution-dialog__form [aria-describedby] {
+  margin-bottom: 0;
+}

@@ -408,6 +408,14 @@
 				"build",
 				"-quiet"
 			]
+		},
+		{
+			"type": "npm",
+			"script": "build",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "npm: build",
+			"detail": "pnpm run -r build"
 		}
 	],
 	"inputs": [

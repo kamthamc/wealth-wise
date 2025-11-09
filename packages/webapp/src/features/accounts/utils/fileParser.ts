@@ -9,6 +9,7 @@ export interface ParsedTransaction {
   amount: number;
   type: 'income' | 'expense' | 'transfer';
   category?: string;
+  reference?: string; // Bank transaction reference/ID
 }
 
 export interface ParsedData {
@@ -144,10 +145,12 @@ function parseCSVLine(line: string): string[] {
 }
 
 /**
- * Find the row index where the transaction table starts
- * Bank statements often have summary info at the top before the actual data table
+ * Finds the starting row of transaction data in Excel
+ * @deprecated Stubbed - Excel parsing not implemented with Firebase
  */
-function findTableStartRow(data: string[][]): number {
+// @ts-expect-error - Stubbed function for future implementation
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function _findTableStartRow(data: string[][]): number {
   // Look for common transaction table headers
   // Including bank-specific terms (HDFC: "Narration", "Chq./Ref.No.", "Value Dt", "Withdrawal Amt.", "Deposit Amt.")
   const headerKeywords = [
@@ -319,9 +322,12 @@ function isHeaderOrFooterLine(line: string): boolean {
 
 /**
  * Parse Excel file (.xlsx, .xls)
- * Note: Requires xlsx library to be installed
+ * Note: Excel import disabled to reduce bundle size - use CSV instead
  */
-export async function parseExcel(file: File): Promise<ParsedData> {
+export async function parseExcel(_file: File): Promise<ParsedData> {
+  throw new Error('Excel import not supported - please convert to CSV format');
+  
+  /* Commented out to reduce bundle size - use CSV instead
   try {
     // Dynamic import to avoid bundling if not used
     const XLSX = await import('xlsx');
@@ -414,14 +420,17 @@ export async function parseExcel(file: File): Promise<ParsedData> {
       'Excel parsing library not available. Please install xlsx package.'
     );
   }
+  */
 }
 
 /**
  * Parse PDF bank statement
- * Note: This is a basic implementation. Real-world bank PDFs vary significantly.
- * Consider using bank-specific parsers or OCR services for production.
+ * Note: PDF import disabled to reduce bundle size - use CSV instead
  */
-export async function parsePDF(file: File): Promise<ParsedData> {
+export async function parsePDF(_file: File): Promise<ParsedData> {
+  throw new Error('PDF import not supported - please convert to CSV format or use bank statement upload feature');
+  
+  /* Commented out to reduce bundle size
   try {
     // Dynamic import to avoid bundling if not used
     const pdfjsLib = await import('pdfjs-dist');
@@ -470,6 +479,7 @@ export async function parsePDF(file: File): Promise<ParsedData> {
       `Failed to parse PDF: ${error instanceof Error ? error.message : 'Unknown error'}`
     );
   }
+  */
 }
 
 /**
@@ -479,8 +489,11 @@ export async function parsePDF(file: File): Promise<ParsedData> {
  * - Multiple table formats
  * - OCR errors
  * - Regional date formats
+ * @deprecated Stubbed - PDF parsing not implemented with Firebase
  */
-function parseTransactionsFromText(text: string): ParsedTransaction[] {
+// @ts-expect-error - Stubbed function for future implementation
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function _parseTransactionsFromText(text: string): ParsedTransaction[] {
   const transactions: ParsedTransaction[] = [];
   const lines = text.split('\n');
 
@@ -649,6 +662,7 @@ export function detectFileFormat(
 
 /**
  * Parse any supported file format
+ * Currently only CSV is supported to reduce bundle size
  */
 export async function parseFile(file: File): Promise<ParsedData> {
   const format = detectFileFormat(file);
@@ -657,10 +671,10 @@ export async function parseFile(file: File): Promise<ParsedData> {
     case 'csv':
       return parseCSV(file);
     case 'excel':
-      return parseExcel(file);
+      throw new Error('Excel format not supported - please convert to CSV');
     case 'pdf':
-      return parsePDF(file);
+      throw new Error('PDF format not supported - please convert to CSV or use bank statement upload');
     default:
-      throw new Error(`Unsupported file format: ${file.name}`);
+      throw new Error(`Unsupported file format: ${file.name}. Only CSV files are supported.`);
   }
 }

@@ -1,221 +1,177 @@
 /**
- * Category Management Service
- * Handles CRUD operations for transaction categories
+ * Category Service
+ * Manages transaction categories with Firebase Cloud Functions
  */
 
-import { db } from '../db';
+import { httpsCallable } from 'firebase/functions';
+import { functions } from '@/core/firebase/firebase';
+import type { Category } from '@/core/types';
 
-export interface Category {
-  id: string;
-  name: string;
-  type: 'income' | 'expense';
-  icon?: string;
-  color?: string;
-  parent_id?: string;
-  is_default: boolean;
-  created_at: string;
+class CategoryService {
+  /**
+   * Get all categories (default + custom)
+   */
+  async getCategories(type?: 'income' | 'expense' | 'all'): Promise<Category[]> {
+    try {
+      const getCategoriesFn = httpsCallable<
+        { type?: 'income' | 'expense' | 'all' },
+        {
+          success: boolean;
+          categories: Category[];
+          total: number;
+          custom_count: number;
+          default_count: number;
+        }
+      >(functions, 'getCategories');
+
+      const result = await getCategoriesFn({ type: type || 'all' });
+      return result.data.categories;
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Get a specific category by ID
+   */
+  async getCategoryById(categoryId: string): Promise<Category | null> {
+    try {
+      const getCategoryFn = httpsCallable<
+        { categoryId: string },
+        { success: boolean; category: Category }
+      >(functions, 'getCategoryById');
+
+      const result = await getCategoryFn({ categoryId });
+      return result.data.category;
+    } catch (error) {
+      console.error('Error fetching category:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Create a custom category
+   */
+  async createCategory(input: CreateCategoryInput): Promise<Category> {
+    try {
+      const createCategoryFn = httpsCallable<
+        CreateCategoryInput,
+        { success: boolean; categoryId: string; message: string }
+      >(functions, 'createCategory');
+
+      const result = await createCategoryFn(input);
+
+      // Fetch the created category
+      const category = await this.getCategoryById(result.data.categoryId);
+      if (!category) {
+        throw new Error('Failed to fetch created category');
+      }
+
+      return category;
+    } catch (error) {
+      console.error('Error creating category:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update a custom category
+   */
+  async updateCategory(
+    categoryId: string,
+    updates: UpdateCategoryInput,
+  ): Promise<Category> {
+    try {
+      const updateCategoryFn = httpsCallable<
+        { categoryId: string; updates: UpdateCategoryInput },
+        { success: boolean; message: string }
+      >(functions, 'updateCategory');
+
+      await updateCategoryFn({ categoryId, updates });
+
+      // Fetch the updated category
+      const category = await this.getCategoryById(categoryId);
+      if (!category) {
+        throw new Error('Failed to fetch updated category');
+      }
+
+      return category;
+    } catch (error) {
+      console.error('Error updating category:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Delete a custom category
+   */
+  async deleteCategory(categoryId: string): Promise<void> {
+    try {
+      const deleteCategoryFn = httpsCallable<
+        { categoryId: string },
+        { success: boolean; message: string }
+      >(functions, 'deleteCategory');
+
+      await deleteCategoryFn({ categoryId });
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get category usage count
+   */
+  async getCategoryUsage(categoryId: string): Promise<number> {
+    try {
+      const getUsageFn = httpsCallable<
+        { categoryId: string },
+        { success: boolean; categoryId: string; usageCount: number }
+      >(functions, 'getCategoryUsage');
+
+      const result = await getUsageFn({ categoryId });
+      return result.data.usageCount;
+    } catch (error) {
+      console.error('Error getting category usage:', error);
+      return 0;
+    }
+  }
 }
 
+// Export types and constants for compatibility
+export type { Category } from '@/core/types';
+export type CategoryType = 'income' | 'expense';
 export interface CreateCategoryInput {
   name: string;
-  type: 'income' | 'expense';
+  type: CategoryType;
   icon?: string;
   color?: string;
-  parent_id?: string;
 }
+export type UpdateCategoryInput = Partial<CreateCategoryInput>;
 
-/**
- * Get all categories
- */
-export async function getAllCategories(): Promise<Category[]> {
-  try {
-    const result = await db.query(
-      'SELECT * FROM categories ORDER BY type, name'
-    );
-    return result.rows as Category[];
-  } catch (error) {
-    console.error('Error fetching categories:', error);
-    throw new Error('Failed to fetch categories');
-  }
-}
+// Export service instance and convenience functions
+export const categoryService = new CategoryService();
 
-/**
- * Get categories by type
- */
-export async function getCategoriesByType(
-  type: 'income' | 'expense'
-): Promise<Category[]> {
-  try {
-    const result = await db.query(
-      'SELECT * FROM categories WHERE type = $1 ORDER BY name',
-      [type]
-    );
-    return result.rows as Category[];
-  } catch (error) {
-    console.error('Error fetching categories by type:', error);
-    throw new Error('Failed to fetch categories');
-  }
-}
+export const getAllCategories = () => categoryService.getCategories('all');
 
-/**
- * Create a new category
- */
-export async function createCategory(
-  input: CreateCategoryInput
-): Promise<Category> {
-  try {
-    const result = await db.query(
-      `INSERT INTO categories (name, type, icon, color, parent_id, is_default)
-       VALUES ($1, $2, $3, $4, $5, false)
-       RETURNING *`,
-      [input.name, input.type, input.icon, input.color, input.parent_id]
-    );
-    return result.rows[0] as Category;
-  } catch (error) {
-    console.error('Error creating category:', error);
-    throw new Error('Failed to create category');
-  }
-}
+export const getCategoriesByType = (type: CategoryType) =>
+  categoryService.getCategories(type);
 
-/**
- * Update a category
- */
-export async function updateCategory(
-  id: string,
-  input: Partial<CreateCategoryInput>
-): Promise<Category> {
-  try {
-    const fields: string[] = [];
-    const values: any[] = [];
-    let paramCount = 1;
+export const getCategoryById = (id: string) =>
+  categoryService.getCategoryById(id);
 
-    if (input.name !== undefined) {
-      fields.push(`name = $${paramCount++}`);
-      values.push(input.name);
-    }
-    if (input.type !== undefined) {
-      fields.push(`type = $${paramCount++}`);
-      values.push(input.type);
-    }
-    if (input.icon !== undefined) {
-      fields.push(`icon = $${paramCount++}`);
-      values.push(input.icon);
-    }
-    if (input.color !== undefined) {
-      fields.push(`color = $${paramCount++}`);
-      values.push(input.color);
-    }
-    if (input.parent_id !== undefined) {
-      fields.push(`parent_id = $${paramCount++}`);
-      values.push(input.parent_id);
-    }
+export const createCategory = (input: CreateCategoryInput) =>
+  categoryService.createCategory(input);
 
-    if (fields.length === 0) {
-      throw new Error('No fields to update');
-    }
+export const updateCategory = (id: string, input: UpdateCategoryInput) =>
+  categoryService.updateCategory(id, input);
 
-    values.push(id);
+export const deleteCategory = (id: string) =>
+  categoryService.deleteCategory(id);
 
-    const result = await db.query(
-      `UPDATE categories SET ${fields.join(', ')} WHERE id = $${paramCount} RETURNING *`,
-      values
-    );
+export const getCategoryUsage = (id: string) =>
+  categoryService.getCategoryUsage(id);
 
-    if (result.rows.length === 0) {
-      throw new Error('Category not found');
-    }
+export default categoryService;
 
-    return result.rows[0] as Category;
-  } catch (error) {
-    console.error('Error updating category:', error);
-    throw new Error('Failed to update category');
-  }
-}
-
-/**
- * Delete a category
- */
-export async function deleteCategory(id: string): Promise<void> {
-  try {
-    // Check if category is default
-    const category = await db.query(
-      'SELECT is_default FROM categories WHERE id = $1',
-      [id]
-    );
-
-    if (category.rows.length === 0) {
-      throw new Error('Category not found');
-    }
-
-    if ((category.rows[0] as Category).is_default) {
-      throw new Error('Cannot delete default category');
-    }
-
-    // Delete category
-    await db.query('DELETE FROM categories WHERE id = $1', [id]);
-  } catch (error) {
-    console.error('Error deleting category:', error);
-    throw new Error('Failed to delete category');
-  }
-}
-
-/**
- * Get default categories for initialization
- */
-export function getDefaultCategories(): CreateCategoryInput[] {
-  return [
-    // Income categories
-    { name: 'Salary', type: 'income', icon: '💼', color: '#10B981' },
-    { name: 'Freelance', type: 'income', icon: '💻', color: '#10B981' },
-    {
-      name: 'Investment Returns',
-      type: 'income',
-      icon: '📈',
-      color: '#10B981',
-    },
-    { name: 'Business', type: 'income', icon: '🏢', color: '#10B981' },
-    { name: 'Rental Income', type: 'income', icon: '🏠', color: '#10B981' },
-    { name: 'Other Income', type: 'income', icon: '💰', color: '#10B981' },
-
-    // Expense categories
-    { name: 'Food & Dining', type: 'expense', icon: '🍔', color: '#EF4444' },
-    { name: 'Groceries', type: 'expense', icon: '🛒', color: '#EF4444' },
-    { name: 'Transportation', type: 'expense', icon: '🚗', color: '#EF4444' },
-    { name: 'Shopping', type: 'expense', icon: '🛍️', color: '#EF4444' },
-    { name: 'Entertainment', type: 'expense', icon: '🎬', color: '#EF4444' },
-    {
-      name: 'Bills & Utilities',
-      type: 'expense',
-      icon: '📄',
-      color: '#EF4444',
-    },
-    { name: 'Healthcare', type: 'expense', icon: '🏥', color: '#EF4444' },
-    { name: 'Education', type: 'expense', icon: '📚', color: '#EF4444' },
-    { name: 'Travel', type: 'expense', icon: '✈️', color: '#EF4444' },
-    { name: 'Rent', type: 'expense', icon: '🏠', color: '#EF4444' },
-    { name: 'Insurance', type: 'expense', icon: '🛡️', color: '#EF4444' },
-    { name: 'Subscriptions', type: 'expense', icon: '📱', color: '#EF4444' },
-    { name: 'Other Expenses', type: 'expense', icon: '💸', color: '#EF4444' },
-  ];
-}
-
-/**
- * Initialize default categories
- */
-export async function initializeDefaultCategories(): Promise<void> {
-  try {
-    const defaultCategories = getDefaultCategories();
-
-    for (const category of defaultCategories) {
-      await db.query(
-        `INSERT INTO categories (name, type, icon, color, is_default)
-         VALUES ($1, $2, $3, $4, true)
-         ON CONFLICT (name) DO NOTHING`,
-        [category.name, category.type, category.icon, category.color]
-      );
-    }
-  } catch (error) {
-    console.error('Error initializing default categories:', error);
-    throw new Error('Failed to initialize default categories');
-  }
-}

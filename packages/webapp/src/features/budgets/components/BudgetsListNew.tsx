@@ -12,6 +12,7 @@ import {
   Wallet,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { timestampToDate } from '@/core/utils/firebase';
 import {
   Button,
   EmptyState,
@@ -233,7 +234,7 @@ function BudgetCard({ budget }: { budget: BudgetWithProgress }) {
             <h3 className="budget-card__name">{budget.name}</h3>
             <p className="budget-card__period">
               {getBudgetPeriodName(budget.period_type)} •{' '}
-              {formatDateRange(budget.start_date, budget.end_date)}
+              {formatDateRange(timestampToDate(budget.start_date), budget.end_date ? timestampToDate(budget.end_date) : undefined)}
             </p>
           </div>
         </div>
@@ -273,12 +274,12 @@ function BudgetCard({ budget }: { budget: BudgetWithProgress }) {
       {/* Categories */}
       <div className="budget-card__categories">
         {budget.progress.slice(0, 3).map((cat) => (
-          <div key={cat.category} className="budget-category-chip">
-            <span className="budget-category-chip__name">{cat.category}</span>
+          <div key={cat.category || 'unknown'} className="budget-category-chip">
+            <span className="budget-category-chip__name">{cat.category || 'Unknown'}</span>
             <span
-              className={`budget-category-chip__status budget-category-chip__status--${cat.status}`}
+              className={`budget-category-chip__status budget-category-chip__status--${cat.status || 'under'}`}
             >
-              {formatBudgetPercentage(cat.percent_used)}
+              {formatBudgetPercentage(cat.percent_used || 0)}
             </span>
           </div>
         ))}

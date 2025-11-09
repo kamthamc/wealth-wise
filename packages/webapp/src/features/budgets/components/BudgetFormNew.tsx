@@ -420,7 +420,7 @@ export function BudgetFormNew({
                             size="small"
                             onClick={() => handleRemoveCategory(index)}
                             className="remove-category-btn"
-                            title="Remove category"
+                            aria-label="Remove category"
                           >
                             <Trash2 size={16} />
                           </Button>

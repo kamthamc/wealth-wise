@@ -15,13 +15,38 @@ export {
   getTransactionTypes,
   updateAccount,
 } from './accounts';
+
+// Export analytics functions
+export {
+  calculateNetWorth,
+  getCashFlow,
+  getDashboard,
+  getPortfolioSummary,
+  getTransactionAnalytics,
+} from './analytics';
+// Export user preferences functions
+export {
+  getUserPreferences,
+  updateUserPreferences,
+  resetUserPreferences,
+} from './preferences';
 // Export budget functions
 export {
   calculateBudgetProgress,
   createBudget,
   deleteBudget,
+  getBudgetTransactions,
   updateBudget,
 } from './budgets';
+// Export category functions
+export {
+  createCategory,
+  deleteCategory,
+  getCategories,
+  getCategoryById,
+  getCategoryUsage,
+  updateCategory,
+} from './categories';
 // Export dashboard and caching functions
 export {
   computeAndCacheDashboard,
@@ -42,6 +67,9 @@ export {
   calculateRDMaturity,
   calculateSavingsInterest,
   getDepositAccountDetails,
+  getDeposits,
+  getInterestPayments,
+  recordInterestPayment,
 } from './deposits';
 
 // Export duplicate detection functions
@@ -52,6 +80,7 @@ export {
   calculateGoalProgress,
   createGoal,
   deleteGoal,
+  getGoals,
   updateGoal,
 } from './goals';
 // Export import/export and bulk operations
@@ -63,12 +92,20 @@ export {
 } from './import';
 // Export investment data functions
 export {
+  addHolding,
+  addInvestmentTransaction,
   clearInvestmentCache,
+  deleteHolding,
+  deleteInvestmentTransaction,
   fetchETFData,
   fetchMutualFundData,
   fetchStockData,
   fetchStockHistory,
+  getHoldings,
   getInvestmentsSummary,
+  getInvestmentTransactions,
+  updateHolding,
+  updateInvestmentTransaction,
 } from './investments';
 // Export Pub/Sub and scheduled functions
 export {
@@ -87,3 +124,8 @@ export {
   getTransactionStats,
   updateTransaction,
 } from './transactions';
+
+// Export file parsing functions
+export { parseCSV } from './parsing/csvParser';
+export { parseExcel } from './parsing/excelParser';
+export { parsePDF } from './parsing/pdfParser';

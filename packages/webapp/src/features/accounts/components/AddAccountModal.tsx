@@ -17,10 +17,16 @@ import {
   Smartphone,
   TrendingUp,
   Wallet,
+  Home,
+  Shield,
+  Trophy,
+  Coins,
+  BarChart3,
+  Building2,
 } from 'lucide-react';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Account, InterestPayoutFrequency } from '@/core/db/types';
+import type { Account, InterestPayoutFrequency } from '@/core/types';
 import { Button, CurrencyInput, Input } from '@/shared/components';
 import type { AccountFormData, AccountType } from '../types';
 import {
@@ -38,19 +44,52 @@ export interface AddAccountModalProps {
 
 // Icon mapping for account types (small size for dropdown)
 const ACCOUNT_TYPE_ICONS: Record<AccountType, React.ReactNode> = {
+  // Banking & Cash
   bank: <Landmark size={16} />,
   credit_card: <CreditCard size={16} />,
   upi: <Smartphone size={16} />,
-  brokerage: <TrendingUp size={16} />,
   cash: <Banknote size={16} />,
   wallet: <Wallet size={16} />,
+  // Deposits & Savings
   fixed_deposit: <Lock size={16} />,
-  kvp: <FileText size={16} />,
-  nsc: <FileText size={16} />,
-  post_office: <Landmark size={16} />,
-  ppf: <Lock size={16} />,
   recurring_deposit: <PiggyBank size={16} />,
+  ppf: <Lock size={16} />,
+  nsc: <FileText size={16} />,
+  kvp: <FileText size={16} />,
   scss: <Landmark size={16} />,
+  post_office: <Landmark size={16} />,
+  ssy: <PiggyBank size={16} />,
+  // Investments & Brokerage
+  brokerage: <TrendingUp size={16} />,
+  mutual_fund: <BarChart3 size={16} />,
+  stocks: <TrendingUp size={16} />,
+  bonds: <FileText size={16} />,
+  etf: <BarChart3 size={16} />,
+  // Insurance
+  term_insurance: <Shield size={16} />,
+  endowment: <Shield size={16} />,
+  money_back: <Shield size={16} />,
+  ulip: <Shield size={16} />,
+  child_plan: <Shield size={16} />,
+  // Retirement
+  nps: <Trophy size={16} />,
+  apy: <Trophy size={16} />,
+  epf: <Trophy size={16} />,
+  vpf: <Trophy size={16} />,
+  // Real Estate
+  property: <Home size={16} />,
+  reit: <Building2 size={16} />,
+  invit: <Building2 size={16} />,
+  // Precious Metals
+  gold: <Coins size={16} />,
+  silver: <Coins size={16} />,
+  // Alternative Investments
+  p2p_lending: <TrendingUp size={16} />,
+  chit_fund: <PiggyBank size={16} />,
+  cryptocurrency: <Coins size={16} />,
+  commodity: <Coins size={16} />,
+  hedge_fund: <BarChart3 size={16} />,
+  angel_investment: <TrendingUp size={16} />,
 };
 
 // Categorized account types
@@ -313,7 +352,10 @@ export function AddAccountModal({
                       });
                     }}
                     currency={formData.currency}
-                    placeholder="50000"
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.creditLimit',
+                      '50000'
+                    )}
                   />
                 </div>
 
@@ -343,7 +385,10 @@ export function AddAccountModal({
                         },
                       });
                     }}
-                    placeholder="1"
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.billingCycleDay',
+                      '1'
+                    )}
                   />
                 </div>
 
@@ -373,7 +418,10 @@ export function AddAccountModal({
                         },
                       });
                     }}
-                    placeholder="20"
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.paymentDueDay',
+                      '20'
+                    )}
                   />
                 </div>
 
@@ -480,7 +528,10 @@ export function AddAccountModal({
                         },
                       });
                     }}
-                    placeholder="36.0"
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.interestRate',
+                      '36.0'
+                    )}
                   />
                 </div>
               </>
@@ -510,7 +561,10 @@ export function AddAccountModal({
                         },
                       });
                     }}
-                    placeholder="Zerodha, Groww, etc."
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.brokerName',
+                      'Zerodha, Groww, etc.'
+                    )}
                   />
                 </div>
 
@@ -537,7 +591,10 @@ export function AddAccountModal({
                         },
                       });
                     }}
-                    placeholder="1234567890123456"
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.dematAccount',
+                      '1234567890123456'
+                    )}
                   />
                 </div>
 
@@ -564,7 +621,10 @@ export function AddAccountModal({
                         },
                       });
                     }}
-                    placeholder="AB1234"
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.tradingAccount',
+                      'AB1234'
+                    )}
                   />
                 </div>
 
@@ -589,7 +649,10 @@ export function AddAccountModal({
                         },
                       });
                     }}
-                    placeholder="IN300***"
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.dpId',
+                      'IN300***'
+                    )}
                   />
                 </div>
 
@@ -614,7 +677,10 @@ export function AddAccountModal({
                         },
                       });
                     }}
-                    placeholder="ABC123"
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.clientId',
+                      'ABC123'
+                    )}
                   />
                 </div>
               </>
@@ -652,7 +718,10 @@ export function AddAccountModal({
                         },
                       });
                     }}
-                    placeholder="7.5"
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.depositInterestRate',
+                      '7.5'
+                    )}
                   />
                 </div>
 
@@ -684,7 +753,10 @@ export function AddAccountModal({
                         },
                       });
                     }}
-                    placeholder="12"
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.depositTenure',
+                      '12'
+                    )}
                   />
                 </div>
 
@@ -836,7 +908,10 @@ export function AddAccountModal({
                         },
                       });
                     }}
-                    placeholder="HDFC Bank"
+                    placeholder={t(
+                      'pages.accounts.modal.placeholders.bankName',
+                      'HDFC Bank'
+                    )}
                   />
                 </div>
               </>

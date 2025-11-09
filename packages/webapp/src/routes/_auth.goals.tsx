@@ -12,10 +12,6 @@ export const Route = createFileRoute('/_auth/goals')({
 
 function GoalsPage() {
   return (
-    <div className="container">
-      <main id="main-content">
-        <GoalsList />
-      </main>
-    </div>
+      <GoalsList />
   );
 }

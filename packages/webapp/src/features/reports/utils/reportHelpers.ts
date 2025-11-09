@@ -3,7 +3,8 @@
  * Helper functions for report calculations and data processing
  */
 
-import type { Transaction } from '@/core/db/types';
+import { timestampToDate } from '@/core/utils/firebase';
+import type { Transaction } from '@/core/types';
 import type {
   CategoryBreakdown,
   DateRange,
@@ -81,7 +82,8 @@ export function calculateIncomeExpenseData(
 
   // Aggregate transactions
   transactions.forEach((t) => {
-    const dateKey = t.date.toISOString().split('T')[0];
+    const date = timestampToDate(t.date);
+    const dateKey = date.toISOString().split('T')[0];
     if (dateKey) {
       const data = dayMap.get(dateKey);
 
@@ -97,7 +99,7 @@ export function calculateIncomeExpenseData(
   });
 
   return Array.from(dayMap.values()).sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    (a, b) => timestampToDate(a.date).getTime() - timestampToDate(b.date).getTime()
   );
 }
 
@@ -151,7 +153,8 @@ export function calculateMonthlyTrends(
 
   // Aggregate transactions
   transactions.forEach((t) => {
-    const key = `${t.date.getFullYear()}-${String(t.date.getMonth() + 1).padStart(2, '0')}`;
+    const date = timestampToDate(t.date);
+    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     const data = monthMap.get(key);
 
     if (data) {

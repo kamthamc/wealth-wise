@@ -1,119 +1,58 @@
 /**
  * Store initialization and management utilities
  * Provides hooks and utilities for store lifecycle management
+ * Now using Firebase as the default backend
  */
 
 import { useEffect } from 'react';
-import { db } from '@/core/db';
-import { depositInterestService } from '../services/depositInterestService';
-import { useAccountStore } from './accountStore';
+import { useFirebaseAccountStore } from './firebaseAccountStore';
+import { useFirebaseBudgetStore } from './firebaseBudgetStore';
+import { useFirebaseTransactionStore } from './firebaseTransactionStore';
 import { useAppStore } from './appStore';
+import { useAuthStore } from './authStore';
 
 /**
- * Initialize all stores and database
- * Call this in the root component
+ * Initialize all stores with Firebase
+ * Call this in the root component after user authentication
  */
 export function useInitializeStores() {
   useEffect(() => {
-    let timeoutId: ReturnType<typeof setTimeout>;
-    let retryCount = 0;
-    const MAX_RETRIES = 2;
+    const user = useAuthStore.getState().user;
+    
+    if (!user) {
+      console.log('[App] No user authenticated, skipping store initialization');
+      useAppStore.getState().setInitializing(false);
+      useAppStore.getState().setDatabaseReady(false);
+      return;
+    }
 
-    const initialize = async () => {
-      try {
-        console.log('[App] Starting initialization...');
-        useAppStore.getState().setInitializing(true);
+    console.log('[App] Initializing Firebase stores for user:', user.uid);
+    useAppStore.getState().setInitializing(true);
 
-        // Set a timeout to prevent infinite loading
-        timeoutId = setTimeout(() => {
-          console.error('[App] Initialization timeout - forcing completion');
-          useAppStore.getState().setInitializing(false);
-          useAppStore.getState().setDatabaseReady(false);
-        }, 15000); // 15 second timeout
+    try {
+      // Initialize Firebase real-time listeners
+      useFirebaseAccountStore.getState().initialize();
+      useFirebaseBudgetStore.getState().initialize();
+      useFirebaseTransactionStore.getState().initialize();
 
-        // Initialize database with retry logic
-        console.log('[App] Initializing database...');
-        let dbInitialized = false;
+      // Firebase is ready immediately (no database initialization needed)
+      useAppStore.getState().setDatabaseReady(true);
+      useAppStore.getState().setInitializing(false);
+      
+      console.log('[App] Firebase stores initialized successfully');
+    } catch (error) {
+      console.error('[App] Failed to initialize stores:', error);
+      useAppStore.getState().setInitializing(false);
+      useAppStore.getState().setDatabaseReady(false);
+    }
 
-        while (!dbInitialized && retryCount <= MAX_RETRIES) {
-          try {
-            await db.initialize();
-            dbInitialized = true;
-            console.log('[App] Database initialized successfully');
-            useAppStore.getState().setDatabaseReady(true);
-          } catch (error) {
-            retryCount++;
-            console.error(
-              `[App] Database initialization attempt ${retryCount} failed:`,
-              error
-            );
-
-            if (retryCount <= MAX_RETRIES) {
-              console.log(
-                `[App] Retrying initialization (attempt ${retryCount + 1}/${MAX_RETRIES + 1})...`
-              );
-              // On retry, try to clear and reinitialize
-              try {
-                await db.clearAndReinitialize();
-                dbInitialized = true;
-                console.log('[App] Database recovered after clearing');
-                useAppStore.getState().setDatabaseReady(true);
-              } catch (retryError) {
-                console.error('[App] Retry failed:', retryError);
-              }
-            } else {
-              throw error;
-            }
-          }
-        }
-
-        // Fetch initial data (non-blocking)
-        if (dbInitialized) {
-          console.log('[App] Fetching initial data...');
-          try {
-            await useAccountStore.getState().fetchAccounts();
-            console.log('[App] Initial data loaded successfully');
-          } catch (error) {
-            console.warn('[App] Failed to fetch initial data:', error);
-            // Continue anyway - data can be loaded later
-          }
-
-          // Process pending deposit interest payments (non-blocking)
-          console.log('[App] Processing pending deposit interest...');
-          try {
-            const result =
-              await depositInterestService.processAllPendingInterest();
-            if (result.processed > 0) {
-              console.log(
-                `[App] Processed ${result.processed} interest payments (₹${result.totalInterest.toFixed(2)})`
-              );
-            }
-            if (result.errors.length > 0) {
-              console.warn('[App] Interest processing errors:', result.errors);
-            }
-          } catch (error) {
-            console.warn('[App] Failed to process deposit interest:', error);
-            // Continue anyway - can be processed later
-          }
-        }
-
-        clearTimeout(timeoutId);
-        useAppStore.getState().setInitializing(false);
-        console.log('[App] Initialization complete');
-      } catch (error) {
-        console.error('[App] Failed to initialize after all retries:', error);
-        clearTimeout(timeoutId);
-        useAppStore.getState().setInitializing(false);
-        useAppStore.getState().setDatabaseReady(false);
-      }
-    };
-
-    initialize();
-
+    // Cleanup listeners on unmount
     return () => {
-      if (timeoutId) clearTimeout(timeoutId);
+      useFirebaseAccountStore.getState().cleanup();
+      useFirebaseBudgetStore.getState().cleanup();
+      useFirebaseTransactionStore.getState().cleanup();
     };
-  }, []); // Empty deps - run once on mount
+  }, [useAuthStore((state) => state.user?.uid)]); // Re-initialize when user changes
 }
 
 /**
@@ -122,12 +61,17 @@ export function useInitializeStores() {
  */
 export function useResetStores() {
   const resetApp = useAppStore((state) => state.reset);
-  const resetAccounts = useAccountStore((state) => state.reset);
 
   return () => {
+    // Cleanup Firebase listeners
+    useFirebaseAccountStore.getState().cleanup();
+    useFirebaseBudgetStore.getState().cleanup();
+    useFirebaseTransactionStore.getState().cleanup();
+    
+    // Reset app state
     resetApp();
-    resetAccounts();
-    // Add other store resets as they are created
+    
+    console.log('[App] All stores reset');
   };
 }
 

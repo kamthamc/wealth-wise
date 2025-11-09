@@ -1,58 +1,56 @@
 /**
- * TypeScript types for database entities
- * Matches the SQL schema definitions
+ * Database Types
+ * 
+ * Re-exports types from @svc/shared-types for cross-platform consistency.
+ * Webapp-specific utility types are defined below.
  */
 
-export type AccountType =
-  | 'bank'
-  | 'credit_card'
-  | 'upi'
-  | 'brokerage'
-  | 'cash'
-  | 'wallet'
-  | 'fixed_deposit'
-  | 'recurring_deposit'
-  | 'ppf'
-  | 'nsc'
-  | 'kvp'
-  | 'scss'
-  | 'post_office';
+// ==================== Shared Types (Import for use in local type definitions) ====================
+import type {
+  // Account & Currency Types - used in local type definitions
+  AccountType,
+  
+  // Status Types - used in local type definitions
+  DepositStatus,
+  CreditCardStatus,
+  BrokerageStatus,
+  
+  // Enumerations - used in local type definitions
+  InterestPayoutFrequency,
+  CardNetwork,
+  CardType,
+  BrokerageAccountType,
+  TaxDeductionSection,
+  TransactionType,
+  RecurringFrequency,
+  GoalPriority,
+  GoalStatus,
+  CategoryType,
+} from '@svc/wealth-wise-shared-types';
 
-export type DepositStatus =
-  | 'active'
-  | 'matured'
-  | 'prematurely_closed'
-  | 'renewed';
+// Re-export types from shared-types that are needed by webapp
+export type {
+  AccountType,
+  Currency,
+  DepositStatus,
+  CreditCardStatus,
+  BrokerageStatus,
+  InterestPayoutFrequency,
+  CardNetwork,
+  CardType,
+  BrokerageAccountType,
+  TaxDeductionSection,
+  TransactionType,
+  RecurringFrequency,
+  GoalPriority,
+  GoalStatus,
+  CategoryType,
+} from '@svc/wealth-wise-shared-types';
 
-export type CreditCardStatus = 'active' | 'blocked' | 'closed';
+// ==================== Webapp-Specific Types ====================
 
-export type CardNetwork = 'visa' | 'mastercard' | 'amex' | 'rupay' | 'diners';
-
-export type CardType = 'credit' | 'charge';
-
-export type BrokerageAccountType = 'trading' | 'demat' | 'combined';
-
-export type BrokerageStatus = 'active' | 'dormant' | 'closed';
-
-export type InterestPayoutFrequency =
-  | 'monthly'
-  | 'quarterly'
-  | 'annually'
-  | 'maturity';
-
-export type TaxDeductionSection = '80C' | '80D' | '80G' | 'none';
-
-export type TransactionType = 'income' | 'expense' | 'transfer';
-
-export type RecurringFrequency = 'daily' | 'weekly' | 'monthly' | 'yearly';
-
+// Legacy type alias for backward compatibility
 export type BudgetPeriod = 'daily' | 'weekly' | 'monthly' | 'yearly';
-
-export type GoalPriority = 'low' | 'medium' | 'high';
-
-export type GoalStatus = 'active' | 'completed' | 'paused' | 'cancelled';
-
-export type CategoryType = 'income' | 'expense';
 
 /**
  * Account entity

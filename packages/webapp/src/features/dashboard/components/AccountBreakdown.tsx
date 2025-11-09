@@ -6,13 +6,14 @@
 import { useNavigate } from '@tanstack/react-router';
 import { ChevronRight, PieChart } from 'lucide-react';
 import { useMemo } from 'react';
-import type { AccountType } from '@/core/db/types';
+import type { AccountType } from '@/core/types';
 import { useAccountStore } from '@/core/stores';
 import {
   getAccountIcon,
   getAccountTypeName,
 } from '@/features/accounts/utils/accountHelpers';
-import { formatCurrency } from '@/shared/utils';
+import { formatCurrency } from '@/utils';
+import { usePreferences } from '@/hooks/usePreferences';
 import './AccountBreakdown.css';
 
 interface AccountTypeData {
@@ -24,24 +25,58 @@ interface AccountTypeData {
 }
 
 const ACCOUNT_TYPE_COLORS: Record<AccountType, string> = {
+  // Banking & Cash
   bank: '#3b82f6',
   credit_card: '#f59e0b',
   upi: '#8b5cf6',
-  brokerage: '#10b981',
   cash: '#6366f1',
   wallet: '#ec4899',
+  // Deposits & Savings
   fixed_deposit: '#f97316',
-  kvp: '#14b8a6',
-  nsc: '#22d3ee',
-  post_office: '#f43f5e',
-  ppf: '#eab308',
   recurring_deposit: '#34d399',
+  ppf: '#eab308',
+  nsc: '#22d3ee',
+  kvp: '#14b8a6',
   scss: '#f87171',
+  post_office: '#f43f5e',
+  ssy: '#fbbf24',
+  // Investments & Brokerage
+  brokerage: '#10b981',
+  mutual_fund: '#059669',
+  stocks: '#84cc16',
+  bonds: '#06b6d4',
+  etf: '#14b8a6',
+  // Insurance
+  term_insurance: '#6366f1',
+  endowment: '#8b5cf6',
+  money_back: '#a855f7',
+  ulip: '#c026d3',
+  child_plan: '#d946ef',
+  // Retirement
+  nps: '#f59e0b',
+  apy: '#f97316',
+  epf: '#fb923c',
+  vpf: '#fdba74',
+  // Real Estate
+  property: '#78716c',
+  reit: '#a8a29e',
+  invit: '#d6d3d1',
+  // Precious Metals
+  gold: '#fbbf24',
+  silver: '#d1d5db',
+  // Alternative Investments
+  p2p_lending: '#4ade80',
+  chit_fund: '#22d3ee',
+  cryptocurrency: '#a78bfa',
+  commodity: '#fb7185',
+  hedge_fund: '#f472b6',
+  angel_investment: '#e879f9',
 };
 
 export function AccountBreakdown() {
   const navigate = useNavigate();
   const { accounts, isLoading } = useAccountStore();
+  const { preferences, loading: prefsLoading } = usePreferences();
 
   const breakdown: AccountTypeData[] = useMemo(() => {
     const totalBalance = accounts.reduce((sum, acc) => sum + acc.balance, 0);
@@ -76,7 +111,7 @@ export function AccountBreakdown() {
     [accounts]
   );
 
-  if (isLoading) {
+  if (isLoading || prefsLoading) {
     return (
       <section className="account-breakdown">
         <div className="account-breakdown__header">
@@ -115,7 +150,11 @@ export function AccountBreakdown() {
       <div className="account-breakdown__header">
         <h2 className="account-breakdown__title">Asset Breakdown</h2>
         <p className="account-breakdown__subtitle">
-          {formatCurrency(totalBalance)} across {accounts.length} accounts
+          {formatCurrency(
+            totalBalance,
+            preferences?.currency || 'INR',
+            preferences?.locale || 'en-IN'
+          )} across {accounts.length} accounts
         </p>
       </div>
 
@@ -188,7 +227,11 @@ export function AccountBreakdown() {
                 </div>
                 <div className="account-breakdown__item-footer">
                   <span className="account-breakdown__item-amount">
-                    {formatCurrency(item.balance)}
+                    {formatCurrency(
+                      item.balance,
+                      preferences?.currency || 'INR',
+                      preferences?.locale || 'en-IN'
+                    )}
                   </span>
                   <span className="account-breakdown__item-percentage">
                     {item.percentage.toFixed(1)}%

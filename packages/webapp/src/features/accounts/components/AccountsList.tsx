@@ -14,8 +14,9 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Account } from '@/core/db/types';
-import { useAccountStore } from '@/core/stores';
+import type { Account } from '@/core/types';
+import { useAccounts } from '@/hooks/useAccounts';
+import { useCreateAccount, useUpdateAccount, useDeleteAccount } from '@/hooks/useAccountMutations';
 import {
   Button,
   ConfirmDialog,
@@ -89,14 +90,10 @@ const ACCOUNT_TYPE_OPTIONS: Array<{
 export function AccountsList() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const {
-    accounts,
-    isLoading,
-    fetchAccounts,
-    createAccount,
-    updateAccount,
-    deleteAccount,
-  } = useAccountStore();
+  const { data: accounts = [], isLoading } = useAccounts();
+  const createAccountMutation = useCreateAccount();
+  const updateAccountMutation = useUpdateAccount();
+  const deleteAccountMutation = useDeleteAccount();
 
   const [filters, setFilters] = useState<AccountFilters>({});
   const [searchQuery, setSearchQuery] = useState('');
@@ -108,7 +105,7 @@ export function AccountsList() {
   // Account options for multi-select filter
   const accountOptions = useMemo(
     () =>
-      accounts.map((account) => ({
+      accounts.map((account: Account) => ({
         value: account.id,
         label: account.name,
         icon: getAccountIcon(account.type),
@@ -122,18 +119,18 @@ export function AccountsList() {
 
     // Filter by types (multi-select)
     if (filters.types && filters.types.length > 0) {
-      filtered = filtered.filter((acc) => filters.types?.includes(acc.type));
+      filtered = filtered.filter((acc: Account) => filters.types?.includes(acc.type));
     }
 
     // Filter by specific account IDs (multi-select)
     if (filters.accountIds && filters.accountIds.length > 0) {
-      filtered = filtered.filter((acc) => filters.accountIds?.includes(acc.id));
+      filtered = filtered.filter((acc: Account) => filters.accountIds?.includes(acc.id));
     }
 
     // Search by name
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter((acc) =>
+      filtered = filtered.filter((acc: Account) =>
         acc.name.toLowerCase().includes(query)
       );
     }
@@ -143,8 +140,8 @@ export function AccountsList() {
 
   // Calculate stats
   const stats = useMemo(() => {
-    const totalBalance = accounts.reduce((sum, acc) => sum + +acc.balance, 0);
-    const activeAccounts = accounts.filter((acc) => acc.is_active).length;
+    const totalBalance = accounts.reduce((sum: number, acc: Account) => sum + +acc.balance, 0);
+    const activeAccounts = accounts.filter((acc: Account) => acc.is_active).length;
 
     return {
       totalBalance,
@@ -154,29 +151,24 @@ export function AccountsList() {
   }, [accounts]);
 
   const handleAddAccount = async (data: AccountFormData) => {
-    await createAccount({
-      ...data,
-      is_active: true,
-    });
+    await createAccountMutation.mutateAsync(data);
     setIsAddModalOpen(false);
-    await fetchAccounts();
+    // TanStack Query will automatically refetch the accounts
   };
+  
   const handleEditAccount = async (data: AccountFormData) => {
     if (editingAccount) {
-      await updateAccount({
-        ...data,
-        id: editingAccount.id,
-      });
+      await updateAccountMutation.mutateAsync({ id: editingAccount.id, data });
       setEditingAccount(undefined);
-      await fetchAccounts();
+      // TanStack Query will automatically refetch the accounts
     }
   };
 
   const handleDeleteAccount = async () => {
     if (deletingAccount) {
-      await deleteAccount(deletingAccount.id);
-      await fetchAccounts();
+      await deleteAccountMutation.mutateAsync(deletingAccount.id);
       setDeletingAccount(undefined);
+      // TanStack Query will automatically refetch the accounts
     }
   };
 
@@ -202,8 +194,8 @@ export function AccountsList() {
 
         {/* Grid Skeleton */}
         <div className="accounts-page__grid">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <SkeletonCard key={i} />
+          {Array.from({ length: 6 }, (_, i) => (
+            <SkeletonCard key={`skeleton-card-${Date.now()}-${i}`} />
           ))}
         </div>
       </div>
@@ -284,18 +276,18 @@ export function AccountsList() {
             options={ACCOUNT_TYPE_OPTIONS}
             selected={filters.types || []}
             onChange={(types) => setFilters({ ...filters, types })}
-            label="Account Types"
-            placeholder="All account types"
-            searchPlaceholder="Search account types..."
+            label={t('pages.accounts.filters.typeLabel', 'Account Types')}
+            placeholder={t('pages.accounts.filters.typePlaceholder', 'All account types')}
+            searchPlaceholder={t('pages.accounts.filters.typeSearch', 'Search account types...')}
           />
 
           <MultiSelectFilter
             options={accountOptions}
             selected={filters.accountIds || []}
             onChange={(accountIds) => setFilters({ ...filters, accountIds })}
-            label="Specific Accounts"
-            placeholder="All accounts"
-            searchPlaceholder="Search accounts..."
+            label={t('pages.accounts.filters.specificLabel', 'Specific Accounts')}
+            placeholder={t('pages.accounts.filters.specificPlaceholder', 'All accounts')}
+            searchPlaceholder={t('pages.accounts.filters.specificSearch', 'Search accounts...')}
             maxDisplay={2}
           />
         </div>
@@ -352,10 +344,10 @@ export function AccountsList() {
           </div>
         ) : (
           <div className="cards-grid">
-            {filteredAccounts.map((account) => (
+            {filteredAccounts.map((account: Account) => (
               <AccountCard
                 key={account.id}
-                account={account}
+                account={account as any}
                 onClick={handleAccountClick}
                 onEdit={setEditingAccount}
                 onDelete={setDeletingAccount}
@@ -380,10 +372,10 @@ export function AccountsList() {
         isOpen={!!deletingAccount}
         onClose={() => setDeletingAccount(undefined)}
         onConfirm={handleDeleteAccount}
-        title="Delete Account?"
-        description={`Are you sure you want to delete "${deletingAccount?.name}"? This action cannot be undone and all associated data will be permanently removed.`}
-        confirmLabel="Delete Account"
-        cancelLabel="Cancel"
+        title={t('pages.accounts.deleteConfirm.title', 'Delete Account?')}
+        description={t('pages.accounts.deleteConfirm.description', 'Are you sure you want to delete this account? This action cannot be undone and all associated data will be permanently removed.')}
+        confirmLabel={t('pages.accounts.deleteConfirm.confirmButton', 'Delete Account')}
+        cancelLabel={t('pages.accounts.deleteConfirm.cancelButton', 'Cancel')}
         variant="danger"
       />
       {/* Account Transfer Wizard */}

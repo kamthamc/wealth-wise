@@ -6,7 +6,9 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { AlertCircle, CheckCircle, Info, X } from 'lucide-react';
 import { useState } from 'react';
-import type { DuplicateCheckResult, ParsedTransaction } from '@/core/services';
+import { useTranslation } from 'react-i18next';
+import type { DuplicateCheckResult } from '@/core/services';
+import type { ParsedTransaction } from '@/features/accounts/utils/fileParser';
 import { Button } from '@/shared/components';
 import './DuplicateReviewModal.css';
 
@@ -35,6 +37,8 @@ export function DuplicateReviewModal({
   duplicateResults,
   accountName,
 }: DuplicateReviewModalProps) {
+  const { t } = useTranslation();
+  
   // Initialize review items with default actions
   const [reviewItems, setReviewItems] = useState<TransactionReviewItem[]>(() =>
     transactions.map((txn, index) => {
@@ -46,6 +50,8 @@ export function DuplicateReviewModal({
       return {
         transaction: txn,
         duplicateResult: result || {
+          isDuplicate: false,
+          matches: [],
           isNewTransaction: true,
           duplicateMatches: [],
         },
@@ -132,18 +138,27 @@ export function DuplicateReviewModal({
 
   const getStatusLabel = (item: TransactionReviewItem) => {
     if (item.duplicateResult.isNewTransaction) {
-      return 'NEW';
+      return t('pages.accounts.import.duplicateReview.status.new', 'NEW');
     }
 
     const confidence = item.duplicateResult.bestMatch?.confidence;
     const score = item.duplicateResult.bestMatch?.score || 0;
 
     if (confidence === 'exact') {
-      return 'EXACT DUPLICATE';
+      return t(
+        'pages.accounts.import.duplicateReview.status.exactDuplicate',
+        'EXACT DUPLICATE'
+      );
     } else if (confidence === 'high') {
-      return `DUPLICATE (${score.toFixed(0)}% match)`;
+      return t('pages.accounts.import.duplicateReview.status.duplicate', {
+        score: score.toFixed(0),
+        defaultValue: 'DUPLICATE ({{score}}% match)',
+      });
     } else {
-      return `POSSIBLE DUPLICATE (${score.toFixed(0)}% match)`;
+      return t('pages.accounts.import.duplicateReview.status.possibleDuplicate', {
+        score: score.toFixed(0),
+        defaultValue: 'POSSIBLE DUPLICATE ({{score}}% match)',
+      });
     }
   };
 
@@ -171,18 +186,27 @@ export function DuplicateReviewModal({
           <div className="duplicate-review__header">
             <div>
               <Dialog.Title className="duplicate-review__title">
-                Review Import for {accountName}
+                {t('pages.accounts.import.duplicateReview.title', {
+                  accountName,
+                  defaultValue: 'Review Import for {{accountName}}',
+                })}
               </Dialog.Title>
               <Dialog.Description className="duplicate-review__subtitle">
-                {transactions.length} transactions found - Review duplicates
-                before importing
+                {t('pages.accounts.import.duplicateReview.subtitle', {
+                  count: transactions.length,
+                  defaultValue:
+                    '{{count}} transactions found - Review duplicates before importing',
+                })}
               </Dialog.Description>
             </div>
             <Dialog.Close asChild>
               <button
                 type="button"
                 className="duplicate-review__close"
-                aria-label="Close"
+                aria-label={t(
+                  'pages.accounts.import.duplicateReview.closeLabel',
+                  'Close'
+                )}
               >
                 <X size={20} />
               </button>
@@ -194,23 +218,49 @@ export function DuplicateReviewModal({
             <div className="duplicate-review__summary">
               <div className="duplicate-review__stat duplicate-review__stat--new">
                 <CheckCircle size={18} />
-                <span>{newCount} New</span>
+                <span>
+                  {t('pages.accounts.import.duplicateReview.summary.new', {
+                    count: newCount,
+                    defaultValue: '{{count}} New',
+                  })}
+                </span>
               </div>
               <div className="duplicate-review__stat duplicate-review__stat--duplicate">
                 <AlertCircle size={18} />
-                <span>{exactDuplicates} Exact Duplicates</span>
+                <span>
+                  {t('pages.accounts.import.duplicateReview.summary.exactDuplicates', {
+                    count: exactDuplicates,
+                    defaultValue: '{{count}} Exact Duplicates',
+                  })}
+                </span>
               </div>
               <div className="duplicate-review__stat duplicate-review__stat--possible">
                 <Info size={18} />
-                <span>{possibleDuplicates} Possible Duplicates</span>
+                <span>
+                  {t('pages.accounts.import.duplicateReview.summary.possibleDuplicates', {
+                    count: possibleDuplicates,
+                    defaultValue: '{{count}} Possible Duplicates',
+                  })}
+                </span>
               </div>
             </div>
 
             {/* Action Summary */}
             <div className="duplicate-review__actions-summary">
               <p>
-                <strong>Selected Actions:</strong> {importCount} to import,{' '}
-                {skipCount} to skip, {updateCount} to update
+                <strong>
+                  {t(
+                    'pages.accounts.import.duplicateReview.actionsSummary.title',
+                    'Selected Actions:'
+                  )}
+                </strong>{' '}
+                {t('pages.accounts.import.duplicateReview.actionsSummary.description', {
+                  importCount,
+                  skipCount,
+                  updateCount,
+                  defaultValue:
+                    '{{importCount}} to import, {{skipCount}} to skip, {{updateCount}} to update',
+                })}
               </p>
               <div className="duplicate-review__bulk-actions">
                 <button
@@ -219,7 +269,10 @@ export function DuplicateReviewModal({
                   onClick={handleBulkImportNew}
                   disabled={isImporting}
                 >
-                  Import All New
+                  {t(
+                    'pages.accounts.import.duplicateReview.bulkActions.importNew',
+                    'Import All New'
+                  )}
                 </button>
                 <button
                   type="button"
@@ -227,7 +280,10 @@ export function DuplicateReviewModal({
                   onClick={handleBulkSkipDuplicates}
                   disabled={isImporting}
                 >
-                  Skip All Duplicates
+                  {t(
+                    'pages.accounts.import.duplicateReview.bulkActions.skipDuplicates',
+                    'Skip All Duplicates'
+                  )}
                 </button>
               </div>
             </div>
@@ -236,10 +292,7 @@ export function DuplicateReviewModal({
             <div className="duplicate-review__list">
               {reviewItems.map((item, index) => {
                 // Generate stable key from transaction data
-                const txnDate =
-                  typeof item.transaction.date === 'string'
-                    ? item.transaction.date
-                    : item.transaction.date.toISOString();
+                const txnDate = item.transaction.date;
                 const key = `${txnDate}-${item.transaction.amount}-${index}`;
 
                 return (
@@ -259,23 +312,30 @@ export function DuplicateReviewModal({
                     <div className="duplicate-review__item-details">
                       <div className="duplicate-review__item-row">
                         <span className="duplicate-review__item-label">
-                          Date:
+                          {t(
+                            'pages.accounts.import.duplicateReview.labels.date',
+                            'Date:'
+                          )}
                         </span>
                         <span>
-                          {typeof item.transaction.date === 'string'
-                            ? item.transaction.date
-                            : item.transaction.date.toLocaleDateString()}
+                          {item.transaction.date}
                         </span>
                       </div>
                       <div className="duplicate-review__item-row">
                         <span className="duplicate-review__item-label">
-                          Description:
+                          {t(
+                            'pages.accounts.import.duplicateReview.labels.description',
+                            'Description:'
+                          )}
                         </span>
                         <span>{item.transaction.description}</span>
                       </div>
                       <div className="duplicate-review__item-row">
                         <span className="duplicate-review__item-label">
-                          Amount:
+                          {t(
+                            'pages.accounts.import.duplicateReview.labels.amount',
+                            'Amount:'
+                          )}
                         </span>
                         <span
                           className={`duplicate-review__amount duplicate-review__amount--${item.transaction.type}`}
@@ -285,7 +345,10 @@ export function DuplicateReviewModal({
                       </div>
                       <div className="duplicate-review__item-row">
                         <span className="duplicate-review__item-label">
-                          Type:
+                          {t(
+                            'pages.accounts.import.duplicateReview.labels.type',
+                            'Type:'
+                          )}
                         </span>
                         <span
                           className={`duplicate-review__type-badge duplicate-review__type-badge--${item.transaction.type}`}
@@ -300,7 +363,10 @@ export function DuplicateReviewModal({
                       item.duplicateResult.bestMatch && (
                         <div className="duplicate-review__match-info">
                           <p className="duplicate-review__match-title">
-                            Match reasons:
+                            {t(
+                              'pages.accounts.import.duplicateReview.labels.matchReasons',
+                              'Match reasons:'
+                            )}
                           </p>
                           <ul className="duplicate-review__match-reasons">
                             {item.duplicateResult.bestMatch.matchReasons.map(
@@ -313,7 +379,10 @@ export function DuplicateReviewModal({
                             .existingTransaction && (
                             <div className="duplicate-review__existing">
                               <p className="duplicate-review__existing-title">
-                                Existing transaction:
+                                {t(
+                                  'pages.accounts.import.duplicateReview.labels.existingTransaction',
+                                  'Existing transaction:'
+                                )}
                               </p>
                               <p className="duplicate-review__existing-text">
                                 {new Date(
@@ -336,7 +405,10 @@ export function DuplicateReviewModal({
                     {/* Action Selector */}
                     <div className="duplicate-review__item-actions">
                       <span className="duplicate-review__action-label">
-                        Action:
+                        {t(
+                          'pages.accounts.import.duplicateReview.labels.action',
+                          'Action:'
+                        )}
                       </span>
                       <select
                         className="duplicate-review__action-select"
@@ -348,21 +420,45 @@ export function DuplicateReviewModal({
                           )
                         }
                         disabled={isImporting}
-                        aria-label="Select action for this transaction"
+                        aria-label={t(
+                          'pages.accounts.import.duplicateReview.labels.selectAction',
+                          'Select action for this transaction'
+                        )}
                       >
                         {item.duplicateResult.isNewTransaction ? (
                           <>
-                            <option value="import">Import as new</option>
-                            <option value="skip">Skip (don't import)</option>
+                            <option value="import">
+                              {t(
+                                'pages.accounts.import.duplicateReview.actions.importNew',
+                                'Import as new'
+                              )}
+                            </option>
+                            <option value="skip">
+                              {t(
+                                'pages.accounts.import.duplicateReview.actions.skip',
+                                "Skip (don't import)"
+                              )}
+                            </option>
                           </>
                         ) : (
                           <>
-                            <option value="skip">Skip (don't import)</option>
+                            <option value="skip">
+                              {t(
+                                'pages.accounts.import.duplicateReview.actions.skip',
+                                "Skip (don't import)"
+                              )}
+                            </option>
                             <option value="update">
-                              Update existing transaction
+                              {t(
+                                'pages.accounts.import.duplicateReview.actions.update',
+                                'Update existing transaction'
+                              )}
                             </option>
                             <option value="force">
-                              Force import as new anyway
+                              {t(
+                                'pages.accounts.import.duplicateReview.actions.force',
+                                'Force import as new anyway'
+                              )}
                             </option>
                           </>
                         )}
@@ -380,7 +476,7 @@ export function DuplicateReviewModal({
               onClick={onClose}
               disabled={isImporting}
             >
-              Cancel
+              {t('pages.accounts.import.duplicateReview.footer.cancel', 'Cancel')}
             </Button>
             <Button
               variant="primary"
@@ -388,7 +484,10 @@ export function DuplicateReviewModal({
               disabled={isImporting || importCount + updateCount === 0}
               isLoading={isImporting}
             >
-              Import {importCount + updateCount} Transactions
+              {t('pages.accounts.import.duplicateReview.footer.import', {
+                count: importCount + updateCount,
+                defaultValue: 'Import {{count}} Transactions',
+              })}
             </Button>
           </div>
         </Dialog.Content>

@@ -1,0 +1,25 @@
+{
+  "app": {
+    "name": "WealthWise",
+    "tagline": "अपने वित्त का बुद्धिमानी से प्रबंधन करें"
+  },
+  "auth": {
+    "signIn": "साइन इन करें",
+    "signUp": "साइन अप करें",
+    "signOut": "साइन आउट करें",
+    "displayName": "प्रदर्शन नाम",
+    "email": "ईमेल",
+    "password": "पासवर्ड",
+    "confirmPassword": "पासवर्ड की पुष्टि करें",
+    "processing": "प्रक्रिया जारी है...",
+    "orContinueWith": "या जारी रखें",
+    "signInWithGoogle": "Google से साइन इन करें",
+    "displayNamePlaceholder": "अपना प्रदर्शन नाम दर्ज करें",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "••••••••",
+    "emulator": {
+      "title": "Firebase Emulators के साथ परीक्षण",
+      "subtitle": "Auth: localhost:9099 | Firestore: localhost:8080"
+    }
+  }
+}

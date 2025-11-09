@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+import { fetchUserPreferences } from './preferences';
 
 const db = admin.firestore();
 
@@ -46,6 +47,11 @@ export const calculateFDMaturity = functions.https.onCall(async (request) => {
   }
 
   try {
+    // Fetch user preferences for currency
+    const userId = request.auth.uid;
+    const userPreferences = await fetchUserPreferences(userId);
+    const currency = userPreferences.currency;
+
     // Calculate maturity amount with compound interest
     const n = getCompoundingPeriodsPerYear(compoundingFrequency);
     const t = tenureMonths / 12;
@@ -65,6 +71,7 @@ export const calculateFDMaturity = functions.https.onCall(async (request) => {
 
     return {
       success: true,
+      currency, // Return currency for proper formatting
       calculation: {
         principal: Math.round(principal * 100) / 100,
         interestRate,
@@ -118,6 +125,11 @@ export const calculateRDMaturity = functions.https.onCall(async (request) => {
   }
 
   try {
+    // Fetch user preferences for currency
+    const userId = request.auth.uid;
+    const userPreferences = await fetchUserPreferences(userId);
+    const currency = userPreferences.currency;
+
     // RD maturity formula: M = P × n × [(1 + i)^n - 1] / [1 - (1 + i)^(-1/3)]
     // Where P = monthly installment, n = number of months, i = monthly interest rate
     const r = interestRate / 100 / 12; // Monthly interest rate
@@ -149,6 +161,7 @@ export const calculateRDMaturity = functions.https.onCall(async (request) => {
 
     return {
       success: true,
+      currency, // Return currency for proper formatting
       calculation: {
         monthlyDeposit: Math.round(monthlyDeposit * 100) / 100,
         interestRate,
@@ -200,6 +213,11 @@ export const calculatePPFMaturity = functions.https.onCall(async (request) => {
   }
 
   try {
+    // Fetch user preferences for currency
+    const userId = request.auth.uid;
+    const userPreferences = await fetchUserPreferences(userId);
+    const currency = userPreferences.currency;
+
     // PPF interest is compounded annually
     const r = interestRate / 100;
     let maturityAmount = 0;
@@ -222,6 +240,7 @@ export const calculatePPFMaturity = functions.https.onCall(async (request) => {
 
     return {
       success: true,
+      currency, // Return currency for proper formatting
       calculation: {
         yearlyDeposit: Math.round(yearlyDeposit * 100) / 100,
         interestRate,
@@ -275,6 +294,11 @@ export const calculateSavingsInterest = functions.https.onCall(
     }
 
     try {
+      // Fetch user preferences for currency
+      const userId = request.auth.uid;
+      const userPreferences = await fetchUserPreferences(userId);
+      const currency = userPreferences.currency;
+
       // Savings account interest is calculated daily and credited quarterly
       const dailyRate = interestRate / 100 / 365;
       const interestEarned = averageBalance * dailyRate * periodDays;
@@ -285,6 +309,7 @@ export const calculateSavingsInterest = functions.https.onCall(
 
       return {
         success: true,
+        currency, // Return currency for proper formatting
         calculation: {
           averageBalance: Math.round(averageBalance * 100) / 100,
           interestRate,
@@ -490,8 +515,13 @@ export const getDepositAccountDetails = functions.https.onCall(
         };
       }
 
+      // Fetch user preferences for currency
+      const userPreferences = await fetchUserPreferences(userId);
+      const currency = userPreferences.currency;
+
       return {
         success: true,
+        currency, // Return currency for proper formatting
         account: {
           id: accountDoc.id,
           name: account?.name,
@@ -509,6 +539,225 @@ export const getDepositAccountDetails = functions.https.onCall(
       throw new functions.https.HttpsError(
         'internal',
         'Failed to get deposit account details',
+      );
+    }
+  },
+);
+
+/**
+ * Get all deposit accounts for user
+ */
+export const getDeposits = functions.https.onCall(async (request) => {
+  if (!request.auth) {
+    throw new functions.https.HttpsError(
+      'unauthenticated',
+      'User must be authenticated',
+    );
+  }
+
+  const userId = request.auth.uid;
+
+  try {
+    // Get all deposit-type accounts
+    const accountsSnapshot = await db
+      .collection('accounts')
+      .where('user_id', '==', userId)
+      .where('type', 'in', [
+        'fixed_deposit',
+        'recurring_deposit',
+        'ppf',
+        'savings',
+      ])
+      .where('is_active', '==', true)
+      .orderBy('created_at', 'desc')
+      .get();
+
+    const deposits = accountsSnapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        account_id: doc.id,
+        user_id: data.user_id,
+        name: data.name,
+        type: data.type,
+        balance: data.balance,
+        currency: data.currency || 'INR',
+        deposit_info: data.deposit_info || {},
+        is_active: data.is_active,
+        created_at: data.created_at?.toDate().toISOString(),
+        updated_at: data.updated_at?.toDate().toISOString(),
+        maturity_date: data.deposit_info?.maturity_date,
+      };
+    });
+
+    return {
+      success: true,
+      deposits,
+    };
+  } catch (error: any) {
+    console.error('Error fetching deposits:', error);
+    throw new functions.https.HttpsError(
+      'internal',
+      'Failed to fetch deposits',
+    );
+  }
+});
+
+/**
+ * Get interest payment transactions for a deposit account
+ */
+export const getInterestPayments = functions.https.onCall(async (request) => {
+  if (!request.auth) {
+    throw new functions.https.HttpsError(
+      'unauthenticated',
+      'User must be authenticated',
+    );
+  }
+
+  const userId = request.auth.uid;
+  const { accountId } = request.data as { accountId: string };
+
+  if (!accountId) {
+    throw new functions.https.HttpsError(
+      'invalid-argument',
+      'Account ID is required',
+    );
+  }
+
+  try {
+    // Verify account ownership
+    const accountDoc = await db.collection('accounts').doc(accountId).get();
+
+    if (!accountDoc.exists) {
+      throw new functions.https.HttpsError('not-found', 'Account not found');
+    }
+
+    if (accountDoc.data()?.user_id !== userId) {
+      throw new functions.https.HttpsError(
+        'permission-denied',
+        'Access denied',
+      );
+    }
+
+    // Get interest payment transactions
+    const paymentsSnapshot = await db
+      .collection('transactions')
+      .where('user_id', '==', userId)
+      .where('account_id', '==', accountId)
+      .where('category', '==', 'interest_income')
+      .orderBy('date', 'desc')
+      .get();
+
+    const payments = paymentsSnapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        account_id: data.account_id,
+        amount: data.amount,
+        date: data.date?.toDate().toISOString(),
+        description: data.description || 'Interest Payment',
+        type: data.type,
+        category: data.category,
+        created_at: data.created_at?.toDate().toISOString(),
+      };
+    });
+
+    return {
+      success: true,
+      payments,
+      total: payments.reduce((sum, p) => sum + p.amount, 0),
+    };
+  } catch (error: any) {
+    console.error('Error fetching interest payments:', error);
+    if (error instanceof functions.https.HttpsError) {
+      throw error;
+    }
+    throw new functions.https.HttpsError(
+      'internal',
+      'Failed to fetch interest payments',
+    );
+  }
+});
+
+/**
+ * Record interest payment for a deposit account
+ */
+export const recordInterestPayment = functions.https.onCall(
+  async (request) => {
+    if (!request.auth) {
+      throw new functions.https.HttpsError(
+        'unauthenticated',
+        'User must be authenticated',
+      );
+    }
+
+    const userId = request.auth.uid;
+    const { accountId, amount, date, description } = request.data as {
+      accountId: string;
+      amount: number;
+      date: string;
+      description?: string;
+    };
+
+    if (!accountId || !amount || !date) {
+      throw new functions.https.HttpsError(
+        'invalid-argument',
+        'Account ID, amount, and date are required',
+      );
+    }
+
+    try {
+      // Verify account ownership
+      const accountRef = db.collection('accounts').doc(accountId);
+      const accountDoc = await accountRef.get();
+
+      if (!accountDoc.exists) {
+        throw new functions.https.HttpsError('not-found', 'Account not found');
+      }
+
+      const accountData = accountDoc.data();
+      if (accountData?.user_id !== userId) {
+        throw new functions.https.HttpsError(
+          'permission-denied',
+          'Access denied',
+        );
+      }
+
+      // Create interest payment transaction
+      const transactionRef = await db.collection('transactions').add({
+        user_id: userId,
+        account_id: accountId,
+        type: 'income',
+        category: 'interest_income',
+        amount,
+        date: admin.firestore.Timestamp.fromDate(new Date(date)),
+        description: description || 'Interest Payment',
+        currency: accountData?.currency || 'INR',
+        created_at: admin.firestore.FieldValue.serverTimestamp(),
+        updated_at: admin.firestore.FieldValue.serverTimestamp(),
+      });
+
+      // Update account balance
+      const newBalance = (accountData?.balance || 0) + amount;
+      await accountRef.update({
+        balance: newBalance,
+        updated_at: admin.firestore.FieldValue.serverTimestamp(),
+      });
+
+      return {
+        success: true,
+        transactionId: transactionRef.id,
+        newBalance,
+        message: 'Interest payment recorded successfully',
+      };
+    } catch (error: any) {
+      console.error('Error recording interest payment:', error);
+      if (error instanceof functions.https.HttpsError) {
+        throw error;
+      }
+      throw new functions.https.HttpsError(
+        'internal',
+        'Failed to record interest payment',
       );
     }
   },

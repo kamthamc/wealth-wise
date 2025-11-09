@@ -19,7 +19,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import type { InvestmentAssetType } from '@/core/db/types';
+import type { InvestmentAssetType } from '@/core/types';
 import { formatCurrency } from '@/shared/utils';
 import './InvestmentCharts.css';
 
@@ -42,7 +42,6 @@ const ASSET_TYPE_COLORS: Record<InvestmentAssetType, string> = {
   commodity: CHART_COLORS.warning,
   reit: CHART_COLORS.pink,
   bond: CHART_COLORS.indigo,
-  crypto: CHART_COLORS.teal,
 };
 
 // Portfolio Performance Chart

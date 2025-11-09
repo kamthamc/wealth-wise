@@ -1,20 +1,17 @@
 /**
  * Progress Bar Component
- * Visual indicator of progress or completion
+ * Visual indicator of progress or completion using Radix UI
  */
 
-import type { HTMLAttributes } from 'react';
-import './ProgressBar.css';
+import { Progress } from '@radix-ui/themes';
 
-export interface ProgressBarProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
+export interface ProgressBarProps {
   value: number;
   max?: number;
   label?: string;
   showValue?: boolean;
   variant?: 'default' | 'primary' | 'success' | 'warning' | 'danger';
   size?: 'small' | 'medium' | 'large';
-  animated?: boolean;
 }
 
 export function ProgressBar({
@@ -24,50 +21,81 @@ export function ProgressBar({
   showValue = false,
   variant = 'primary',
   size = 'medium',
-  animated = false,
-  className = '',
-  ...props
 }: ProgressBarProps) {
   const percentage = Math.min(Math.max((value / max) * 100, 0), 100);
 
-  const classes = [
-    'progress-bar',
-    `progress-bar--${variant}`,
-    `progress-bar--${size}`,
-    animated && 'progress-bar--animated',
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ');
+  // Map variants to Radix colors
+  const getRadixColor = () => {
+    switch (variant) {
+      case 'primary':
+        return 'blue';
+      case 'success':
+        return 'green';
+      case 'warning':
+        return 'yellow';
+      case 'danger':
+        return 'red';
+      case 'default':
+      default:
+        return 'gray';
+    }
+  };
+
+  // Map sizes to Radix sizes
+  const getRadixSize = () => {
+    switch (size) {
+      case 'small':
+        return '1';
+      case 'medium':
+        return '2';
+      case 'large':
+        return '3';
+      default:
+        return '2';
+    }
+  };
 
   return (
-    <div className={classes} {...props}>
+    <div>
       {(label || showValue) && (
-        <div className="progress-bar__header">
-          {label && <span className="progress-bar__label">{label}</span>}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 'var(--space-2)',
+          }}
+        >
+          {label && (
+            <span
+              style={{
+                fontSize: 'var(--font-size-2)',
+                fontWeight: 'var(--font-weight-medium)',
+                color: 'var(--color-text-primary)',
+              }}
+            >
+              {label}
+            </span>
+          )}
           {showValue && (
-            <span className="progress-bar__value">
+            <span
+              style={{
+                fontSize: 'var(--font-size-1)',
+                color: 'var(--color-text-secondary)',
+              }}
+            >
               {value}/{max}
             </span>
           )}
         </div>
       )}
 
-      <div
-        className="progress-bar__track"
-        role="progressbar"
-        aria-valuenow={value}
-        aria-valuemin={0}
-        aria-valuemax={max}
-      >
-        <div className="progress-bar__fill" style={{ width: `${percentage}%` }}>
-          {showValue && !label && (
-            <span className="progress-bar__percentage">
-              {Math.round(percentage)}%
-            </span>
-          )}
-        </div>
-      </div>
+      <Progress
+        value={percentage}
+        max={100}
+        size={getRadixSize()}
+        color={getRadixColor()}
+      />
     </div>
   );
 }

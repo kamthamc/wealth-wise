@@ -6,6 +6,7 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { ArrowRight, Check, CheckCircle2 } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAccountStore, useTransactionStore } from '@/core/stores';
 import { Button, Input, Select } from '@/shared/components';
 import { formatCurrency } from '@/shared/utils';
@@ -26,8 +27,9 @@ export function AccountTransferWizard({
   defaultFromAccount = '',
   defaultToAccount = '',
 }: AccountTransferWizardProps) {
+  const { t } = useTranslation();
   const { accounts } = useAccountStore();
-  const { createTransaction, linkTransactions } = useTransactionStore();
+  const { createTransaction } = useTransactionStore();
 
   // Wizard state
   const [currentStep, setCurrentStep] = useState<WizardStep>('accounts');
@@ -82,49 +84,38 @@ export function AccountTransferWizard({
     try {
       setIsProcessing(true);
 
-      // Create withdrawal transaction (from account)
-      const withdrawalTransaction = await createTransaction({
+      // Create transfer transaction - Cloud Function handles both sides and linking
+      await createTransaction({
         account_id: fromAccountId,
         type: 'transfer',
-        category: 'Transfer Out',
+        category: 'Transfer',
         amount: transferAmount,
         description: description || 'Account Transfer',
         date: new Date(date || new Date().toISOString()),
         tags: ['transfer'],
         is_recurring: false,
+        to_account_id: toAccountId, // Cloud Function uses this to create linked transactions
       });
-
-      if (!withdrawalTransaction) {
-        throw new Error('Failed to create withdrawal transaction');
-      }
-
-      // Create deposit transaction (to account)
-      const depositTransaction = await createTransaction({
-        account_id: toAccountId,
-        type: 'transfer',
-        category: 'Transfer In',
-        amount: transferAmount,
-        description: description || 'Account Transfer',
-        date: new Date(date || new Date().toISOString()),
-        tags: ['transfer'],
-        is_recurring: false,
-      });
-
-      if (!depositTransaction) {
-        throw new Error('Failed to create deposit transaction');
-      }
-
-      // Link the two transactions
-      await linkTransactions(withdrawalTransaction.id, depositTransaction.id);
 
       // Success!
       alert(
-        `Successfully transferred ${formatCurrency(transferAmount)} from ${fromAccount?.name} to ${toAccount?.name}`
+        t('pages.accounts.transfer.success', {
+          amount: formatCurrency(transferAmount),
+          fromAccount: fromAccount?.name,
+          toAccount: toAccount?.name,
+          defaultValue:
+            'Successfully transferred {{amount}} from {{fromAccount}} to {{toAccount}}',
+        })
       );
       handleClose();
     } catch (error) {
       console.error('Transfer failed:', error);
-      alert('Failed to complete transfer. Please try again.');
+      alert(
+        t(
+          'pages.accounts.transfer.error',
+          'Failed to complete transfer. Please try again.'
+        )
+      );
       setIsProcessing(false);
     }
   };
@@ -165,15 +156,23 @@ export function AccountTransferWizard({
           {/* Header */}
           <div className="transfer-wizard__header">
             <Dialog.Title className="transfer-wizard__title">
-              Transfer Money Between Accounts
+              {t(
+                'pages.accounts.transfer.title',
+                'Transfer Money Between Accounts'
+              )}
             </Dialog.Title>
             <Dialog.Description className="transfer-wizard__description">
-              Move funds from one account to another with automatic dual-entry
-              bookkeeping
+              {t(
+                'pages.accounts.transfer.description',
+                'Move funds from one account to another with automatic dual-entry bookkeeping'
+              )}
             </Dialog.Description>
             <Dialog.Close
               className="transfer-wizard__close"
-              aria-label="Close dialog"
+              aria-label={t(
+                'pages.accounts.transfer.closeLabel',
+                'Close dialog'
+              )}
             >
               ✕
             </Dialog.Close>
@@ -186,7 +185,9 @@ export function AccountTransferWizard({
               onClick={() => goToStep('accounts')}
             >
               <span className="transfer-wizard__step-number">1</span>
-              <span className="transfer-wizard__step-label">Accounts</span>
+              <span className="transfer-wizard__step-label">
+                {t('pages.accounts.transfer.steps.accounts', 'Accounts')}
+              </span>
             </div>
             <div className="transfer-wizard__step-divider" />
             <div
@@ -194,7 +195,9 @@ export function AccountTransferWizard({
               onClick={() => canProceedFromAccounts && goToStep('amount')}
             >
               <span className="transfer-wizard__step-number">2</span>
-              <span className="transfer-wizard__step-label">Amount</span>
+              <span className="transfer-wizard__step-label">
+                {t('pages.accounts.transfer.steps.amount', 'Amount')}
+              </span>
             </div>
             <div className="transfer-wizard__step-divider" />
             <div
@@ -206,14 +209,18 @@ export function AccountTransferWizard({
               }
             >
               <span className="transfer-wizard__step-number">3</span>
-              <span className="transfer-wizard__step-label">Details</span>
+              <span className="transfer-wizard__step-label">
+                {t('pages.accounts.transfer.steps.details', 'Details')}
+              </span>
             </div>
             <div className="transfer-wizard__step-divider" />
             <div
               className={`transfer-wizard__step ${currentStep === 'confirm' ? 'transfer-wizard__step--active' : ''}`}
             >
               <span className="transfer-wizard__step-number">4</span>
-              <span className="transfer-wizard__step-label">Confirm</span>
+              <span className="transfer-wizard__step-label">
+                {t('pages.accounts.transfer.steps.confirm', 'Confirm')}
+              </span>
             </div>
           </div>
 
@@ -223,16 +230,28 @@ export function AccountTransferWizard({
             {currentStep === 'accounts' && (
               <div className="transfer-wizard__step-content">
                 <h3 className="transfer-wizard__step-title">
-                  Select Source and Destination Accounts
+                  {t(
+                    'pages.accounts.transfer.accountsStep.title',
+                    'Select Source and Destination Accounts'
+                  )}
                 </h3>
 
                 <div className="transfer-wizard__field">
                   <label className="transfer-wizard__label">
-                    From Account *
+                    {t(
+                      'pages.accounts.transfer.accountsStep.fromLabel',
+                      'From Account *'
+                    )}
                   </label>
                   <Select
                     options={[
-                      { value: '', label: 'Select source account...' },
+                      {
+                        value: '',
+                        label: t(
+                          'pages.accounts.transfer.accountsStep.fromPlaceholder',
+                          'Select source account...'
+                        ),
+                      },
                       ...accounts.map((acc) => ({
                         value: acc.id,
                         label: `${acc.name} (${formatCurrency(acc.balance)})`,
@@ -248,10 +267,21 @@ export function AccountTransferWizard({
                 </div>
 
                 <div className="transfer-wizard__field">
-                  <label className="transfer-wizard__label">To Account *</label>
+                  <label className="transfer-wizard__label">
+                    {t(
+                      'pages.accounts.transfer.accountsStep.toLabel',
+                      'To Account *'
+                    )}
+                  </label>
                   <Select
                     options={[
-                      { value: '', label: 'Select destination account...' },
+                      {
+                        value: '',
+                        label: t(
+                          'pages.accounts.transfer.accountsStep.toPlaceholder',
+                          'Select destination account...'
+                        ),
+                      },
                       ...accounts.map((acc) => ({
                         value: acc.id,
                         label: `${acc.name} (${formatCurrency(acc.balance)})`,
@@ -266,7 +296,10 @@ export function AccountTransferWizard({
                   toAccountId &&
                   fromAccountId === toAccountId && (
                     <div className="transfer-wizard__error">
-                      ⚠️ Source and destination accounts must be different
+                      {t(
+                        'pages.accounts.transfer.accountsStep.sameAccountError',
+                        '⚠️ Source and destination accounts must be different'
+                      )}
                     </div>
                   )}
               </div>
@@ -276,45 +309,66 @@ export function AccountTransferWizard({
             {currentStep === 'amount' && (
               <div className="transfer-wizard__step-content">
                 <h3 className="transfer-wizard__step-title">
-                  How much do you want to transfer?
+                  {t(
+                    'pages.accounts.transfer.amountStep.title',
+                    'How much do you want to transfer?'
+                  )}
                 </h3>
 
                 <div className="transfer-wizard__summary">
                   <div className="transfer-wizard__summary-row">
-                    <span>From:</span>
+                    <span>
+                      {t('pages.accounts.transfer.amountStep.fromLabel', 'From:')}
+                    </span>
                     <strong>{fromAccount?.name}</strong>
                   </div>
                   <div className="transfer-wizard__summary-row">
-                    <span>To:</span>
+                    <span>
+                      {t('pages.accounts.transfer.amountStep.toLabel', 'To:')}
+                    </span>
                     <strong>{toAccount?.name}</strong>
                   </div>
                 </div>
 
                 <div className="transfer-wizard__field">
                   <label className="transfer-wizard__label">
-                    Transfer Amount *
+                    {t(
+                      'pages.accounts.transfer.amountStep.amountLabel',
+                      'Transfer Amount *'
+                    )}
                   </label>
                   <Input
                     type="number"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
-                    placeholder="0.00"
+                    placeholder={t(
+                      'pages.accounts.transfer.amountStep.amountPlaceholder',
+                      '0.00'
+                    )}
                     min="0.01"
                     step="0.01"
                     autoFocus
                   />
                   {transferAmount > 0 && (
                     <div className="transfer-wizard__hint">
-                      {formatCurrency(transferAmount)} will be moved from{' '}
-                      {fromAccount?.name} to {toAccount?.name}
+                      {t('pages.accounts.transfer.amountStep.hint', {
+                        amount: formatCurrency(transferAmount),
+                        fromAccount: fromAccount?.name,
+                        toAccount: toAccount?.name,
+                        defaultValue:
+                          '{{amount}} will be moved from {{fromAccount}} to {{toAccount}}',
+                      })}
                     </div>
                   )}
                 </div>
 
                 {fromAccount && transferAmount > fromAccount.balance && (
                   <div className="transfer-wizard__warning">
-                    ⚠️ Transfer amount exceeds available balance in{' '}
-                    {fromAccount.name}
+                    {t('pages.accounts.transfer.amountStep.balanceWarning', {
+                      account: fromAccount.name,
+                      defaultValue:
+                        '⚠️ Transfer amount exceeds available balance in {{account}}',
+                    })}
                   </div>
                 )}
               </div>
@@ -324,25 +378,37 @@ export function AccountTransferWizard({
             {currentStep === 'details' && (
               <div className="transfer-wizard__step-content">
                 <h3 className="transfer-wizard__step-title">
-                  Add Transfer Details
+                  {t(
+                    'pages.accounts.transfer.detailsStep.title',
+                    'Add Transfer Details'
+                  )}
                 </h3>
 
                 <div className="transfer-wizard__field">
                   <label className="transfer-wizard__label">
-                    Description *
+                    {t(
+                      'pages.accounts.transfer.detailsStep.descriptionLabel',
+                      'Description *'
+                    )}
                   </label>
                   <Input
                     type="text"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    placeholder="e.g., Monthly savings transfer"
+                    placeholder={t(
+                      'pages.accounts.transfer.detailsStep.descriptionPlaceholder',
+                      'e.g., Monthly savings transfer'
+                    )}
                     autoFocus
                   />
                 </div>
 
                 <div className="transfer-wizard__field">
                   <label className="transfer-wizard__label">
-                    Transfer Date *
+                    {t(
+                      'pages.accounts.transfer.detailsStep.dateLabel',
+                      'Transfer Date *'
+                    )}
                   </label>
                   <Input
                     type="date"
@@ -353,13 +419,19 @@ export function AccountTransferWizard({
 
                 <div className="transfer-wizard__field">
                   <label className="transfer-wizard__label">
-                    Notes (Optional)
+                    {t(
+                      'pages.accounts.transfer.detailsStep.notesLabel',
+                      'Notes (Optional)'
+                    )}
                   </label>
                   <Input
                     type="text"
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    placeholder="Add any additional notes..."
+                    placeholder={t(
+                      'pages.accounts.transfer.detailsStep.notesPlaceholder',
+                      'Add any additional notes...'
+                    )}
                   />
                 </div>
               </div>
@@ -369,7 +441,10 @@ export function AccountTransferWizard({
             {currentStep === 'confirm' && (
               <div className="transfer-wizard__step-content">
                 <h3 className="transfer-wizard__step-title">
-                  Review and Confirm Transfer
+                  {t(
+                    'pages.accounts.transfer.confirmStep.title',
+                    'Review and Confirm Transfer'
+                  )}
                 </h3>
 
                 <div className="transfer-wizard__confirm-card">
@@ -383,7 +458,10 @@ export function AccountTransferWizard({
                   <div className="transfer-wizard__confirm-details">
                     <div className="transfer-wizard__confirm-row">
                       <span className="transfer-wizard__confirm-label">
-                        From:
+                        {t(
+                          'pages.accounts.transfer.confirmStep.fromLabel',
+                          'From:'
+                        )}
                       </span>
                       <span className="transfer-wizard__confirm-value">
                         {fromAccount?.name}
@@ -391,7 +469,10 @@ export function AccountTransferWizard({
                     </div>
                     <div className="transfer-wizard__confirm-row">
                       <span className="transfer-wizard__confirm-label">
-                        To:
+                        {t(
+                          'pages.accounts.transfer.confirmStep.toLabel',
+                          'To:'
+                        )}
                       </span>
                       <span className="transfer-wizard__confirm-value">
                         {toAccount?.name}
@@ -399,7 +480,10 @@ export function AccountTransferWizard({
                     </div>
                     <div className="transfer-wizard__confirm-row">
                       <span className="transfer-wizard__confirm-label">
-                        Description:
+                        {t(
+                          'pages.accounts.transfer.confirmStep.descriptionLabel',
+                          'Description:'
+                        )}
                       </span>
                       <span className="transfer-wizard__confirm-value">
                         {description}
@@ -407,7 +491,10 @@ export function AccountTransferWizard({
                     </div>
                     <div className="transfer-wizard__confirm-row">
                       <span className="transfer-wizard__confirm-label">
-                        Date:
+                        {t(
+                          'pages.accounts.transfer.confirmStep.dateLabel',
+                          'Date:'
+                        )}
                       </span>
                       <span className="transfer-wizard__confirm-value">
                         {new Date(
@@ -418,7 +505,10 @@ export function AccountTransferWizard({
                     {notes && (
                       <div className="transfer-wizard__confirm-row">
                         <span className="transfer-wizard__confirm-label">
-                          Notes:
+                          {t(
+                            'pages.accounts.transfer.confirmStep.notesLabel',
+                            'Notes:'
+                          )}
                         </span>
                         <span className="transfer-wizard__confirm-value">
                           {notes}
@@ -429,7 +519,10 @@ export function AccountTransferWizard({
 
                   <div className="transfer-wizard__confirm-impact">
                     <h4 className="transfer-wizard__confirm-impact-title">
-                      Account Balance Changes:
+                      {t(
+                        'pages.accounts.transfer.confirmStep.impactTitle',
+                        'Account Balance Changes:'
+                      )}
                     </h4>
                     <div className="transfer-wizard__confirm-impact-row">
                       <span>{fromAccount?.name}:</span>
@@ -457,8 +550,12 @@ export function AccountTransferWizard({
                 </div>
 
                 <div className="transfer-wizard__info">
-                  ℹ️ This will create two linked transactions: a withdrawal from{' '}
-                  {fromAccount?.name} and a deposit to {toAccount?.name}
+                  {t('pages.accounts.transfer.confirmStep.impactInfo', {
+                    fromAccount: fromAccount?.name,
+                    toAccount: toAccount?.name,
+                    defaultValue:
+                      'ℹ️ This will create two linked transactions: a withdrawal from {{fromAccount}} and a deposit to {{toAccount}}',
+                  })}
                 </div>
               </div>
             )}
@@ -472,7 +569,9 @@ export function AccountTransferWizard({
                 onClick={currentStep === 'accounts' ? handleClose : prevStep}
                 disabled={isProcessing}
               >
-                {currentStep === 'accounts' ? 'Cancel' : 'Back'}
+                {currentStep === 'accounts'
+                  ? t('pages.accounts.transfer.actions.cancel', 'Cancel')
+                  : t('pages.accounts.transfer.actions.back', 'Back')}
               </Button>
 
               {currentStep !== 'confirm' ? (
@@ -484,17 +583,20 @@ export function AccountTransferWizard({
                     (currentStep === 'details' && !canProceedFromDetails)
                   }
                 >
-                  Continue
+                  {t('pages.accounts.transfer.actions.continue', 'Continue')}
                   <ArrowRight size={20} />
                 </Button>
               ) : (
                 <Button onClick={handleTransfer} disabled={isProcessing}>
                   {isProcessing ? (
-                    'Processing...'
+                    t('pages.accounts.transfer.actions.processing', 'Processing...')
                   ) : (
                     <>
                       <Check size={20} />
-                      Complete Transfer
+                      {t(
+                        'pages.accounts.transfer.actions.complete',
+                        'Complete Transfer'
+                      )}
                     </>
                   )}
                 </Button>

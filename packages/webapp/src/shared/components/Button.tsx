@@ -1,10 +1,10 @@
 /**
  * Button Component
- * Accessible button with multiple variants
+ * Accessible button with multiple variants using Radix UI
  */
 
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
-import './Button.css';
+import type { ReactNode, ButtonHTMLAttributes } from 'react';
+import { Button as RadixButton } from '@radix-ui/themes';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 export type ButtonSize = 'small' | 'medium' | 'large';
@@ -27,46 +27,61 @@ export function Button({
   fullWidth = false,
   children,
   disabled,
-  className = '',
+  type = 'button',
+  onClick,
   ...props
 }: ButtonProps) {
-  const classes = [
-    'button',
-    `button--${variant}`,
-    `button--${size}`,
-    fullWidth && 'button--full-width',
-    isLoading && 'button--loading',
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ');
+  // Map our variants to Radix variants
+  const getRadixVariant = () => {
+    switch (variant) {
+      case 'primary':
+        return 'solid';
+      case 'secondary':
+        return 'soft';
+      case 'ghost':
+        return 'ghost';
+      case 'danger':
+        return 'solid';
+      default:
+        return 'solid';
+    }
+  };
+
+  // Map our sizes to Radix sizes
+  const getRadixSize = () => {
+    switch (size) {
+      case 'small':
+        return '1';
+      case 'medium':
+        return '2';
+      case 'large':
+        return '3';
+      default:
+        return '2';
+    }
+  };
+
+  // Map our colors to Radix colors
+  const getRadixColor = () => {
+    if (variant === 'danger') return 'red';
+    return 'blue';
+  };
 
   return (
-    <button
-      type="button"
-      className={classes}
+    <RadixButton
+      type={type}
+      variant={getRadixVariant()}
+      size={getRadixSize()}
+  color={getRadixColor() as any}
       disabled={disabled || isLoading}
-      aria-busy={isLoading}
+      loading={isLoading}
+      style={fullWidth ? { width: '100%' } : undefined}
+      onClick={onClick}
       {...props}
     >
-      {isLoading ? (
-        <>
-          <span className="button__spinner" aria-hidden="true" />
-          <span className="sr-only">Loading...</span>
-        </>
-      ) : (
-        <>
-          {leftIcon && (
-            <span className="button__icon button__icon--left">{leftIcon}</span>
-          )}
-          <span className="button__content">{children}</span>
-          {rightIcon && (
-            <span className="button__icon button__icon--right">
-              {rightIcon}
-            </span>
-          )}
-        </>
-      )}
-    </button>
+      {leftIcon && <span style={{ marginRight: '0.5rem' }}>{leftIcon}</span>}
+      {children}
+      {rightIcon && <span style={{ marginLeft: '0.5rem' }}>{rightIcon}</span>}
+    </RadixButton>
   );
 }

@@ -4,7 +4,7 @@
  */
 
 import { Edit2, Trash2 } from 'lucide-react';
-import type { Account } from '@/core/db/types';
+import type { Account } from '@/core/types';
 import { Badge } from '@/shared/components';
 import { formatCurrency, formatRelativeTime } from '@/shared/utils';
 import {

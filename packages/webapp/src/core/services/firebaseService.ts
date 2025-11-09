@@ -3,7 +3,7 @@
  * Handles Firebase integration for caching stock prices and real-time sync
  */
 
-import type { InvestmentPrice } from '@/core/db/types';
+import type { InvestmentPrice } from '@/core/types';
 
 interface FirebaseConfig {
   apiKey: string;
@@ -306,10 +306,9 @@ class FirebaseService {
     return {
       symbol,
       price: Math.random() * 1000,
-      currency: 'INR',
-      exchange: exchange || 'NSE',
+      change: 0,
+      change_percentage: 0,
       last_updated: new Date(),
-      source: 'mock_api',
     };
   }
 }

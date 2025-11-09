@@ -1,76 +1,79 @@
 /**
  * Checkbox Component
- * Accessible checkbox input with label
+ * Accessible checkbox input with label using Radix UI
  */
 
-import type { InputHTMLAttributes } from 'react';
-import './Checkbox.css';
+import { Checkbox as RadixCheckbox } from '@radix-ui/themes';
 
-export interface CheckboxProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+export interface CheckboxProps {
   label: string;
   error?: string;
   helperText?: string;
+  checked?: boolean;
+  onCheckedChange?: (checked: boolean) => void;
+  disabled?: boolean;
+  id?: string;
+  name?: string;
 }
 
 export function Checkbox({
   label,
   error,
   helperText,
-  id,
-  className = '',
+  checked,
+  onCheckedChange,
   disabled,
+  id,
+  name,
   ...props
 }: CheckboxProps) {
-  // Generate unique ID if not provided
-  const checkboxId =
-    id || `checkbox-${Math.random().toString(36).slice(2, 11)}`;
-  const errorId = `${checkboxId}-error`;
-  const helperId = `${checkboxId}-helper`;
-
-  const hasError = Boolean(error);
-  const hasHelper = Boolean(helperText);
-
-  const classes = [
-    'checkbox-wrapper',
-    hasError && 'checkbox-wrapper--error',
-    disabled && 'checkbox-wrapper--disabled',
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ');
-
   return (
-    <div className={classes}>
-      <div className="checkbox-container">
-        <input
-          type="checkbox"
-          id={checkboxId}
-          className="checkbox-input"
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+        <RadixCheckbox
+          id={id}
+          name={name}
+          checked={checked}
+          onCheckedChange={onCheckedChange}
           disabled={disabled}
-          aria-invalid={hasError}
-          aria-describedby={
-            [hasError && errorId, hasHelper && helperId]
-              .filter(Boolean)
-              .join(' ') || undefined
-          }
           {...props}
         />
-        <label htmlFor={checkboxId} className="checkbox-label">
+        <label
+          htmlFor={id}
+          style={{
+            fontSize: 'var(--font-size-2)',
+            color: 'var(--color-text-primary)',
+            cursor: disabled ? 'not-allowed' : 'pointer',
+            opacity: disabled ? 0.6 : 1
+          }}
+        >
           {label}
         </label>
       </div>
 
       {error && (
-        <span className="checkbox-error" id={errorId} role="alert">
+        <div
+          style={{
+            fontSize: 'var(--font-size-1)',
+            color: 'var(--color-red-600)',
+            marginTop: '0.25rem'
+          }}
+          role="alert"
+        >
           {error}
-        </span>
+        </div>
       )}
 
       {helperText && !error && (
-        <span className="checkbox-helper" id={helperId}>
+        <div
+          style={{
+            fontSize: 'var(--font-size-1)',
+            color: 'var(--color-text-tertiary)',
+            marginTop: '0.25rem'
+          }}
+        >
           {helperText}
-        </span>
+        </div>
       )}
     </div>
   );

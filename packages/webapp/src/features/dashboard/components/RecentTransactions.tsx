@@ -5,6 +5,7 @@
 
 import { Link } from '@tanstack/react-router';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useTransactionStore } from '@/core/stores';
 import {
   getTransactionIcon,
@@ -18,51 +19,59 @@ import {
   Table,
   type TableColumn,
 } from '@/shared/components';
-import { formatCurrency } from '@/shared/utils';
+import { formatCurrency, formatDate } from '@/utils';
+import { usePreferences } from '@/hooks/usePreferences';
+import { timestampToDate } from '@/core/utils/firebase';
 import './RecentTransactions.css';
 
-import type { Transaction } from '@/core/db/types';
+import type { Transaction } from '@/core/types';
 
 export function RecentTransactions() {
+  const { t } = useTranslation();
   const { transactions, isLoading } = useTransactionStore();
+  const { preferences, loading: prefsLoading } = usePreferences();
 
   // Get the 5 most recent transactions
   const recentTransactions = useMemo(() => {
     return transactions
-      .sort((a, b) => b.date.getTime() - a.date.getTime())
+      .sort((a, b) => timestampToDate(b.date).getTime() - timestampToDate(a.date).getTime())
       .slice(0, 5);
   }, [transactions]);
 
   const columns: TableColumn<Transaction>[] = [
     {
       key: 'date',
-      header: 'Date',
-      accessor: (row) => new Date(row.date).toLocaleDateString('en-IN'),
+      header: t('pages.dashboard.recentTransactions.date', 'Date'),
+      accessor: (row) => formatDate(
+        timestampToDate(row.date),
+        preferences?.dateFormat || 'DD/MM/YYYY',
+        preferences?.locale || 'en-IN'
+      ),
       sortable: true,
     },
     {
       key: 'description',
-      header: 'Description',
+      header: t('pages.dashboard.recentTransactions.description', 'Description'),
       accessor: (row) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span>{getTransactionIcon(row.type)}</span>
-          <span>{row.description || 'Untitled transaction'}</span>
+          <span>{row.description || t('pages.dashboard.recentTransactions.untitled', 'Untitled transaction')}</span>
         </div>
       ),
       sortable: true,
     },
     {
       key: 'category',
-      header: 'Category',
+      header: t('pages.dashboard.recentTransactions.category', 'Category'),
       accessor: (row) => (
         <Badge variant="default" size="small">
-          {row.category || 'Uncategorized'}
+          {row.category || t('pages.dashboard.recentTransactions.uncategorized', 'Uncategorized')}
         </Badge>
       ),
     },
     {
       key: 'amount',
-      header: 'Amount',
+      header: t('pages.dashboard.recentTransactions.amount', 'Amount'),
       accessor: (row) => {
         const variant = getTransactionTypeColor(row.type);
         return (
@@ -79,7 +88,11 @@ export function RecentTransactions() {
             }}
           >
             {row.type === 'income' ? '+' : row.type === 'expense' ? '-' : ''}
-            {formatCurrency(row.amount)}
+            {formatCurrency(
+              row.amount,
+              preferences?.currency || 'INR',
+              preferences?.locale || 'en-IN'
+            )}
           </span>
         );
       },
@@ -92,18 +105,18 @@ export function RecentTransactions() {
     <section className="recent-transactions">
       <Card>
         <div className="recent-transactions__header">
-          <h2 className="recent-transactions__title">Recent Transactions</h2>
+          <h2 className="recent-transactions__title">{t('pages.dashboard.recentTransactions.title', 'Recent Transactions')}</h2>
           <Link to="/transactions" className="recent-transactions__link">
-            View All →
+            {t('pages.dashboard.recentTransactions.viewAll', 'View All')} →
           </Link>
         </div>
 
-        {isLoading ? (
+        {isLoading || prefsLoading ? (
           <SkeletonList items={5} />
         ) : recentTransactions.length > 0 ? (
           <Table
             columns={columns}
-            data={recentTransactions}
+            data={recentTransactions as any}
             keyExtractor={(row) => row.id}
             hoverable
             compact
@@ -111,8 +124,8 @@ export function RecentTransactions() {
         ) : (
           <EmptyState
             icon="📝"
-            title="No transactions yet"
-            description="Start tracking your finances by adding your first transaction"
+            title={t('emptyState.transactions.title', 'No transactions yet')}
+            description={t('emptyState.transactions.description', 'Start tracking your income and expenses by recording your first transaction')}
           />
         )}
       </Card>

@@ -15,6 +15,7 @@ import {
   Wallet,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useBudgetStore } from '@/core/stores';
 import {
   Button,
@@ -38,15 +39,16 @@ import {
 import { AddBudgetForm } from './AddBudgetForm';
 import './BudgetsList.css';
 
-// Period filter options with icons
-const PERIOD_OPTIONS: SegmentedControlOption<BudgetPeriodType | 'all'>[] = [
-  { value: 'all', label: 'All Periods', icon: <Calendar size={16} /> },
-  { value: 'monthly', label: 'Monthly', icon: <CalendarDays size={16} /> },
-  { value: 'quarterly', label: 'Quarterly', icon: <CalendarRange size={16} /> },
-];
-
 export function BudgetsList() {
+  const { t } = useTranslation();
   const { budgets, isLoading } = useBudgetStore();
+
+  // Period filter options with icons
+  const PERIOD_OPTIONS: SegmentedControlOption<BudgetPeriodType | 'all'>[] = useMemo(() => [
+    { value: 'all', label: t('pages.budgets.filters.period.all', 'All Periods'), icon: <Calendar size={16} /> },
+    { value: 'monthly', label: t('pages.budgets.filters.period.monthly', 'Monthly'), icon: <CalendarDays size={16} /> },
+    { value: 'quarterly', label: t('pages.budgets.filters.period.quarterly', 'Quarterly'), icon: <CalendarRange size={16} /> },
+  ], [t]);
 
   const [periodFilter, setPeriodFilter] = useState<BudgetPeriodType | 'all'>(
     'all'
@@ -145,35 +147,35 @@ export function BudgetsList() {
       {/* Header */}
       <div className="page-header">
         <div className="page-header-content">
-          <h1 className="page-title">Budgets</h1>
-          <p className="page-subtitle">Track and manage your spending limits</p>
+          <h1 className="page-title">{t('pages.budgets.title', 'Budgets')}</h1>
+          <p className="page-subtitle">{t('pages.budgets.subtitle', 'Track and manage your spending limits')}</p>
         </div>
         <div className="page-actions">
-          <Button onClick={handleAddBudget}>+ Add Budget</Button>
+          <Button onClick={handleAddBudget}>{t('pages.budgets.addButton', '+ Add Budget')}</Button>
         </div>
       </div>
       <div className="page-content">
         {/* Stats */}
         <div className="stats-grid">
           <StatCard
-            label="Total Budget"
+            label={t('pages.budgets.stats.totalBudget', 'Total Budget')}
             value={formatCurrency(stats.totalBudget)}
             icon={<Wallet size={24} />}
           />
           <StatCard
-            label="Total Spent"
+            label={t('pages.budgets.stats.totalSpent', 'Total Spent')}
             value={formatCurrency(stats.totalSpent)}
             icon={<TrendingDown size={24} />}
             variant="danger"
           />
           <StatCard
-            label="Remaining"
+            label={t('pages.budgets.stats.remaining', 'Remaining')}
             value={formatCurrency(stats.remainingBudget)}
             icon={<BarChart3 size={24} />}
             variant={stats.remainingBudget >= 0 ? 'success' : 'danger'}
           />
           <StatCard
-            label="Over Budget"
+            label={t('pages.budgets.stats.overBudget', 'Over Budget')}
             value={stats.overBudgetCount.toString()}
             icon={<PiggyBank size={24} />}
             variant={stats.overBudgetCount > 0 ? 'danger' : 'success'}
@@ -188,7 +190,7 @@ export function BudgetsList() {
             </div>
             <Input
               type="search"
-              placeholder="Search budgets..."
+              placeholder={t('pages.budgets.searchPlaceholder', 'Search budgets...')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -212,19 +214,19 @@ export function BudgetsList() {
               icon={<PiggyBank size={48} />}
               title={
                 searchQuery || periodFilter !== 'all'
-                  ? 'No budgets found'
-                  : 'No budgets yet'
+                  ? t('emptyState.budgets.filtered.title', 'No budgets found')
+                  : t('emptyState.budgets.title', 'No budgets yet')
               }
               description={
                 searchQuery || periodFilter !== 'all'
-                  ? 'Try adjusting your filters or search query'
-                  : 'Create your first budget to track and manage your spending'
+                  ? t('emptyState.budgets.filtered.description', 'Try adjusting your filters or search query')
+                  : t('emptyState.budgets.description', 'Create your first budget to start tracking spending')
               }
               action={
                 !searchQuery && periodFilter === 'all' ? (
                   <Button onClick={handleAddBudget}>
                     <Plus size={20} />
-                    Create Your First Budget
+                    {t('emptyState.budgets.actionButton', 'Create Budget')}
                   </Button>
                 ) : undefined
               }
@@ -234,12 +236,12 @@ export function BudgetsList() {
           <div className="budgets-page__grid">
             {filteredBudgets.map((budget) => {
               const status = calculateBudgetProgress(
-                budget.total_spent,
-                budget.total_allocated
+                budget.total_spent || 0,
+                budget.total_allocated || 0
                 // budget.alert_threshold
               );
               const percentage =
-                (budget.total_spent / budget.total_allocated) * 100;
+                ((budget.total_spent || 0) / (budget.total_allocated || 1)) * 100;
 
               return (
                 <div key={budget.id} className="budget-card">
@@ -252,10 +254,9 @@ export function BudgetsList() {
                     </div>
                     <div className="budget-card__actions">
                       <button
-                        type="button"
-                        className="budget-card__edit-btn"
+                        className="budget-card__edit-button"
                         onClick={() => handleEditBudget(budget.id)}
-                        aria-label={`Edit ${budget.name}`}
+                        aria-label={t('common.edit', 'Edit') + ' ' + budget.name}
                       >
                         ✏️
                       </button>
@@ -285,8 +286,8 @@ export function BudgetsList() {
                         )}
                       </span>
                       <span className="budget-card__progress-label">
-                        {formatCurrency(budget.total_spent)} of{' '}
-                        {formatCurrency(budget.total_allocated)}
+                        {formatCurrency(budget.total_spent || 0)} of{' '}
+                        {formatCurrency(budget.total_allocated || 0)}
                       </span>
                     </div>
                   </div>
@@ -294,7 +295,7 @@ export function BudgetsList() {
                   <div className="budget-card__footer">
                     <div className="budget-card__remaining">
                       <span className="budget-card__remaining-label">
-                        Remaining:
+                        {t('pages.budgets.stats.remaining', 'Remaining')}:
                       </span>
                       <span
                         className={`budget-card__remaining-amount budget-card__remaining-amount--${status}`}
@@ -307,7 +308,7 @@ export function BudgetsList() {
                     </div>
                     {!budget.is_active && (
                       <span className="budget-card__inactive-badge">
-                        Inactive
+                        {t('common.inactive', 'Inactive')}
                       </span>
                     )}
                   </div>

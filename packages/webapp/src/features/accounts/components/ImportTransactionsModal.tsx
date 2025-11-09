@@ -6,18 +6,20 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { Upload, X } from 'lucide-react';
 import { useRef, useState } from 'react';
-import { batchCheckDuplicates } from '@/core/api';
+import { useTranslation } from 'react-i18next';
+import { timestampToDate } from '@/core/utils/firebase';
+import {
+  detectFileFormat,
+  parseFile,
+  type ParsedFileData,
+} from '@/core/api';
+import type { Transaction } from '@/core/types';
+import { batchCheckDuplicates } from '@/core/services/duplicateDetectionService';
 import type {
   DuplicateCheckResult,
-  DuplicateMatch,
 } from '@/core/services/duplicateDetectionService';
 import { useTransactionStore } from '@/core/stores';
 import { Button, useToast } from '@/shared/components';
-import {
-  detectFileFormat,
-  type ParsedData,
-  parseFile,
-} from '../utils/fileParser';
 import { getTransactionReference } from '../utils/referenceExtraction';
 import { ColumnMapper } from './ColumnMapper';
 import {
@@ -50,12 +52,13 @@ export function ImportTransactionsModal({
   accountName,
   onImportSuccess,
 }: ImportTransactionsModalProps) {
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [previewData, setPreviewData] = useState<ParsedTransaction[]>([]);
   const [showColumnMapper, setShowColumnMapper] = useState(false);
-  const [parsedData, setParsedData] = useState<ParsedData | null>(null);
+  const [parsedData, setParsedData] = useState<ParsedFileData | null>(null);
 
   // Duplicate detection state
   const [showDuplicateReview, setShowDuplicateReview] = useState(false);
@@ -78,8 +81,14 @@ export function ImportTransactionsModal({
     const format = detectFileFormat(file);
     if (format === 'unknown') {
       toast.error(
-        'Unsupported format',
-        'Please upload CSV, Excel (.xlsx, .xls), or PDF files'
+        t(
+          'pages.accounts.import.messages.unsupportedFormatTitle',
+          'Unsupported format'
+        ),
+        t(
+          'pages.accounts.import.messages.unsupportedFormatDesc',
+          'Please upload CSV, Excel (.xlsx, .xls), or PDF files'
+        )
       );
       return;
     }
@@ -94,12 +103,19 @@ export function ImportTransactionsModal({
       const data = await parseFile(file);
       setParsedData(data);
       setShowColumnMapper(true);
-      toast.success('File parsed', `Found ${data.rows.length} rows`);
+      toast.success(
+        t('pages.accounts.import.messages.fileParsedTitle', 'File parsed'),
+        t(
+          'pages.accounts.import.messages.fileParsedDesc',
+          'Found {{count}} rows',
+          { count: data.rows.length }
+        )
+      );
     } catch (error) {
       console.error('Failed to parse file:', error);
       toast.error(
-        'Parse error',
-        error instanceof Error ? error.message : 'Failed to parse file'
+        t('pages.accounts.import.messages.parseErrorTitle', 'Parse error'),
+        error instanceof Error ? error.message : t('pages.accounts.import.messages.importError', 'Failed to parse file')
       );
       setSelectedFile(null);
       setParsedData(null);
@@ -200,55 +216,19 @@ export function ImportTransactionsModal({
     // Run duplicate detection
     setIsProcessing(true);
     try {
-      const batchResult = await batchCheckDuplicates({
-        transactions: transactions.map((t) => ({
-          date: t.date,
-          amount: t.amount,
-          description: t.description,
-          reference: t.reference,
-          type: t.type,
-        })),
-        accountId,
-      });
+      const parsedTransactions: Partial<Transaction>[] = transactions.map((t) => ({
+        date: t.date,
+        amount: t.amount,
+        description: t.description,
+        import_reference: t.reference,
+        type: t.type,
+        account_id: accountId,
+      }));
 
-      // Transform Cloud Function results to match local format
-      const results: DuplicateCheckResult[] = batchResult.results.map((r) => {
-        const isNewTransaction = !r.result.isDuplicate;
-        const duplicateMatches: DuplicateMatch[] = [];
-
-        if (r.result.isDuplicate && r.result.matchedTransactionId) {
-          // Create a match object with placeholder transaction
-          // In a real scenario, we'd fetch the full transaction details
-          duplicateMatches.push({
-            existingTransaction: {
-              id: r.result.matchedTransactionId,
-              date: new Date(r.transaction.date),
-              description: r.transaction.description,
-              amount: r.transaction.amount,
-              type: r.transaction.type,
-              accountId,
-              category: r.transaction.category || 'Uncategorized',
-            } as any, // Using 'as any' since we don't have full transaction details
-            confidence:
-              r.result.confidence >= 90
-                ? 'exact'
-                : r.result.confidence >= 70
-                  ? 'high'
-                  : 'possible',
-            matchReasons: r.result.reason
-              ? [r.result.reason]
-              : ['Potential duplicate detected'],
-            score: r.result.confidence,
-          });
-        }
-
-        return {
-          isNewTransaction,
-          duplicateMatches,
-          bestMatch:
-            duplicateMatches.length > 0 ? duplicateMatches[0] : undefined,
-        };
-      });
+      const results = await batchCheckDuplicates(
+        parsedTransactions,
+        accountId
+      );
 
       setDuplicateResults(results);
       setPreviewData(transactions);
@@ -256,16 +236,31 @@ export function ImportTransactionsModal({
       // Show duplicate review modal
       setShowDuplicateReview(true);
 
-      const newCount = results.filter((r) => r.isNewTransaction).length;
       const dupCount = results.filter((r) => !r.isNewTransaction).length;
 
       toast.success(
-        'Duplicate detection complete',
-        `Found ${newCount} new and ${dupCount} potential duplicate transactions`
+        t(
+          'pages.accounts.import.messages.duplicatesFoundTitle',
+          'Duplicates detected'
+        ),
+        t(
+          'pages.accounts.import.messages.duplicatesFoundDesc',
+          'Found {{count}} potential duplicates. Please review.',
+          { count: dupCount }
+        )
       );
     } catch (error) {
       console.error('Duplicate detection failed:', error);
-      toast.error('Detection failed', 'Could not check for duplicates');
+      toast.error(
+        t(
+          'pages.accounts.import.messages.detectionFailedTitle',
+          'Detection failed'
+        ),
+        t(
+          'pages.accounts.import.messages.detectionFailedDesc',
+          'Could not check for duplicates'
+        )
+      );
       // Fall back to showing preview without duplicate detection
       setPreviewData(transactions);
     } finally {
@@ -311,7 +306,7 @@ export function ImportTransactionsModal({
           amount: item.transaction.amount,
           type: item.transaction.type,
           description: item.transaction.description,
-          date: new Date(item.transaction.date),
+          date: timestampToDate(item.transaction.date),
           category: item.transaction.category || '',
           is_recurring: false,
           is_initial_balance: false,
@@ -328,12 +323,13 @@ export function ImportTransactionsModal({
         };
 
         try {
-          if (item.action === 'update' && item.duplicateResult.bestMatch) {
+          if (item.action === 'update' && (item.duplicateResult as any).bestMatch) {
             // Update existing transaction
-            await updateTransaction({
-              id: item.duplicateResult.bestMatch.existingTransaction.id,
-              ...transactionData,
-            });
+            const bestMatch = (item.duplicateResult as any).bestMatch;
+            await updateTransaction(
+              bestMatch.existingTransaction.id,
+              transactionData as any
+            );
             successCount++;
           } else {
             // Import as new (action === 'import' or 'force')
@@ -347,8 +343,16 @@ export function ImportTransactionsModal({
       }
 
       toast.success(
-        'Import complete',
-        `Imported ${successCount} transactions${failCount > 0 ? `, ${failCount} failed` : ''}`
+        t(
+          'pages.accounts.import.messages.importSuccessTitle',
+          'Import complete'
+        ),
+        t(
+          'pages.accounts.import.messages.importSuccess',
+          'Successfully imported {{count}} transactions',
+          { count: successCount }
+        ) +
+          (failCount > 0 ? `, ${failCount} failed` : '')
       );
 
       // Call success callback to refresh transactions
@@ -359,7 +363,13 @@ export function ImportTransactionsModal({
       handleClose();
     } catch (error) {
       console.error('Import error:', error);
-      toast.error('Import failed', 'Failed to import transactions');
+      toast.error(
+        t('pages.accounts.import.messages.importFailed', 'Import failed'),
+        t(
+          'pages.accounts.import.messages.importError',
+          'Failed to import transactions'
+        )
+      );
     } finally {
       setIsProcessing(false);
     }
@@ -367,7 +377,13 @@ export function ImportTransactionsModal({
 
   const handleImport = async () => {
     if (previewData.length === 0) {
-      toast.error('No data', 'No valid transactions to import');
+      toast.error(
+        t('pages.accounts.import.messages.noDataTitle', 'No data'),
+        t(
+          'pages.accounts.import.messages.noDataDesc',
+          'No valid transactions to import'
+        )
+      );
       return;
     }
 
@@ -383,7 +399,7 @@ export function ImportTransactionsModal({
             amount: transaction.amount,
             type: transaction.type,
             description: transaction.description,
-            date: new Date(transaction.date),
+            date: timestampToDate(transaction.date),
             category: transaction.category || '',
             is_recurring: false,
             is_initial_balance: false,
@@ -397,8 +413,16 @@ export function ImportTransactionsModal({
       }
 
       toast.success(
-        'Import complete',
-        `Imported ${successCount} transactions${failCount > 0 ? `, ${failCount} failed` : ''}`
+        t(
+          'pages.accounts.import.messages.importSuccessTitle',
+          'Import complete'
+        ),
+        t(
+          'pages.accounts.import.messages.importSuccess',
+          'Successfully imported {{count}} transactions',
+          { count: successCount }
+        ) +
+          (failCount > 0 ? `, ${failCount} failed` : '')
       );
 
       // Call success callback to refresh transactions
@@ -409,7 +433,13 @@ export function ImportTransactionsModal({
       handleClose();
     } catch (error) {
       console.error('Import error:', error);
-      toast.error('Import failed', 'Failed to import transactions');
+      toast.error(
+        t('pages.accounts.import.messages.importFailed', 'Import failed'),
+        t(
+          'pages.accounts.import.messages.importError',
+          'Failed to import transactions'
+        )
+      );
     } finally {
       setIsProcessing(false);
     }
@@ -458,15 +488,21 @@ export function ImportTransactionsModal({
             <div className="import-modal__header">
               <div>
                 <Dialog.Title className="import-modal__title">
-                  Import Transactions
+                  {t('pages.accounts.import.title', 'Import Transactions')}
                 </Dialog.Title>
                 <Dialog.Description className="import-modal__subtitle">
-                  Upload CSV, Excel, or PDF file to import transactions for{' '}
-                  {accountName}
+                  {t(
+                    'pages.accounts.import.subtitle',
+                    'Upload CSV, Excel, or PDF file to import transactions for {{accountName}}',
+                    { accountName }
+                  )}
                 </Dialog.Description>
               </div>
               <Dialog.Close asChild>
-                <button className="import-modal__close" aria-label="Close">
+                <button
+                  className="import-modal__close"
+                  aria-label={t('pages.accounts.import.closeLabel', 'Close')}
+                >
                   <X size={20} />
                 </button>
               </Dialog.Close>
@@ -500,15 +536,27 @@ export function ImportTransactionsModal({
                     <p className="import-modal__upload-text">
                       {selectedFile
                         ? selectedFile.name
-                        : 'Drag and drop file or click to browse'}
+                        : t(
+                            'pages.accounts.import.upload.dragDrop',
+                            'Drag and drop file or click to browse'
+                          )}
                     </p>
                     <p className="import-modal__upload-hint">
-                      Supported: CSV, Excel (.xlsx, .xls), PDF
+                      {t(
+                        'pages.accounts.import.upload.supported',
+                        'Supported: CSV, Excel (.xlsx, .xls), PDF'
+                      )}
                     </p>
                     {selectedFile && (
                       <p className="import-modal__file-info">
-                        Format: {detectFileFormat(selectedFile).toUpperCase()} •
-                        Size: {(selectedFile.size / 1024).toFixed(2)} KB
+                        {t(
+                          'pages.accounts.import.upload.fileInfo',
+                          'Format: {{format}} • Size: {{size}} KB',
+                          {
+                            format: detectFileFormat(selectedFile).toUpperCase(),
+                            size: (selectedFile.size / 1024).toFixed(2),
+                          }
+                        )}
                       </p>
                     )}
                     <input
@@ -517,7 +565,10 @@ export function ImportTransactionsModal({
                       accept=".csv,.xlsx,.xls,.pdf"
                       onChange={handleFileSelect}
                       className="import-modal__file-input"
-                      aria-label="Upload file"
+                      aria-label={t(
+                        'pages.accounts.import.upload.uploadLabel',
+                        'Upload file'
+                      )}
                     />
                   </div>
 
@@ -525,16 +576,40 @@ export function ImportTransactionsModal({
                   {previewData.length > 0 && (
                     <div className="import-modal__preview">
                       <h4 className="import-modal__preview-title">
-                        Preview ({previewData.length} transactions)
+                        {t(
+                          'pages.accounts.import.preview.title',
+                          'Preview ({{count}} transactions)',
+                          { count: previewData.length }
+                        )}
                       </h4>
                       <div className="import-modal__preview-table">
                         <table>
                           <thead>
                             <tr>
-                              <th>Date</th>
-                              <th>Description</th>
-                              <th>Amount</th>
-                              <th>Type</th>
+                              <th>
+                                {t(
+                                  'pages.accounts.import.preview.headers.date',
+                                  'Date'
+                                )}
+                              </th>
+                              <th>
+                                {t(
+                                  'pages.accounts.import.preview.headers.description',
+                                  'Description'
+                                )}
+                              </th>
+                              <th>
+                                {t(
+                                  'pages.accounts.import.preview.headers.amount',
+                                  'Amount'
+                                )}
+                              </th>
+                              <th>
+                                {t(
+                                  'pages.accounts.import.preview.headers.type',
+                                  'Type'
+                                )}
+                              </th>
                             </tr>
                           </thead>
                           <tbody>
@@ -556,7 +631,11 @@ export function ImportTransactionsModal({
                         </table>
                         {previewData.length > 5 && (
                           <p className="import-modal__preview-more">
-                            and {previewData.length - 5} more...
+                            {t(
+                              'pages.accounts.import.preview.moreTransactions',
+                              'and {{count}} more...',
+                              { count: previewData.length - 5 }
+                            )}
                           </p>
                         )}
                       </div>
@@ -566,13 +645,16 @@ export function ImportTransactionsModal({
                   {/* Sample Format */}
                   <div className="import-modal__sample">
                     <h4 className="import-modal__sample-title">
-                      Sample CSV Format:
+                      {t(
+                        'pages.accounts.import.sample.title',
+                        'Sample CSV Format:'
+                      )}
                     </h4>
                     <pre className="import-modal__sample-code">
-                      {`date,description,amount,type,category
-2025-01-15,Salary,50000,income,
-2025-01-16,Grocery Shopping,2500,expense,food
-2025-01-17,Netflix Subscription,499,expense,entertainment`}
+                      {t(
+                        'pages.accounts.import.sample.code',
+                        'date,description,amount,type,category\n2025-01-15,Salary,50000,income,\n2025-01-16,Grocery Shopping,2500,expense,food\n2025-01-17,Netflix Subscription,499,expense,entertainment'
+                      )}
                     </pre>
                   </div>
                 </>
@@ -585,7 +667,7 @@ export function ImportTransactionsModal({
                 onClick={handleClose}
                 disabled={isProcessing}
               >
-                Cancel
+                {t('pages.accounts.import.actions.cancel', 'Cancel')}
               </Button>
               <div
                 style={{
@@ -600,7 +682,10 @@ export function ImportTransactionsModal({
                   selectedFile &&
                   !isProcessing && (
                     <span style={{ fontSize: '0.85em', color: '#ef4444' }}>
-                      Complete column mapping to import
+                      {t(
+                        'pages.accounts.import.messages.mappingRequired',
+                        'Complete column mapping to import'
+                      )}
                     </span>
                   )}
                 <Button
@@ -609,9 +694,13 @@ export function ImportTransactionsModal({
                   disabled={isProcessing || previewData.length === 0}
                   isLoading={isProcessing}
                 >
-                  Import{' '}
-                  {previewData.length > 0 &&
-                    `${previewData.length} Transactions`}
+                  {previewData.length > 0
+                    ? t(
+                        'pages.accounts.import.actions.importCount',
+                        'Import {{count}} Transactions',
+                        { count: previewData.length }
+                      )
+                    : t('pages.accounts.import.actions.import', 'Import')}
                 </Button>
               </div>
             </div>

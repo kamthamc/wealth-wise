@@ -7,8 +7,52 @@ import {
   safeValidate,
   updateGoalSchema,
 } from './schemas';
+import { fetchUserPreferences } from './preferences';
 
 const db = admin.firestore();
+
+/**
+ * Get all goals for the authenticated user
+ */
+export const getGoals = functions.https.onCall(async (request) => {
+  if (!request.auth) {
+    throw authError(ErrorCodes.AUTH_UNAUTHENTICATED);
+  }
+
+  const userId = request.auth.uid;
+
+  try {
+    const goalsSnapshot = await db
+      .collection('goals')
+      .where('user_id', '==', userId)
+      .orderBy('created_at', 'desc')
+      .get();
+
+    const goals = goalsSnapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        target_date: data.target_date ? data.target_date.toDate().toISOString() : null,
+        created_at: data.created_at.toDate().toISOString(),
+        updated_at: data.updated_at.toDate().toISOString(),
+      };
+    });
+
+    return { goals };
+  } catch (error: any) {
+    console.error('Error fetching goals:', error);
+    if (error instanceof AppError) {
+      throw error;
+    }
+    throw new AppError(
+      ErrorCodes.OPERATION_FAILED,
+      'Failed to fetch goals',
+      'internal',
+      { originalError: error.message },
+    );
+  }
+});
 
 /**
  * Create a new goal
@@ -31,6 +75,10 @@ export const createGoal = functions.https.onCall(async (request) => {
   const goalData = validation.data;
 
   try {
+    // Fetch user preferences for currency
+    const userPreferences = await fetchUserPreferences(userId);
+    const currency = userPreferences.currency;
+
     const goalRef = db.collection('goals').doc();
     const now = admin.firestore.FieldValue.serverTimestamp();
 
@@ -46,6 +94,7 @@ export const createGoal = functions.https.onCall(async (request) => {
       category: goalData.category || null,
       description: goalData.description || null,
       status: 'active',
+      currency, // Store currency with goal
       created_at: now,
       updated_at: now,
     };
@@ -127,10 +176,14 @@ export const updateGoal = functions.https.onCall(async (request) => {
 
     await goalRef.update(updateData);
 
+    // Get currency from goal
+    const currency = goalData?.currency || (await fetchUserPreferences(userId)).currency;
+
     return {
       id: goalId,
       ...goalData,
       ...updates,
+      currency, // Return currency in response
       updated_at: new Date(),
     };
   } catch (error: any) {
@@ -328,6 +381,9 @@ export const calculateGoalProgress = functions.https.onCall(async (request) => {
       isOnTrack = progress >= expectedProgress - 5; // 5% tolerance
     }
 
+    // Get currency from goal or fetch user preferences
+    const currency = goalData?.currency || (await fetchUserPreferences(userId)).currency;
+
     return {
       goalId,
       name: goalData?.name,
@@ -340,6 +396,7 @@ export const calculateGoalProgress = functions.https.onCall(async (request) => {
       daysRemaining,
       isOnTrack,
       status: goalData?.status,
+      currency, // Return currency for proper formatting
       recentContributions: contributions.slice(0, 5), // Last 5 contributions
     };
   } catch (error: any) {
@@ -426,11 +483,15 @@ export const addGoalContribution = functions.https.onCall(async (request) => {
 
     await batch.commit();
 
+    // Get currency from goal
+    const currency = goalData?.currency || (await fetchUserPreferences(userId)).currency;
+
     return {
       id: contributionRef.id,
       ...contribution,
       created_at: new Date(),
       date: date || new Date(),
+      currency, // Return currency in response
       goalUpdated: {
         current_amount: newCurrentAmount,
         status: newStatus,

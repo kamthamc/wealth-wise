@@ -12,7 +12,7 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import type { DepositDetails as DepositDetailsType } from '@/core/db/types';
+import type { DepositDetails as DepositDetailsType } from '@/core/types';
 import { useDepositStore } from '@/core/stores';
 import { formatCurrency, formatDate } from '@/shared/utils';
 import './DepositDetails.css';
@@ -42,7 +42,7 @@ export function DepositDetails({
 
   // Fetch deposits for this account
   useEffect(() => {
-    fetchDeposits(accountId);
+    fetchDeposits();
   }, [accountId, fetchDeposits]);
 
   // Get deposit for this account

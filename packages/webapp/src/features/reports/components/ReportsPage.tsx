@@ -43,19 +43,28 @@ interface MonthlyTrend {
   net: number;
 }
 
-const TIME_RANGE_OPTIONS = [
-  {
-    value: 'week' as TimeRange,
-    label: 'Last 7 Days',
-    icon: <Calendar size={16} />,
-  },
-  { value: 'month' as TimeRange, label: 'Last 30 Days' },
-  { value: 'quarter' as TimeRange, label: 'Last 3 Months' },
-  { value: 'year' as TimeRange, label: 'Last Year' },
-];
-
 export function ReportsPage() {
   const { t } = useTranslation();
+  
+  const TIME_RANGE_OPTIONS = [
+    {
+      value: 'week' as TimeRange,
+      label: t('pages.reports.timeRanges.week', 'Last 7 Days'),
+      icon: <Calendar size={16} />,
+    },
+    { 
+      value: 'month' as TimeRange, 
+      label: t('pages.reports.timeRanges.month', 'Last 30 Days')
+    },
+    { 
+      value: 'quarter' as TimeRange, 
+      label: t('pages.reports.timeRanges.quarter', 'Last 3 Months')
+    },
+    { 
+      value: 'year' as TimeRange, 
+      label: t('pages.reports.timeRanges.year', 'Last Year')
+    },
+  ];
   const { transactions } = useTransactionStore();
   const { accounts } = useAccountStore();
   const [selectedPeriod, setSelectedPeriod] = useState<TimeRange>('week');
@@ -205,51 +214,53 @@ export function ReportsPage() {
           value={selectedPeriod}
           onChange={setSelectedPeriod}
           size="medium"
-          aria-label="Select time range"
+          aria-label={t('aria.selectTimeRange', 'Select time range')}
         />
       </div>
 
       {!hasData ? (
         <EmptyState
           icon={<BarChart3 size={48} />}
-          title="No Financial Data Yet"
-          description="Start adding accounts and transactions to see your financial reports and analytics"
+          title={t('pages.reports.empty.title', 'No Financial Data Yet')}
+          description={t('pages.reports.empty.description', 'Start adding accounts and transactions to see your financial reports and analytics')}
         />
       ) : (
         <>
           {/* Summary Stats */}
           <section className="reports-page__summary">
-            <h2 className="reports-page__section-title">Summary</h2>
+            <h2 className="reports-page__section-title">
+              {t('pages.reports.summary.title', 'Summary')}
+            </h2>
             <div className="reports-page__stats-grid">
               <StatCard
-                label="Total Income"
+                label={t('pages.reports.summary.totalIncome', 'Total Income')}
                 value={formatCurrency(summary.totalIncome)}
                 icon={<TrendingUp size={24} />}
                 variant="success"
               />
               <StatCard
-                label="Total Expenses"
+                label={t('pages.reports.summary.totalExpenses', 'Total Expenses')}
                 value={formatCurrency(summary.totalExpenses)}
                 icon={<TrendingDown size={24} />}
                 variant="danger"
               />
               <StatCard
-                label="Net Cash Flow"
+                label={t('pages.reports.summary.netCashFlow', 'Net Cash Flow')}
                 value={formatCurrency(summary.netCashFlow)}
                 icon={<Coins size={24} />}
                 variant={summary.netCashFlow >= 0 ? 'success' : 'danger'}
               />
               <StatCard
-                label="Savings Rate"
+                label={t('pages.reports.summary.savingsRate', 'Savings Rate')}
                 value={`${Math.round(summary.savingsRate)}%`}
                 icon={<Target size={24} />}
                 variant={summary.savingsRate >= 20 ? 'success' : 'warning'}
                 description={
                   summary.savingsRate >= 50
-                    ? 'Excellent!'
+                    ? t('pages.reports.summary.excellentSavings', 'Excellent!')
                     : summary.savingsRate >= 20
-                      ? 'Good'
-                      : 'Can improve'
+                      ? t('pages.reports.summary.goodSavings', 'Good progress')
+                      : t('pages.reports.summary.improveSavings', 'Try to save more')
                 }
               />
             </div>
@@ -259,7 +270,7 @@ export function ReportsPage() {
           <section className="reports-page__section">
             <Card>
               <h2 className="reports-page__section-title">
-                Top Expense Categories
+                {t('pages.reports.categoryBreakdown.expense', 'Expenses by Category')}
               </h2>
               {expenseBreakdown.length > 0 ? (
                 <div className="reports-page__category-list">
@@ -284,8 +295,7 @@ export function ReportsPage() {
                           {Math.round(category.percentage)}%
                         </span>
                         <span className="category-item__count">
-                          {category.count} transaction
-                          {category.count !== 1 ? 's' : ''}
+                          {category.count} {category.count === 1 ? 'transaction' : 'transactions'}
                         </span>
                       </div>
                     </div>
@@ -293,7 +303,7 @@ export function ReportsPage() {
                 </div>
               ) : (
                 <p className="reports-page__empty">
-                  No expense data for this period
+                  {t('pages.reports.categoryBreakdown.noData', 'No category data available')}
                 </p>
               )}
             </Card>

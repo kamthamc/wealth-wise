@@ -7,6 +7,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 // import * as Slider from '@radix-ui/react-slider';
 import { useEffect, useId, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useBudgetStore } from '@/core/stores';
 import {
   Button,
@@ -29,22 +30,23 @@ interface AddBudgetFormProps {
   budgetId?: string;
 }
 
-const BUDGET_PERIODS: {
-  value: BudgetPeriodType;
-  label: string;
-  icon: string;
-}[] = [
-  // { value: 'daily', label: 'Daily', icon: '📅' },
-  // { value: 'weekly', label: 'Weekly', icon: '📆' },
-  { value: 'monthly', label: 'Monthly', icon: '🗓️' },
-  { value: 'quarterly', label: 'Quarterly', icon: '📊' },
-];
-
 export function AddBudgetForm({
   isOpen,
   onClose,
   budgetId,
 }: AddBudgetFormProps) {
+  const { t } = useTranslation();
+  
+  const BUDGET_PERIODS: {
+    value: BudgetPeriodType;
+    label: string;
+    icon: string;
+  }[] = [
+    // { value: 'daily', label: t('forms.budget.periods.daily', 'Daily'), icon: '📅' },
+    // { value: 'weekly', label: t('forms.budget.periods.weekly', 'Weekly'), icon: '📆' },
+    { value: 'monthly', label: t('forms.budget.periods.monthly', 'Monthly'), icon: '🗓️' },
+    { value: 'quarterly', label: t('forms.budget.periods.quarterly', 'Quarterly'), icon: '📊' },
+  ];
   const formId = useId();
   const { budgets /* createBudget, updateBudget */ } = useBudgetStore();
   const toast = useToast();
@@ -172,8 +174,8 @@ export function AddBudgetForm({
       resetForm();
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : 'Failed to save budget';
-      toast.error('Failed to save', errorMessage);
+        error instanceof Error ? error.message : t('forms.budget.saveError', 'Failed to save budget');
+      toast.error(t('forms.budget.saveErrorTitle', 'Failed to save'), errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -211,16 +213,16 @@ export function AddBudgetForm({
         <Dialog.Content className="budget-form__content">
           <div className="budget-form__header">
             <Dialog.Title className="budget-form__title">
-              {budgetId ? 'Edit Budget' : 'Create Budget'}
+              {budgetId ? t('forms.budget.editTitle', 'Edit Budget') : t('forms.budget.createTitle', 'Create Budget')}
             </Dialog.Title>
             <Dialog.Description className="budget-form__description">
               {budgetId
-                ? 'Update budget details and limits'
-                : 'Set spending limits for better financial control'}
+                ? t('forms.budget.editDescription', 'Update budget details and limits')
+                : t('forms.budget.createDescription', 'Set spending limits for better financial control')}
             </Dialog.Description>
             <Dialog.Close
               className="budget-form__close"
-              aria-label="Close dialog"
+              aria-label={t('common.close', 'Close')}
             >
               ✕
             </Dialog.Close>
@@ -234,7 +236,7 @@ export function AddBudgetForm({
             {/* Budget Name */}
             <div className="budget-form__field">
               <label htmlFor={`${formId}-name`} className="budget-form__label">
-                Budget Name *
+                {t('forms.budget.nameLabel', 'Budget Name')} *
               </label>
               <Input
                 id={`${formId}-name`}
@@ -244,7 +246,7 @@ export function AddBudgetForm({
                   setFormData((prev) => ({ ...prev, name: e.target.value }))
                 }
                 onBlur={nameValidation.onBlur}
-                placeholder="e.g., Monthly Groceries"
+                placeholder={t('forms.budget.namePlaceholder', 'e.g., Monthly Groceries')}
                 required
                 aria-invalid={!!nameValidation.message}
                 aria-describedby={
@@ -324,14 +326,14 @@ export function AddBudgetForm({
 
             {/* Budget Period */}
             <fieldset className="budget-form__field">
-              <legend className="budget-form__label">Budget Period *</legend>
+              <legend className="budget-form__label">{t('forms.budget.periodLabel', 'Budget Period')} *</legend>
               <RadioGroup.Root
                 className="budget-form__radio-group"
                 value={formData.period_type}
                 onValueChange={(value: BudgetPeriodType) =>
                   setFormData((prev) => ({ ...prev, period: value }))
                 }
-                aria-label="Budget period"
+                aria-label={t('forms.budget.periodLabel', 'Budget period')}
               >
                 {BUDGET_PERIODS.map((period) => (
                   <div key={period.value} className="budget-form__radio-item">
@@ -362,7 +364,7 @@ export function AddBudgetForm({
                 htmlFor={`${formId}-start-date`}
                 className="budget-form__label"
               >
-                Start Date *
+                {t('forms.budget.startDateLabel', 'Start Date')} *
               </label>
               <DatePicker
                 id={`${formId}-start-date`}
@@ -380,7 +382,7 @@ export function AddBudgetForm({
                   }));
                   setTimeout(() => startDateValidation.revalidate(), 0);
                 }}
-                placeholder="Select start date..."
+                placeholder={t('forms.budget.startDatePlaceholder', 'Select start date...')}
                 required
                 error={
                   startDateValidation.hasBlurred
@@ -409,7 +411,7 @@ export function AddBudgetForm({
                 htmlFor={`${formId}-end-date`}
                 className="budget-form__label"
               >
-                End Date (Optional)
+                {t('forms.budget.endDateLabel', 'End Date (Optional)')}
               </label>
               <DatePicker
                 id={`${formId}-end-date`}
@@ -424,11 +426,11 @@ export function AddBudgetForm({
                       : undefined,
                   }))
                 }
-                placeholder="No end date (ongoing)"
+                placeholder={t('forms.budget.endDatePlaceholder', 'No end date (ongoing)')}
                 dateFormat="PPP"
               />
               <p className="budget-form__help-text">
-                Leave empty for a recurring budget without an end date
+                {t('forms.budget.endDateHelp', 'Leave empty for a recurring budget without an end date')}
               </p>
             </div>
 
@@ -473,7 +475,7 @@ export function AddBudgetForm({
               onClick={handleClose}
               disabled={isSubmitting}
             >
-              Cancel
+              {t('common.cancel', 'Cancel')}
             </Button>
             <Button
               type="submit"
@@ -482,10 +484,10 @@ export function AddBudgetForm({
               disabled={isSubmitting || !isFormValid}
             >
               {isSubmitting
-                ? 'Saving...'
+                ? t('forms.budget.saving', 'Saving...')
                 : budgetId
-                  ? 'Update Budget'
-                  : 'Create Budget'}
+                  ? t('forms.budget.updateButton', 'Update Budget')
+                  : t('forms.budget.createButton', 'Create Budget')}
             </Button>
           </div>
         </Dialog.Content>

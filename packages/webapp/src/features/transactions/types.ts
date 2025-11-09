@@ -3,7 +3,7 @@
  * Type definitions for transaction management
  */
 
-import type { TransactionType as DbTransactionType } from '@/core/db/types';
+import type { TransactionType as DbTransactionType } from '@/core/types';
 
 // Re-export database transaction type
 export type TransactionType = DbTransactionType;

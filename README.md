@@ -1,53 +1,152 @@
 # 💰 WealthWise
 
-**Modern Multi-Platform Wealth Management Application**
+**Modern Web-Based Personal Finance Management Application**
 
-WealthWise is a comprehensive personal finance and wealth management application designed for individuals and institutions. Built natively for iOS, macOS, Android, and Windows with enterprise-grade security and comprehensive localization.
+WealthWise is a comprehensive personal finance management web application built with React, TypeScript, and Firebase. Track your income, expenses, budgets, and financial goals with an intuitive, modern interface.
 
 ## 🎯 Vision
 
-WealthWise empowers users to make informed financial decisions through sophisticated asset modeling, comprehensive risk analysis, and intelligent compliance management. Our platform combines cutting-edge financial engineering with intuitive user experiences across all major platforms.
+WealthWise empowers users to take control of their finances through intelligent tracking, goal management, and insightful analytics. Built with privacy and user experience in mind.
 
 ## 🚀 Current Status
 
-WealthWise is actively under development with core financial models and goal tracking functionality implemented. The foundation includes sophisticated asset modeling, multi-jurisdiction tax compliance, and comprehensive goal tracking services.
+**Production Ready** - Core features are complete and functional:
 
-### Key Features Implemented
-- **Asset Data Models**: Tax residency, performance metrics, and currency risk management
-- **Financial Models**: Goal tracking with milestone support, transaction management  
-- **Goal Tracking Service**: Complete goal management with progress analytics
-- **Security Framework**: Enterprise-grade encryption and biometric authentication
-- **Localization**: Multi-language support with cultural adaptations
+### ✅ Implemented Features
+- **Account Management**: Multiple account types (Bank, Credit Card, UPI, Brokerage)
+- **Transaction Tracking**: Full CRUD with import, categorization, and bulk operations
+- **Budget Management**: Multi-category budgets with real-time spending tracking
+- **Goal Tracking**: Financial goals with contribution tracking and progress monitoring
+- **Category Management**: 31 default categories + custom category support
+- **Reports & Analytics**: Time-based financial reports and insights
+- **Settings & Preferences**: User customization and category management
+- **Import/Export**: CSV import for transactions
+- **Dark Mode**: Full dark mode support throughout the application
+- **Responsive Design**: Mobile-friendly interface
 
 ## 🏗️ Architecture
 
-WealthWise follows a multi-platform architecture with native implementations:
-
-- **Apple Platforms**: Swift with SwiftUI/AppKit for iOS and macOS
-- **Android**: Kotlin with modern Android development stack (planned)
-- **Windows**: .NET with native Windows UI frameworks (planned)
-
-Detailed technical documentation is available in the `/docs` directory.
+**Modern Web Stack**:
+- **Frontend**: React 18, TypeScript, Vite
+- **Backend**: Firebase (Firestore, Cloud Functions, Authentication)
+- **State Management**: Zustand
+- **UI Components**: Radix UI, Lucide Icons
+- **Styling**: CSS Modules with CSS Variables
+- **Build Tool**: Vite with TypeScript
+- **Package Manager**: pnpm (monorepo)
 
 ## 🛠 Technology Stack
 
-- **iOS/macOS**: Swift 6, SwiftUI, SwiftData, Core Data
-- **Security**: AES-256 encryption, Keychain Services, biometric authentication
-- **Architecture**: Clean Architecture, MVVM, dependency injection
-- **Testing**: XCTest with comprehensive unit and integration tests
-- **Localization**: NSLocalizedString with multi-language support
+### Frontend
+- **Framework**: React 18 with TypeScript
+- **Build**: Vite for fast development and optimized builds
+- **Routing**: React Router v6
+- **State**: Zustand for global state management
+- **UI Library**: Radix UI for accessible components
+- **Icons**: Lucide React
+- **Forms**: Custom validation hooks
+- **i18n**: react-i18next for multi-language support
+
+### Backend
+- **Database**: Cloud Firestore
+- **Functions**: Firebase Cloud Functions (Node.js)
+- **Authentication**: Firebase Auth
+- **Hosting**: Firebase Hosting (planned)
+
+### Development
+- **Monorepo**: pnpm workspaces
+- **Linting**: Biome for code quality
+- **Type Safety**: TypeScript strict mode
+- **Testing**: Component and integration tests
+
+## 📁 Project Structure
+
+```
+wealth-wise/
+├── packages/
+│   ├── webapp/              # React web application
+│   ├── shared-types/        # Shared TypeScript types
+│   └── cloud-functions/     # Firebase Cloud Functions
+├── docs/                    # Documentation
+└── scripts/                 # Build and utility scripts
+```
+
+## 🚀 Quick Start
+
+See [README-DEV.md](./README-DEV.md) for complete development setup instructions.
+
+```bash
+# Install dependencies
+pnpm install
+
+# Start development (Firebase emulators + webapp)
+pnpm dev
+
+# Build for production
+pnpm build
+
+# Deploy to Firebase
+pnpm deploy
+```
 
 ## 🎯 Roadmap
 
-### Current Focus
-- Completing core financial features and goal tracking
-- Building comprehensive UI components
-- Implementing advanced analytics and reporting
+### Completed ✅
+- Core financial tracking (accounts, transactions, budgets, goals)
+- User authentication and authorization
+- Real-time data synchronization
+- Import/export functionality
+- Responsive UI with dark mode
+- Multi-language support infrastructure
 
-### Upcoming
-- Android and Windows platform implementations
-- Advanced portfolio analytics and risk management
-- Cloud synchronization and backup features
+### In Progress 🚧
+- Enhanced analytics and reporting
+- Account details infrastructure (deposits, investments)
+- Investment portfolio tracking
+- Advanced data export options
+
+### Planned 📋
+- Mobile applications (iOS, Android)
+- Bill tracking and reminders
+- Receipt scanning and attachment
+- Financial advisor recommendations
+- Multi-user support (family accounts)
+
+## 📖 Documentation
+
+- **Development Setup**: [README-DEV.md](./README-DEV.md)
+- **Cloud Functions**: [docs/cloud-functions-quick-reference.md](./docs/cloud-functions-quick-reference.md)
+- **Architecture**: [docs/technical-architecture.md](./docs/technical-architecture.md)
+- **Testing**: [docs/quick-testing-guide.md](./docs/quick-testing-guide.md)
+
+## 🔒 Security
+
+- Firebase Authentication with secure session management
+- Firestore security rules for data access control
+- AES-256 encryption for sensitive data
+- No storage of plain-text financial credentials
+- HTTPS-only communication
+
+## 🌍 Localization
+
+Currently supports:
+- English (en-IN)
+- Hindi (hi-IN) - In Progress
+- Telugu (te-IN) - In Progress
+
+Built with extensible i18n infrastructure for additional languages.
+
+## 📝 License
+
+[To be added]
+
+## 🤝 Contributing
+
+[To be added]
+
+## 📧 Contact
+
+[To be added]
 
 ## 🔒 Security & Privacy
 

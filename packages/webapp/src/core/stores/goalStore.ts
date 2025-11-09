@@ -1,169 +1,204 @@
-/**
- * Goal state store
- * Manages financial goals data and operations
- */
-
 import { create } from 'zustand';
-import type {
-  CreateGoalInput,
-  Goal,
-  GoalStatus,
-  UpdateGoalInput,
-} from '@/core/db';
+import { httpsCallable } from 'firebase/functions';
+import { functions } from '@/core/firebase/firebase';
+import type { Goal, GoalContribution } from '@/core/types';
 
-interface GoalState {
-  // Data
-  goals: Goal[];
-  selectedGoalId: string | null;
-  isLoading: boolean;
-  error: string | null;
-
-  // Filters
-  statusFilter: GoalStatus | 'all';
-
-  // Actions
-  fetchGoals: () => Promise<void>;
-  createGoal: (input: CreateGoalInput) => Promise<Goal | null>;
-  updateGoal: (input: UpdateGoalInput) => Promise<Goal | null>;
-  deleteGoal: (id: string) => Promise<boolean>;
-  selectGoal: (id: string | null) => void;
-  setStatusFilter: (status: GoalStatus | 'all') => void;
-  contributeToGoal: (
-    goalId: string,
-    amount: number,
-    note?: string
-  ) => Promise<boolean>;
-  reset: () => void;
+interface CreateGoalInput {
+  name: string;
+  target_amount: number;
+  current_amount?: number;
+  target_date?: string;
+  priority?: 'low' | 'medium' | 'high';
+  category?: string;
+  description?: string;
 }
 
-const initialState = {
+interface UpdateGoalInput {
+  goalId: string;
+  updates: {
+    name?: string;
+    target_amount?: number;
+    current_amount?: number;
+    target_date?: string;
+    priority?: 'low' | 'medium' | 'high';
+    category?: string;
+    description?: string;
+    status?: 'active' | 'completed' | 'paused' | 'cancelled';
+  };
+}
+
+interface AddContributionInput {
+  goalId: string;
+  amount: number;
+  date?: string;
+  notes?: string;
+}
+
+interface GoalProgress {
+  goalId: string;
+  name: string;
+  currentAmount: number;
+  targetAmount: number;
+  progress: number;
+  contributions: number;
+  totalContributions: number;
+  estimatedCompletionDate: string | null;
+  daysRemaining: number | null;
+  isOnTrack: boolean | null;
+  status: string;
+  currency: string;
+  recentContributions: GoalContribution[];
+}
+
+interface GoalState {
+  goals: Goal[];
+  isLoading: boolean;
+  error: string | null;
+  fetchGoals: () => Promise<void>;
+  createGoal: (input: CreateGoalInput) => Promise<Goal>;
+  updateGoal: (input: UpdateGoalInput) => Promise<Goal>;
+  deleteGoal: (goalId: string) => Promise<void>;
+  addContribution: (input: AddContributionInput) => Promise<GoalContribution>;
+  calculateProgress: (goalId: string) => Promise<GoalProgress>;
+}
+
+export const useGoalStore = create<GoalState>((set) => ({
   goals: [],
-  selectedGoalId: null,
   isLoading: false,
   error: null,
-  statusFilter: 'active' as GoalStatus,
-};
-
-export const useGoalStore = create<GoalState>((set, get) => ({
-  ...initialState,
 
   fetchGoals: async () => {
     set({ isLoading: true, error: null });
     try {
-      // TODO: Implement goal repository
-      // const filter = get().statusFilter === 'all' ? undefined : { status: get().statusFilter }
-      // const goals = await goalRepository.findAll(filter)
+      const getGoals = httpsCallable<void, { goals: Goal[] }>(
+        functions,
+        'getGoals'
+      );
+      const result = await getGoals();
+      set({ goals: result.data.goals, isLoading: false });
+    } catch (error: any) {
+      console.error('Error fetching goals:', error);
+      set({ error: error.message || 'Failed to fetch goals', isLoading: false });
+      throw error;
+    }
+  },
 
-      set({
-        goals: [],
+  createGoal: async (input: CreateGoalInput) => {
+    set({ isLoading: true, error: null });
+    try {
+      const createGoalFn = httpsCallable<CreateGoalInput, Goal>(
+        functions,
+        'createGoal'
+      );
+      const result = await createGoalFn(input);
+      const newGoal = result.data;
+      
+      // Add to local state
+      set((state) => ({
+        goals: [...state.goals, newGoal],
         isLoading: false,
-      });
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Failed to fetch goals';
-      set({ error: errorMessage, isLoading: false });
+      }));
+      
+      return newGoal;
+    } catch (error: any) {
+      console.error('Error creating goal:', error);
+      set({ error: error.message || 'Failed to create goal', isLoading: false });
+      throw error;
     }
   },
 
-  createGoal: async (_input) => {
+  updateGoal: async (input: UpdateGoalInput) => {
     set({ isLoading: true, error: null });
     try {
-      // TODO: Implement goal repository
-      // const goal = await goalRepository.create(_input)
-      // await get().fetchGoals()
-
-      set({ isLoading: false });
-      return null;
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Failed to create goal';
-      set({ error: errorMessage, isLoading: false });
-      return null;
+      const updateGoalFn = httpsCallable<UpdateGoalInput, Goal>(
+        functions,
+        'updateGoal'
+      );
+      const result = await updateGoalFn(input);
+      const updatedGoal = result.data;
+      
+      // Update local state
+      set((state) => ({
+        goals: state.goals.map((g) =>
+          g.id === input.goalId ? updatedGoal : g
+        ),
+        isLoading: false,
+      }));
+      
+      return updatedGoal;
+    } catch (error: any) {
+      console.error('Error updating goal:', error);
+      set({ error: error.message || 'Failed to update goal', isLoading: false });
+      throw error;
     }
   },
 
-  updateGoal: async (_input) => {
+  deleteGoal: async (goalId: string) => {
     set({ isLoading: true, error: null });
     try {
-      // TODO: Implement goal repository
-      // const goal = await goalRepository.update(_input)
-      // await get().fetchGoals()
-
-      set({ isLoading: false });
-      return null;
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Failed to update goal';
-      set({ error: errorMessage, isLoading: false });
-      return null;
+      const deleteGoalFn = httpsCallable<{ goalId: string }, { success: boolean }>(
+        functions,
+        'deleteGoal'
+      );
+      await deleteGoalFn({ goalId });
+      
+      // Remove from local state
+      set((state) => ({
+        goals: state.goals.filter((g) => g.id !== goalId),
+        isLoading: false,
+      }));
+    } catch (error: any) {
+      console.error('Error deleting goal:', error);
+      set({ error: error.message || 'Failed to delete goal', isLoading: false });
+      throw error;
     }
   },
 
-  deleteGoal: async (_id) => {
+  addContribution: async (input: AddContributionInput) => {
     set({ isLoading: true, error: null });
     try {
-      // TODO: Implement goal repository
-      // const success = await goalRepository.delete(_id)
-      // await get().fetchGoals()
-
-      set({ isLoading: false });
-      return false;
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Failed to delete goal';
-      set({ error: errorMessage, isLoading: false });
-      return false;
+      const addContributionFn = httpsCallable<
+        AddContributionInput,
+        GoalContribution & { goalUpdated: { current_amount: number; status: string } }
+      >(functions, 'addGoalContribution');
+      
+      const result = await addContributionFn(input);
+      const contribution = result.data;
+      
+      // Update goal in local state with new current_amount and status
+      set((state) => ({
+        goals: state.goals.map((g) =>
+          g.id === input.goalId
+            ? {
+                ...g,
+                current_amount: contribution.goalUpdated.current_amount,
+                status: contribution.goalUpdated.status as any,
+              }
+            : g
+        ),
+        isLoading: false,
+      }));
+      
+      return contribution;
+    } catch (error: any) {
+      console.error('Error adding contribution:', error);
+      set({ error: error.message || 'Failed to add contribution', isLoading: false });
+      throw error;
     }
   },
 
-  selectGoal: (id) => {
-    set({ selectedGoalId: id });
-  },
-
-  setStatusFilter: (status) => {
-    set({ statusFilter: status });
-    get().fetchGoals();
-  },
-
-  contributeToGoal: async (_goalId, _amount, _note) => {
-    set({ isLoading: true, error: null });
+  calculateProgress: async (goalId: string) => {
     try {
-      // TODO: Implement goal contribution
-      // await goalContributionRepository.create({ goal_id: _goalId, amount: _amount, note: _note })
-      // await get().fetchGoals()
-
-      set({ isLoading: false });
-      return false;
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Failed to contribute to goal';
-      set({ error: errorMessage, isLoading: false });
-      return false;
+      const calculateProgressFn = httpsCallable<
+        { goalId: string },
+        GoalProgress
+      >(functions, 'calculateGoalProgress');
+      
+      const result = await calculateProgressFn({ goalId });
+      return result.data;
+    } catch (error: any) {
+      console.error('Error calculating progress:', error);
+      throw error;
     }
   },
-
-  reset: () => set(initialState),
 }));
-
-/**
- * Selectors
- */
-export const selectSelectedGoal = (state: GoalState) =>
-  state.goals.find((goal) => goal.id === state.selectedGoalId) || null;
-
-export const selectGoalById = (id: string) => (state: GoalState) =>
-  state.goals.find((goal) => goal.id === id) || null;
-
-export const selectActiveGoals = (state: GoalState) =>
-  state.goals.filter((goal) => goal.status === 'active');
-
-export const selectCompletedGoals = (state: GoalState) =>
-  state.goals.filter((goal) => goal.status === 'completed');
-
-export const selectGoalProgress = (id: string) => (state: GoalState) => {
-  const goal = state.goals.find((g) => g.id === id);
-  if (!goal) return 0;
-  return Math.min((goal.current_amount / goal.target_amount) * 100, 100);
-};
-
-export const selectIsLoading = (state: GoalState) => state.isLoading;

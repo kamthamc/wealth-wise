@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+import { fetchUserPreferences } from './preferences';
 
 const db = admin.firestore();
 
@@ -271,6 +272,11 @@ export const computeAndCacheDashboard = functions.https.onCall(
           account_id: txn.account_id,
         }));
 
+      // Fetch user preferences for formatting
+      const userPreferences = await fetchUserPreferences(userId);
+      const currency = userPreferences.currency;
+      const dateFormat = userPreferences.dateFormat;
+
       const dashboardData = {
         summary: {
           totalBalance,
@@ -287,6 +293,8 @@ export const computeAndCacheDashboard = functions.https.onCall(
         goalProgress,
         monthlyTrends,
         recentTransactions: recentTransactionsData,
+        currency, // Return currency for formatting
+        dateFormat, // Return date format preference
       };
 
       // Cache the result
@@ -397,6 +405,10 @@ export const getAccountSummary = functions.https.onCall(async (request) => {
         ? (stats.totalIncome + stats.totalExpenses) / transactions.length
         : 0;
 
+    // Fetch user preferences for formatting
+    const userPreferences = await fetchUserPreferences(userId);
+    const currency = userPreferences.currency;
+
     return {
       account,
       statistics: stats,
@@ -404,6 +416,7 @@ export const getAccountSummary = functions.https.onCall(async (request) => {
         ...txn,
         date: txn.date.toISOString(),
       })),
+      currency, // Return currency for amount formatting
     };
   } catch (error: any) {
     console.error('Error getting account summary:', error);
@@ -522,6 +535,11 @@ export const getTransactionSummary = functions.https.onCall(async (request) => {
       b.period.localeCompare(a.period),
     );
 
+    // Fetch user preferences for formatting
+    const userPreferences = await fetchUserPreferences(userId);
+    const currency = userPreferences.currency;
+    const dateFormat = userPreferences.dateFormat;
+
     return {
       summary,
       totalPeriods: summary.length,
@@ -532,6 +550,8 @@ export const getTransactionSummary = functions.https.onCall(async (request) => {
         0,
       ),
       overallNet: summary.reduce((sum: number, p: any) => sum + p.net, 0),
+      currency, // Return currency for amount formatting
+      dateFormat, // Return date format preference
     };
   } catch (error: any) {
     console.error('Error getting transaction summary:', error);

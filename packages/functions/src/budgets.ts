@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+import { fetchUserPreferences } from './preferences';
 
 const db = admin.firestore();
 
@@ -66,6 +67,10 @@ export const createBudget = functions.https.onCall(async (request) => {
   }
 
   try {
+    // Fetch user preferences for currency
+    const userPreferences = await fetchUserPreferences(userId);
+    const currency = userPreferences.currency;
+
     // Create budget document
     const budgetRef = await db.collection('budgets').add({
       user_id: userId,
@@ -79,6 +84,7 @@ export const createBudget = functions.https.onCall(async (request) => {
       is_recurring: data.is_recurring,
       rollover_enabled: data.rollover_enabled,
       categories: data.categories,
+      currency, // Store currency with budget
       created_at: admin.firestore.FieldValue.serverTimestamp(),
       updated_at: admin.firestore.FieldValue.serverTimestamp(),
     });
@@ -86,6 +92,7 @@ export const createBudget = functions.https.onCall(async (request) => {
     return {
       success: true,
       budgetId: budgetRef.id,
+      currency, // Return currency in response
       message: 'Budget created successfully',
     };
   } catch (error) {
@@ -164,8 +171,14 @@ export const updateBudget = functions.https.onCall(async (request) => {
 
     await budgetRef.update(updateData);
 
+    // Get updated budget data including currency
+    const updatedBudget = await budgetRef.get();
+    const budgetData = updatedBudget.data();
+    const currency = budgetData?.currency || 'INR';
+
     return {
       success: true,
+      currency, // Return currency in response
       message: 'Budget updated successfully',
     };
   } catch (error) {
@@ -326,6 +339,9 @@ export const calculateBudgetProgress = functions.https.onCall(
       const overallPercentUsed =
         totalAllocated > 0 ? (totalSpent / totalAllocated) * 100 : 0;
 
+      // Get currency from budget or fetch user preferences
+      const currency = budgetData?.currency || (await fetchUserPreferences(userId)).currency;
+
       return {
         success: true,
         budget: {
@@ -337,6 +353,7 @@ export const calculateBudgetProgress = functions.https.onCall(
         total_spent: totalSpent,
         total_remaining: totalRemaining,
         overall_percent_used: overallPercentUsed,
+        currency, // Return currency for proper formatting
       };
     } catch (error) {
       console.error('Error calculating budget progress:', error);
@@ -346,6 +363,127 @@ export const calculateBudgetProgress = functions.https.onCall(
       throw new functions.https.HttpsError(
         'internal',
         'Failed to calculate budget progress',
+      );
+    }
+  },
+);
+
+/**
+ * Get transactions for a specific budget category
+ */
+export const getBudgetTransactions = functions.https.onCall(
+  async (request) => {
+    if (!request.auth) {
+      throw new functions.https.HttpsError(
+        'unauthenticated',
+        'User must be authenticated',
+      );
+    }
+
+    const userId = request.auth.uid;
+    const { budgetId, category } = request.data as {
+      budgetId: string;
+      category?: string;
+    };
+
+    if (!budgetId) {
+      throw new functions.https.HttpsError(
+        'invalid-argument',
+        'Budget ID is required',
+      );
+    }
+
+    try {
+      // Get budget to verify ownership and get date range
+      const budgetRef = db.collection('budgets').doc(budgetId);
+      const budget = await budgetRef.get();
+
+      if (!budget.exists) {
+        throw new functions.https.HttpsError('not-found', 'Budget not found');
+      }
+
+      const budgetData = budget.data();
+
+      // Verify ownership
+      if (budgetData?.user_id !== userId) {
+        throw new functions.https.HttpsError(
+          'permission-denied',
+          'Not authorized to access this budget',
+        );
+      }
+
+      // Get budget period dates
+      const startDate = budgetData?.start_date?.toDate();
+      const endDate = budgetData?.end_date?.toDate() || new Date();
+
+      // Build transaction query
+      let query = db
+        .collection('transactions')
+        .where('user_id', '==', userId)
+        .where('type', '==', 'expense')
+        .where('date', '>=', startDate)
+        .where('date', '<=', endDate);
+
+      // Filter by category if provided
+      if (category) {
+        query = query.where('category', '==', category);
+      }
+
+      // Order by date descending
+      query = query.orderBy('date', 'desc');
+
+      const transactionsSnapshot = await query.get();
+
+      const transactions = transactionsSnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          date: data.date.toDate().toISOString(),
+          created_at: data.created_at?.toDate().toISOString(),
+          updated_at: data.updated_at?.toDate().toISOString(),
+        };
+      });
+
+      // Calculate total
+      const totalSpent = transactions.reduce(
+        (sum, t: any) => sum + t.amount,
+        0,
+      );
+
+      // Get allocated amount for this category if specified
+      let allocatedAmount = 0;
+      if (category && budgetData?.categories) {
+        const categoryData = budgetData.categories.find(
+          (c: BudgetCategory) => c.category === category,
+        );
+        allocatedAmount = categoryData?.allocated_amount || 0;
+      }
+
+      // Get currency from budget
+      const currency = budgetData?.currency || 'INR';
+
+      return {
+        success: true,
+        transactions,
+        total_spent: totalSpent,
+        allocated_amount: allocatedAmount,
+        remaining: allocatedAmount - totalSpent,
+        transaction_count: transactions.length,
+        currency, // Return currency for proper formatting
+        period: {
+          start_date: startDate.toISOString(),
+          end_date: endDate.toISOString(),
+        },
+      };
+    } catch (error) {
+      console.error('Error fetching budget transactions:', error);
+      if (error instanceof functions.https.HttpsError) {
+        throw error;
+      }
+      throw new functions.https.HttpsError(
+        'internal',
+        'Failed to fetch budget transactions',
       );
     }
   },

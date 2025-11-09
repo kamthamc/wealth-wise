@@ -1,10 +1,22 @@
+/**
+ * Legacy Accounts Types - DEPRECATED
+ * 
+ * This file is maintained for backward compatibility with Firebase Cloud Functions.
+ * New code should use types from Investments.ts
+ * 
+ * Migration TODO: Update all Firebase functions to use Investments.ts types,
+ * then remove this file.
+ */
+
 import type { CallableFunction } from "firebase-functions/v2/https";
+import type { AccountType as NewAccountType, Currency as NewCurrency } from './Investments.js';
 
-export type AccountType = 'savings'|   'checking'|   'credit_card'|   'investment'|   'brokerage'|   'mutual_fund'|   'loan'|   'mortgage'|   'fixed_deposit'|   'recurring_deposit'|   'ppf'|   'nps'|   'epf'|   'cash'|   'other';
-
+// Re-export modern types for backward compatibility
+export type AccountType = NewAccountType;
+export type Currency = NewCurrency;
 export type Balance = number;
-export type Currency = 'INR' | 'USD' | 'EUR' | 'GBP' | 'JPY' | 'AUD' | 'CAD' | 'CHF' | 'CNY' | 'HKD' | 'SGD' | 'NZD' | 'ZAR' | 'BRL' | 'MXN' | 'RUB' | 'KRW' | 'TRY' | string;
 
+// Legacy interfaces - to be phased out
 export interface IAccount {
     id: string;
     user_id: string;
@@ -27,8 +39,7 @@ interface IFailureResponse extends IResponse {
     errorCode: string;
 }
 
-
-
+// Legacy API payload types
 export type CreateAccountPayload = Omit<IAccount, 'balance' | 'id' | 'user_id'> & { initial_balance?: Balance };
 export type UpdateAccountPayload = Partial<IAccount> & Pick<IAccount, 'id'>;
 export type DeleteAccountPayload = { id: string };
@@ -40,7 +51,6 @@ export type CreateAccountSuccessResponse = {
 };
 
 export type CreateAccountFailureResponse = IFailureResponse;
-//CallableFunction<null, Promise<{ success: boolean; accountTypes: string[]; }>, unknown>
 export type GetAccountTypesResponse = IResponse & { accountTypes: AccountType[] };
 export type GetAccountTypesHttpsCallable = CallableFunction<null, Promise<GetAccountTypesResponse>>;
 

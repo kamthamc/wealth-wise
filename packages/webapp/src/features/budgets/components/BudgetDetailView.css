@@ -457,6 +457,11 @@
   font-weight: 500;
 }
 
+/* Utility Classes */
+.text-danger {
+  color: var(--color-danger);
+}
+
 /* Settings Section */
 .budget-detail__settings {
   display: flex;

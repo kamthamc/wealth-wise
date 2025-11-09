@@ -17,7 +17,8 @@
  */
 
 import { transactionCache } from '@/core/cache';
-import type { Account, Transaction } from '@/core/db/types';
+import type { Account, Transaction } from '@/core/types';
+import { timestampToDate } from '@/core/utils/firebase';
 
 /**
  * Precision for currency calculations (2 decimal places)
@@ -33,7 +34,7 @@ export function toBigIntCents(value: number | string): bigint {
     value = parseFloat(value);
   }
 
-  if (isNaN(value) || !isFinite(value)) {
+  if (Number.isNaN(value) || !Number.isFinite(value)) {
     return 0n;
   }
 
@@ -83,13 +84,11 @@ export function multiplyCurrency(
 }
 
 /**
- * Calculate current account balance from initial balance and transactions
+ * Calculate current account balance from transactions only
+ * Initial balance is represented as a transaction with is_initial_balance = true
  */
-export function calculateAccountBalance(
-  initialBalance: number | string,
-  transactions: Transaction[]
-): number {
-  let balance = toBigIntCents(initialBalance);
+export function calculateAccountBalance(transactions: Transaction[]): number {
+  let balance = 0n;
 
   for (const txn of transactions) {
     const amount = toBigIntCents(txn.amount);
@@ -133,7 +132,6 @@ export function calculateCurrentAccountBalance(
   transactions: Transaction[]
 ): number {
   return calculateAccountBalance(
-    account.balance,
     transactions.filter((t) => t.account_id === account.id)
   );
 }
@@ -166,10 +164,10 @@ export function calculateAccountBalances(
     return cached;
   }
 
-  // Initialize balance map with initial balances
+  // Initialize balance map with zero (balances calculated from transactions only)
   const balances = new Map<string, bigint>();
   for (const account of accounts) {
-    balances.set(account.id, toBigIntCents(account.balance));
+    balances.set(account.id, 0n);
   }
 
   // Single pass through all transactions
@@ -214,7 +212,7 @@ export function calculateIncome(
   for (const txn of transactions) {
     if (txn.type !== 'income') continue;
 
-    const txnDate = new Date(txn.date);
+    const txnDate = timestampToDate(txn.date);
     if (startDate && txnDate < startDate) continue;
     if (endDate && txnDate > endDate) continue;
 
@@ -237,7 +235,7 @@ export function calculateExpenses(
   for (const txn of transactions) {
     if (txn.type !== 'expense') continue;
 
-    const txnDate = new Date(txn.date);
+    const txnDate = timestampToDate(txn.date);
     if (startDate && txnDate < startDate) continue;
     if (endDate && txnDate > endDate) continue;
 
@@ -305,7 +303,7 @@ export function calculateMonthlyStats(
     1
   );
   const futureTransactions = transactions.filter(
-    (t) => new Date(t.date) >= periodStart
+    (t) => timestampToDate(t.date) >= periodStart
   );
 
   // Work backwards from current balance to get the balance at start of period
@@ -446,4 +444,19 @@ export function formatCompactNumber(value: number): string {
   }
 
   return value.toFixed(0);
+}
+
+/**
+ * Calculate total net worth across all active accounts
+ */
+export function calculateNetWorth(
+  accounts: Account[],
+  transactions: Transaction[]
+): number {
+  const activeAccounts = accounts.filter((acc) => acc.is_active);
+  const balances = calculateAccountBalances(activeAccounts, transactions);
+
+  return activeAccounts.reduce((sum, acc) => {
+    return sum + (balances.get(acc.id) || 0);
+  }, 0);
 }

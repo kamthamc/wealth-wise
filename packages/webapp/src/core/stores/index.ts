@@ -1,48 +1,28 @@
 /**
  * Export all stores from a central location
+ * Now using Firebase Firestore as the default backend
  */
 
-export {
-  selectAccountById,
-  selectAccountsByType,
-  selectActiveAccounts,
-  selectIsLoading as selectAccountsLoading,
-  selectSelectedAccount,
-  selectTotalBalance,
-  useAccountStore,
-} from './accountStore';
+// Re-export Firebase stores as default stores
+export { useFirebaseAccountStore as useAccountStore } from './firebaseAccountStore';
+export { useFirebaseBudgetStore as useBudgetStore } from './firebaseBudgetStore';
+export { useFirebaseTransactionStore as useTransactionStore } from './firebaseTransactionStore';
+
+// Auth store (Firebase-based)
+export { useAuthStore } from './authStore';
+
+// App store (local state)
 export {
   selectCurrency,
   selectIsReady,
   selectTheme,
   useAppStore,
 } from './appStore';
-export {
-  selectActiveBudgets,
-  selectBudgetById,
-  selectIsLoading as selectBudgetsLoading,
-  selectSelectedBudget,
-  useBudgetStore,
-} from './budgetStore';
+
+// Specialized stores
 export { useDepositStore } from './depositStore';
-export {
-  selectActiveGoals,
-  selectCompletedGoals,
-  selectGoalById,
-  selectGoalProgress,
-  selectIsLoading as selectGoalsLoading,
-  selectSelectedGoal,
-  useGoalStore,
-} from './goalStore';
+export { useGoalStore } from './goalStore';
 export { useInvestmentStore } from './investmentStore';
-export {
-  selectFilters,
-  selectIsLoading as selectTransactionsLoading,
-  selectPagination,
-  selectSelectedTransaction,
-  selectTransactionById,
-  useTransactionStore,
-} from './transactionStore';
 
 // Utilities
 export { useInitializeStores, useIsAppReady, useResetStores } from './utils';

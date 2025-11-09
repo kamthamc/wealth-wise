@@ -5,7 +5,9 @@
 
 import * as Dialog from '@radix-ui/react-dialog';
 import { useEffect, useId, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAccountStore, useTransactionStore } from '@/core/stores';
+import { timestampToDate } from '@/core/utils/firebase';
 import {
   AccountSelect,
   Button,
@@ -44,6 +46,7 @@ export function AddTransactionForm({
   transactionId,
   defaultAccountId,
 }: AddTransactionFormProps) {
+  const { t } = useTranslation();
   const formId = useId();
   const { transactions, createTransaction, updateTransaction } =
     useTransactionStore();
@@ -106,7 +109,7 @@ export function AddTransactionForm({
           account_id: transaction.account_id,
           category_id: transaction.category,
           description: transaction.description || '',
-          date: transaction.date.toISOString().split('T')[0] || '',
+          date: timestampToDate(transaction.date).toISOString().split('T')[0] || '',
           tags: transaction.tags || [],
         });
       }
@@ -130,12 +133,11 @@ export function AddTransactionForm({
 
     try {
       if (transactionId) {
-        await updateTransaction({
-          id: transactionId,
+        await updateTransaction(transactionId, {
           ...formData,
           category: formData.category_id || '',
-          date: new Date(formData.date),
-        });
+          date: timestampToDate(formData.date),
+        } as any);
         toast.success(
           'Transaction updated',
           'Your transaction has been updated successfully'
@@ -144,7 +146,7 @@ export function AddTransactionForm({
         await createTransaction({
           ...formData,
           category: formData.category_id || '',
-          date: new Date(formData.date),
+          date: timestampToDate(formData.date),
           is_recurring: false,
         });
         toast.success(
@@ -156,11 +158,11 @@ export function AddTransactionForm({
       resetForm();
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : 'Failed to save transaction';
+        error instanceof Error ? error.message : t('forms.transaction.saveError', 'Failed to save transaction');
       setErrors({
         submit: errorMessage,
       });
-      toast.error('Failed to save', errorMessage);
+      toast.error(t('forms.transaction.saveErrorTitle', 'Failed to save'), errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -193,16 +195,16 @@ export function AddTransactionForm({
         <Dialog.Content className="transaction-form__content">
           <div className="transaction-form__header">
             <Dialog.Title className="transaction-form__title">
-              {transactionId ? 'Edit Transaction' : 'Add Transaction'}
+              {transactionId ? t('forms.transaction.editTitle', 'Edit Transaction') : t('forms.transaction.addTitle', 'Add Transaction')}
             </Dialog.Title>
             <Dialog.Description className="transaction-form__description">
               {transactionId
-                ? 'Update transaction details'
-                : 'Record a new income, expense, or transfer'}
+                ? t('forms.transaction.editDescription', 'Update transaction details')
+                : t('forms.transaction.addDescription', 'Record a new income, expense, or transfer')}
             </Dialog.Description>
             <Dialog.Close
               className="transaction-form__close"
-              aria-label="Close dialog"
+              aria-label={t('common.close', 'Close')}
             >
               ✕
             </Dialog.Close>
@@ -216,7 +218,7 @@ export function AddTransactionForm({
             {/* Transaction Type Selector */}
             <fieldset className="transaction-form__field">
               <legend className="transaction-form__label">
-                Transaction Type
+                {t('forms.transaction.typeLabel', 'Transaction Type')}
               </legend>
               <div className="transaction-form__type-selector">
                 {TRANSACTION_TYPES.map((type) => {
@@ -251,7 +253,7 @@ export function AddTransactionForm({
                 htmlFor={`${formId}-amount`}
                 className="transaction-form__label"
               >
-                Amount *
+                {t('forms.transaction.amountLabel', 'Amount')} *
               </label>
               <CurrencyInput
                 id={`${formId}-amount`}
@@ -261,7 +263,7 @@ export function AddTransactionForm({
                 }
                 onBlur={amountValidation.onBlur}
                 currency="INR"
-                placeholder="0.00"
+                placeholder={t('forms.transaction.amountPlaceholder', '0.00')}
                 required
                 aria-invalid={!!amountValidation.message}
                 aria-describedby={
@@ -285,7 +287,7 @@ export function AddTransactionForm({
                 htmlFor={`${formId}-account`}
                 className="transaction-form__label"
               >
-                Account *
+                {t('forms.transaction.accountLabel', 'Account')} *
               </label>
               <AccountSelect
                 id={`${formId}-account`}
@@ -295,8 +297,8 @@ export function AddTransactionForm({
                   // Trigger validation after selection
                   setTimeout(() => accountValidation.revalidate(), 0);
                 }}
-                accounts={accounts}
-                placeholder="Select an account..."
+                accounts={accounts as any}
+                placeholder={t('forms.transaction.accountPlaceholder', 'Select an account...')}
                 required
                 error={
                   accountValidation.hasBlurred
@@ -324,7 +326,7 @@ export function AddTransactionForm({
                 htmlFor={`${formId}-description`}
                 className="transaction-form__label"
               >
-                Description *
+                {t('forms.transaction.descriptionLabel', 'Description')} *
               </label>
               <Input
                 id={`${formId}-description`}
@@ -337,7 +339,7 @@ export function AddTransactionForm({
                   }))
                 }
                 onBlur={descriptionValidation.onBlur}
-                placeholder="What was this transaction for?"
+                placeholder={t('forms.transaction.descriptionPlaceholder', 'What was this transaction for?')}
                 required
                 aria-invalid={!!descriptionValidation.message}
                 aria-describedby={
@@ -361,11 +363,11 @@ export function AddTransactionForm({
                 htmlFor={`${formId}-date`}
                 className="transaction-form__label"
               >
-                Date *
+                {t('forms.transaction.dateLabel', 'Date')} *
               </label>
               <DatePicker
                 id={`${formId}-date`}
-                value={formData.date ? new Date(formData.date) : undefined}
+                value={formData.date ? timestampToDate(formData.date) : undefined}
                 onChange={(date) => {
                   setFormData((prev) => ({
                     ...prev,
@@ -374,7 +376,7 @@ export function AddTransactionForm({
                   // Trigger validation after selection
                   setTimeout(() => dateValidation.revalidate(), 0);
                 }}
-                placeholder="Select transaction date..."
+                placeholder={t('forms.transaction.datePlaceholder', 'Select transaction date...')}
                 required
                 error={
                   dateValidation.hasBlurred ? dateValidation.message : undefined
@@ -413,7 +415,7 @@ export function AddTransactionForm({
                       ? 'expense'
                       : 'all'
                 }
-                placeholder="Select a category (optional)"
+                placeholder={t('forms.transaction.categoryPlaceholder', 'Select a category (optional)')}
               />
             </div>
 
@@ -432,7 +434,7 @@ export function AddTransactionForm({
               onClick={handleClose}
               disabled={isSubmitting}
             >
-              Cancel
+              {t('common.cancel', 'Cancel')}
             </Button>
             <Button
               type="submit"
@@ -447,10 +449,10 @@ export function AddTransactionForm({
               }
             >
               {isSubmitting
-                ? 'Saving...'
+                ? t('forms.transaction.saving', 'Saving...')
                 : transactionId
-                  ? 'Update Transaction'
-                  : 'Add Transaction'}
+                  ? t('forms.transaction.updateButton', 'Update Transaction')
+                  : t('forms.transaction.addButton', 'Add Transaction')}
             </Button>
           </div>
         </Dialog.Content>

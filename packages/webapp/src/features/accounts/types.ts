@@ -6,7 +6,7 @@
 import type {
   AccountType as DbAccountType,
   InterestPayoutFrequency,
-} from '@/core/db/types';
+} from '@/core/types';
 
 // Re-export the database account type
 export type AccountType = DbAccountType;

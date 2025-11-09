@@ -5,12 +5,15 @@
 
 import { Coins, Target, TrendingUp } from 'lucide-react';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAccountStore, useTransactionStore } from '@/core/stores';
+import { timestampToDate } from '@/core/utils/firebase';
 import { SkeletonStats, StatCard } from '@/shared/components';
 import { formatCurrency } from '@/shared/utils';
 import './FinancialOverview.css';
 
 export function FinancialOverview() {
+  const { t } = useTranslation();
   const { accounts, isLoading: accountsLoading } = useAccountStore();
   const { transactions, isLoading: transactionsLoading } =
     useTransactionStore();
@@ -30,7 +33,7 @@ export function FinancialOverview() {
     const now = new Date();
     const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
     const currentMonthTransactions = transactions.filter(
-      (t) => t.date >= currentMonthStart
+      (t) => timestampToDate(t.date) >= currentMonthStart
     );
 
     // Calculate income and expenses
@@ -49,7 +52,7 @@ export function FinancialOverview() {
     const prevMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
     const prevMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
     const prevMonthTransactions = transactions.filter(
-      (t) => t.date >= prevMonthStart && t.date <= prevMonthEnd
+      (t) => timestampToDate(t.date) >= prevMonthStart && timestampToDate(t.date) <= prevMonthEnd
     );
 
     const prevIncome = prevMonthTransactions
@@ -68,20 +71,20 @@ export function FinancialOverview() {
 
     return [
       {
-        label: 'Total Balance',
+        label: t('pages.dashboard.financialOverview.totalBalance', 'Total Balance'),
         value: formatCurrency(totalBalance),
-        description: `Across ${accounts.length} account${accounts.length !== 1 ? 's' : ''}`,
+        description: t('pages.dashboard.financialOverview.acrossAccounts', 'Across {{count}} account', { count: accounts.length }),
         variant: 'primary' as const,
         icon: <Coins size={24} />,
       },
       {
-        label: 'This Month Income',
+        label: t('pages.dashboard.financialOverview.thisMonthIncome', 'This Month Income'),
         value: formatCurrency(income),
         trend:
           prevIncome > 0
             ? {
                 value: Math.abs(incomeTrend),
-                label: 'vs last month',
+                label: t('pages.dashboard.financialOverview.vsLastMonth', 'vs last month'),
                 isPositive: incomeTrend >= 0,
               }
             : undefined,
@@ -89,13 +92,13 @@ export function FinancialOverview() {
         icon: <TrendingUp size={24} />,
       },
       {
-        label: 'This Month Expenses',
+        label: t('pages.dashboard.financialOverview.thisMonthExpenses', 'This Month Expenses'),
         value: formatCurrency(expenses),
         trend:
           prevExpenses > 0
             ? {
                 value: Math.abs(expenseTrend),
-                label: 'vs last month',
+                label: t('pages.dashboard.financialOverview.vsLastMonth', 'vs last month'),
                 isPositive: expenseTrend <= 0, // Lower expenses is positive
               }
             : undefined,
@@ -103,14 +106,14 @@ export function FinancialOverview() {
         icon: <TrendingUp size={24} className="rotate-180" />,
       },
       {
-        label: 'Savings Rate',
+        label: t('pages.dashboard.financialOverview.savingsRate', 'Savings Rate'),
         value: `${Math.round(savingsRate)}%`,
         description:
           savingsRate >= 50
-            ? 'Excellent savings!'
+            ? t('pages.dashboard.financialOverview.excellentSavings', 'Excellent savings!')
             : savingsRate >= 20
-              ? 'Good savings'
-              : 'Try to save more',
+              ? t('pages.dashboard.financialOverview.goodSavings', 'Good savings')
+              : t('pages.dashboard.financialOverview.tryToSaveMore', 'Try to save more'),
         variant:
           savingsRate >= 50
             ? ('success' as const)
@@ -120,7 +123,7 @@ export function FinancialOverview() {
         icon: <Target size={24} />,
       },
     ];
-  }, [accounts, transactions]);
+  }, [accounts, transactions, t]);
 
   // Show skeleton while loading
   if (accountsLoading || transactionsLoading) {
@@ -133,7 +136,7 @@ export function FinancialOverview() {
 
   return (
     <section className="financial-overview">
-      <h2 className="financial-overview__title">Financial Overview</h2>
+      <h2 className="financial-overview__title">{t('pages.dashboard.financialOverview.title', 'Financial Overview')}</h2>
       <div className="financial-overview__grid">
         {stats.map((stat) => (
           <StatCard

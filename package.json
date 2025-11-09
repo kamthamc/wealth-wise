@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "WealthWise Financial Management Platform",
   "private": true,
+  "packageManager": "pnpm@10.20.0",
   "scripts": {
     "dev": "concurrently \"pnpm run emulators\" \"pnpm run webapp:dev\"",
     "emulators": "firebase emulators:start",
@@ -16,13 +17,14 @@
     "build": "pnpm run -r build",
     "add-changes": "changeset add",
     "version-packages": "changeset version",
-    "publish-packages": "changeset publish"
+    "publish-packages": "changeset publish",
+    "i18n:transform": "node scripts/transform-i18n.mjs"
   },
   "workspaces": [
     "packages/*"
   ],
   "devDependencies": {
-    "@biomejs/biome": "^2.2.7",
+    "@biomejs/biome": "^2.3.2",
     "@changesets/cli": "^2.29.7",
     "@types/node": "catalog:",
     "concurrently": "catalog:",

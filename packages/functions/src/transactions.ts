@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+import { fetchUserPreferences } from './preferences';
 
 const db = admin.firestore();
 
@@ -32,6 +33,10 @@ export const createTransaction = functions.https.onCall(async (request) => {
 
   const userId = request.auth.uid;
   const data = request.data as CreateTransactionData;
+
+  // Get user preferences for default currency
+  const userPreferences = await fetchUserPreferences(userId);
+  const userCurrency = userPreferences.currency;
 
   // Validate input
   if (!data.account_id) {
@@ -119,6 +124,7 @@ export const createTransaction = functions.https.onCall(async (request) => {
         type: 'expense',
         category: data.category,
         amount: data.amount,
+        currency: account.data()?.currency || userCurrency,
         description:
           data.description || `Transfer to ${toAccount.data()?.name}`,
         date: admin.firestore.Timestamp.fromDate(new Date(data.date)),
@@ -135,6 +141,7 @@ export const createTransaction = functions.https.onCall(async (request) => {
         type: 'income',
         category: data.category,
         amount: data.amount,
+        currency: toAccount.data()?.currency || userCurrency,
         description:
           data.description || `Transfer from ${account.data()?.name}`,
         date: admin.firestore.Timestamp.fromDate(new Date(data.date)),
@@ -177,6 +184,7 @@ export const createTransaction = functions.https.onCall(async (request) => {
       type: data.type,
       category: data.category,
       amount: data.amount,
+      currency: account.data()?.currency || userCurrency, // Use account currency or user default
       description: data.description || '',
       date: admin.firestore.Timestamp.fromDate(new Date(data.date)),
       tags: data.tags || [],
@@ -507,6 +515,9 @@ export const getTransactionStats = functions.https.onCall(async (request) => {
   }
 
   try {
+    // Get user preferences for currency
+    const userPreferences = await fetchUserPreferences(userId);
+    const userCurrency = userPreferences.currency;
     const start = admin.firestore.Timestamp.fromDate(new Date(startDate));
     const end = admin.firestore.Timestamp.fromDate(new Date(endDate));
 
@@ -543,6 +554,7 @@ export const getTransactionStats = functions.https.onCall(async (request) => {
         net: totalIncome - totalExpense,
         transaction_count: transactionsSnapshot.size,
         category_breakdown: categoryBreakdown,
+        currency: userCurrency,
       },
     };
   } catch (error) {
