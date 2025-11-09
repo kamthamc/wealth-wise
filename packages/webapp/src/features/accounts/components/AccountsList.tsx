@@ -15,7 +15,8 @@ import {
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Account } from '@/core/types';
-import { useAccountStore } from '@/core/stores';
+import { useAccounts } from '@/hooks/useAccounts';
+import { useCreateAccount, useUpdateAccount, useDeleteAccount } from '@/hooks/useAccountMutations';
 import {
   Button,
   ConfirmDialog,
@@ -89,14 +90,10 @@ const ACCOUNT_TYPE_OPTIONS: Array<{
 export function AccountsList() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const {
-    accounts,
-    isLoading,
-    fetchAccounts,
-    createAccount,
-    updateAccount,
-    deleteAccount,
-  } = useAccountStore();
+  const { data: accounts = [], isLoading } = useAccounts();
+  const createAccountMutation = useCreateAccount();
+  const updateAccountMutation = useUpdateAccount();
+  const deleteAccountMutation = useDeleteAccount();
 
   const [filters, setFilters] = useState<AccountFilters>({});
   const [searchQuery, setSearchQuery] = useState('');
@@ -108,7 +105,7 @@ export function AccountsList() {
   // Account options for multi-select filter
   const accountOptions = useMemo(
     () =>
-      accounts.map((account) => ({
+      accounts.map((account: Account) => ({
         value: account.id,
         label: account.name,
         icon: getAccountIcon(account.type),
@@ -122,18 +119,18 @@ export function AccountsList() {
 
     // Filter by types (multi-select)
     if (filters.types && filters.types.length > 0) {
-      filtered = filtered.filter((acc) => filters.types?.includes(acc.type));
+      filtered = filtered.filter((acc: Account) => filters.types?.includes(acc.type));
     }
 
     // Filter by specific account IDs (multi-select)
     if (filters.accountIds && filters.accountIds.length > 0) {
-      filtered = filtered.filter((acc) => filters.accountIds?.includes(acc.id));
+      filtered = filtered.filter((acc: Account) => filters.accountIds?.includes(acc.id));
     }
 
     // Search by name
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter((acc) =>
+      filtered = filtered.filter((acc: Account) =>
         acc.name.toLowerCase().includes(query)
       );
     }
@@ -143,8 +140,8 @@ export function AccountsList() {
 
   // Calculate stats
   const stats = useMemo(() => {
-    const totalBalance = accounts.reduce((sum, acc) => sum + +acc.balance, 0);
-    const activeAccounts = accounts.filter((acc) => acc.is_active).length;
+    const totalBalance = accounts.reduce((sum: number, acc: Account) => sum + +acc.balance, 0);
+    const activeAccounts = accounts.filter((acc: Account) => acc.is_active).length;
 
     return {
       totalBalance,
@@ -154,23 +151,24 @@ export function AccountsList() {
   }, [accounts]);
 
   const handleAddAccount = async (data: AccountFormData) => {
-    await createAccount(data as any);
+    await createAccountMutation.mutateAsync(data);
     setIsAddModalOpen(false);
-    await fetchAccounts();
+    // TanStack Query will automatically refetch the accounts
   };
+  
   const handleEditAccount = async (data: AccountFormData) => {
     if (editingAccount) {
-      await updateAccount(editingAccount.id, data as any);
+      await updateAccountMutation.mutateAsync({ id: editingAccount.id, data });
       setEditingAccount(undefined);
-      await fetchAccounts();
+      // TanStack Query will automatically refetch the accounts
     }
   };
 
   const handleDeleteAccount = async () => {
     if (deletingAccount) {
-      await deleteAccount(deletingAccount.id);
-      await fetchAccounts();
+      await deleteAccountMutation.mutateAsync(deletingAccount.id);
       setDeletingAccount(undefined);
+      // TanStack Query will automatically refetch the accounts
     }
   };
 
@@ -346,7 +344,7 @@ export function AccountsList() {
           </div>
         ) : (
           <div className="cards-grid">
-            {filteredAccounts.map((account) => (
+            {filteredAccounts.map((account: Account) => (
               <AccountCard
                 key={account.id}
                 account={account as any}

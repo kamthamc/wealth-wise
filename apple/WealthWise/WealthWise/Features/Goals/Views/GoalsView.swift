@@ -81,6 +81,19 @@ struct GoalsView: View {
             .sheet(isPresented: $showCreateGoal) {
                 Text("Create Goal Form")
             }
+            .alert(
+                NSLocalizedString("error", comment: "Error"),
+                isPresented: Binding(
+                    get: { viewModel.errorMessage != nil },
+                    set: { if !$0 { viewModel.errorMessage = nil } }
+                )
+            ) {
+                Button(NSLocalizedString("ok", comment: "OK")) {
+                    viewModel.errorMessage = nil
+                }
+            } message: {
+                Text(viewModel.errorMessage ?? NSLocalizedString("unknown_error", comment: "An unknown error occurred"))
+            }
         }
     }
     

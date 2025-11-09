@@ -22,7 +22,8 @@ struct WealthWiseApp: App {
             Account.self,
             WebAppTransaction.self,
             Budget.self,
-            WebAppGoal.self
+            WebAppGoal.self,
+            SavedFilter.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -51,7 +52,8 @@ extension ModelContainer {
             Account.self,
             WebAppTransaction.self,
             Budget.self,
-            WebAppGoal.self
+            WebAppGoal.self,
+            SavedFilter.self
         ])
         let modelConfiguration = ModelConfiguration(
             schema: schema,

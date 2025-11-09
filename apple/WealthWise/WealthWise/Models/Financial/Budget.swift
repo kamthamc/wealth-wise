@@ -11,7 +11,7 @@ import SwiftData
 
 /// Budget model matching the Firebase webapp implementation
 /// Tracks spending limits across categories with different time periods
-@available(iOS 18, macOS 16, *)
+@available(iOS 18, macOS 15, *)
 @Model
 public final class Budget {
     

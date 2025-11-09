@@ -1,6 +1,6 @@
 # WealthWise Native Apple Platforms Implementation Plan
 
-**Target Platforms**: iOS 18+, macOS 16+, watchOS 11+  
+**Target Platforms**: iOS 18+, macOS 15+, watchOS 11+  
 **Technology Stack**: SwiftUI, SwiftData, Swift Package Manager, Firebase  
 **Project Start**: November 2024  
 **Status**: Planning Phase

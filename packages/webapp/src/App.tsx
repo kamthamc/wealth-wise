@@ -12,38 +12,41 @@ import { useInitializeStores } from './core/stores';
 import { SkipNavigation, Spinner, ToastProvider } from './shared/components';
 import { useAuth } from './core/hooks/useAuth';
 import { Theme } from '@radix-ui/themes';
+import { QueryProvider } from './core/QueryProvider';
 
 // Database reset utilities removed with PGlite migration
 
 const InnerApp = () => {
   const auth = useAuth();
   return (
-    <Theme>
-      <Suspense
-        fallback={
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              minHeight: '100vh',
-              gap: '1rem',
-            }}
-          >
-            <Spinner size="large" />
-            <p style={{ color: 'var(--text-secondary)' }}>
-              Loading application...
-            </p>
-          </div>
-        }
-      >
-        <ToastProvider maxToasts={3} defaultDuration={5000}>
-          <SkipNavigation />
-          <RouterProvider router={router} context={{ auth }} />
-        </ToastProvider>
-      </Suspense>
-    </Theme>
+    <QueryProvider>
+      <Theme>
+        <Suspense
+          fallback={
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '100vh',
+                gap: '1rem',
+              }}
+            >
+              <Spinner size="large" />
+              <p style={{ color: 'var(--text-secondary)' }}>
+                Loading application...
+              </p>
+            </div>
+          }
+        >
+          <ToastProvider maxToasts={3} defaultDuration={5000}>
+            <SkipNavigation />
+            <RouterProvider router={router} context={{ auth }} />
+          </ToastProvider>
+        </Suspense>
+      </Theme>
+    </QueryProvider>
   );
 };
 

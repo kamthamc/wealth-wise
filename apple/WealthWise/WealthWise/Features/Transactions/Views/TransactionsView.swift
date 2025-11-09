@@ -13,6 +13,10 @@ struct TransactionsView: View {
     @Environment(\.modelContext) private var modelContext
     @StateObject private var viewModel: TransactionsViewModel
     @State private var showAddTransaction = false
+    @State private var showImportCSV = false
+    @State private var showAdvancedFilter = false
+    @State private var showBulkOperations = false
+    @State private var advancedFilter = TransactionFilter()
     
     init() {
         let context = ModelContext(ModelContainer.shared)
@@ -96,9 +100,39 @@ struct TransactionsView: View {
             }
             .navigationTitle(NSLocalizedString("transactions", comment: "Transactions"))
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Menu {
+                        Button {
+                            showAdvancedFilter = true
+                        } label: {
+                            Label("Advanced Filter", systemImage: "line.3.horizontal.decrease.circle")
+                        }
+                        
+                        if viewModel.hasTransactions {
+                            Button {
+                                showBulkOperations = true
+                            } label: {
+                                Label("Bulk Operations", systemImage: "checkmark.circle")
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                    }
+                }
+                
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showAddTransaction = true
+                    Menu {
+                        Button {
+                            showAddTransaction = true
+                        } label: {
+                            Label("Add Transaction", systemImage: "plus")
+                        }
+                        
+                        Button {
+                            showImportCSV = true
+                        } label: {
+                            Label("Import CSV", systemImage: "arrow.down.doc")
+                        }
                     } label: {
                         Image(systemName: "plus")
                     }
@@ -120,6 +154,56 @@ struct TransactionsView: View {
             .sheet(isPresented: $showAddTransaction) {
                 Text("Add Transaction Form")
             }
+            .sheet(isPresented: $showImportCSV) {
+                CSVImportView(modelContext: modelContext)
+            }
+            .sheet(isPresented: $showAdvancedFilter) {
+                if #available(iOS 18, macOS 15, *) {
+                    AdvancedFilterView(filter: $advancedFilter)
+                        .onDisappear {
+                            // Apply filter when sheet closes
+                            applyAdvancedFilter()
+                        }
+                }
+            }
+            .sheet(isPresented: $showBulkOperations) {
+                if #available(iOS 18, macOS 15, *) {
+                    BulkTransactionOperationsView(
+                        transactions: viewModel.filteredTransactions,
+                        onComplete: {
+                            Task {
+                                await viewModel.refreshData()
+                            }
+                        }
+                    )
+                }
+            }
+        }
+        .sheet(isPresented: $showAdvancedFilter) {
+            AdvancedFilterView(
+                filter: viewModel.advancedFilter ?? TransactionFilter(),
+                onApply: { filter in
+                    viewModel.setAdvancedFilter(filter)
+                    showAdvancedFilter = false
+                },
+                onClear: {
+                    viewModel.clearAdvancedFilter()
+                    showAdvancedFilter = false
+                }
+            )
+        }
+        .alert(
+            NSLocalizedString("error", comment: "Error"),
+            isPresented: Binding(
+                get: { viewModel.errorMessage != nil },
+                set: { if !$0 { viewModel.errorMessage = nil } }
+            )
+        ) {
+            Button(NSLocalizedString("ok", comment: "OK")) {
+                viewModel.errorMessage = nil
+            }
+        } message: {
+            Text(viewModel.errorMessage ?? NSLocalizedString("unknown_error", comment: "An unknown error occurred"))
         }
     }
 }

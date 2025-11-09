@@ -43,6 +43,18 @@ struct MainTabView: View {
                 }
                 .tag(2)
             
+            // Analytics Tab
+            if #available(iOS 18, macOS 15, *) {
+                AnalyticsView()
+                    .tabItem {
+                        Label(
+                            NSLocalizedString("analytics", comment: "Analytics"),
+                            systemImage: "chart.line.uptrend.xyaxis"
+                        )
+                    }
+                    .tag(3)
+            }
+            
             // Budgets Tab
             BudgetsView()
                 .tabItem {
@@ -51,7 +63,7 @@ struct MainTabView: View {
                         systemImage: "chart.pie.fill"
                     )
                 }
-                .tag(3)
+                .tag(4)
             
             // Goals Tab
             GoalsView()
@@ -61,7 +73,7 @@ struct MainTabView: View {
                         systemImage: "target"
                     )
                 }
-                .tag(4)
+                .tag(5)
         }
         .tint(.blue)
     }

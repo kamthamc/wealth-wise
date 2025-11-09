@@ -210,7 +210,7 @@ Expected output:
 
 ### Issue: "No such module" for standard libraries
 **Solution**: 
-1. Check deployment target (should be iOS 18+ / macOS 16+)
+1. Check deployment target (should be iOS 18+ / macOS 15+)
 2. Verify SDK is correct for the platform
 
 ### Issue: Build succeeds in Xcode but fails from terminal

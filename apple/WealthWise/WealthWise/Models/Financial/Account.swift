@@ -11,7 +11,7 @@ import SwiftData
 
 /// Account model matching the Firebase webapp implementation
 /// Supports Bank, Credit Card, UPI, and Brokerage accounts
-@available(iOS 18, macOS 16, *)
+@available(iOS 18.0, macOS 15.0, *)
 @Model
 public final class Account {
     
@@ -49,10 +49,9 @@ public final class Account {
     
     // MARK: - Relationships
     
-    /// All transactions for this account (disabled for now)
-    // TODO: Re-enable relationship once all files are in Xcode target
-    // @Relationship(deleteRule: .cascade)
-    // public var transactions: [WebAppTransaction]?
+    /// All transactions for this account
+    @Relationship(deleteRule: .cascade, inverse: \WebAppTransaction.account)
+    public var transactions: [WebAppTransaction]? = []
     
     // MARK: - Computed Properties
     
@@ -115,7 +114,7 @@ public final class Account {
         }
         
         let total = transactions.reduce(Decimal(0)) { sum, transaction in
-            switch transaction.transactionType {
+            switch transaction.type {
             case .credit:
                 return sum + transaction.amount
             case .debit:

@@ -11,7 +11,7 @@ import SwiftData
 
 /// Simplified transaction model matching the Firebase webapp implementation
 /// This model focuses on core transaction tracking for the web app parity
-@available(iOS 18, macOS 16, *)
+@available(iOS 18, macOS 15, *)
 @Model
 public final class WebAppTransaction {
     
@@ -52,10 +52,8 @@ public final class WebAppTransaction {
     
     // MARK: - Relationships
     
-    /// Related account ID (using UUID instead of relationship for now)
-    // TODO: Re-enable relationship once all files are in Xcode target
-    // @Relationship(inverse: \Account.transactions)
-    // public var account: Account?
+    /// Related account for this transaction
+    public var account: Account?
     
     // MARK: - Computed Properties
     

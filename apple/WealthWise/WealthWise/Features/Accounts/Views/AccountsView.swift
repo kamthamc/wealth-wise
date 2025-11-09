@@ -55,6 +55,19 @@ struct AccountsView: View {
             .sheet(isPresented: $showAddAccount) {
                 Text("Add Account Form")
             }
+            .alert(
+                NSLocalizedString("error", comment: "Error"),
+                isPresented: Binding(
+                    get: { viewModel.errorMessage != nil },
+                    set: { if !$0 { viewModel.errorMessage = nil } }
+                )
+            ) {
+                Button(NSLocalizedString("ok", comment: "OK")) {
+                    viewModel.errorMessage = nil
+                }
+            } message: {
+                Text(viewModel.errorMessage ?? NSLocalizedString("unknown_error", comment: "An unknown error occurred"))
+            }
         }
     }
     
@@ -104,8 +117,6 @@ struct AccountsView: View {
         .foregroundStyle(.white)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-    }
     
     private var accountsListSection: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -115,9 +126,13 @@ struct AccountsView: View {
             
             if viewModel.hasAccounts {
                 VStack(spacing: 12) {
+                  if #available(macOS 26.0, *) {
                     ForEach(viewModel.accounts) { account in
-                        AccountCard(account: account, viewModel: viewModel)
+                      AccountCard(account: account, viewModel: viewModel)
                     }
+                  } else {
+                      // Fallback on earlier versions
+                  }
                 }
             } else {
                 EmptyStateView(
@@ -132,6 +147,7 @@ struct AccountsView: View {
 
 // MARK: - Supporting Views
 
+@available(macOS 26.0, iOS 26.0, *)
 struct AccountCard: View {
     let account: Account
     let viewModel: AccountsViewModel

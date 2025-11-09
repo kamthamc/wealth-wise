@@ -11,7 +11,7 @@ import SwiftData
 
 /// Simplified goal model matching the Firebase webapp implementation
 /// Tracks financial goals with contribution history
-@available(iOS 18, macOS 16, *)
+@available(iOS 18, macOS 15, *)
 @Model
 public final class WebAppGoal {
     

@@ -78,10 +78,26 @@ struct SettingsView: View {
                 
                 // Data & Privacy
                 Section(NSLocalizedString("data_privacy", comment: "Data & Privacy")) {
-                    NavigationLink {
-                        Text("Export Data")
-                    } label: {
-                        Label(NSLocalizedString("export_data", comment: "Export Data"), systemImage: "square.and.arrow.up")
+                    if #available(iOS 18, macOS 15, *) {
+                        NavigationLink {
+                            ExportDataView()
+                        } label: {
+                            Label(NSLocalizedString("export_data", comment: "Export Data"), systemImage: "square.and.arrow.up")
+                        }
+                    } else {
+                        NavigationLink {
+                            Text("Export Data - Requires iOS 18+")
+                        } label: {
+                            Label(NSLocalizedString("export_data", comment: "Export Data"), systemImage: "square.and.arrow.up")
+                        }
+                    }
+                    
+                    if #available(iOS 18, macOS 15, *) {
+                        NavigationLink {
+                            CSVImportView()
+                        } label: {
+                            Label("Import CSV", systemImage: "square.and.arrow.down")
+                        }
                     }
                     
                     NavigationLink {

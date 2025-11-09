@@ -19,16 +19,14 @@ final class BudgetsViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     
-    // MARK: - Repositories
+    // MARK: - Dependencies
     
-    private let budgetRepository: BudgetRepository
-    private let transactionRepository: TransactionRepository
+    private let modelContext: ModelContext
     
     // MARK: - Initialization
     
     init(modelContext: ModelContext) {
-        self.budgetRepository = BudgetRepository(modelContext: modelContext)
-        self.transactionRepository = TransactionRepository(modelContext: modelContext)
+        self.modelContext = modelContext
     }
     
     // MARK: - Data Loading
@@ -38,13 +36,12 @@ final class BudgetsViewModel: ObservableObject {
         errorMessage = nil
         
         do {
-            // Load from local storage
-            budgetRepository.fetchLocal()
-            updateBudgetData()
-            
-            // Sync with Firebase
-            try await budgetRepository.sync()
-            updateBudgetData()
+            // Load from SwiftData
+            let descriptor = FetchDescriptor<Budget>(
+                sortBy: [SortDescriptor(\.startDate, order: .reverse)]
+            )
+            budgets = try modelContext.fetch(descriptor)
+            updateTotals()
             
             // Update spending for each budget
             await updateAllBudgetSpending()
@@ -60,30 +57,40 @@ final class BudgetsViewModel: ObservableObject {
         await loadBudgets()
     }
     
-    private func updateBudgetData() {
-        budgets = budgetRepository.budgets
-        totalBudgeted = budgetRepository.totalBudgetedAmount()
-        totalSpent = budgetRepository.totalSpent()
+    private func updateTotals() {
+        totalBudgeted = budgets.reduce(Decimal.zero) { $0 + $1.amount }
+        totalSpent = budgets.reduce(Decimal.zero) { $0 + $1.currentSpent }
     }
     
     private func updateAllBudgetSpending() async {
         for budget in budgets {
-            let transactions = transactionRepository.fetchLocal(
-                from: budget.startDate,
-                to: budget.endDate
-            ).filter { budget.categories.contains($0.category) }
+            // Fetch transactions for this budget's period and categories
+            let descriptor = FetchDescriptor<WebAppTransaction>(
+                predicate: #Predicate { transaction in
+                    transaction.date >= budget.startDate &&
+                    transaction.date <= budget.endDate &&
+                    budget.categories.contains(transaction.category) &&
+                    transaction.type == .debit
+                }
+            )
             
-            _ = budgetRepository.calculateSpending(for: budget, transactions: transactions)
+            if let transactions = try? modelContext.fetch(descriptor) {
+                let spent = transactions.reduce(Decimal.zero) { $0 + $1.amount }
+                budget.currentSpent = spent
+            }
         }
-        updateBudgetData()
+        
+        try? modelContext.save()
+        updateTotals()
     }
     
     // MARK: - Budget Operations
     
     func deleteBudget(_ budget: Budget) async {
         do {
-            try await budgetRepository.delete(budget)
-            updateBudgetData()
+            modelContext.delete(budget)
+            try modelContext.save()
+            await loadBudgets()
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -101,11 +108,11 @@ final class BudgetsViewModel: ObservableObject {
     }
     
     var overBudgetCount: Int {
-        budgetRepository.overBudgetBudgets().count
+        budgets.filter { isOverBudget($0) }.count
     }
     
     var nearLimitCount: Int {
-        budgetRepository.nearLimitBudgets().count
+        budgets.filter { isNearLimit($0) }.count
     }
     
     // MARK: - Budget Analysis

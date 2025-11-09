@@ -7,6 +7,8 @@
 
 import Foundation
 import SwiftUI
+import Combine
+import FirebaseAuth
 
 /// Manages user authentication state and operations
 /// Integrates with FirebaseService for authentication
