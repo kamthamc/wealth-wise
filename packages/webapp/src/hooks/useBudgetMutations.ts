@@ -25,7 +25,6 @@ export const useCreateBudget = () => {
     mutationFn: async (data: BudgetFormData) => {
       // This is where you would call your actual API
       // For example: return await budgetsApi.create(data);
-      console.log('Creating budget:', data);
       
       // Mock implementation - replace with actual API call
       return Promise.resolve({
@@ -58,7 +57,6 @@ export const useUpdateBudget = () => {
     mutationFn: async ({ id, data }: { id: string; data: Partial<BudgetFormData> }) => {
       // This is where you would call your actual API
       // For example: return await budgetsApi.update(id, data);
-      console.log('Updating budget:', id, data);
       
       // Mock implementation - replace with actual API call
       return Promise.resolve({
@@ -89,7 +87,6 @@ export const useDeleteBudget = () => {
     mutationFn: async (id: string) => {
       // This is where you would call your actual API
       // For example: return await budgetsApi.delete(id);
-      console.log('Deleting budget:', id);
       
       // Mock implementation - replace with actual API call
       return Promise.resolve({ id });

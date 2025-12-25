@@ -1,19 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
-import { accountsApi } from '@/core/api'; // Assuming you have an API client
-import { Account } from '@/types'; // Assuming you have this type
+import { accountsApi } from '@/core/api';
+import type { Account } from '@/core/types'; // Assuming you have this type
 
 const fetchAccounts = async (): Promise<Account[]> => {
-  // This is where you would call your actual API
-  // For example: return await accountsApi.getAll();
-  
-  // For demonstration, we'll return mock data.
-  // In a real scenario, you would remove this mock implementation.
-  console.log('Fetching accounts...');
-  return Promise.resolve([
-    { id: '1', name: 'HDFC Bank', balance: 50000, currency: 'INR', type: 'bank' },
-    { id: '2', name: 'ICICI Credit Card', balance: -15000, currency: 'INR', type: 'credit_card' },
-    { id: '3', name: 'Zerodha', balance: 120000, currency: 'INR', type: 'brokerage' },
-  ]);
+  const result = await accountsApi.getAccounts();
+  // Ensure we return an array, even if the API structure is different
+  return Array.isArray(result) ? result : (result as any).data || [];
 };
 
 /**

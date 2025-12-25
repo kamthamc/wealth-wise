@@ -2,26 +2,26 @@ import type { Unsubscribe } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { collection, getFirestore, onSnapshot, query, where } from 'firebase/firestore';
 import { create } from 'zustand';
-import { accountFunctions } from '../api';
+import { accountsApi } from '../api';
 
 interface Account {
   id: string;
   user_id: string;
   name: string;
   type:
-    | 'bank'
-    | 'credit_card'
-    | 'upi'
-    | 'brokerage'
-    | 'cash'
-    | 'wallet'
-    | 'fixed_deposit'
-    | 'recurring_deposit'
-    | 'ppf'
-    | 'nsc'
-    | 'kvp'
-    | 'scss'
-    | 'post_office';
+  | 'bank'
+  | 'credit_card'
+  | 'upi'
+  | 'brokerage'
+  | 'cash'
+  | 'wallet'
+  | 'fixed_deposit'
+  | 'recurring_deposit'
+  | 'ppf'
+  | 'nsc'
+  | 'kvp'
+  | 'scss'
+  | 'post_office';
   balance: number;
   currency: string;
   icon?: string;
@@ -60,7 +60,7 @@ export const useFirebaseAccountStore = create<AccountState>((set, get) => ({
   error: null,
   unsubscribe: null,
 
-    initialize: () => {
+  initialize: () => {
     const auth = getAuth();
     const userId = auth.currentUser?.uid;
     if (!userId) return;
@@ -87,7 +87,7 @@ export const useFirebaseAccountStore = create<AccountState>((set, get) => ({
   createAccount: async (data) => {
     set({ loading: true, error: null });
     try {
-      await accountFunctions.createAccount(data);
+      await accountsApi.createAccount(data);
       set({ loading: false });
     } catch (error: any) {
       set({ error: error.message, loading: false });
@@ -98,7 +98,7 @@ export const useFirebaseAccountStore = create<AccountState>((set, get) => ({
   updateAccount: async (id, updates) => {
     set({ loading: true, error: null });
     try {
-      await accountFunctions.updateAccount({ accountId: id, updates });
+      await accountsApi.updateAccount({ accountId: id, updates });
       set({ loading: false });
     } catch (error: any) {
       set({ error: error.message, loading: false });
@@ -109,7 +109,7 @@ export const useFirebaseAccountStore = create<AccountState>((set, get) => ({
   deleteAccount: async (id) => {
     set({ loading: true, error: null });
     try {
-      await accountFunctions.deleteAccount(id);
+      await accountsApi.deleteAccount(id);
       set({ loading: false });
     } catch (error: any) {
       set({ error: error.message, loading: false });
@@ -120,7 +120,7 @@ export const useFirebaseAccountStore = create<AccountState>((set, get) => ({
   calculateBalance: async (id) => {
     set({ loading: true, error: null });
     try {
-      await accountFunctions.calculateAccountBalance(id);
+      await accountsApi.calculateAccountBalance(id);
       set({ loading: false });
     } catch (error: any) {
       set({ error: error.message, loading: false });

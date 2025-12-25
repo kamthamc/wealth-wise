@@ -32,6 +32,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { to: '/dashboard', icon: <LayoutDashboard size={20} />, label: 'Dashboard' },
+  { to: '/investments', icon: <BarChart3 size={20} />, label: 'Investments' },
   { to: '/accounts', icon: <Landmark size={20} />, label: 'Accounts' },
   {
     to: '/transactions',

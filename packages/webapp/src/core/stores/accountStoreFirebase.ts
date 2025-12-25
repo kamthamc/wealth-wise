@@ -12,7 +12,7 @@ import {
   where,
 } from 'firebase/firestore';
 import { create } from 'zustand';
-import { accountFunctions } from '@/core/api';
+import { accountsApi } from '@/core/api';
 import { db } from '@/core/firebase/firebase';
 import { announce, announceError } from '@/shared/utils';
 import { useAuthStore } from './authStore';
@@ -22,19 +22,19 @@ export interface Account {
   user_id: string;
   name: string;
   type:
-    | 'bank'
-    | 'credit_card'
-    | 'upi'
-    | 'brokerage'
-    | 'cash'
-    | 'wallet'
-    | 'fixed_deposit'
-    | 'recurring_deposit'
-    | 'ppf'
-    | 'nsc'
-    | 'kvp'
-    | 'scss'
-    | 'post_office';
+  | 'bank'
+  | 'credit_card'
+  | 'upi'
+  | 'brokerage'
+  | 'cash'
+  | 'wallet'
+  | 'fixed_deposit'
+  | 'recurring_deposit'
+  | 'ppf'
+  | 'nsc'
+  | 'kvp'
+  | 'scss'
+  | 'post_office';
   balance: number;
   currency: string;
   icon: string;
@@ -159,7 +159,7 @@ export const useAccountStore = create<AccountState>((set, get) => ({
   createAccount: async (input) => {
     set({ isLoading: true, error: null });
     try {
-      await accountFunctions.createAccount({
+      await accountsApi.createAccount({
         name: input.name,
         type: input.type,
         balance: input.balance || 0,
@@ -183,7 +183,7 @@ export const useAccountStore = create<AccountState>((set, get) => ({
   updateAccount: async (id, updates) => {
     set({ isLoading: true, error: null });
     try {
-      await accountFunctions.updateAccount({
+      await accountsApi.updateAccount({
         accountId: id,
         updates,
       });
@@ -203,7 +203,7 @@ export const useAccountStore = create<AccountState>((set, get) => ({
   deleteAccount: async (id) => {
     set({ isLoading: true, error: null });
     try {
-      await accountFunctions.deleteAccount(id);
+      await accountsApi.deleteAccount(id);
 
       // Clear selection if deleted account was selected
       if (get().selectedAccountId === id) {
@@ -224,7 +224,7 @@ export const useAccountStore = create<AccountState>((set, get) => ({
 
   recalculateBalance: async (id) => {
     try {
-      await accountFunctions.calculateAccountBalance(id);
+      await accountsApi.calculateAccountBalance(id);
       announce('Account balance recalculated');
     } catch (error) {
       console.error('Error recalculating balance:', error);

@@ -18,7 +18,6 @@ export const useCreateAccount = () => {
     mutationFn: async (data: AccountFormData) => {
       // This is where you would call your actual API
       // For example: return await accountsApi.create(data);
-      console.log('Creating account:', data);
       
       // Mock implementation - replace with actual API call
       return Promise.resolve({
@@ -52,7 +51,6 @@ export const useUpdateAccount = () => {
     mutationFn: async ({ id, data }: { id: string; data: AccountFormData }) => {
       // This is where you would call your actual API
       // For example: return await accountsApi.update(id, data);
-      console.log('Updating account:', id, data);
       
       // Mock implementation - replace with actual API call
       return Promise.resolve({
@@ -83,7 +81,6 @@ export const useDeleteAccount = () => {
     mutationFn: async (id: string) => {
       // This is where you would call your actual API
       // For example: return await accountsApi.delete(id);
-      console.log('Deleting account:', id);
       
       // Mock implementation - replace with actual API call
       return Promise.resolve({ id });
@@ -115,7 +112,6 @@ export const useTransferBetweenAccounts = () => {
     }) => {
       // This is where you would call your actual API
       // For example: return await accountsApi.transfer(transferData);
-      console.log('Transferring between accounts:', transferData);
       
       // Mock implementation - replace with actual API call
       return Promise.resolve(transferData);

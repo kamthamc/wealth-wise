@@ -16,6 +16,7 @@ import { Route as AccountsIndexRouteImport } from './routes/accounts/index'
 import { Route as AuthTransactionsRouteImport } from './routes/_auth.transactions'
 import { Route as AuthSettingsRouteImport } from './routes/_auth.settings'
 import { Route as AuthReportsRouteImport } from './routes/_auth.reports'
+import { Route as AuthInvestmentsRouteImport } from './routes/_auth.investments'
 import { Route as AuthGoalsRouteImport } from './routes/_auth.goals'
 import { Route as AuthDashboardRouteImport } from './routes/_auth.dashboard'
 import { Route as AuthBudgetsRouteImport } from './routes/_auth.budgets'
@@ -56,6 +57,11 @@ const AuthReportsRoute = AuthReportsRouteImport.update({
   path: '/reports',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthInvestmentsRoute = AuthInvestmentsRouteImport.update({
+  id: '/investments',
+  path: '/investments',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AuthGoalsRoute = AuthGoalsRouteImport.update({
   id: '/goals',
   path: '/goals',
@@ -89,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/budgets': typeof AuthBudgetsRoute
   '/dashboard': typeof AuthDashboardRoute
   '/goals': typeof AuthGoalsRoute
+  '/investments': typeof AuthInvestmentsRoute
   '/reports': typeof AuthReportsRoute
   '/settings': typeof AuthSettingsRoute
   '/transactions': typeof AuthTransactionsRoute
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/budgets': typeof AuthBudgetsRoute
   '/dashboard': typeof AuthDashboardRoute
   '/goals': typeof AuthGoalsRoute
+  '/investments': typeof AuthInvestmentsRoute
   '/reports': typeof AuthReportsRoute
   '/settings': typeof AuthSettingsRoute
   '/transactions': typeof AuthTransactionsRoute
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   '/_auth/budgets': typeof AuthBudgetsRoute
   '/_auth/dashboard': typeof AuthDashboardRoute
   '/_auth/goals': typeof AuthGoalsRoute
+  '/_auth/investments': typeof AuthInvestmentsRoute
   '/_auth/reports': typeof AuthReportsRoute
   '/_auth/settings': typeof AuthSettingsRoute
   '/_auth/transactions': typeof AuthTransactionsRoute
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/budgets'
     | '/dashboard'
     | '/goals'
+    | '/investments'
     | '/reports'
     | '/settings'
     | '/transactions'
@@ -142,6 +152,7 @@ export interface FileRouteTypes {
     | '/budgets'
     | '/dashboard'
     | '/goals'
+    | '/investments'
     | '/reports'
     | '/settings'
     | '/transactions'
@@ -155,6 +166,7 @@ export interface FileRouteTypes {
     | '/_auth/budgets'
     | '/_auth/dashboard'
     | '/_auth/goals'
+    | '/_auth/investments'
     | '/_auth/reports'
     | '/_auth/settings'
     | '/_auth/transactions'
@@ -220,6 +232,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthReportsRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_auth/investments': {
+      id: '/_auth/investments'
+      path: '/investments'
+      fullPath: '/investments'
+      preLoaderRoute: typeof AuthInvestmentsRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_auth/goals': {
       id: '/_auth/goals'
       path: '/goals'
@@ -275,6 +294,7 @@ interface AuthRouteChildren {
   AuthBudgetsRoute: typeof AuthBudgetsRoute
   AuthDashboardRoute: typeof AuthDashboardRoute
   AuthGoalsRoute: typeof AuthGoalsRoute
+  AuthInvestmentsRoute: typeof AuthInvestmentsRoute
   AuthReportsRoute: typeof AuthReportsRoute
   AuthSettingsRoute: typeof AuthSettingsRoute
   AuthTransactionsRoute: typeof AuthTransactionsRoute
@@ -285,6 +305,7 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthBudgetsRoute: AuthBudgetsRoute,
   AuthDashboardRoute: AuthDashboardRoute,
   AuthGoalsRoute: AuthGoalsRoute,
+  AuthInvestmentsRoute: AuthInvestmentsRoute,
   AuthReportsRoute: AuthReportsRoute,
   AuthSettingsRoute: AuthSettingsRoute,
   AuthTransactionsRoute: AuthTransactionsRoute,

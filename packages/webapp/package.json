@@ -34,6 +34,8 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@radix-ui/themes": "^3.2.1",
     "@svc/wealth-wise-shared-types": "workspace:*",
+    "@tanstack/react-query": "^5.90.12",
+    "@tanstack/react-query-devtools": "^5.91.1",
     "@tanstack/react-router": "^1.134.9",
     "date-fns": "^4.1.0",
     "firebase": "catalog:",

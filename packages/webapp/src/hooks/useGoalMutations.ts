@@ -27,7 +27,6 @@ export const useCreateGoal = () => {
     mutationFn: async (data: GoalFormData) => {
       // This is where you would call your actual API
       // For example: return await goalsApi.create(data);
-      console.log('Creating goal:', data);
       
       // Mock implementation - replace with actual API call
       return Promise.resolve({
@@ -60,7 +59,6 @@ export const useUpdateGoal = () => {
     mutationFn: async ({ id, data }: { id: string; data: Partial<GoalFormData> }) => {
       // This is where you would call your actual API
       // For example: return await goalsApi.update(id, data);
-      console.log('Updating goal:', id, data);
       
       // Mock implementation - replace with actual API call
       return Promise.resolve({
@@ -91,7 +89,6 @@ export const useDeleteGoal = () => {
     mutationFn: async (id: string) => {
       // This is where you would call your actual API
       // For example: return await goalsApi.delete(id);
-      console.log('Deleting goal:', id);
       
       // Mock implementation - replace with actual API call
       return Promise.resolve({ id });
@@ -118,7 +115,6 @@ export const useContributeToGoal = () => {
     mutationFn: async ({ goalId, amount }: { goalId: string; amount: number }) => {
       // This is where you would call your actual API
       // For example: return await goalsApi.contribute(goalId, amount);
-      console.log('Contributing to goal:', goalId, amount);
       
       // Mock implementation - replace with actual API call
       return Promise.resolve({

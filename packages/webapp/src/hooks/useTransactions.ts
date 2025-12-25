@@ -15,7 +15,6 @@ const fetchTransactions = async (filters?: TransactionFilters): Promise<Transact
   // This is where you would call your actual API
   // For example: return await transactionsApi.getAll(filters);
   
-  console.log('Fetching transactions with filters:', filters);
   
   // Mock implementation - replace with actual API call
   return Promise.resolve([
@@ -74,7 +73,6 @@ export const useTransaction = (transactionId: string) => {
       // This is where you would call your actual API
       // For example: return await transactionsApi.getById(transactionId);
       
-      console.log('Fetching transaction:', transactionId);
       
       // Mock implementation - replace with actual API call
       return Promise.resolve({

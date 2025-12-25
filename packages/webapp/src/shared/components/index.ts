@@ -93,3 +93,4 @@ export {
   ValidationMessage,
   type ValidationMessageProps,
 } from './ValidationMessage';
+export * from './InstitutionAutocomplete/InstitutionAutocomplete';

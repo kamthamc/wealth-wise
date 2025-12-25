@@ -1,4 +1,4 @@
-import {} from 'node:https';
+import { } from 'node:https';
 import * as admin from 'firebase-admin';
 import { https } from 'firebase-functions';
 import { getUserAuthenticated } from './auth';
@@ -12,7 +12,7 @@ import {
   createAccountSchema,
   safeValidate,
 } from './schemas';
-import type { GetAccountTypesHttpsCallable  } from '@svc/wealth-wise-shared-types';
+import type { GetAccountTypesHttpsCallable } from '@svc/wealth-wise-shared-types';
 import { fetchUserPreferences } from './preferences';
 
 const { onRequest, onCall } = https;
@@ -21,10 +21,46 @@ const db = admin.firestore();
 
 export const getAccountTypes: GetAccountTypesHttpsCallable = onCall(() => {
   return ({
-      success: true,
-      accountTypes: allAccountTypes,
-    });
+    success: true,
+    accountTypes: allAccountTypes,
   });
+});
+
+/**
+ * Get all accounts for the authenticated user
+ */
+export const getAccounts = onCall(async (request) => {
+  const auth = getUserAuthenticated(request.auth);
+  const userId = auth.uid;
+
+  try {
+    const accountsSnapshot = await db
+      .collection('accounts')
+      .where('user_id', '==', userId)
+      .where('is_active', '==', true)
+      .get();
+
+    const accounts = accountsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+      // Ensure date fields are serialized properly if needed, usually Firestore Timestamp to Date/String happens on client or manual map
+      created_at: (doc.data().created_at as admin.firestore.Timestamp)?.toDate()?.toISOString(),
+      updated_at: (doc.data().updated_at as admin.firestore.Timestamp)?.toDate()?.toISOString(),
+    }));
+
+    return {
+      success: true,
+      accounts,
+    };
+  } catch (error) {
+    console.error('Error fetching accounts:', error);
+    throw new WWHttpError(
+      ErrorCodes.INTERNAL_ERROR,
+      HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+      'Failed to fetch accounts',
+    );
+  }
+});
 
 export const getBudgetPeriods = onRequest(
   {

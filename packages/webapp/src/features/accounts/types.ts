@@ -13,6 +13,7 @@ export type AccountType = DbAccountType;
 
 export interface AccountFormData {
   name: string;
+  institution?: string;
   type: AccountType;
   balance: number;
   currency: string;

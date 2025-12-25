@@ -98,6 +98,7 @@ export interface Account {
   type: AccountType;
   balance: number;
   currency: Currency;
+  institution?: string;
   icon?: string;
   color?: string;
   is_active: boolean;

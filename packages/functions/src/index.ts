@@ -9,6 +9,7 @@ export {
   createAccount,
   deleteAccount,
   getAccountTypes,
+  getAccounts,
   getBudgetPeriods,
   getGoalPriorities,
   getGoalStatuses,
@@ -127,5 +128,8 @@ export {
 
 // Export file parsing functions
 export { parseCSV } from './parsing/csvParser';
-export { parseExcel } from './parsing/excelParser';
 export { parsePDF } from './parsing/pdfParser';
+
+// Export institution functions
+export { getInstitutions, seedInstitutions } from './institutions';
+

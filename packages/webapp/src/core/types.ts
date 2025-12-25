@@ -103,6 +103,12 @@ export type {
 
 // Webapp-specific types that extend shared types
 
+export interface Institution {
+  id: string;
+  name: string;
+  type: 'bank' | 'insurance' | 'broker' | 'other';
+}
+
 export interface BudgetProgress {
   total_spent: number;
   total_allocated: number;
@@ -292,7 +298,7 @@ export interface DepositCalculationResult {
 
 // Investment-specific types
 // Investment asset type
-export type InvestmentAssetType = 
+export type InvestmentAssetType =
   | 'stock'
   | 'mutual_fund'
   | 'bond'

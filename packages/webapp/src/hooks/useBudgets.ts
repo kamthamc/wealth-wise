@@ -17,7 +17,6 @@ export const useBudgets = () => {
       // This is where you would call your actual API
       // For example: return await budgetsApi.getAll();
       
-      console.log('Fetching budgets...');
       
       // Mock implementation - replace with actual API call
       return Promise.resolve([
@@ -58,7 +57,6 @@ export const useBudget = (budgetId: string) => {
       // This is where you would call your actual API
       // For example: return await budgetsApi.getById(budgetId);
       
-      console.log('Fetching budget:', budgetId);
       
       // Mock implementation - replace with actual API call
       return Promise.resolve({

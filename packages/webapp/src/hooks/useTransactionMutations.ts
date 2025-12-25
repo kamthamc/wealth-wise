@@ -28,7 +28,6 @@ export const useCreateTransaction = () => {
     mutationFn: async (data: TransactionFormData) => {
       // This is where you would call your actual API
       // For example: return await transactionsApi.create(data);
-      console.log('Creating transaction:', data);
       
       // Mock implementation - replace with actual API call
       return Promise.resolve({
@@ -61,7 +60,6 @@ export const useUpdateTransaction = () => {
     mutationFn: async ({ id, data }: { id: string; data: Partial<TransactionFormData> }) => {
       // This is where you would call your actual API
       // For example: return await transactionsApi.update(id, data);
-      console.log('Updating transaction:', id, data);
       
       // Mock implementation - replace with actual API call
       return Promise.resolve({
@@ -93,7 +91,6 @@ export const useDeleteTransaction = () => {
     mutationFn: async (id: string) => {
       // This is where you would call your actual API
       // For example: return await transactionsApi.delete(id);
-      console.log('Deleting transaction:', id);
       
       // Mock implementation - replace with actual API call
       return Promise.resolve({ id });
@@ -121,7 +118,6 @@ export const useBulkDeleteTransactions = () => {
     mutationFn: async (ids: string[]) => {
       // This is where you would call your actual API
       // For example: return await transactionsApi.bulkDelete(ids);
-      console.log('Bulk deleting transactions:', ids);
       
       // Mock implementation - replace with actual API call
       return Promise.resolve({ deletedIds: ids });
@@ -149,7 +145,6 @@ export const useImportTransactions = () => {
     mutationFn: async (data: { accountId: string; transactions: TransactionFormData[] }) => {
       // This is where you would call your actual API
       // For example: return await transactionsApi.import(data);
-      console.log('Importing transactions:', data);
       
       // Mock implementation - replace with actual API call
       return Promise.resolve({

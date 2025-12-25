@@ -17,7 +17,6 @@ export const useGoals = () => {
       // This is where you would call your actual API
       // For example: return await goalsApi.getAll();
       
-      console.log('Fetching goals...');
       
       // Mock implementation - replace with actual API call
       return Promise.resolve([
@@ -62,7 +61,6 @@ export const useGoal = (goalId: string) => {
       // This is where you would call your actual API
       // For example: return await goalsApi.getById(goalId);
       
-      console.log('Fetching goal:', goalId);
       
       // Mock implementation - replace with actual API call
       return Promise.resolve({

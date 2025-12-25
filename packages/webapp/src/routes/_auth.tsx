@@ -2,6 +2,8 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Outlet, redirect } from '@tanstack/react-router';
 
+import { AppLayout } from '@/shared/components';
+
 export const Route = createFileRoute('/_auth')({
   beforeLoad: ({ context, location }) => {
     if (!context.auth.isAuthenticated) {
@@ -18,6 +20,8 @@ export const Route = createFileRoute('/_auth')({
 
 function AuthLayout() {
   return (
-    <Outlet />
+    <AppLayout>
+      <Outlet />
+    </AppLayout>
   );
 }

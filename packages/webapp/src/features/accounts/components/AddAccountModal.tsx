@@ -27,7 +27,7 @@ import {
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Account, InterestPayoutFrequency } from '@/core/types';
-import { Button, CurrencyInput, Input } from '@/shared/components';
+import { Button, CurrencyInput, Input, InstitutionAutocomplete } from '@/shared/components';
 import type { AccountFormData, AccountType } from '../types';
 import {
   getAccountTypeName,
@@ -42,7 +42,7 @@ export interface AddAccountModalProps {
   onSubmit: (data: AccountFormData) => void | Promise<void>;
 }
 
-// Icon mapping for account types (small size for dropdown)
+
 const ACCOUNT_TYPE_ICONS: Record<AccountType, React.ReactNode> = {
   // Banking & Cash
   bank: <Landmark size={16} />,
@@ -141,6 +141,7 @@ export function AddAccountModal({
 
   const [formData, setFormData] = useState<AccountFormData>({
     name: account?.name || '',
+    institution: account?.institution || '',
     type: account?.type || 'bank',
     balance: account?.balance || 0,
     currency: account?.currency || 'INR',
@@ -183,6 +184,7 @@ export function AddAccountModal({
   const handleClose = () => {
     setFormData({
       name: '',
+      institution: '',
       type: 'bank',
       balance: 0,
       currency: 'INR',
@@ -239,6 +241,23 @@ export function AddAccountModal({
                 autoFocus
               />
             </div>
+
+            {/* Institution Autocomplete - Add this for Bank/Credit Card */}
+            {(formData.type === 'bank' || formData.type === 'credit_card') && (
+              <div className="account-modal__form-group">
+                <label className="account-modal__label">
+                  Institution
+                </label>
+                <InstitutionAutocomplete
+                  value={formData.institution || ''}
+                  onChange={(value) => {
+                    setFormData({ ...formData, institution: value });
+                  }}
+                  type="bank"
+                  placeholder="Select Bank"
+                />
+              </div>
+            )}
 
             {/* Account Type */}
             <div className="account-modal__form-group">
@@ -548,19 +567,19 @@ export function AddAccountModal({
                   >
                     Broker Name
                   </label>
-                  <Input
+                  <InstitutionAutocomplete
                     id="brokerage-broker-name"
-                    type="text"
                     value={formData.brokerageDetails?.broker_name || ''}
-                    onChange={(e) => {
+                    onChange={(value) => {
                       setFormData({
                         ...formData,
                         brokerageDetails: {
                           ...formData.brokerageDetails,
-                          broker_name: e.target.value,
+                          broker_name: value,
                         },
                       });
                     }}
+                    type="broker"
                     placeholder={t(
                       'pages.accounts.modal.placeholders.brokerName',
                       'Zerodha, Groww, etc.'
@@ -774,8 +793,8 @@ export function AddAccountModal({
                     value={
                       formData.depositDetails?.start_date
                         ? new Date(formData.depositDetails.start_date)
-                            .toISOString()
-                            .split('T')[0]
+                          .toISOString()
+                          .split('T')[0]
                         : ''
                     }
                     onChange={(e) => {
@@ -880,7 +899,7 @@ export function AddAccountModal({
                   </Select.Root>
                 </div>
 
-                {/* Bank Name */}
+                {/* Bank Name using Autocomplete */}
                 <div className="account-modal__form-group">
                   <label
                     htmlFor="deposit-bank-name"
@@ -888,11 +907,10 @@ export function AddAccountModal({
                   >
                     Bank/Institution Name
                   </label>
-                  <Input
+                  <InstitutionAutocomplete
                     id="deposit-bank-name"
-                    type="text"
                     value={formData.depositDetails?.bank_name || ''}
-                    onChange={(e) => {
+                    onChange={(value) => {
                       setFormData({
                         ...formData,
                         depositDetails: {
@@ -904,10 +922,11 @@ export function AddAccountModal({
                             formData.depositDetails?.start_date || new Date(),
                           tenure_months:
                             formData.depositDetails?.tenure_months || 12,
-                          bank_name: e.target.value,
+                          bank_name: value,
                         },
                       });
                     }}
+                    type="bank"
                     placeholder={t(
                       'pages.accounts.modal.placeholders.bankName',
                       'HDFC Bank'

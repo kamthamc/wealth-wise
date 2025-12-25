@@ -7,19 +7,19 @@ import { functions } from '../firebase/firebase';
 export interface CreateAccountData {
   name: string;
   type:
-    | 'bank'
-    | 'credit_card'
-    | 'upi'
-    | 'brokerage'
-    | 'cash'
-    | 'wallet'
-    | 'fixed_deposit'
-    | 'recurring_deposit'
-    | 'ppf'
-    | 'nsc'
-    | 'kvp'
-    | 'scss'
-    | 'post_office';
+  | 'bank'
+  | 'credit_card'
+  | 'upi'
+  | 'brokerage'
+  | 'cash'
+  | 'wallet'
+  | 'fixed_deposit'
+  | 'recurring_deposit'
+  | 'ppf'
+  | 'nsc'
+  | 'kvp'
+  | 'scss'
+  | 'post_office';
   balance: number;
   currency?: string;
   icon?: string;
@@ -34,7 +34,7 @@ export interface UpdateAccountData {
 /**
  * Cloud Functions API for Accounts
  */
-export const accountFunctions = {
+export const accountsApi = {
   /**
    * Create a new account
    */
@@ -59,6 +59,15 @@ export const accountFunctions = {
   deleteAccount: async (accountId: string) => {
     const callable = httpsCallable(functions, 'deleteAccount');
     const result = await callable({ accountId });
+    return result.data;
+  },
+
+  /**
+   * Get all accounts
+   */
+  getAccounts: async () => {
+    const callable = httpsCallable(functions, 'getAccounts');
+    const result = await callable();
     return result.data;
   },
 
